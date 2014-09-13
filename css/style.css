@@ -1,15 +1,14 @@
 body {
-	margin: 10px 0;
+	margin: 0 0;
 
-	background-color: #44FF44;
+	background-color: #666666;
 	font: 1em 'Cambria';
 }
 
 h1 {
-	margin: 1em 0;
-	padding: 5px 0;
+	margin: 0 0 1em 0;
+	padding: .5em 0;
 
-	border-top: 2px solid black;
 	border-bottom: 2px solid black;
 	background-color: #FFFFFF;
 
@@ -33,7 +32,7 @@ footer {
 	margin: 0;
 	padding: 10px;
 
-	background: linear-gradient(#44FF44, #FFFFFF);
+	background: linear-gradient(#666666, #FFFFFF);
 
 	font-weight: bold;
 	text-align: center;
