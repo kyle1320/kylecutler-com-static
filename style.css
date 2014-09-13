@@ -1,0 +1,14 @@
+body {
+	background-color: #44FF44;
+	font: 1em 'Cambria';
+}
+
+h1 {
+	border: 2px solid black;
+	border-radius: 10px;
+}
+
+p {
+	border-radius: 10px;
+	background-color: #66FF66;
+}
