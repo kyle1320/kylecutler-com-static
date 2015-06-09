@@ -103,6 +103,8 @@ function DrawableGraph(graph, canvas) {
     var edcheck = document.getElementById("edgedists");
     var hlcheck = document.getElementById("highlight");
     var upcheck = document.getElementById("updates");
+    var sncheck = document.getElementById("shownodes");
+    var secheck = document.getElementById("showedges");
 
     this.draw = function() {
         // we will update the background if:
@@ -161,30 +163,34 @@ function DrawableGraph(graph, canvas) {
             var ctx = this.context;
 
             // draw the edges first, so they don't overlap the nodes
-            this.graph.edges.forEach(function(edge) {
-                ctx.beginPath();
-                ctx.moveTo(edge.a.x, edge.a.y);
-                ctx.lineTo(edge.b.x, edge.b.y);
-                ctx.closePath();
-
-                ctx.strokeStyle = edge.color;
-                ctx.lineWidth = edgeWidth;
-                ctx.stroke();
-            });
+            if (secheck.checked) {
+                this.graph.edges.forEach(function(edge) {
+                    ctx.beginPath();
+                    ctx.moveTo(edge.a.x, edge.a.y);
+                    ctx.lineTo(edge.b.x, edge.b.y);
+                    ctx.closePath();
+    
+                    ctx.strokeStyle = edge.color;
+                    ctx.lineWidth = edgeWidth;
+                    ctx.stroke();
+                });
+            }
 
             // now draw the nodes
-            this.graph.nodes.forEach(function(node) {
-                ctx.beginPath();
-                ctx.arc(node.x, node.y, nodeSize, 0, 2*Math.PI);
-                ctx.closePath();
-
-                // black fill, white stroke
-                ctx.fillStyle = "#000000";
-                ctx.strokeStyle = "#FFFFFF";
-                ctx.lineWidth = 1;
-                ctx.fill();
-                ctx.stroke();
-            });
+            if (sncheck.checked) {
+                this.graph.nodes.forEach(function(node) {
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, nodeSize, 0, 2*Math.PI);
+                    ctx.closePath();
+    
+                    // black fill, white stroke
+                    ctx.fillStyle = "#000000";
+                    ctx.strokeStyle = "#FFFFFF";
+                    ctx.lineWidth = 1;
+                    ctx.fill();
+                    ctx.stroke();
+                });
+            }
 
             // draw the edge distances only if the mouse is inside the canvas
             if (edcheck.checked && mouseinside) {
@@ -518,6 +524,8 @@ window.onload = function() {
 
     document.getElementById("background").setAttribute('onclick','draw.forceRedraw();');
     document.getElementById("highlight").setAttribute('onclick','draw.forceRedraw();');
+    document.getElementById("shownodes").setAttribute('onclick', 'draw.forceRedraw();');
+    document.getElementById("showedges").setAttribute('onclick', 'draw.forceRedraw();');
     document.getElementById("orderinput").setAttribute('onchange', 'draw.updateOrder();');
 
     var graph = connectedGraph(canvas.width, canvas.height, 4);//new Graph(nodes, edges);

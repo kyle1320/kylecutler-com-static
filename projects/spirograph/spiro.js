@@ -48,6 +48,7 @@ function Spirograph(spiroCanvas, infoCanvas) {
     
     var sccheck = document.getElementById("showcircles");
     var srcheck = document.getElementById("showradii");
+    var uccheck = document.getElementById("usecolor");
     var pausebtn = document.getElementById("pausebtn");
     var resetbtn = document.getElementById("resetbtn");
     
@@ -91,6 +92,10 @@ function Spirograph(spiroCanvas, infoCanvas) {
     }
     
     function getColor(val) {
+        if (!uccheck.checked) {
+            return "#000000";
+        }
+        
         var i = Math.floor(val * 6);
         var f = val * 6 - i;
         var q = ("0" + Math.round(255 * (1 - f)).toString(16)).slice(-2);
@@ -202,7 +207,9 @@ function Spirograph(spiroCanvas, infoCanvas) {
     };
     
     this.reset = function() {
+        this.circles.forEach(function(c) {c.angle = 0;})
         this.spiroCtx.clearRect(0, 0, sp.spiroCanvas.clientWidth, sp.spiroCanvas.clientHeight);
+        this.draw();
     };
     
     window.addEventListener("keydown", function(evt) {
