@@ -1,0 +1,13 @@
+#drawCanvas {
+	margin-right: 20px;
+	margin-bottom: 20px;
+	float: left;
+}
+
+#controls {
+	float: left;
+}
+
+#info {
+	clear: left;
+}

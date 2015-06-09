@@ -1,39 +1,63 @@
 body {
-	margin: 0 0;
-
-	background-color: #666666;
-	font: 1em 'Cambria';
-}
-
-h1 {
-	margin: 0 0 1em 0;
-	padding: .5em 0;
-
-	border-bottom: 2px solid black;
-	background-color: #FFFFFF;
-
-	text-align: center;
-}
-
-p {
-	padding: .5em 1em;
-	margin: 1em 2em;
-
-	border-radius: 10px;
-	background-color: #88FF88;
-}
-
-footer {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-
-	width: 100%;
 	margin: 0;
-	padding: 10px;
+	padding: 0;
+	font-family: 'Raleway';
+	color: white;
+	background: url(../img/paper.png) repeat 0 0;
+}
 
-	background: linear-gradient(#666666, #FFFFFF);
+#header {
+	width: 100%;
+	height: auto;
+	overflow: hidden;
+	/*background: url(../img/penta.png) repeat 0 0;*/
+}
 
-	font-weight: bold;
+#header h1 {
+	font-family: 'PT Serif';
 	text-align: center;
+	color: #444;
+}
+
+#menu {
+	width: auto;
+	height: auto;
+	overflow: hidden;
+	margin: 10px;
+	padding: 0;
+	border: 2px solid #444;
+	background-color: #AAA;
+	color: black;
+	list-style-type: none;
+}
+
+#menu a, #menu a:link, #menu a:visited, #menu a:hover, #menu a:focus, #menu a:active{
+  color: black;
+}
+
+#menu li {
+	width: auto;
+	height: 100%;
+	margin: 0;
+	padding: 10px 15px;
+	border-right: 2px solid #444;
+	float: left;
+}
+
+#menu li:hover {
+	background-color: #BBB;
+}
+
+html, body {
+	width: 100%;
+	height: 100%;
+}
+
+#project {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	border: none;
+	overflow: hidden;
 }

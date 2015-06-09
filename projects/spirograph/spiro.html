@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>Spirograph</title>
+		<link href="spiro.css" rel="stylesheet" />
+		<script type="text/javascript" src="spiro.js"></script>
+	</head>
+
+	<body>
+		<div id="canvases">
+			<canvas id="spiroCanvas" width="500px" height="500px"></canvas>
+			<canvas id="infoCanvas" width="500px" height="500px"></canvas>
+		</div>
+		<div id="controls">
+			<p>
+				Speed: <input id="speedinput" type="number" min="0.0" step="any"> rad / sec</input>
+			</p>
+			<p>
+				Iterations: <input id="iterinput" type="number" min="0" step="1"></input>
+			</p>
+			<input type="checkbox" id="showcircles" checked=true>Show circles</input>
+			<input type="checkbox" id="showradii">Show radii</input>
+		</div>
+		<p id="info">space to play / pause<br>enter to reset<br>+ / - change the number of iterations<br>left / right arrows change the speed<br>NOTE: things get more interesting at high speeds ;)</p>
+	</body>
+</html>
