@@ -187,7 +187,7 @@ function Spirograph(spiroCanvas, infoCanvas) {
         }
         
         this.paused = paused;
-    }
+    };
     
     window.addEventListener("keydown", function(evt) {
         console.log(evt.keyCode);
