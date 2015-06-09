@@ -48,7 +48,19 @@ function Spirograph(spiroCanvas, infoCanvas) {
     
     var sccheck = document.getElementById("showcircles");
     var srcheck = document.getElementById("showradii");
+    var pausebtn = document.getElementById("pausebtn");
+    var resetbtn = document.getElementById("resetbtn");
+    
     var sp = this;
+    
+    pausebtn.addEventListener("click", function(evt) {
+        sp.setPaused(!sp.paused);
+        pausebtn.innerHTML = sp.paused ? "Resume" : "Pause";
+    });
+    
+    resetbtn.addEventListener("click", function(evt) {
+        sp.reset();
+    });
     
     function eachCircle(eachCallback, doneCallback) {
         var unit = spiroCanvas.clientWidth / 2;
@@ -189,6 +201,10 @@ function Spirograph(spiroCanvas, infoCanvas) {
         this.paused = paused;
     };
     
+    this.reset = function() {
+        this.spiroCtx.clearRect(0, 0, sp.spiroCanvas.clientWidth, sp.spiroCanvas.clientHeight);
+    };
+    
     window.addEventListener("keydown", function(evt) {
         console.log(evt.keyCode);
         switch (evt.keyCode) {
@@ -208,7 +224,7 @@ function Spirograph(spiroCanvas, infoCanvas) {
                 sp.setIterations(sp.iterations - 10);
                 break;
             case 13:
-                sp.spiroCtx.clearRect(0, 0, sp.spiroCanvas.clientWidth, sp.spiroCanvas.clientHeight);
+                sp.reset();
                 break;
         }
     });
