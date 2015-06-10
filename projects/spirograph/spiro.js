@@ -56,18 +56,23 @@ function Spirograph(spiroCanvas, infoCanvas) {
         var unit = spiroCanvas.clientWidth / 2;
         var x = unit;
         var y = unit;
-        var angle = 0.0;
+        var realangle = 0.0;
+        var relangle = 0.0;
         var lastRadius = 1.0;
         
         for (var i=0; i < sp.circles.length; i++) {
-            angle += sp.circles[i].angle;
+            relangle = realangle - sp.circles[i].angle;
+            realangle += ((lastRadius / sp.circles[i].radius) - 1) * sp.circles[i].angle;
             
-            x += unit * (lastRadius - sp.circles[i].radius) * Math.cos(angle);
-            y += unit * (lastRadius - sp.circles[i].radius) * Math.sin(angle);
+            // center the first circle
+            if (i > 0) {
+                x += unit * (lastRadius - sp.circles[i].radius) * Math.cos(relangle);
+                y += unit * (lastRadius - sp.circles[i].radius) * Math.sin(relangle);
+            }
             
             sp.circles[i].x = x;
             sp.circles[i].y = y;
-            sp.circles[i].realangle = angle % (2 * Math.PI);
+            sp.circles[i].realangle = realangle % (2 * Math.PI);
             sp.circles[i].realradius = sp.circles[i].radius * unit;
             
             if (eachCallback)
@@ -109,7 +114,7 @@ function Spirograph(spiroCanvas, infoCanvas) {
                 if (sccheck.checked) {
                     ctx.strokeStyle = "#000000";
                     ctx.beginPath();
-                    ctx.arc(c.x, c.y, c.realradius, 0, 2 * Math.PI);
+                    ctx.arc(c.x, c.y, Math.abs(c.realradius), 0, 2 * Math.PI);
                     ctx.closePath();
                     ctx.stroke();
                 }
@@ -118,7 +123,7 @@ function Spirograph(spiroCanvas, infoCanvas) {
                     ctx.strokeStyle = "#00FF00";
                     ctx.beginPath();
                     ctx.moveTo(c.x, c.y);
-                    ctx.lineTo(c.x + Math.cos(-c.realangle)*c.realradius, c.y + Math.sin(-c.realangle)*c.realradius);
+                    ctx.lineTo(c.x + Math.cos(c.realangle)*c.realradius, c.y + Math.sin(c.realangle)*c.realradius);
                     ctx.closePath();
                     ctx.stroke();
                 }
