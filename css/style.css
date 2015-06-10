@@ -10,29 +10,29 @@ body {
 	width: 100%;
 	height: auto;
 	overflow: hidden;
-	/*background: url(../img/penta.png) repeat 0 0;*/
 }
 
 #header h1 {
 	font-family: 'PT Serif';
 	text-align: center;
-	color: #444;
+	color: #654;
 }
 
 #menu {
 	width: auto;
 	height: auto;
 	overflow: hidden;
-	margin: 10px;
+	margin: 10px 0px;
 	padding: 0;
-	border: 2px solid #444;
-	background-color: #AAA;
-	color: black;
+	border-top: 2px solid #654;
+	border-bottom: 2px solid #654;
+	background-color: #AFA8A0;
+	color: #321;
 	list-style-type: none;
 }
 
 #menu a, #menu a:link, #menu a:visited, #menu a:hover, #menu a:focus, #menu a:active{
-  color: black;
+  color: #321;
 }
 
 #menu li {
@@ -40,12 +40,12 @@ body {
 	height: 100%;
 	margin: 0;
 	padding: 10px 15px;
-	border-right: 2px solid #444;
+	border-right: 2px solid #654;
 	float: left;
 }
 
-#menu li:hover {
-	background-color: #BBB;
+#menu a li:hover {
+	background-color: #BFB8B0;
 }
 
 html, body {

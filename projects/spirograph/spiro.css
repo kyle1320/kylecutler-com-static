@@ -29,8 +29,15 @@
 
 #controls {
 	float: left;
+	width: auto;
+}
+
+#circles {
+	padding: 0 10px;
+	float: right;
+	width: auto;
 }
 
 #info {
-	clear: left;
+	clear: both;
 }

@@ -9,31 +9,19 @@ function Spirograph(spiroCanvas, infoCanvas) {
     
     this.circles = [
         {
-            x: 0,
-            y: 0,
-            realangle: 0,
-            realradius: 0,
             radius: 1,
             angle: 0,
             speed: 0
         },
         {
-            x: 0,
-            y: 0,
-            realangle: 0,
-            realradius: 0,
             radius: 0.5,
             angle: 0,
             speed: 1.0
         },
         {
-            x: 0,
-            y: 0,
-            realangle: 0,
-            realradius: 0,
             radius: 0.25,
             angle: 0,
-            speed: 1.0/Math.PI
+            speed: 1.0 / Math.PI
         }
     ];
     this.iterations = 100;
@@ -51,6 +39,7 @@ function Spirograph(spiroCanvas, infoCanvas) {
     var uccheck = document.getElementById("usecolor");
     var pausebtn = document.getElementById("pausebtn");
     var resetbtn = document.getElementById("resetbtn");
+    var circlediv = document.getElementById("circles");
     
     var sp = this;
     
@@ -97,10 +86,10 @@ function Spirograph(spiroCanvas, infoCanvas) {
         }
         
         var i = Math.floor(val * 6);
-        var f = val * 6 - i;
+        var f = ((val * 6 - i) + 1) % 1;
         var q = ("0" + Math.round(255 * (1 - f)).toString(16)).slice(-2);
         var t = ("0" + Math.round(255 * f).toString(16)).slice(-2);
-        switch (i % 6) {
+        switch ((i + 6) % 6) {
             case 0: return "#FF" + t + "00";
             case 1: return "#" + q + "FF00";
             case 2: return "#00FF" + t;
@@ -207,10 +196,123 @@ function Spirograph(spiroCanvas, infoCanvas) {
     };
     
     this.reset = function() {
-        this.circles.forEach(function(c) {c.angle = 0;})
+        this.circles.forEach(function(c) {c.angle = 0;});
         this.spiroCtx.clearRect(0, 0, sp.spiroCanvas.clientWidth, sp.spiroCanvas.clientHeight);
         this.draw();
     };
+    
+    this.buildCircleHTML = function() {
+        while (circlediv.firstChild) {
+            circlediv.removeChild(circlediv.firstChild);
+        }
+        
+        var changeRadiusFunc = function(c, el) {
+            c.radius = el.valueAsNumber;
+            this.draw();
+        };
+        
+        var changeSpeedFunc = function(c, el) {
+            c.speed = el.valueAsNumber;
+            this.draw();
+        };
+        
+        var remCircleFunc = function(c) {
+            var index = this.circles.indexOf(c);
+            this.circles.splice(index, 1);
+            this.buildCircleHTML();
+            this.draw();
+        };
+        
+        var addCircleFunc = function(before) {
+            var index = before ? this.circles.indexOf(before) : this.circles.length;
+            var newradius = index > 0 ? this.circles[index - 1].radius / 2 : 1;
+            var newspeed = index > 0 ? (this.circles[index - 1].speed * 2) || 1 : 0;
+            var newcircle = {
+                radius: newradius,
+                angle: 0,
+                speed: newspeed
+            };
+            this.circles.splice(index, 0, newcircle);
+            this.buildCircleHTML();
+            this.draw();
+        };
+        
+        console.log(this);
+        
+        var addbtn;
+        
+        for (var i=0; i < this.circles.length; i++) {
+            var cir = this.circles[i];
+            
+            addbtn = document.createElement("button");
+                addbtn.innerHTML = "+";
+                addbtn.addEventListener("click", addCircleFunc.bind(this, cir));
+                addbtn.style.width = "100%";
+            
+            if (!cir.div) {
+                var newdiv = document.createElement("div");
+                
+                var titlediv = document.createElement("div");
+                    titlediv.innerHTML = "Circle " + i + ":";
+                    titlediv.style.textAlign = "center";
+                
+                var radiusdiv = document.createElement("div");
+                    var radiusp = document.createElement("input");
+                        radiusp.setAttribute("type", "number");
+                        radiusp.setAttribute("step", "0.05");
+                        radiusp.setAttribute("value", cir.radius);
+                        radiusp.addEventListener("change", changeRadiusFunc.bind(this, cir, radiusp));
+                        radiusp.style.float = "right";
+                    var br = document.createElement("br");
+                        br.style.clear = "right";
+                    radiusdiv.innerHTML = "Radius: ";
+                    radiusdiv.appendChild(radiusp);
+                    radiusdiv.appendChild(br);
+                
+                var speeddiv = document.createElement("div");
+                    var speedp = document.createElement("input");
+                        speedp.setAttribute("type", "number");
+                        speedp.setAttribute("step", "0.01");
+                        speedp.setAttribute("value", cir.speed);
+                        speedp.addEventListener("change", changeSpeedFunc.bind(this, cir, speedp));
+                        speedp.style.float = "right";
+                    br = document.createElement("br");
+                        br.style.clear = "right";
+                    speeddiv.innerHTML = "Speed: ";
+                    speeddiv.appendChild(speedp);
+                    speeddiv.appendChild(br);
+                
+                var rembtn = document.createElement("button");
+                    rembtn.innerHTML = "-";
+                    rembtn.addEventListener("click", remCircleFunc.bind(this, cir));
+                    rembtn.style.width = "100%";
+                
+                newdiv.appendChild(titlediv);
+                newdiv.appendChild(radiusdiv);
+                newdiv.appendChild(speeddiv);
+                newdiv.appendChild(rembtn);
+                newdiv.style.border = "2px solid black";
+                newdiv.style.padding = "4px";
+                newdiv.style.margin = "10px";
+                
+                cir.div = newdiv;
+            } else {
+                cir.div.getElementsByTagName('div')[0].innerHTML = "Circle " + i + ":";
+            }
+            
+            circlediv.appendChild(addbtn);
+            circlediv.appendChild(cir.div);
+        }
+        
+        addbtn = document.createElement("button");
+            addbtn.innerHTML = "+";
+            addbtn.addEventListener("click", addCircleFunc.bind(this, null));
+            addbtn.style.width = "100%";
+        
+        circlediv.appendChild(addbtn);
+    };
+    
+    this.buildCircleHTML();
     
     window.addEventListener("keydown", function(evt) {
         console.log(evt.keyCode);
