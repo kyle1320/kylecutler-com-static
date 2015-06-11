@@ -45,7 +45,6 @@ function Spirograph(spiroCanvas, infoCanvas) {
     
     pausebtn.addEventListener("click", function(evt) {
         sp.setPaused(!sp.paused);
-        pausebtn.innerHTML = sp.paused ? "Resume" : "Pause";
     });
     
     resetbtn.addEventListener("click", function(evt) {
@@ -198,6 +197,7 @@ function Spirograph(spiroCanvas, infoCanvas) {
         }
         
         this.paused = paused;
+        pausebtn.innerHTML = paused ? "Resume" : "Pause";
     };
     
     this.reset = function() {
@@ -228,10 +228,9 @@ function Spirograph(spiroCanvas, infoCanvas) {
             this.draw();
         };
         
-        var addCircleFunc = function(before) {
-            var index = before ? this.circles.indexOf(before) : this.circles.length;
+        var addCircleFunc = function(index) {
             var newradius = index > 0 ? this.circles[index - 1].radius / 2 : 1;
-            var newspeed = index > 0 ? (this.circles[index - 1].speed * 2) || 1 : 0;
+            var newspeed = index > 0 ? (this.circles[index - 1].speed / 2) || 1 : 0;
             var newcircle = {
                 radius: newradius,
                 angle: 0,
@@ -242,8 +241,6 @@ function Spirograph(spiroCanvas, infoCanvas) {
             this.draw();
         };
         
-        console.log(this);
-        
         var addbtn;
         
         for (var i=0; i < this.circles.length; i++) {
@@ -251,7 +248,7 @@ function Spirograph(spiroCanvas, infoCanvas) {
             
             addbtn = document.createElement("button");
                 addbtn.innerHTML = "+";
-                addbtn.addEventListener("click", addCircleFunc.bind(this, cir));
+                addbtn.addEventListener("click", addCircleFunc.bind(this, i));
                 addbtn.style.width = "100%";
             
             if (!cir.div) {
@@ -288,7 +285,7 @@ function Spirograph(spiroCanvas, infoCanvas) {
                     speeddiv.appendChild(br);
                 
                 var rembtn = document.createElement("button");
-                    rembtn.innerHTML = "-";
+                    rembtn.innerHTML = "delete";
                     rembtn.addEventListener("click", remCircleFunc.bind(this, cir));
                     rembtn.style.width = "100%";
                 
@@ -311,7 +308,7 @@ function Spirograph(spiroCanvas, infoCanvas) {
         
         addbtn = document.createElement("button");
             addbtn.innerHTML = "+";
-            addbtn.addEventListener("click", addCircleFunc.bind(this, null));
+            addbtn.addEventListener("click", addCircleFunc.bind(this, this.circles.length));
             addbtn.style.width = "100%";
         
         circlediv.appendChild(addbtn);
