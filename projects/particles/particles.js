@@ -301,12 +301,16 @@ function Particles(drawCanvas, traceCanvas) {
 		}
 	};
 	
+	var touchDown = function(evt) {mouseDown(evt.touches[0]);};
+	var touchUp = function(evt) {mouseUp(evt.touches[0]);};
+	var touchMove = function(evt) {mouseMove(evt.touches[0]);};
+	
 	drawCanvas.addEventListener("mousedown", mouseDown);
-	drawCanvas.addEventListener("touchstart", mouseDown);
+	drawCanvas.addEventListener("touchstart", touchDown);
 	drawCanvas.addEventListener("mousemove", mouseMove);
-	drawCanvas.addEventListener("touchmove", mouseMove);
+	drawCanvas.addEventListener("touchmove", touchMove);
 	drawCanvas.addEventListener("mouseup", mouseUp);
-	drawCanvas.addEventListener("touchend", mouseUp);
+	drawCanvas.addEventListener("touchend", touchUp);
 	drawCanvas.addEventListener("mouseleave", mouseUp);
 	window.addEventListener("keydown", keyFunc);
 }
