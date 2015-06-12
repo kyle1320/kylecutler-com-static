@@ -1,19 +1,23 @@
-function Particles(canvas) {
-	this.canvas = canvas;
-	this.context = canvas.getContext("2d");
+function Particles(drawCanvas, traceCanvas) {
+	this.drawCanvas = drawCanvas;
+	this.traceCanvas = traceCanvas;
+	this.drawContext = drawCanvas.getContext("2d");
+	this.traceContext = traceCanvas.getContext("2d");
 	this.particles = [];
 	this.paused = true;
 	
-	scaleCanvas(this.canvas, this.context);
+	scaleCanvas(this.drawCanvas, this.drawContext);
+	scaleCanvas(this.traceCanvas, this.traceContext);
 	
-	var width = canvas.clientWidth;
-	var height = canvas.clientHeight;
+	var width = drawCanvas.clientWidth;
+	var height = drawCanvas.clientHeight;
 	
 	var mouseparticle = null;
 	var newgroup = null;
 	var groupvel = null;
 	
 	var bounce = true;
+	var trace = true;
 	var gravity = 20.0;
 	var decay = 0;
 	var groupSize = 40;
@@ -26,6 +30,7 @@ function Particles(canvas) {
 	var pa = this;
 	
 	var bocheck = document.getElementById("bounce");
+	var trcheck = document.getElementById("trace");
 	var gravInput = document.getElementById("gravity");
 	var decayInput = document.getElementById("decay");
 	var groupSizeInput = document.getElementById("groupsize");
@@ -36,8 +41,10 @@ function Particles(canvas) {
 	var fpcheck = document.getElementById("fixedparticles");
 	var clearBtn = document.getElementById("clear");
 	var pauseBtn = document.getElementById("pause");
+	var clearTraceBtn = document.getElementById("cleartrace");
 	
 	bocheck.checked = bounce;
+	trcheck.checked = trace;
 	gravInput.value = gravity;
 	decayInput.value = decay;
 	groupSizeInput.value = groupSize;
@@ -48,6 +55,7 @@ function Particles(canvas) {
 	fpcheck.checked = fixedParticles;
 	
 	bocheck.addEventListener("click", function() {bounce = bocheck.checked;});
+	trcheck.addEventListener("click", function() {trace = trcheck.checked;});
 	gravInput.addEventListener("change", function() {gravity = gravInput.valueAsNumber;});
 	decayInput.addEventListener("change", function() {decay = decayInput.valueAsNumber;});
 	groupSizeInput.addEventListener("change", function() {groupSize = groupSizeInput.valueAsNumber;});
@@ -58,6 +66,7 @@ function Particles(canvas) {
 	fpcheck.addEventListener("click", function() {fixedParticles = fpcheck.checked;});
 	pauseBtn.addEventListener("click", function() {pa.setPaused(!pa.paused);});
 	clearBtn.addEventListener("click", function() {pa.clear();});
+	clearTraceBtn.addEventListener("click", function() {pa.clearTrace();});
 	
 	function Particle(x, y, r, d, c, fixed) {
 		this.x = x;
@@ -145,41 +154,55 @@ function Particles(canvas) {
 	};
 	
 	this.draw = function() {
-		this.context.clearRect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
+		this.drawContext.clearRect(0, 0, this.drawCanvas.clientWidth, this.drawCanvas.clientHeight);
+		
+		if (!trace) {
+			this.traceContext.clearRect(0, 0, this.traceCanvas.clientWidth, this.traceCanvas.clientHeight);
+		}
 		
 		for (var i=0; i < this.particles.length; i++) {
-			this.context.beginPath();
-			this.context.arc(this.particles[i].x, this.particles[i].y, this.particles[i].radius, 0, 2*Math.PI);
-			this.context.closePath();
-			this.context.fillStyle = this.particles[i].color;
-			this.context.fill();
+			this.drawContext.beginPath();
+			this.drawContext.arc(this.particles[i].x, this.particles[i].y, this.particles[i].radius, 0, 2*Math.PI);
+			this.drawContext.closePath();
+			this.drawContext.fillStyle = this.particles[i].color;
+			this.drawContext.fill();
+			
+			if (trace) {
+				this.drawContext.strokeStyle = "#000000";
+				this.drawContext.stroke();
+				this.traceContext.beginPath();
+				this.traceContext.arc(this.particles[i].x, this.particles[i].y, this.particles[i].radius, 0, 2*Math.PI);
+				this.traceContext.closePath();
+				this.traceContext.fillStyle = this.particles[i].color;
+				this.traceContext.fill();
+			}
 		}
 		
 		if (mouseparticle) {
-			this.context.beginPath();
-			this.context.arc(mouseparticle.x, mouseparticle.y, mouseparticle.radius, 0, 2*Math.PI);
-			this.context.closePath();
-			this.context.fillStyle = mouseparticle.color;
-			this.context.fill();
+			this.drawContext.beginPath();
+			this.drawContext.arc(mouseparticle.x, mouseparticle.y, mouseparticle.radius, 0, 2*Math.PI);
+			this.drawContext.closePath();
+			this.drawContext.fillStyle = mouseparticle.color;
+			this.drawContext.fill();
 		}
 		
 		if (newgroup) {
 			for (var i=0; i < newgroup.length; i++) {
-				this.context.beginPath();
-				this.context.arc(newgroup[i].x, newgroup[i].y, newgroup[i].radius, 0, 2*Math.PI);
-				this.context.closePath();
-				this.context.fillStyle = newgroup[i].color;
-				this.context.fill();
+				this.drawContext.beginPath();
+				this.drawContext.arc(newgroup[i].x, newgroup[i].y, newgroup[i].radius, 0, 2*Math.PI);
+				this.drawContext.closePath();
+				this.drawContext.fillStyle = newgroup[i].color;
+				this.drawContext.fill();
 			}
 		}
 		
 		if (groupvel) {
-			this.context.beginPath();
-			this.context.moveTo(groupvel.ox, groupvel.oy);
-			this.context.lineTo(groupvel.ox + groupvel.x, groupvel.oy + groupvel.y);
-			this.context.closePath();
-			this.context.strokeStyle = "#00FF00";
-			this.context.stroke();
+			this.drawContext.beginPath();
+			this.drawContext.moveTo(groupvel.ox, groupvel.oy);
+			this.drawContext.lineTo(groupvel.ox + groupvel.x, groupvel.oy + groupvel.y);
+			this.drawContext.closePath();
+			this.drawContext.strokeStyle = "#00FF00";
+			this.drawContext.stroke();
 		}
 	};
 	
@@ -213,7 +236,7 @@ function Particles(canvas) {
     };
 	
 	this.getRelativeCoord = function(evt) {
-        var rect = canvas.getBoundingClientRect();
+        var rect = drawCanvas.getBoundingClientRect();
         return {
             x: evt.clientX - rect.left,
             y: evt.clientY - rect.top
@@ -223,6 +246,10 @@ function Particles(canvas) {
 	this.clear = function() {
 		this.particles = [];
 		this.draw();
+	};
+	
+	this.clearTrace = function() {
+		this.traceContext.clearRect(0, 0, this.traceCanvas.clientWidth, this.traceCanvas.clientHeight);
 	};
 	
 	var mouseDown = function(evt) {
@@ -274,10 +301,13 @@ function Particles(canvas) {
 		}
 	};
 	
-	canvas.addEventListener("mousedown", mouseDown);
-	canvas.addEventListener("mousemove", mouseMove);
-	canvas.addEventListener("mouseup", mouseUp);
-	canvas.addEventListener("mouseleave", mouseUp);
+	drawCanvas.addEventListener("mousedown", mouseDown);
+	drawCanvas.addEventListener("touchstart", mouseDown);
+	drawCanvas.addEventListener("mousemove", mouseMove);
+	drawCanvas.addEventListener("touchmove", mouseMove);
+	drawCanvas.addEventListener("mouseup", mouseUp);
+	drawCanvas.addEventListener("touchend", mouseUp);
+	drawCanvas.addEventListener("mouseleave", mouseUp);
 	window.addEventListener("keydown", keyFunc);
 }
 
@@ -285,28 +315,29 @@ function randomColor() {
     return '#'+('00000'+(Math.floor(Math.random()*16777216)).toString(16)).slice(-6);
 }
 
-function scaleCanvas(canvas, context) {
+function scaleCanvas(drawCanvas, drawContext) {
     var devicePixelRatio = window.devicePixelRatio || 1;
-    var backingStoreRatio = context.webkitBackingStorePixelRatio ||
-        context.mozBackingStorePixelRatio ||
-        context.msBackingStorePixelRatio ||
-        context.oBackingStorePixelRatio ||
-        context.backingStorePixelRatio || 1;
+    var backingStoreRatio = drawContext.webkitBackingStorePixelRatio ||
+        drawContext.mozBackingStorePixelRatio ||
+        drawContext.msBackingStorePixelRatio ||
+        drawContext.oBackingStorePixelRatio ||
+        drawContext.backingStorePixelRatio || 1;
 
     var scale = devicePixelRatio / backingStoreRatio;
 
-    canvas.style.width = canvas.width + "px";
-    canvas.style.height = canvas.height + "px";
-    canvas.width *= scale;
-    canvas.height *= scale;
-    context.scale(scale, scale);
+    drawCanvas.style.width = drawCanvas.width + "px";
+    drawCanvas.style.height = drawCanvas.height + "px";
+    drawCanvas.width *= scale;
+    drawCanvas.height *= scale;
+    drawContext.scale(scale, scale);
 }
 
 var particles;
 window.onload = function() {
-	var canvas = document.getElementById("drawCanvas");
+	var drawCanvas = document.getElementById("drawCanvas");
+	var traceCanvas = document.getElementById("traceCanvas");
 	
-	particles = new Particles(canvas);
-	particles.addGroup(canvas.clientWidth / 2, canvas.clientHeight / 2);
+	particles = new Particles(drawCanvas, traceCanvas);
+	particles.addGroup(drawCanvas.clientWidth / 2, drawCanvas.clientHeight / 2);
 	particles.setPaused(false);
 };

@@ -8,9 +8,13 @@
 	</head>
 
 	<body>
-		<canvas id="drawCanvas" width="500px" height="500px"></canvas>
+		<div id="canvases">
+			<canvas id="traceCanvas" width="500px" height="500px"></canvas>
+			<canvas id="drawCanvas" width="500px" height="500px"></canvas>
+		</div>
 		<div id="controls">
 			<input id="bounce" type="checkbox">Bounce off edges</input>
+			<input id="trace" type="checkbox">Trace particle paths</input>
 			<p>Gravity: <input id="gravity" type="number" step="1"></input></p>
 			<p>Decay: <input id="decay" type="number" min="-1" max="1" step="0.01"></input></p>
 			<p>Group size: <input id="groupsize" type="number" min="0" step="1"></input></p>
@@ -21,6 +25,7 @@
 			<input id="fixedparticles" type="checkbox" >New particles are fixed</input>
 			<p><button id="pause">Pause</button></p>
 			<p><button id="clear">Clear</button></p>
+			<p><button id="cleartrace">Clear Trace</button></p>
 		</div>
 		<p id="info">ctrl + click to place a new group<br>drag before letting go to set the new group's velocity<br>hold down the mouse to interact</p>
 	</body>
