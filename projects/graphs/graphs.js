@@ -93,7 +93,8 @@ function DrawableGraph(graph, canvas) {
     var mouse = {x: 0, y: 0};
     var mouseinside = false;
     var order = 0;
-    var dg = this;
+    
+    var self = this;
 
     var nodeSize = 10;
     var edgeWidth = 1;
@@ -216,6 +217,7 @@ function DrawableGraph(graph, canvas) {
             return null;
         }
 
+        function sort(a, b) {return b > a ? -1 : b == a ? 0 : 1;};
         // go over the entire image
         for (var x=0; x < imgData.width; x++) {
             for (var y=0; y < imgData.height; y++) {
@@ -233,7 +235,7 @@ function DrawableGraph(graph, canvas) {
                 }
 
                 // sort the distances
-                dists.sort(function(a, b) {return b > a ? -1 : b == a ? 0 : 1;});
+                dists.sort(sort);
 
                 // get the nth order differences between the edge distances
                 var values = dists;
@@ -278,14 +280,6 @@ function DrawableGraph(graph, canvas) {
         }
 
         return imgData;
-    };
-
-    this.getRelativeCoord = function(evt) {
-        var rect = canvas.getBoundingClientRect();
-        return {
-            x: evt.clientX - rect.left,
-            y: evt.clientY - rect.top
-        };
     };
 
     this.forceRedraw = function() {
@@ -349,7 +343,7 @@ function DrawableGraph(graph, canvas) {
 
         updates.mousePress = true;
 
-        dg.draw();
+        self.draw();
     };
 
     var mouseup = function(evt) {
@@ -382,13 +376,13 @@ function DrawableGraph(graph, canvas) {
 
         // release the selected node
         selectedNode = null;
-        dg.draw();
+        self.draw();
     };
 
     var mousemove = function(evt) {
-        mouse = dg.getRelativeCoord(evt);
+        mouse = getRelativeCoord(self.canvas, evt);
 
-        dg.findNearestNode();
+        self.findNearestNode();
 
         // if we are dragging a node, move it
         if (selectedNode !== null) {
@@ -400,7 +394,7 @@ function DrawableGraph(graph, canvas) {
 
         updates.mouseMotion = true;
 
-        dg.draw();
+        self.draw();
     };
 
     var keydown = function(evt) {
@@ -423,9 +417,9 @@ function DrawableGraph(graph, canvas) {
                     }
                 }
 
-                dg.findNearestNode();
+                self.findNearestNode();
 
-                dg.needsRedraw = true;
+                self.needsRedraw = true;
 
             // we are not over a node, look for edges
             } else {
@@ -436,7 +430,7 @@ function DrawableGraph(graph, canvas) {
                     if (ldist < 4) {
                         graph.edges.splice(i, 1);
                         updates.edgesChanged = true;
-                        dg.needsRedraw = true;
+                        self.needsRedraw = true;
                         break;
                     }
                 }
@@ -451,7 +445,7 @@ function DrawableGraph(graph, canvas) {
             }
         }
 
-        dg.draw();
+        self.draw();
     };
 
     var mouseenter = function(evt) {
@@ -459,7 +453,7 @@ function DrawableGraph(graph, canvas) {
 
         updates.mouseEnter = true;
 
-        dg.draw();
+        self.draw();
     };
 
     var mouseleave = function(evt) {
@@ -477,10 +471,6 @@ function DrawableGraph(graph, canvas) {
     canvas.addEventListener('mousemove',  mousemove,  false);
 
     window.addEventListener('keydown',    keydown,   false);
-}
-
-function randomColor() {
-    return '#'+('00000'+(Math.floor(Math.random()*16777216)).toString(16)).slice(-6);
 }
 
 function connectedGraph(width, height, n) {
@@ -501,24 +491,6 @@ function connectedGraph(width, height, n) {
 }
 
 var draw;
-
-function scaleCanvas(canvas, context) {
-    var devicePixelRatio = window.devicePixelRatio || 1;
-    var backingStoreRatio = context.webkitBackingStorePixelRatio ||
-        context.mozBackingStorePixelRatio ||
-        context.msBackingStorePixelRatio ||
-        context.oBackingStorePixelRatio ||
-        context.backingStorePixelRatio || 1;
-
-    var scale = devicePixelRatio / backingStoreRatio;
-
-    canvas.style.width = canvas.width + "px";
-    canvas.style.height = canvas.height + "px";
-    canvas.width *= scale;
-    canvas.height *= scale;
-    context.scale(scale, scale);
-}
-
 window.onload = function() {
     var canvas = document.getElementById("drawCanvas");
 

@@ -136,6 +136,8 @@ function Cloth(canvas) {
 
 			if (d > this.tearDist) 
 				this.broken = true;
+			if (d < restingDist)
+				return;
 
 			var tx = dx * correction/2.0 * difference;
 			var ty = dy * correction/2.0 * difference;
@@ -217,8 +219,8 @@ function Cloth(canvas) {
 	};
 	
 	this.initializePoints = function() {
-		var width = 40;
-		var height = 40;
+		var width = 20;
+		var height = 20;
 		var stepx = 8;
 		var stepy = 8;
 		

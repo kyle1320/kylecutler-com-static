@@ -5,6 +5,7 @@
 		<title>Particles</title>
 		<link href="particles.css" rel="stylesheet" />
 		<script type="text/javascript" src="particles.js"></script>
+		<script type="text/javascript" src="../util.js"></script>
 	</head>
 
 	<body>
@@ -13,8 +14,6 @@
 			<canvas id="drawCanvas" width="500px" height="500px"></canvas>
 		</div>
 		<div id="controls">
-			<input id="bounce" type="checkbox">Bounce off edges</input>
-			<input id="trace" type="checkbox">Trace particle paths</input>
 			<p>Gravity: <input id="gravity" type="number" step="1"></input></p>
 			<p>Decay: <input id="decay" type="number" min="-1" max="1" step="0.01"></input></p>
 			<p>Group size: <input id="groupsize" type="number" min="0" step="1"></input></p>
@@ -22,10 +21,13 @@
 			<p>Mouse density: <input id="mousedensity" type="number" min="0" step="1"></input></p>
 			<p>New particle radius: <input id="particleradius" type="number" min="0" step="1"></input></p>
 			<p>New particle density: <input id="particledensity" type="number" step="0.1"></input></p>
-			<input id="fixedparticles" type="checkbox" >New particles are fixed</input>
+			<input id="fixedparticles" type="checkbox" >New particles are fixed</input><br>
+			<input id="trace" type="checkbox">Trace new particle paths</input><br>
+			<input id="bounce" type="checkbox">Bounce off edges</input>
 			<p><button id="pause">Pause</button></p>
 			<p><button id="clear">Clear</button></p>
 			<p><button id="cleartrace">Clear Trace</button></p>
+			<p><button id="savebtn">Save trace</button><img id="saveimg" width="50" height="50" /></p>
 		</div>
 		<p id="info">ctrl + click to place a new group<br>drag before letting go to set the new group's velocity<br>hold down the mouse to interact</p>
 	</body>

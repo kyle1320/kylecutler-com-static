@@ -1,6 +1,6 @@
-function Spirograph(spiroCanvas, infoCanvas) {
-    this.spiroCanvas = spiroCanvas;
-    this.infoCanvas = infoCanvas;
+function Spirograph() {
+    var spiroCanvas = document.getElementById("spiroCanvas");
+    var infoCanvas = document.getElementById("infoCanvas");
     this.spiroCtx = spiroCanvas.getContext("2d");
     this.infoCtx = infoCanvas.getContext("2d");
     
@@ -30,26 +30,27 @@ function Spirograph(spiroCanvas, infoCanvas) {
     
     var speedinput = document.getElementById("speedinput");
     var iterinput = document.getElementById("iterinput");
-    
-    speedinput.value = this.speed;
-    iterinput.value = this.iterations;
-    
     var sccheck = document.getElementById("showcircles");
     var srcheck = document.getElementById("showradii");
     var uccheck = document.getElementById("usecolor");
     var pausebtn = document.getElementById("pausebtn");
     var resetbtn = document.getElementById("resetbtn");
     var circlediv = document.getElementById("circles");
+    var saveBtn = document.getElementById("savebtn");
+	var saveImg = document.getElementById("saveimg");
     
-    var sp = this;
+    var self = this;
     
-    pausebtn.addEventListener("click", function(evt) {
-        sp.setPaused(!sp.paused);
-    });
+    speedinput.value = this.speed;
+    iterinput.value = this.iterations;
     
-    resetbtn.addEventListener("click", function(evt) {
-        sp.reset();
-    });
+    pausebtn.addEventListener("click", function() {self.setPaused(!self.paused);});
+    resetbtn.addEventListener("click", function() {self.reset();});
+    speedinput.addEventListener("change", function() {self.updateSpeed();});
+    iterinput.addEventListener("change", function() {self.updateIterations();});
+    sccheck.addEventListener("click", function() {self.draw();});
+    srcheck.addEventListener("click", function() {self.draw();});
+    saveBtn.addEventListener("click", function() {saveImg.src = spiroCanvas.toDataURL();});
     
     function eachCircle(eachCallback, doneCallback) {
         var unit = spiroCanvas.clientWidth / 2;
@@ -59,29 +60,29 @@ function Spirograph(spiroCanvas, infoCanvas) {
         var relangle = 0.0;
         var lastRadius = 1.0;
         
-        for (var i=0; i < sp.circles.length; i++) {
-            relangle = realangle - sp.circles[i].angle;
-            realangle += ((lastRadius / sp.circles[i].radius) - 1) * sp.circles[i].angle;
+        for (var i=0; i < self.circles.length; i++) {
+            relangle = realangle - self.circles[i].angle;
+            realangle += ((lastRadius / self.circles[i].radius) - 1) * self.circles[i].angle;
             
             // center the first circle
             if (i > 0) {
-                x += unit * (lastRadius - sp.circles[i].radius) * Math.cos(relangle);
-                y += unit * (lastRadius - sp.circles[i].radius) * Math.sin(relangle);
+                x += unit * (lastRadius - self.circles[i].radius) * Math.cos(relangle);
+                y += unit * (lastRadius - self.circles[i].radius) * Math.sin(relangle);
             }
             
-            sp.circles[i].x = x;
-            sp.circles[i].y = y;
-            sp.circles[i].realangle = realangle % (2 * Math.PI);
-            sp.circles[i].realradius = sp.circles[i].radius * unit;
+            self.circles[i].x = x;
+            self.circles[i].y = y;
+            self.circles[i].realangle = realangle % (2 * Math.PI);
+            self.circles[i].realradius = self.circles[i].radius * unit;
             
             if (eachCallback)
-                eachCallback(sp.circles[i]);
+                eachCallback(self.circles[i]);
             
-            lastRadius = sp.circles[i].radius;
+            lastRadius = self.circles[i].radius;
         }
         
         if (doneCallback)
-            doneCallback(sp.circles[i-1]);
+            doneCallback(self.circles[i-1]);
     }
     
     function getColor(val) {
@@ -106,7 +107,7 @@ function Spirograph(spiroCanvas, infoCanvas) {
     this.draw = function() {
         var ctx = this.infoCtx;
         
-        ctx.clearRect(0, 0, this.infoCanvas.clientWidth, this.infoCanvas.clientHeight);
+        ctx.clearRect(0, 0, infoCanvas.clientWidth, infoCanvas.clientHeight);
         
         if (sccheck.checked || srcheck.checked) {
             eachCircle(function(c) {
@@ -140,7 +141,7 @@ function Spirograph(spiroCanvas, infoCanvas) {
         
         var idt = dt / this.iterations;
         var upd = function(c) {
-            c.angle += sp.speed * c.speed * idt;
+            c.angle += self.speed * c.speed * idt;
         };
         var calc = function(c) {
             newx = c.x;
@@ -192,7 +193,7 @@ function Spirograph(spiroCanvas, infoCanvas) {
             clearInterval(this.runInterval);
         } else if (this.paused) {
             this.runInterval = setInterval(function() {
-                sp.update(0.015);
+                self.update(0.015);
             }, 15);
         }
         
@@ -202,7 +203,7 @@ function Spirograph(spiroCanvas, infoCanvas) {
     
     this.reset = function() {
         this.circles.forEach(function(c) {c.angle = 0;});
-        this.spiroCtx.clearRect(0, 0, sp.spiroCanvas.clientWidth, sp.spiroCanvas.clientHeight);
+        this.spiroCtx.clearRect(0, 0, spiroCanvas.clientWidth, spiroCanvas.clientHeight);
         this.draw();
     };
     
@@ -320,57 +321,28 @@ function Spirograph(spiroCanvas, infoCanvas) {
         console.log(evt.keyCode);
         switch (evt.keyCode) {
             case 32:
-                sp.setPaused(!spiro.paused);
+                self.setPaused(!self.paused);
                 break;
             case 39:
-                sp.setSpeed(sp.speed * 1.1);
+                self.setSpeed(self.speed * 1.1);
                 break;
             case 37:
-                sp.setSpeed(sp.speed / 1.1);
+                self.setSpeed(self.speed / 1.1);
                 break;
             case 187:
-                sp.setIterations(sp.iterations + 10);
+                self.setIterations(self.iterations + 10);
                 break;
             case 189:
-                sp.setIterations(sp.iterations - 10);
+                self.setIterations(self.iterations - 10);
                 break;
             case 13:
-                sp.reset();
+                self.reset();
                 break;
         }
     });
 }
 
-function scaleCanvas(canvas, context) {
-    var devicePixelRatio = window.devicePixelRatio || 1;
-    var backingStoreRatio = context.webkitBackingStorePixelRatio ||
-        context.mozBackingStorePixelRatio ||
-        context.msBackingStorePixelRatio ||
-        context.oBackingStorePixelRatio ||
-        context.backingStorePixelRatio || 1;
-
-    var scale = devicePixelRatio / backingStoreRatio;
-
-    canvas.style.width = canvas.width + "px";
-    canvas.style.height = canvas.height + "px";
-    canvas.width *= scale;
-    canvas.height *= scale;
-    context.scale(scale, scale);
-}
-
-
-var spiro;
 window.onload = function() {
-    var spiroCanvas = document.getElementById("spiroCanvas");
-    var infoCanvas = document.getElementById("infoCanvas");
-    
-    spiro = new Spirograph(spiroCanvas, infoCanvas);
-    
-    document.getElementById("speedinput").setAttribute("onchange", "spiro.updateSpeed()");
-    document.getElementById("iterinput").setAttribute("onchange", "spiro.updateIterations()");
-    
-    document.getElementById("showcircles").setAttribute("onclick", "spiro.draw()");
-    document.getElementById("showradii").setAttribute("onclick", "spiro.draw()");
-    
+    var spiro = new Spirograph();
     spiro.setPaused(false);
 };
