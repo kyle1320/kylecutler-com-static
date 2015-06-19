@@ -7,7 +7,7 @@
 				<h1 id="title">My Projects</h1> \
 				<div id="links"> \
 					<a href="http://www.facebook.com/kyle1321" target="kc_social_fb" class="fa fa-facebook-official"></a><br> \
-					<a href="http://plus.google.com/kyle1320" target="kc_social_gplus" class="fa fa-google-plus-square"></a><br> \
+					<a href="https://plus.google.com/+KyleCutler1" target="kc_social_gplus" class="fa fa-google-plus-square"></a><br> \
 					<a href="http://github.com/kyle1320" target="kc_social_github" class="fa fa-github-alt"></a> \
 				</div> \
 			</div> \
