@@ -1,4 +1,5 @@
 var $ = function(e) { return document.getElementById(e); };
+var isNaN = Number.isNaN || window.isNaN || function(n) {return typeof n === 'number' && n !== n;};
 
 function scaleCanvas(canvas, context) {
     var devicePixelRatio = window.devicePixelRatio || 1;
@@ -10,8 +11,8 @@ function scaleCanvas(canvas, context) {
 
     var scale = devicePixelRatio / backingStoreRatio;
 
-    canvas.style.width = canvas.width + "px";
-    canvas.style.height = canvas.height + "px";
+    canvas.style.width = canvas.width + 'px';
+    canvas.style.height = canvas.height + 'px';
     canvas.width *= scale;
     canvas.height *= scale;
     context.scale(scale, scale);
@@ -58,15 +59,15 @@ function linkCheckboxToBoolean(checkbox, object, attr, func) {
 	func = func || function() {};
 	
     checkbox.checked = object[attr];
-    checkbox.addEventListener("click", function() {object[attr] = checkbox.checked; func();});
+    checkbox.addEventListener('click', function() {object[attr] = checkbox.checked; func();});
 }
 
 function linkInputToNumber(input, object, attr, func) {
 	func = func || function() {};
 	
     input.valueAsNumber = object[attr];
-    input.addEventListener("input", function() {if (!Number.isNaN(input.valueAsNumber)) object[attr] = input.valueAsNumber; func();});
-	input.addEventListener("blur", function() {input.valueAsNumber = object[attr];});
+    input.addEventListener('input', function() {if (!isNaN(input.valueAsNumber)) object[attr] = input.valueAsNumber; func();});
+	input.addEventListener('blur', function() {input.valueAsNumber = object[attr];});
 }
 
 window.requestAnimFrame = (function(){
