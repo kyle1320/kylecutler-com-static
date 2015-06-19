@@ -3,6 +3,10 @@
 <html>
 	<head>
 		<title>Spirograph</title>
+		<meta charset="utf-8">
+		<link href="/css/style.css" rel="stylesheet">
+		<script src="/js/site.js" type="text/javascript"></script>
+		
 		<link href="spiro.css" rel="stylesheet" />
 		<script type="text/javascript" src="spiro.js"></script>
 		<script type="text/javascript" src="../util.js"></script>
@@ -13,6 +17,7 @@
 			<canvas id="spiro-canvas" width="500px" height="500px"></canvas>
 			<canvas id="info-canvas" width="500px" height="500px"></canvas>
 		</div>
+		
 		<div id="controls">
 			<p>Speed: <input id="speed-input" type="number" min="0.0" step="any"> rad / sec</input></p>
 			<p>Iterations: <input id="iter-input" type="number" min="0" step="1"></input></p>
@@ -28,7 +33,9 @@
 				<img id="save-img" width="50" height="50" />
 			</p>
 		</div>
+		
 		<div id="circles"></div>
+		
 		<p id="info">space to play / pause<br>enter to reset<br>+ / - change the number of iterations<br>left / right arrows change the speed<br>NOTE: things get more interesting at high speeds ;)</p>
 	</body>
 </html>
