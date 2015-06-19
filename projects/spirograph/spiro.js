@@ -57,7 +57,7 @@ window.onload = function() {
 	
 		linkInputToNumber(inputs.speedInput, options, 'speed');
 		linkInputToNumber(inputs.iterInput, options, 'iterations');
-		linkInputToNumber(inputs.penDistInput, options, 'penDist');
+		linkInputToNumber(inputs.penDistInput, options, 'penDist', draw);
 		
 		linkCheckboxToBoolean(inputs.sccheck, options, 'showCircles', draw);
 		linkCheckboxToBoolean(inputs.srcheck, options, 'showRadii', draw);
@@ -116,16 +116,14 @@ window.onload = function() {
 			
 			// center the first circle
 			if (i > 0) {
-				var cos = Math.cos(relangle);
-				var sin = Math.sin(relangle);
-				
-				x += unit * (lastRadius - cir.radius) * cos;
-				y += unit * (lastRadius - cir.radius) * sin;
-				
-				if (i == circles.length - 1) {
-					cir.penx = x + cir.radius * unit * options.penDist * cos;
-					cir.peny = y + cir.radius * unit * options.penDist * sin;
-				}
+				x += unit * (lastRadius - cir.radius) * Math.cos(relangle);
+				y += unit * (lastRadius - cir.radius) * Math.sin(relangle);
+			}
+			
+			// find the pen location on the last circle
+			if (i == circles.length - 1) {
+				cir.penx = x + cir.radius * unit * options.penDist * Math.cos(realangle);
+				cir.peny = y + cir.radius * unit * options.penDist * Math.sin(realangle);
 			}
 			
 			cir.x = x;
