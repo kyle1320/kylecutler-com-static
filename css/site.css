@@ -63,10 +63,8 @@ html, body {
 	background-color: #BFB8B0;
 }
 
-#content .entry {
-	margin: 10px 20px;
-	padding: 10px;
-	border: 1px solid black;
+#content {
+	margin: 10px;
 }
 
 #project {
