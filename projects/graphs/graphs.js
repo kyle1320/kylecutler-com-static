@@ -1,54 +1,54 @@
 function Node(x, y) {
     this.x = x;
     this.y = y;
-
-    this.distance = function(coord) {
-        var dx = coord.x - this.x;
-        var dy = coord.y - this.y;
-
-        return Math.sqrt(dx*dx + dy*dy);
-    };
-
-    this.nearby = function(coord, dist) {
-        var dx = coord.x - this.x;
-        var dy = coord.y - this.y;
-
-        return dx*dx + dy*dy < dist*dist;
-    };
-
-    this.move = function(coord) {
-        this.x = coord.x;
-        this.y = coord.y;
-    };
 }
+
+Node.prototype.distance = function(coord) {
+    var dx = coord.x - this.x;
+    var dy = coord.y - this.y;
+
+    return Math.sqrt(dx*dx + dy*dy);
+};
+
+Node.prototype.nearby = function(coord, dist) {
+    var dx = coord.x - this.x;
+    var dy = coord.y - this.y;
+
+    return dx*dx + dy*dy < dist*dist;
+};
+
+Node.prototype.move = function(coord) {
+    this.x = coord.x;
+    this.y = coord.y;
+};
 
 function Edge(a, b, color) {
     this.a = a;
     this.b = b;
     this.color = color;
-
-    this.distance = function(p) {
-        var tx = this.b.x - this.a.x;
-        var ty = this.b.y - this.a.y;
-        var l2 = tx*tx + ty*ty;
-
-        var dax = p.x - this.a.x;
-        var day = p.y - this.a.y;
-
-        var dbx = p.x - this.b.x;
-        var dby = p.y - this.b.y;
-
-        var t = tx*dax + ty*day;
-
-        if (t <= 0) {
-            return Math.sqrt(dax*dax + day*day);
-        } else if (t >= l2) {
-            return Math.sqrt(dbx*dbx + dby*dby);
-        } else {
-            return Math.sqrt(dax*dax + day*day - (t * t) / l2);
-        }
-    };
 }
+
+Edge.prototype.distance = function(p) {
+    var tx = this.b.x - this.a.x;
+    var ty = this.b.y - this.a.y;
+    var l2 = tx*tx + ty*ty;
+
+    var dax = p.x - this.a.x;
+    var day = p.y - this.a.y;
+
+    var dbx = p.x - this.b.x;
+    var dby = p.y - this.b.y;
+
+    var t = tx*dax + ty*day;
+
+    if (t <= 0) {
+        return Math.sqrt(dax*dax + day*day);
+    } else if (t >= l2) {
+        return Math.sqrt(dbx*dbx + dby*dby);
+    } else {
+        return Math.sqrt(dax*dax + day*day - (t * t) / l2);
+    }
+};
 
 function Graph(nodes, edges) {
     this.nodes = nodes;

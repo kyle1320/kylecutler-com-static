@@ -1,12 +1,19 @@
 window.onload = function() {
-	var drawCanvas = document.getElementById("drawCanvas");
-	var traceCanvas = document.getElementById("traceCanvas");
-	var drawContext = drawCanvas.getContext("2d");
-	var traceContext = traceCanvas.getContext("2d");
+	var drawCanvas = $('draw-canvas');
+	var traceCanvas = $('trace-canvas');
+	var drawContext = drawCanvas.getContext('2d');
+	var traceContext = traceCanvas.getContext('2d');
 	
 	var particles = [];
 	var paused = true;
 	var runInterval;
+	
+	var mouseparticle = null;
+	var newgroup = null;
+	var groupvel = null;
+	
+	var width = drawCanvas.clientWidth;
+	var height = drawCanvas.clientHeight;
 	
 	var options = {
 		bounce: true,
@@ -18,33 +25,28 @@ window.onload = function() {
 		mouseDensity: 50,
 		particleRadius: 1,
 		particleDensity: 1,
-		fixedParticles: false
+		fixedParticles: false,
+		traceNew: true
 	};
 	
 	var inputs = {
-		bocheck: document.getElementById("bounce"),
-		trcheck: document.getElementById("trace"),
-		gravInput: document.getElementById("gravity"),
-		decayInput: document.getElementById("decay"),
-		groupSizeInput: document.getElementById("groupsize"),
-		groupRadiusInput: document.getElementById("groupradius"),
-		mouseDensityInput: document.getElementById("mousedensity"),
-		particleRadiusInput: document.getElementById("particleradius"),
-		particleDensityInput: document.getElementById("particledensity"),
-		fpcheck: document.getElementById("fixedparticles"),
-		clearBtn: document.getElementById("clear"),
-		pauseBtn: document.getElementById("pause"),
-		clearTraceBtn: document.getElementById("cleartrace"),
-		saveBtn: document.getElementById("savebtn"),
-		saveImg: document.getElementById("saveimg")
+		gravInput: $('gravity'),
+		decayInput: $('decay'),
+		groupSizeInput: $('group-size'),
+		groupRadiusInput: $('group-radius'),
+		mouseDensityInput: $('mouse-density'),
+		particleRadiusInput: $('particle-radius'),
+		particleDensityInput: $('particle-density'),
+		fpcheck: $('fixed-particles'),
+		tpcheck: $('trace-particles'),
+		bocheck: $('bounce'),
+		trcheck: $('trace'),
+		pauseBtn: $('pause'),
+		clearBtn: $('clear'),
+		clearTraceBtn: $('clear-trace'),
+		saveBtn: $('save-btn'),
+		saveImg: $('save-img')
 	};
-	
-	var width = drawCanvas.clientWidth;
-	var height = drawCanvas.clientHeight;
-	
-	var mouseparticle = null;
-	var newgroup = null;
-	var groupvel = null;
 	
 	init();
 	
@@ -52,40 +54,32 @@ window.onload = function() {
 		scaleCanvas(drawCanvas, drawContext);
 		scaleCanvas(traceCanvas, traceContext);
 		
-		inputs.bocheck.checked = options.bounce;
-		inputs.trcheck.checked = options.trace;
-		inputs.gravInput.valueAsNumber = options.gravity;
-		inputs.decayInput.valueAsNumber = options.decay;
-		inputs.groupSizeInput.valueAsNumber = options.groupSize;
-		inputs.groupRadiusInput.valueAsNumber = options.groupRadius;
-		inputs.mouseDensityInput.valueAsNumber = options.mouseDensity;
-		inputs.particleRadiusInput.valueAsNumber = options.particleRadius;
-		inputs.particleDensityInput.valueAsNumber = options.particleDensity;
-		inputs.fpcheck.checked = options.fixedParticles;
+		linkInputToNumber(inputs.gravInput, options, 'gravity');
+		linkInputToNumber(inputs.decayInput, options, 'decay');
+		linkInputToNumber(inputs.groupSizeInput, options, 'groupSize');
+		linkInputToNumber(inputs.groupRadiusInput, options, 'groupRadius');
+		linkInputToNumber(inputs.mouseDensityInput, options, 'mouseDensity');
+		linkInputToNumber(inputs.particleRadiusInput, options, 'particleRadius');
+		linkInputToNumber(inputs.particleDensityInput, options, 'particleDensity');
 		
-		inputs.bocheck.addEventListener("click", function() {options.bounce = inputs.bocheck.checked;});
-		inputs.trcheck.addEventListener("click", function() {options.trace = inputs.trcheck.checked;});
-		inputs.gravInput.addEventListener("change", function() {options.gravity = inputs.gravInput.valueAsNumber || 0;});
-		inputs.decayInput.addEventListener("change", function() {options.decay = inputs.decayInput.valueAsNumber || 0;});
-		inputs.groupSizeInput.addEventListener("change", function() {options.groupSize = inputs.groupSizeInput.valueAsNumber || 0;});
-		inputs.groupRadiusInput.addEventListener("change", function() {options.groupRadius = inputs.groupRadiusInput.valueAsNumber || 0;});
-		inputs.mouseDensityInput.addEventListener("change", function() {options.mouseDensity = inputs.mouseDensityInput.valueAsNumber || 0;});
-		inputs.particleRadiusInput.addEventListener("change", function() {options.particleRadius = inputs.particleRadiusInput.valueAsNumber || 0;});
-		inputs.particleDensityInput.addEventListener("change", function() {options.particleDensity = inputs.particleDensityInput.valueAsNumber || 0;});
-		inputs.fpcheck.addEventListener("click", function() {options.fixedParticles = inputs.fpcheck.checked;});
-		inputs.pauseBtn.addEventListener("click", function() {setPaused(!paused);});
-		inputs.clearBtn.addEventListener("click", function() {clear();});
-		inputs.clearTraceBtn.addEventListener("click", function() {clearTrace();});
-		inputs.saveBtn.addEventListener("click", function() {inputs.saveImg.src = traceCanvas.toDataURL();});
+		linkCheckboxToBoolean(inputs.fpcheck, options, 'fixedParticles');
+		linkCheckboxToBoolean(inputs.tpcheck, options, 'traceNew');
+		linkCheckboxToBoolean(inputs.bocheck, options, 'bounce');
+		linkCheckboxToBoolean(inputs.trcheck, options, 'trace');
 		
-		drawCanvas.addEventListener("mousedown", mouseDown);
-		drawCanvas.addEventListener("touchstart", mouseDown);
-		drawCanvas.addEventListener("mousemove", mouseMove);
-		drawCanvas.addEventListener("touchmove", mouseMove);
-		drawCanvas.addEventListener("mouseup", mouseUp);
-		drawCanvas.addEventListener("touchend", mouseUp);
-		drawCanvas.addEventListener("mouseleave", mouseUp);
-		window.addEventListener("keydown", keyFunc);
+		inputs.pauseBtn.addEventListener('click', function() {setPaused(!paused);});
+		inputs.clearBtn.addEventListener('click', clear);
+		inputs.clearTraceBtn.addEventListener('click', clear);
+		inputs.saveBtn.addEventListener('click', function() {inputs.saveImg.src = traceCanvas.toDataURL();});
+		
+		drawCanvas.addEventListener('mousedown', mouseDown);
+		drawCanvas.addEventListener('touchstart', mouseDown);
+		drawCanvas.addEventListener('mousemove', mouseMove);
+		drawCanvas.addEventListener('touchmove', mouseMove);
+		drawCanvas.addEventListener('mouseup', mouseUp);
+		drawCanvas.addEventListener('touchend', mouseUp);
+		drawCanvas.addEventListener('mouseleave', mouseUp);
+		window.addEventListener('keydown', keyFunc);
 		
 		addGroup(drawCanvas.clientWidth / 2, drawCanvas.clientHeight / 2);
 		setPaused(false);
@@ -124,9 +118,7 @@ window.onload = function() {
 			this.y += this.vy*time;
 		}
 		
-		if (this.mass === 0) {
-			console.log(Math.sqrt(this.mx*this.mx + this.my*this.my));
-		}
+		//if (this.mass === 0) console.log(Math.sqrt(this.mx*this.mx + this.my*this.my));
 		
 		this.mx = 0;
 		this.my = 0;
@@ -158,12 +150,8 @@ window.onload = function() {
 	}
 	
 	function newGroup(x, y) {
-		if (x === undefined) {
-			x = Math.random() * width;
-		}
-		if (y === undefined) {
-			y = Math.random() * height;
-		}
+		if (x === undefined) x = Math.random() * width;
+		if (y === undefined) y = Math.random() * height;
 		
 		var color = randomColor();
 		var group = [];
@@ -172,7 +160,7 @@ window.onload = function() {
 			var d = options.groupRadius*i/options.groupSize;
 			var px = x + d*Math.cos(i); 
 			var py = y + d*Math.sin(i);
-			group[group.length] = new Particle(px, py, options.particleRadius, options.particleDensity, color, options.trace, options.fixedParticles);
+			group[group.length] = new Particle(px, py, options.particleRadius, options.particleDensity, color, options.traceNew, options.fixedParticles);
 		}
 		
 		return group;
@@ -180,6 +168,8 @@ window.onload = function() {
 	
 	function draw() {
 		drawContext.clearRect(0, 0, drawCanvas.clientWidth, drawCanvas.clientHeight);
+		
+		if (!options.trace) clearTrace();
 		
 		function drawParticle(ctx, p) {
 			ctx.beginPath();
@@ -191,11 +181,11 @@ window.onload = function() {
 		
 		for (var i=0; i < particles.length; i++) {
 			drawParticle(drawContext, particles[i]);
-			drawContext.strokeStyle = "#000000";
+			drawContext.strokeStyle = '#000000';
 			drawContext.lineWidth = 0.5;
 			drawContext.stroke();
 			
-			if (particles[i].trace) {
+			if (options.trace && particles[i].trace) {
 				drawParticle(traceContext, particles[i]);
 			}
 		}
@@ -215,7 +205,7 @@ window.onload = function() {
 			drawContext.moveTo(groupvel.ox, groupvel.oy);
 			drawContext.lineTo(groupvel.ox + groupvel.x, groupvel.oy + groupvel.y);
 			drawContext.closePath();
-			drawContext.strokeStyle = "#00FF00";
+			drawContext.strokeStyle = '#00FF00';
 			drawContext.stroke();
 		}
 	}
@@ -255,7 +245,7 @@ window.onload = function() {
         }
         
         paused = p;
-		inputs.pauseBtn.innerHTML = p ? "Resume" : "Pause";
+		inputs.pauseBtn.innerHTML = p ? 'Resume' : 'Pause';
     }
 	
 	function mouseDown(evt) {
@@ -265,7 +255,7 @@ window.onload = function() {
 			newgroup = newGroup(mousepos.x, mousepos.y);
 			groupvel = {ox: mousepos.x, oy: mousepos.y, x: 0, y: 0}
 		} else {
-			mouseparticle = new Particle(mousepos.x, mousepos.y, 1, options.mouseDensity, "#FFFF00", false, false);
+			mouseparticle = new Particle(mousepos.x, mousepos.y, 1, options.mouseDensity, '#FFFF00', false, false);
 		}
 		
 		draw();
