@@ -69,7 +69,7 @@ window.onload = function() {
 		
 		inputs.pauseBtn.addEventListener('click', function() {setPaused(!paused);});
 		inputs.clearBtn.addEventListener('click', clear);
-		inputs.clearTraceBtn.addEventListener('click', clear);
+		inputs.clearTraceBtn.addEventListener('click', clearTrace);
 		inputs.saveBtn.addEventListener('click', function() {inputs.saveImg.src = traceCanvas.toDataURL();});
 		
 		drawCanvas.addEventListener('mousedown', mouseDown);
@@ -105,6 +105,21 @@ window.onload = function() {
 		this.vy = this.my + this.vy * (1 - options.decay);
 		
 		if (options.bounce) {
+			/*if (this.x < this.radius && this.vx < 0) {
+				this.x = this.radius*2 - this.x;
+				this.vx = -this.vx;
+			} else if (this.x > width - this.radius && this.vx > 0) {
+				this.x = width*2 - this.x;
+				this.vx = -this.vx;
+			}
+			
+			if (this.y < this.radius && this.vy < 0) {
+				this.y = this.radius*2 - this.y;
+				this.vy = -this.vy;
+			} else if (this.y > height - this.radius && this.vy > 0) {
+				this.y = height*2 - this.y;
+				this.vy = -this.vy;
+			}*/
 			if ((this.x < this.radius && this.vx < 0) || (this.x > width - this.radius && this.vx > 0)) {
 				this.vx = -this.vx;
 			}

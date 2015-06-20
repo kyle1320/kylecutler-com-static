@@ -105,7 +105,7 @@ window.onload = function() {
 		var y = unit;
 		var realangle = 0.0;
 		var relangle = 0.0;
-		var lastRadius = 1.0;
+		var lastRadius = 0.0;
 		var cir;
 		
 		for (var i=0; i < circles.length; i++) {
