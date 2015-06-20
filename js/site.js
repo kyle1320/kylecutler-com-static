@@ -3,46 +3,44 @@
 		var header = document.createElement('div');
 		header.id = 'header';
 		header.innerHTML = '\
-			<div id="topmost"> \
+			<div id="titlebar"> \
 				<h1 id="title">My Projects</h1> \
-				<div id="links"> \
-					<a href="http://www.facebook.com/kyle1321" target="kc_social_fb" class="fa-facebook-square"></a> \
-					<a href="https://plus.google.com/+KyleCutler1" target="kc_social_gplus" class="fa-google-plus-square"></a><br> \
-					<a href="mailto:kyle1320@gmail.com" class="fa-envelope-square"></a> \
-					<a href="http://github.com/kyle1320" target="kc_social_github" class="fa-github-square"></a> \
-				</div> \
+				<ul id="menu"> \
+					<li><a href="/index.html">Home</a></li> \
+					<li class="dropdown"> \
+						<a>JavaScript</a> \
+						<ul class="submenu"> \
+							<li><a href="/projects/spirograph/spiro.html">Spirograph</a></li> \
+							<li><a href="/projects/graphs/graphs.html">Graphs</a></li> \
+							<li><a href="/projects/particles/particles.html">Particles</a></li> \
+						</ul> \
+					</li> \
+					<li><a>More to come...</a></li> \
+				</ul> \
 			</div> \
-			<ul id="menu"> \
-				<a href="/index.html"><li>Home</li></a> \
-				<li class="dropdown"> JavaScript \
-					<ul class="submenu"> \
-						<a href="/projects/spirograph/spiro.html"><li>Spirograph</li></a> \
-						<a href="/projects/graphs/graphs.html"><li>Graphs</li></a> \
-						<a href="/projects/particles/particles.html"><li>Particles</li></a> \
-					</ul> \
-				</li> \
-				<li>More to come...</li> \
-			</ul> \
-		'/*<li class="dropdown"> Java \
-					<ul class="submenu"> \
-						<a href=""><li>Platform&nbsp;Game</li></a> \
-						<a href=""><li>NyanPower</li></a> \
-						<a href=""><li>BlockToss</li></a> \
-						<a href=""><li>Painter</li></a> \
-						<a href=""><li>Patterns</li></a> \
-					</ul> \
-				</li> \
-				<li class="dropdown"> C \
-					<ul class="submenu"> \
-						<a href=""><li>Voxels</li></a> \
-					</ul> \
-				</li> \
-				<li class="dropdown"> Hackathons \
-					<ul class="submenu"> \
-						<a href=""><li>PennApps: UkeCopter</li></a> \
-						<a href=""><li>BrickHack: WTFU</li></a> \
-					</ul> \
-				</li> \
+		'/*<li class="dropdown"> \
+						<a>Java</a> \
+						<ul class="submenu"> \
+							<li><a href="">Platform&nbsp;Game</li></a> \
+							<li><a href="">NyanPower</a></li> \
+							<li><a href="">BlockToss</a></li> \
+							<li><a href="">Painter</a></li> \
+							<li><a href="">Patterns</a></li> \
+						</ul> \
+					</li> \
+					<li class="dropdown"> \
+						<a>C</a> \
+						<ul class="submenu"> \
+							<li><a href="">Voxels</a></li> \
+						</ul> \
+					</li> \
+					<li class="dropdown"> \
+						<a>Hackathons</a> \
+						<ul class="submenu"> \
+							<li><a href="">PennApps: UkeCopter</a></li> \
+							<li><a href="">BrickHack: WTFU</a></li> \
+						</ul> \
+					</li> \
 		'*/;
 		
 		var content = document.createElement('div');
@@ -51,7 +49,20 @@
 			content.appendChild(document.body.firstChild);
 		}
 		
+		var footer = document.createElement('footer');
+		footer.id = 'footer';
+		footer.innerHTML = '\
+			<hr> \
+			<div id="links"> \
+				<a href="http://www.facebook.com/kyle1321" title="Facebook" target="kc_social_fb" class="fa-facebook-square"></a> \
+				<a href="mailto:kyle1320@gmail.com" title="E-mail" class="fa-envelope-square"></a> \
+				<a href="https://plus.google.com/+KyleCutler1" title="Google+" target="kc_social_gplus" class="fa-google-plus-square"></a> \
+				<a href="http://github.com/kyle1320" title="GitHub" target="kc_social_github" class="fa-github-square"></a> \
+			</div> \
+		';
+		
 		document.body.appendChild(header);
 		document.body.appendChild(content);
+		document.body.appendChild(footer);
 	});
 }());
