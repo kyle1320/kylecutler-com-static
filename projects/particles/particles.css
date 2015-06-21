@@ -34,15 +34,6 @@
 	overflow: visible;
 }
 
-.column {
-	float: left;
-	margin: 0 10px;
-}
-
-.column:after {
-	clear: left;
-}
-
 #info {
 	clear: both;
 }
