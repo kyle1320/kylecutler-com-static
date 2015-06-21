@@ -1,39 +1,39 @@
 @font-face {
-	font-family: "Raleway";
-	src: url("../fonts/Raleway.ttf");
+	font-family: 'Raleway';
+	src: url('../fonts/Raleway.ttf');
 }
 
 @font-face {
-	font-family: "PT Serif";
-	src: url("../fonts/PT_Serif.ttf");
+	font-family: 'PT Serif';
+	src: url('../fonts/PT_Serif.ttf');
 }
 
 @font-face {
-  font-family: 'FontAwesome';
-  src: url('../fonts/fontawesome-webfont.eot?v=4.3.0');
-  src: url('../fonts/fontawesome-webfont.eot?#iefix&v=4.3.0') format('embedded-opentype'), url('../fonts/fontawesome-webfont.woff2?v=4.3.0') format('woff2'), url('../fonts/fontawesome-webfont.woff?v=4.3.0') format('woff'), url('../fonts/fontawesome-webfont.ttf?v=4.3.0') format('truetype'), url('../fonts/fontawesome-webfont.svg?v=4.3.0#fontawesomeregular') format('svg');
-  font-weight: normal;
-  font-style: normal;
+	font-family: 'FontAwesome';
+	src: url('../fonts/fontawesome-webfont.eot?v=4.3.0');
+	src: url('../fonts/fontawesome-webfont.eot?#iefix&v=4.3.0') format('embedded-opentype'), url('../fonts/fontawesome-webfont.woff2?v=4.3.0') format('woff2'), url('../fonts/fontawesome-webfont.woff?v=4.3.0') format('woff'), url('../fonts/fontawesome-webfont.ttf?v=4.3.0') format('truetype'), url('../fonts/fontawesome-webfont.svg?v=4.3.0#fontawesomeregular') format('svg');
+	font-weight: normal;
+	font-style: normal;
 }
 
-[class^="fa"] {
+[class^='fa'] {
   display: inline-block;
   font-family: 'FontAwesome';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-.fa-facebook-square:before {content: "\f082";}
-.fa-google-plus-square:before {content: "\f0d4";}
-.fa-envelope-square:before {content: "\f199";}
-.fa-github-square:before {content: "\f092";}
+.fa-facebook-square:before {content: '\f082';}
+.fa-google-plus-square:before {content: '\f0d4';}
+.fa-envelope-square:before {content: '\f199';}
+.fa-github-square:before {content: '\f092';}
 
 body {
 	margin: 0;
 	padding: 0;
 	font-family: 'Raleway';
 	color: black;
-	background: url(../img/jeans.png) repeat 0 0;
+	background: url('/img/jeans.png') repeat 0 0;
 }
 
 @media only screen and (min--moz-device-pixel-ratio: 2),
@@ -41,7 +41,7 @@ only screen and (-o-min-device-pixel-ratio: 2/1),
 only screen and (-webkit-min-device-pixel-ratio: 2),
 only screen and (min-device-pixel-ratio: 2) {
 	body {
-		background: url(../img/jeans@2X.jpg) repeat 0 0;
+		background: url('/img/jeans@2X.jpg') repeat 0 0;
 		background-size: 100px 100px;
 	}
 }
@@ -196,7 +196,7 @@ html, body {
 	padding: 0 10px 0 0;
 	font-family: 'FontAwesome';
 	color: #654;
-	content: "\f054";
+	content: '\f054';
 }
 
 .contentbox > h2:first-child {
