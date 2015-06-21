@@ -33,7 +33,7 @@ body {
 	padding: 0;
 	font-family: 'Raleway';
 	color: black;
-	background: url(../img/noise.png) repeat 0 0;
+	background: url(../img/jeans.png) repeat 0 0;
 }
 
 @media only screen and (min--moz-device-pixel-ratio: 2),
@@ -41,7 +41,7 @@ only screen and (-o-min-device-pixel-ratio: 2/1),
 only screen and (-webkit-min-device-pixel-ratio: 2),
 only screen and (min-device-pixel-ratio: 2) {
 	body {
-		background: url(../img/noise@2X.png) repeat 0 0;
+		background: url(../img/jeans@2X.jpg) repeat 0 0;
 		background-size: 100px 100px;
 	}
 }
@@ -80,8 +80,9 @@ html, body {
 	font-size: 3em;
 	font-family: 'PT Serif';
 	text-align: center;
-	color: #FFF9F3;
+	color: #FFFFFF;
 	float: left;
+	text-shadow: 0 3px 4px rgba(0, 0, 0, 0.2);
 }
 
 #title:after {
@@ -177,5 +178,56 @@ html, body {
 }
 
 .submenu > li:hover {
-	background-color: #DEE;
+	background-color: #CEE;
+}
+
+.contentbox {
+	width: auto;
+	height: auto;
+	margin: 20px 10px;
+	padding: 10px;
+	display: block;
+	overflow: hidden;
+	background-color: #FAF5F0;
+	box-shadow: 0 2px 4px 1px rgba(0, 0, 0, 0.2);
+}
+
+.contentbox > h2:first-child:before, .contentbox > h3:first-child:before {
+	margin: 0;
+	padding: 0 10px 0 0;
+	font-family: 'FontAwesome';
+	color: #654;
+	content: "\f054";
+}
+
+.contentbox > h2:first-child {
+	margin: 10px 0 20px 0;
+}
+
+.contentbox ul {
+	list-style-type: none;
+}
+
+.contentbox li {
+	position: relative;
+}
+
+.contentbox li:before {
+	font-family: 'FontAwesome';
+	content: '\f054';
+	color: #654;
+	position: absolute;
+ 	left: -2.14285714em;
+ 	width: 2.14285714em;
+ 	top: 0.14285714em;
+ 	text-align: center;
+}
+
+.column {
+	float: left;
+	margin: 0 10px;
+}
+
+.column:after {
+	clear: left;
 }

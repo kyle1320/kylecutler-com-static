@@ -13,19 +13,21 @@
 	</head>
 
 	<body>
-		<h2>Graphs</h2>
-		<canvas id="drawCanvas" width="500" height="500" style="background: white"></canvas>
-		<div id="controls">
-			<p>
-				Order: <input type="number" id="orderinput" min="0" step="1"></input>
-			</p>
-			<input type="checkbox" id="shownodes" checked=true>Show nodes</input><br>
-			<input type="checkbox" id="showedges" checked=true>Show edges</input><br>
-			<input type="checkbox" id="edgedists">Show edge distances</input><br>
-			<input type="checkbox" id="background">Draw background</input><br>
-			<input type="checkbox" id="highlight">Highlight white background areas</input><br>
-			<input type="checkbox" id="updates">Constant updates</input><br>
+		<div class="contentbox">
+			<h2>Graphs</h2>
+			<canvas id="drawCanvas" width="500" height="500" style="background: white"></canvas>
+			<div id="controls">
+				<p>
+					Order: <input type="number" id="orderinput" min="0" step="1"></input>
+				</p>
+				<input type="checkbox" id="shownodes" checked=true>Show nodes</input><br>
+				<input type="checkbox" id="showedges" checked=true>Show edges</input><br>
+				<input type="checkbox" id="edgedists">Show edge distances</input><br>
+				<input type="checkbox" id="background">Draw background</input><br>
+				<input type="checkbox" id="highlight">Highlight white background areas</input><br>
+				<input type="checkbox" id="updates">Constant updates</input><br>
+			</div>
 		</div>
-		<p id="info">left / right arrows change the order<br>drag a node to move it<br>press 'q' over a node / edge to delete it<br>ctrl + click adds a new node<br>ctrl + drag adds a new edge</p>
+		<p id="info" class="contentbox">left / right arrows change the order<br>drag a node to move it<br>press 'q' over a node / edge to delete it<br>ctrl + click adds a new node<br>ctrl + drag adds a new edge</p>
 	</body>
 </html>
