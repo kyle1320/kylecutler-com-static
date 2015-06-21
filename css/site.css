@@ -52,6 +52,17 @@ body {
 	padding: 0;
 	font-family: 'Source Sans Pro';
 	color: black;
+background: url('/img/grid.png') repeat 0 0;
+}
+
+@media only screen and (min--moz-device-pixel-ratio: 2),
+only screen and (-o-min-device-pixel-ratio: 2/1),
+only screen and (-webkit-min-device-pixel-ratio: 2),
+only screen and (min-device-pixel-ratio: 2) {
+	body {
+		background: url('/img/grid@2X.png') repeat 0 0;
+		background-size: 26px 26px;
+	}
 }
 
 html, body {
