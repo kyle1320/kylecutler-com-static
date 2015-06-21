@@ -58,7 +58,6 @@ html, body {
 #content {
 	margin: 10px;
 	position: relative;
-	z-index: -10;
 }
 
 #footer {
