@@ -128,7 +128,7 @@ window.onload = function() {
 			}
 		}
 		
-		if (!options.fixed) {
+		if (!this.fixed) {
 			this.x += this.vx*time;
 			this.y += this.vy*time;
 		}
