@@ -28,6 +28,12 @@
 }
 
 @font-face {
+	font-family: 'Source Sans Pro';
+	src: url('../fonts/SourceSansPro-Semibold.ttf');
+	font-weight: 600;
+}
+
+@font-face {
 	font-family: 'FontAwesome';
 	src: url('../fonts/fontawesome-webfont.eot?v=4.3.0');
 	src: url('../fonts/fontawesome-webfont.eot?#iefix&v=4.3.0') format('embedded-opentype'), url('../fonts/fontawesome-webfont.woff2?v=4.3.0') format('woff2'), url('../fonts/fontawesome-webfont.woff?v=4.3.0') format('woff'), url('../fonts/fontawesome-webfont.ttf?v=4.3.0') format('truetype'), url('../fonts/fontawesome-webfont.svg?v=4.3.0#fontawesomeregular') format('svg');
@@ -132,7 +138,7 @@ html, body {
 	padding: 0;
 	position: absolute;
 	right: 0;
-	bottom: 11px;
+	bottom: 6px;
 	display: block;
 	color: black;
 	list-style-type: none;
@@ -142,13 +148,29 @@ html, body {
 #menu > li {
 	width: auto;
 	height: 100%;
-	margin-left: 5px;
 	padding: 0;
+	border-left: 1px solid white;
 	position: relative;
 	float: left;
 	color: white;
-	background-color: #00897B;
-	box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.2);
+}
+
+#menu > li:first-child {
+	border-left: none;
+}
+
+#menu > li > a {
+	position: relative;
+	bottom: 0;
+	font-weight: 600;
+	text-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+	-webkit-transition: all 0.1s ease-in-out;
+	transition: all 0.1s ease-in-out;
+}
+
+#menu > li:hover > a {
+	bottom: 2px;
+	text-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
 }
 
 #menu a {
@@ -160,10 +182,6 @@ html, body {
 
 #menu a, #menu a:link, #menu a:visited, #menu a:hover, #menu a:focus, #menu a:active {
 	color: inherit;
-}
-
-#menu > li:hover {
-	background-color: #00796B;
 }
 
 .dropdown {
@@ -182,7 +200,6 @@ html, body {
 	left: 0;
 	overflow: hidden;
 	display: none;
-	border-left: 6px solid #00BFA5;
 	background-color: white;
 	list-style-type: none;
 	z-index: 1;
@@ -192,14 +209,20 @@ html, body {
 .submenu li {
 	width: 100%;
 	height: auto;
+	position: relative;
 	margin-left: 0;
 	margin-right: 0;
+	border-left: 6px solid #00BFA5;
 	clear: left;
-	color: black;
+	color: #333333;
+	-webkit-transition: all 0.1s ease-in-out;
+	transition: all 0.1s ease-in-out;
 }
 
 .submenu > li:hover {
 	background-color: #B2DFDB;
+	margin-right: -2px;
+	border-left: 8px solid #00897B;
 }
 
 .contentbox {
