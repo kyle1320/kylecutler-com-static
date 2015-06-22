@@ -49,7 +49,7 @@
 			content.appendChild(document.body.firstChild);
 		}
 		
-		var footer = document.createElement('footer');
+		var footer = document.createElement('div');
 		footer.id = 'footer';
 		footer.innerHTML = '\
 			<hr> \
