@@ -29,8 +29,8 @@ function getRelativeCoord(canvas, evt) {
 		x = evt.clientX;
 		y = evt.clientY;
 		pressed = ~evt.buttons;
-	} else if (window.TouchEvent && evt instanceof TouchEvent) {
-		var touch = evt.touches[0];
+	} else if (evt instanceof TouchEvent) {
+		var touch = evt.changedTouches[0];
 		x = touch.clientX;
 		y = touch.clientY;
 		pressed = true;
@@ -38,8 +38,8 @@ function getRelativeCoord(canvas, evt) {
 
 	var rect = canvas.getBoundingClientRect();
 	return {
-		x: evt.clientX - rect.left,
-		y: evt.clientY - rect.top,
+		x: x - rect.left,
+		y: y - rect.top,
 	};
 };
 

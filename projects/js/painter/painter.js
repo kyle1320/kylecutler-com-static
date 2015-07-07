@@ -12,7 +12,7 @@ window.onload = function() {
 	var width, height;
 	var img;
 
-	var mouse = {x: 0, y: 0, pressed: false, dragged: false, valid: false};
+	var mouse = {x: 0, y: 0, pressed: false, dragged: false};
 	var selected = null;
 
 	var neighborData = {
@@ -106,7 +106,6 @@ window.onload = function() {
 		inputs.neighborsCenterBtn.addEventListener('click', centerNeighbors);
 		inputs.neighborsResetBtn.addEventListener('click', resetNeighbors);
 
-		neighborCanvas.addEventListener('mouseenter', neighborsMouseEnter);
 		neighborCanvas.addEventListener('mousedown', neighborsMouseDown);
 		neighborCanvas.addEventListener('touchstart', neighborsMouseDown);
 		neighborCanvas.addEventListener('mousemove', neighborsMouseMove);
@@ -347,6 +346,8 @@ window.onload = function() {
 	}
 
 	function toggleNeighbor() {
+		if (!selected) return;
+
 		var i = options.neighbors.length;
 
 		while (i--) {
@@ -357,14 +358,11 @@ window.onload = function() {
 			}
 		}
 
-		if (selected.x || selected.y)
+		if (selected.x || selected.y) {
 			options.neighbors[options.neighbors.length] = selected;
+		}
 
 		drawNeighbors();
-	}
-
-	function neighborsMouseEnter(evt) {
-		mouse.valid = true;
 	}
 
 	function neighborsMouseDown(evt) {
@@ -378,20 +376,16 @@ window.onload = function() {
 	function neighborsMouseMove(evt) {
 		var mousepos = getRelativeCoord(neighborCanvas, evt);
 
-		if (mouse.valid) {
-			if (mouse.pressed) { //dragging
-				selected = null;
-				mouse.dragged = true;
-				neighborData.offsetX += (mousepos.x - mouse.x) / (neighborData.scale + neighborData.padding);
-				neighborData.offsetY += (mousepos.y - mouse.y) / (neighborData.scale + neighborData.padding);
-			} else {
-				selected = {
-					x: Math.floor(mousepos.x / (neighborData.scale + neighborData.padding) - neighborData.offsetX),
-					y: Math.floor(mousepos.y / (neighborData.scale + neighborData.padding) - neighborData.offsetY),
-				};
-			}
-		} else {
+		if (mouse.pressed) { //dragging
 			selected = null;
+			mouse.dragged = true;
+			neighborData.offsetX += (mousepos.x - mouse.x) / (neighborData.scale + neighborData.padding);
+			neighborData.offsetY += (mousepos.y - mouse.y) / (neighborData.scale + neighborData.padding);
+		} else {
+			selected = {
+				x: Math.floor(mousepos.x / (neighborData.scale + neighborData.padding) - neighborData.offsetX),
+				y: Math.floor(mousepos.y / (neighborData.scale + neighborData.padding) - neighborData.offsetY),
+			};
 		}
 
 		mouse.x = mousepos.x;
@@ -409,8 +403,7 @@ window.onload = function() {
 	}
 
 	function neighborsMouseExit(evt) {
-		mouse.valid = false;
-
 		neighborsMouseUp(evt);
+		selected = null;
 	}
 };
