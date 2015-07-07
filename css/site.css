@@ -57,7 +57,7 @@ body {
 	margin: 0;
 	padding: 0;
 	font-family: 'Source Sans Pro';
-	color: black;
+	color: #212121;
 	background: url('/img/grid.png') repeat 0 0;
 }
 
@@ -140,7 +140,6 @@ html, body {
 	right: 0;
 	bottom: 6px;
 	display: block;
-	color: black;
 	list-style-type: none;
 	z-index: 100;
 }
@@ -214,7 +213,7 @@ html, body {
 	margin-right: 0;
 	border-left: 6px solid #00BFA5;
 	clear: left;
-	color: #333333;
+	color: #212121;
 	-webkit-transition: all 0.1s ease-in-out;
 	transition: all 0.1s ease-in-out;
 }

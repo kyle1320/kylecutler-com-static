@@ -1,0 +1,21 @@
+#draw-canvas {
+	margin-right: 20px;
+	margin-bottom: 20px;
+	background-color: white;
+	float: left;
+}
+
+#controls {
+	float: left;
+	width: auto;
+	height: 500px;
+	overflow: visible;
+}
+
+#info {
+	clear: both;
+}
+
+.optional {
+	display: none;
+}

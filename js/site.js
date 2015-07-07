@@ -13,6 +13,7 @@
 							<li><a href="/projects/js/spirograph/spiro.html">Spirograph</a></li> \
 							<li><a href="/projects/js/graphs/graphs.html">Graphs</a></li> \
 							<li><a href="/projects/js/particles/particles.html">Particles</a></li> \
+							<li><a href="/projects/js/painter/painter.html">Painter</a></li> \
 						</ul> \
 					</li> \
 					<li><a>More to come...</a></li> \
