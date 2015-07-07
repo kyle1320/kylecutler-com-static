@@ -121,7 +121,6 @@ window.onload = function() {
 		resetNeighbors();
 
 		reset();
-		setSize(2000, 2000);
 		setPaused(false);
 	}
 
