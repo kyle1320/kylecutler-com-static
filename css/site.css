@@ -231,9 +231,9 @@ html, body {
 	padding: 10px;
 	display: block;
 	overflow: hidden;
+	line-height: 1.5em;
 	background-color: #EFEBE9;
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-	/*box-shadow: 0 2px 4px 1px rgba(0, 0, 0, 0.2);*/
 }
 
 .contentbox > h2:first-child:before, .contentbox > h3:first-child:before {

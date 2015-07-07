@@ -12,9 +12,8 @@ window.onload = function() {
 	var width, height;
 	var img;
 
-	var mouse = {x: 0, y: 0, pressed: false, dragged: false};
+	var mouse = {x: 0, y: 0, pressed: false, dragged: false, valid: false};
 	var selected = null;
-	var dragged = false;
 
 	var neighborData = {
 		offsetX: 0.0,
@@ -107,13 +106,14 @@ window.onload = function() {
 		inputs.neighborsCenterBtn.addEventListener('click', centerNeighbors);
 		inputs.neighborsResetBtn.addEventListener('click', resetNeighbors);
 
+		neighborCanvas.addEventListener('mouseenter', neighborsMouseEnter);
 		neighborCanvas.addEventListener('mousedown', neighborsMouseDown);
 		neighborCanvas.addEventListener('touchstart', neighborsMouseDown);
 		neighborCanvas.addEventListener('mousemove', neighborsMouseMove);
 		neighborCanvas.addEventListener('touchmove', neighborsMouseMove);
 		neighborCanvas.addEventListener('mouseup', neighborsMouseUp);
 		neighborCanvas.addEventListener('touchend', neighborsMouseUp);
-		neighborCanvas.addEventListener('mouseleave', neighborsMouseUp);
+		neighborCanvas.addEventListener('mouseleave', neighborsMouseExit);
 
 		hideOptionals();
 		neighborData.width = neighborCanvas.clientWidth;
@@ -124,56 +124,45 @@ window.onload = function() {
 		setPaused(false);
 	}
 
+	function Cell(x, y, rgb) {
+		rgb = rgb || [0, 0, 0];
+		return {x: x, y: y, r: rgb[0], g: rgb[1], b: rgb[2], n: 0};
+	}
+
 	function reset() {
 		width = drawCanvas.width;
 		height = drawCanvas.height;
 		img = drawContext.createImageData(width, height);
 
+		var i, x, y, cell;
+
 		delete cells;
 
 		cells = new Array(height);
-		for (var y=0; y < height; y++) {
+		for (y = 0; y < height; y++) {
 			cells[y] = new Array(width);
 		}
 		edges = null;
 
-		var i, x, y, cell;
 		switch(options.pattern) {
 			default:
 			case 'center':
-				add({
-					x: width / 2,
-					y: height / 2,
-					r: options.baseRGB[0],
-					g: options.baseRGB[1],
-					b: options.baseRGB[2],
-					n: 0
-				});
+				add(Cell(width/2, height/2, options.baseRGB));
 				break;
 			case 'vertical':
 				for (x = 0; x < width; x++) {
-					cell = {
-						x: x,
-						y: 0,
-						r: options.baseRGB[0],
-						g: options.baseRGB[1],
-						b: options.baseRGB[2],
-						n: 0
-					};
+					cell = Cell(x, 0, options.baseRGB);
 					deviate(cell, options.initialDeviation);
 					add(cell);
 				}
 				break;
 			case 'random':
 				for (i = 0; i < options.numPoints; i++) {
-					cell = {
-						x: Math.floor(Math.random() * width),
-						y: Math.floor(Math.random() * height),
-						r: options.baseRGB[0],
-						g: options.baseRGB[1],
-						b: options.baseRGB[2],
-						n: 0
-					}
+					cell = Cell(
+						Math.floor(Math.random() * width),
+						Math.floor(Math.random() * height),
+						options.baseRGB
+					);
 					deviate(cell, options.initialDeviation);
 					add(cell);
 				}
@@ -183,22 +172,14 @@ window.onload = function() {
 				var cos = Math.cos(a);
 				var sin = Math.sin(a);
 				var cot = 1.0 / Math.tan(a);
-				var size = options.size;
 
-				for (x = options.size/2; x < width + (width * cot); x += size) {
-					for (y = options.size/2; y < height / sin; y += size) {
+				for (x = options.size/2; x < width + (width * cot); x += options.size) {
+					for (y = options.size/2; y < height / sin; y += options.size) {
 						var ry = Math.floor(y * sin);
 						var rx = Math.floor(x - y * cos);
 
 						if (rx >= 0 && rx < width && ry >= 0 && ry < height) {
-							cell = {
-								x: rx,
-								y: ry,
-								r: options.baseRGB[0],
-								g: options.baseRGB[1],
-								b: options.baseRGB[2],
-								n: 0
-							};
+							cell = Cell(rx, ry, options.baseRGB);
 							deviate(cell, options.initialDeviation);
 							add(cell);
 						}
@@ -266,7 +247,7 @@ window.onload = function() {
 				var nc = cells[ny][nx];
 
 				if (!nc) {
-					nc = cells[ny][nx] = {x: nx, y: ny, r: 0, g: 0, b: 0, n: 0};
+					nc = cells[ny][nx] = Cell(nx, ny);
 					edges = {cell: nc, next: edges, prev: null};
 					if (edges.next) edges.next.prev = edges;
 				}
@@ -314,18 +295,25 @@ window.onload = function() {
 		while (i--) optionals[i].style.display='block';
 	}
 
+	function resetNeighbors() {
+		options.neighbors = [{x:0, y:1}, {x:1, y:1}, {x:1, y:0}, {x:1, y:-1}, {x:0, y:-1}, {x:-1, y:-1}, {x:-1, y:0}, {x:-1, y:1}];
+		centerNeighbors();
+	}
+
+	function centerNeighbors() {
+		neighborData.offsetX = (neighborData.width / (2 * (neighborData.scale + neighborData.padding))) - 0.5;
+		neighborData.offsetY = (neighborData.height / (2 * (neighborData.scale + neighborData.padding))) - 0.5;
+		drawNeighbors();
+	}
+
 	function drawNeighbors() {
 		neighborContext.clearRect(0, 0, neighborCanvas.width, neighborCanvas.height);
 		var skip = neighborData.scale + neighborData.padding;
 
-		var alignY = (neighborData.offsetY % 1) * skip;
-		var alignX;
-
-		if (alignY > 0) alignY -= skip;
+		var alignY = (neighborData.offsetY - Math.ceil(neighborData.offsetY)) * skip;
 
 		for (var y = Math.floor(-neighborData.offsetY); alignY < neighborData.height; y++, alignY += skip) {
-			alignX = (neighborData.offsetX % 1) * skip;
-			if (alignX > 0) alignX -= skip;
+			var alignX = (neighborData.offsetX - Math.ceil(neighborData.offsetX)) * skip;
 
 			for (var x = Math.floor(-neighborData.offsetX); alignX < neighborData.width; x++, alignX += skip) {
 				if (y === 0 && x === 0) {
@@ -375,15 +363,8 @@ window.onload = function() {
 		drawNeighbors();
 	}
 
-	function centerNeighbors() {
-		neighborData.offsetX = (neighborData.width / (2 * (neighborData.scale + neighborData.padding))) - 0.5;
-		neighborData.offsetY = (neighborData.height / (2 * (neighborData.scale + neighborData.padding))) - 0.5;
-		drawNeighbors();
-	}
-
-	function resetNeighbors() {
-		options.neighbors = [{x:0, y:1}, {x:1, y:1}, {x:1, y:0}, {x:1, y:-1}, {x:0, y:-1}, {x:-1, y:-1}, {x:-1, y:0}, {x:-1, y:1}];
-		centerNeighbors();
+	function neighborsMouseEnter(evt) {
+		mouse.valid = true;
 	}
 
 	function neighborsMouseDown(evt) {
@@ -397,15 +378,20 @@ window.onload = function() {
 	function neighborsMouseMove(evt) {
 		var mousepos = getRelativeCoord(neighborCanvas, evt);
 
-		if (mouse.pressed) { //dragging
-			mouse.dragged = true;
-			neighborData.offsetX += (mousepos.x - mouse.x) / (neighborData.scale + neighborData.padding);
-			neighborData.offsetY += (mousepos.y - mouse.y) / (neighborData.scale + neighborData.padding);
+		if (mouse.valid) {
+			if (mouse.pressed) { //dragging
+				selected = null;
+				mouse.dragged = true;
+				neighborData.offsetX += (mousepos.x - mouse.x) / (neighborData.scale + neighborData.padding);
+				neighborData.offsetY += (mousepos.y - mouse.y) / (neighborData.scale + neighborData.padding);
+			} else {
+				selected = {
+					x: Math.floor(mousepos.x / (neighborData.scale + neighborData.padding) - neighborData.offsetX),
+					y: Math.floor(mousepos.y / (neighborData.scale + neighborData.padding) - neighborData.offsetY),
+				};
+			}
 		} else {
-			selected = {
-				x: Math.floor(mousepos.x / (neighborData.scale + neighborData.padding) - neighborData.offsetX),
-				y: Math.floor(mousepos.y / (neighborData.scale + neighborData.padding) - neighborData.offsetY),
-			};
+			selected = null;
 		}
 
 		mouse.x = mousepos.x;
@@ -420,5 +406,11 @@ window.onload = function() {
 
 		mouse.pressed = false;
 		mouse.dragged = false;
+	}
+
+	function neighborsMouseExit(evt) {
+		mouse.valid = false;
+
+		neighborsMouseUp(evt);
 	}
 };
