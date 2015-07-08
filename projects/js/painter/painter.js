@@ -109,12 +109,13 @@ window.onload = function() {
 		inputs.neighborsResetBtn.addEventListener('click', resetNeighbors);
 
 		neighborCanvas.addEventListener('mousedown', neighborsMouseDown);
-		neighborCanvas.addEventListener('touchstart', neighborsMouseDown);
 		neighborCanvas.addEventListener('mousemove', neighborsMouseMove);
-		neighborCanvas.addEventListener('touchmove', neighborsMouseMove);
 		neighborCanvas.addEventListener('mouseup', neighborsMouseUp);
-		neighborCanvas.addEventListener('touchend', neighborsMouseUp);
 		neighborCanvas.addEventListener('mouseleave', neighborsMouseExit);
+
+		neighborCanvas.addEventListener('touchstart', neighborsTouchDown);
+		neighborCanvas.addEventListener('touchmove', neighborsTouchMove);
+		neighborCanvas.addEventListener('touchend', neighborsTouchUp);
 
 		hideOptionals();
 		neighborData.width = neighborCanvas.drawWidth;
@@ -302,14 +303,14 @@ window.onload = function() {
 	}
 
 	function centerNeighbors() {
-		neighborData.offsetX = (neighborData.width / (2 * (neighborData.scale + neighborData.padding))) - 0.5;
-		neighborData.offsetY = (neighborData.height / (2 * (neighborData.scale + neighborData.padding))) - 0.5;
+		neighborData.offsetX = (neighborData.width / (2 * neighborData.scale)) - 0.5;
+		neighborData.offsetY = (neighborData.height / (2 * neighborData.scale)) - 0.5;
 		drawNeighbors();
 	}
 
 	function drawNeighbors() {
 		neighborContext.clearRect(0, 0, neighborCanvas.width, neighborCanvas.height);
-		var skip = neighborData.scale + neighborData.padding;
+		var skip = neighborData.scale;
 
 		var alignY = (neighborData.offsetY - Math.ceil(neighborData.offsetY)) * skip;
 
@@ -319,13 +320,13 @@ window.onload = function() {
 			for (var x = Math.floor(-neighborData.offsetX); alignX < neighborData.width; x++, alignX += skip) {
 				if (y === 0 && x === 0) {
 					neighborContext.fillStyle = '#00FF00'
-					neighborContext.strokeRect(alignX + neighborData.padding, alignY + neighborData.padding, neighborData.scale, neighborData.scale);
+					neighborContext.strokeRect(alignX, alignY, neighborData.scale - neighborData.padding, neighborData.scale - neighborData.padding);
 				} else if (selected && selected.y == y && selected.x == x) {
 					neighborContext.fillStyle = "#CCCCFF";
 				} else {
 					neighborContext.fillStyle = "#BBBBBB";
 				}
-				neighborContext.fillRect(alignX + neighborData.padding, alignY + neighborData.padding, neighborData.scale, neighborData.scale);
+				neighborContext.fillRect(alignX, alignY, neighborData.scale - neighborData.padding, neighborData.scale - neighborData.padding);
 			}
 		}
 
@@ -339,10 +340,10 @@ window.onload = function() {
 				neighborContext.fillStyle = "#555555";
 			}
 			neighborContext.fillRect(
-				skip * (n.x + neighborData.offsetX) + neighborData.padding,
-				skip * (n.y + neighborData.offsetY) + neighborData.padding,
-				neighborData.scale,
-				neighborData.scale
+				skip * (n.x + neighborData.offsetX),
+				skip * (n.y + neighborData.offsetY),
+				neighborData.scale - neighborData.padding,
+				neighborData.scale - neighborData.padding
 			);
 		}
 	}
@@ -363,34 +364,24 @@ window.onload = function() {
 		if (selected.x || selected.y) {
 			options.neighbors[options.neighbors.length] = selected;
 		}
-
-		drawNeighbors();
 	}
 
 	function neighborsMouseDown(evt) {
-		takeTouchFocus(evt);
-
-		var mousepos = getRelativeCoord(neighborCanvas, evt);
-
-		mouse.x = mousepos.x;
-		mouse.y = mousepos.y;
 		mouse.pressed = true;
 	}
 
 	function neighborsMouseMove(evt) {
-		takeTouchFocus(evt);
-
 		var mousepos = getRelativeCoord(neighborCanvas, evt);
 
-		if (mouse.pressed) { //dragging
+		if (mouse.pressed) {
 			selected = null;
 			mouse.dragged = true;
-			neighborData.offsetX += (mousepos.x - mouse.x) / (neighborData.scale + neighborData.padding);
-			neighborData.offsetY += (mousepos.y - mouse.y) / (neighborData.scale + neighborData.padding);
+			neighborData.offsetX += (mousepos.x - mouse.x) / neighborData.scale;
+			neighborData.offsetY += (mousepos.y - mouse.y) / neighborData.scale;
 		} else {
 			selected = {
-				x: Math.floor(mousepos.x / (neighborData.scale + neighborData.padding) - neighborData.offsetX),
-				y: Math.floor(mousepos.y / (neighborData.scale + neighborData.padding) - neighborData.offsetY),
+				x: Math.floor(mousepos.x / neighborData.scale - neighborData.offsetX),
+				y: Math.floor(mousepos.y / neighborData.scale - neighborData.offsetY),
 			};
 		}
 
@@ -400,20 +391,62 @@ window.onload = function() {
 	}
 
 	function neighborsMouseUp(evt) {
-		takeTouchFocus(evt);
-
 		if (mouse.pressed && !mouse.dragged) toggleNeighbor();
-
-		neighborsMouseMove(evt);
 
 		mouse.pressed = false;
 		mouse.dragged = false;
+
+		neighborsMouseMove(evt);
 	}
 
 	function neighborsMouseExit(evt) {
+		selected = null;
+		mouse.pressed = false;
+		mouse.dragged = false;
+		drawNeighbors();
+	}
+
+	function neighborsTouchDown(evt) {
+		neighborsTouchMove(evt);
+
+		selected = {
+			x: Math.floor(mouse.x / neighborData.scale - neighborData.offsetX),
+			y: Math.floor(mouse.y / neighborData.scale - neighborData.offsetY),
+		};
+
+		mouse.pressed = true;
+		drawNeighbors();
+	}
+
+	function neighborsTouchMove(evt) {
 		takeTouchFocus(evt);
 
-		neighborsMouseUp(evt);
-		selected = null;
+		var mousepos = getRelativeCoord(neighborCanvas, evt);
+		var moveX = (mousepos.x - mouse.x);
+		var moveY = (mousepos.y - mouse.y);
+
+		if (mouse.pressed && moveX * moveX + moveY * moveY > 1) {
+			selected = null;
+			mouse.dragged = true;
+			neighborData.offsetX += moveX / neighborData.scale;
+			neighborData.offsetY += moveY / neighborData.scale;
+			drawNeighbors();
+		}
+
+		mouse.x = mousepos.x;
+		mouse.y = mousepos.y;
+	}
+
+	function neighborsTouchUp(evt) {
+		takeTouchFocus(evt);
+
+		if (selected) {
+			toggleNeighbor();
+			selected = null;
+			drawNeighbors();
+		}
+
+		mouse.pressed = false;
+		mouse.dragged = false;
 	}
 };

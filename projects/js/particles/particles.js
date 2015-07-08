@@ -8,6 +8,7 @@ window.onload = function() {
 	var paused = true;
 	var runInterval;
 
+	var doubletap = false;
 	var mouseparticle = null;
 	var newgroup = null;
 	var groupvel = null;
@@ -81,13 +82,14 @@ window.onload = function() {
 		inputs.saveBtn.addEventListener('click', function() {inputs.saveImg.src = traceCanvas.toDataURL();});
 
 		drawCanvas.addEventListener('mousedown', mouseDown);
-		drawCanvas.addEventListener('touchstart', mouseDown);
 		drawCanvas.addEventListener('mousemove', mouseMove);
-		drawCanvas.addEventListener('touchmove', mouseMove);
 		drawCanvas.addEventListener('mouseup', mouseUp);
-		drawCanvas.addEventListener('touchend', mouseUp);
 		drawCanvas.addEventListener('mouseleave', mouseUp);
 		window.addEventListener('keydown', keyFunc);
+
+		drawCanvas.addEventListener('touchstart', touchDown);
+		drawCanvas.addEventListener('touchmove', touchMove);
+		drawCanvas.addEventListener('touchend', touchUp);
 
 		addGroup(drawCanvas.drawWidth / 2, drawCanvas.drawHeight / 2);
 		setPaused(false);
@@ -272,8 +274,6 @@ window.onload = function() {
     }
 
 	function mouseDown(evt) {
-		takeTouchFocus(evt);
-
 		var mousepos = getRelativeCoord(drawCanvas, evt);
 
 		if (evt.ctrlKey || evt.metaKey) {
@@ -287,8 +287,6 @@ window.onload = function() {
 	}
 
 	function mouseUp(evt) {
-		takeTouchFocus(evt);
-
 		if (newgroup) {
 			newgroup.forEach(function (p) {p.vx = groupvel.x; p.vy = groupvel.y;});
 			groupvel = null;
@@ -301,8 +299,6 @@ window.onload = function() {
 	}
 
 	function mouseMove(evt) {
-		takeTouchFocus(evt);
-
 		var mousepos = getRelativeCoord(drawCanvas, evt);
 
 		if (groupvel) {
@@ -313,9 +309,40 @@ window.onload = function() {
 		if (mouseparticle) {
 			mouseparticle.x = mousepos.x;
 			mouseparticle.y = mousepos.y;
+		} else {
+			mouseparticle = new Particle(mousepos.x, mousepos.y, 1, options.mouseDensity, '#FFFF00', false, false);
 		}
 
 		draw();
+	}
+
+	function touchDown(evt) {
+		takeTouchFocus(evt);
+
+		var mousepos = getRelativeCoord(drawCanvas, evt);
+
+		if (doubletap) {
+			newgroup = newGroup(mousepos.x, mousepos.y);
+			groupvel = {ox: mousepos.x, oy: mousepos.y, x: 0, y: 0}
+
+			draw();
+		} else {
+			mouseparticle = new Particle(mousepos.x, mousepos.y, 1, options.mouseDensity, '#FFFF00', false, false);
+			doubletap = true;
+			setTimeout(function() {doubletap = false;}, 400);
+		}
+	}
+
+	function touchMove(evt) {
+		takeTouchFocus(evt);
+
+		mouseMove(evt);
+	}
+
+	function touchUp(evt) {
+		takeTouchFocus(evt);
+
+		mouseUp(evt);
 	}
 
 	function keyFunc(evt) {
