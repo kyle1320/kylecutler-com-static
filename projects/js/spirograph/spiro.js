@@ -55,6 +55,12 @@ window.onload = function() {
 		scaleCanvas(spiroCanvas, spiroCtx);
 		scaleCanvas(infoCanvas, infoCtx);
 
+		var canvases = $('canvases');
+		fitElement(canvases, canvases.clientWidth, canvases.clientHeight, function(el) {
+			spiroCanvas.style.width = infoCanvas.style.width = canvases.style.width;
+			spiroCanvas.style.height = infoCanvas.style.height = canvases.style.height;
+		});
+
 		linkInputToNumber(inputs.speedInput, options, 'speed');
 		linkInputToNumber(inputs.iterInput, options, 'iterations');
 		linkInputToNumber(inputs.penDistInput, options, 'penDist', draw);
@@ -100,7 +106,7 @@ window.onload = function() {
 		eachCallback = eachCallback || function() {};
 		doneCallback = doneCallback || function() {};
 
-		var unit = spiroCanvas.clientWidth / 2;
+		var unit = spiroCanvas.drawWidth / 2;
 		var x = unit;
 		var y = unit;
 		var realangle = 0.0;
@@ -140,7 +146,7 @@ window.onload = function() {
 	}
 
 	function draw() {
-		infoCtx.clearRect(0, 0, infoCanvas.clientWidth, infoCanvas.clientHeight);
+		infoCtx.clearRect(0, 0, infoCanvas.drawWidth, infoCanvas.drawHeight);
 
 		if (options.showCircles || options.showRadii || options.showPen) {
 			eachCircle(function(c) {
@@ -244,7 +250,7 @@ window.onload = function() {
 
 	function reset() {
 		circles.forEach(function(c) {c.angle = 0;});
-		spiroCtx.clearRect(0, 0, spiroCanvas.clientWidth, spiroCanvas.clientHeight);
+		spiroCtx.clearRect(0, 0, spiroCanvas.drawWidth, spiroCanvas.drawHeight);
 		draw();
 	}
 

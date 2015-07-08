@@ -13,9 +13,42 @@ function scaleCanvas(canvas, context) {
 
 	canvas.style.width = canvas.width + 'px';
 	canvas.style.height = canvas.height + 'px';
+	canvas.drawWidth = canvas.width;
+	canvas.drawHeight = canvas.height;
 	canvas.width *= scale;
 	canvas.height *= scale;
 	context.scale(scale, scale);
+}
+
+function fitElement(el, preferredWidth, preferredHeight, onresize) {
+	preferredWidth = preferredWidth || el.clientWidth;
+	preferredHeight = preferredHeight || el.clientHeight;
+	onresize = onresize || function() {};
+	var preferredRatio = preferredWidth / preferredHeight;
+
+	var resize = function() {
+		var style = window.getComputedStyle(el.parentElement, null);
+		var width = parseInt(style.getPropertyValue('width'));
+		var height = parseInt(style.getPropertyValue('height'));
+
+		var newwidth = Math.min(width, preferredWidth);
+		var newheight = Math.min(height, preferredHeight);
+
+		if (newwidth > preferredRatio * newheight) {
+			newwidth = Math.floor(preferredRatio * newheight);
+		} else {
+			newheight = Math.floor(newwidth / preferredRatio);
+		}
+
+		console.log(newwidth, newheight);
+		el.style.width = newwidth+'px';
+		el.style.height = newheight+'px';
+
+		onresize(el);
+	};
+
+	resize();
+	window.addEventListener('resize', resize);
 }
 
 function randomColor() {
@@ -38,10 +71,20 @@ function getRelativeCoord(canvas, evt) {
 
 	var rect = canvas.getBoundingClientRect();
 	return {
-		x: x - rect.left,
-		y: y - rect.top,
+		x: (x - rect.left) * (canvas.drawWidth / canvas.clientWidth),
+		y: (y - rect.top) * (canvas.drawHeight / canvas.clientHeight),
 	};
-};
+}
+
+function takeTouchFocus(evt) {
+	console.log(evt);
+	if (evt instanceof TouchEvent) {
+		if (evt.touches.length < 2) {
+			evt.preventDefault();
+			console.log("prevented");
+		}
+	}
+}
 
 function getSaturatedColor(v) {
 	var i = Math.floor(v * 6);

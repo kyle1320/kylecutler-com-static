@@ -93,7 +93,7 @@ function DrawableGraph(graph, canvas) {
     var mouse = {x: 0, y: 0};
     var mouseinside = false;
     var order = 0;
-    
+
     var self = this;
 
     var nodeSize = 10;
@@ -148,7 +148,7 @@ function DrawableGraph(graph, canvas) {
 
         // if anything changed, we need to redraw
         if (bgchanged || graphchanged || distschanged) {
-            this.context.clearRect(0, 0, canvas.width, canvas.height);
+            this.context.clearRect(0, 0, canvas.drawWidth, canvas.drawHeight);
 
             // only draw the background if the option is checked
             if (bgcheck.checked) {
@@ -170,7 +170,7 @@ function DrawableGraph(graph, canvas) {
                     ctx.moveTo(edge.a.x, edge.a.y);
                     ctx.lineTo(edge.b.x, edge.b.y);
                     ctx.closePath();
-    
+
                     ctx.strokeStyle = edge.color;
                     ctx.lineWidth = edgeWidth;
                     ctx.stroke();
@@ -183,7 +183,7 @@ function DrawableGraph(graph, canvas) {
                     ctx.beginPath();
                     ctx.arc(node.x, node.y, nodeSize, 0, 2*Math.PI);
                     ctx.closePath();
-    
+
                     // black fill, white stroke
                     ctx.fillStyle = "#000000";
                     ctx.strokeStyle = "#FFFFFF";
@@ -229,8 +229,8 @@ function DrawableGraph(graph, canvas) {
                 var dists = [];
                 for (var j=0; j < graph.edges.length; j++) {
                     dists[j] = graph.edges[j].distance({
-                        x: (x * this.canvas.clientWidth) / this.canvas.width,
-                        y: (y * this.canvas.clientHeight) / this.canvas.height
+                        x: (x * this.canvas.drawWidth) / this.canvas.width,
+                        y: (y * this.canvas.drawHeight) / this.canvas.height
                     });
                 }
 
@@ -299,7 +299,7 @@ function DrawableGraph(graph, canvas) {
             }
         }
     };
-    
+
     this.updateOrder = function() {
         order = orderinput.valueAsNumber;
         updates.orderChanged = true;

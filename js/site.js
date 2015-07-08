@@ -43,13 +43,13 @@
 						</ul> \
 					</li> \
 		'*/;
-		
+
 		var content = document.createElement('div');
 		content.id = 'content';
 		while (document.body.firstChild) {
 			content.appendChild(document.body.firstChild);
 		}
-		
+
 		var footer = document.createElement('div');
 		footer.id = 'footer';
 		footer.innerHTML = '\
@@ -61,7 +61,7 @@
 				<a href="http://github.com/kyle1320" title="GitHub" target="kc_social_github" class="fa-github-square"></a> \
 			</div> \
 		';
-		
+
 		document.body.appendChild(header);
 		document.body.appendChild(content);
 		document.body.appendChild(footer);

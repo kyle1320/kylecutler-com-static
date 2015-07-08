@@ -76,6 +76,8 @@ window.onload = function() {
 		scaleCanvas(drawCanvas, drawContext);
 		scaleCanvas(neighborCanvas, neighborContext);
 
+		fitElement(drawCanvas, drawCanvas.width, drawCanvas.height);
+
 		linkInputToNumber(inputs.relianceInput, options, 'reliance');
 		linkInputToNumber(inputs.deviationInput, options, 'deviation');
 		linkInputToNumber(inputs.tendencyInput, options, 'tendency');
@@ -115,8 +117,8 @@ window.onload = function() {
 		neighborCanvas.addEventListener('mouseleave', neighborsMouseExit);
 
 		hideOptionals();
-		neighborData.width = neighborCanvas.clientWidth;
-		neighborData.height = neighborCanvas.clientHeight;
+		neighborData.width = neighborCanvas.drawWidth;
+		neighborData.height = neighborCanvas.drawHeight;
 		resetNeighbors();
 
 		reset();
@@ -366,6 +368,8 @@ window.onload = function() {
 	}
 
 	function neighborsMouseDown(evt) {
+		takeTouchFocus(evt);
+
 		var mousepos = getRelativeCoord(neighborCanvas, evt);
 
 		mouse.x = mousepos.x;
@@ -374,6 +378,8 @@ window.onload = function() {
 	}
 
 	function neighborsMouseMove(evt) {
+		takeTouchFocus(evt);
+
 		var mousepos = getRelativeCoord(neighborCanvas, evt);
 
 		if (mouse.pressed) { //dragging
@@ -394,6 +400,8 @@ window.onload = function() {
 	}
 
 	function neighborsMouseUp(evt) {
+		takeTouchFocus(evt);
+
 		if (mouse.pressed && !mouse.dragged) toggleNeighbor();
 
 		neighborsMouseMove(evt);
@@ -403,6 +411,8 @@ window.onload = function() {
 	}
 
 	function neighborsMouseExit(evt) {
+		takeTouchFocus(evt);
+
 		neighborsMouseUp(evt);
 		selected = null;
 	}

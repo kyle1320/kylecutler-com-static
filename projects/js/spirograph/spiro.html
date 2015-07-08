@@ -4,9 +4,10 @@
 	<head>
 		<title>Spirograph</title>
 		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width" />
 		<link href="/css/site.css" rel="stylesheet">
 		<script src="/js/site.js" type="text/javascript"></script>
-		
+
 		<link href="spiro.css" rel="stylesheet" />
 		<script type="text/javascript" src="spiro.js"></script>
 		<script type="text/javascript" src="../util.js"></script>
@@ -19,7 +20,7 @@
 				<canvas id="spiro-canvas" width="500px" height="500px"></canvas>
 				<canvas id="info-canvas" width="500px" height="500px"></canvas>
 			</div>
-			
+
 			<div id="controls">
 				<p>Speed: <input id="speed-input" type="number" min="0.0" step="any"> rad / sec</input></p>
 				<p>Iterations: <input id="iter-input" type="number" min="0" step="1"></input></p>
@@ -35,10 +36,10 @@
 					<img id="save-img" width="50" height="50" />
 				</p>
 			</div>
-			
+
 			<div id="circles"></div>
 		</div>
-		
+
 		<div id="info">
 			<p class="contentbox">
 				space to play / pause<br>
@@ -50,11 +51,11 @@
 			<div class="contentbox">
 				<h2>About Spirograph:</h2>
 				<p>
-					This is a highly customizable emulator of the classic "Spirograph" toy. 
+					This is a highly customizable emulator of the classic "Spirograph" toy.
 					It is possible to have many nested "gears" of different sizes, each rotating at different speeds, and a pen
 					at some point along the innermost circle tracing a path on the canvas. What follows is a description
 					of each feature or option, and what it does:
-					
+
 					<ul>
 						<li>
 							<h3>Speed</h3>
@@ -73,7 +74,7 @@
 							<p>
 								Spirograph calculates a new frame roughly every 15 milliseconds. If only a single point
 								along the spirograph was calculated each frame, the precision would degrade quickly,
-								even at low speeds. So a certain number of sample points along the Spirograph are calculated 
+								even at low speeds. So a certain number of sample points along the Spirograph are calculated
 								with every frame. This is the number of iterations.
 							</p>
 							<p>
@@ -101,7 +102,7 @@
 						<li>
 							<h3>Circles</h3>
 							<p>
-								Spirograph keeps track of a list of nested circles, which rotate as if they were gears spinning 
+								Spirograph keeps track of a list of nested circles, which rotate as if they were gears spinning
 								along the inside of the gear above it. Each circle has a radius and a speed.
 							</p>
 							<p>
@@ -111,7 +112,7 @@
 							</p>
 							<p>
 								A circle's radius should have absolute value between 0 and 1. Higher values are acceptable, but will not fit
-								inside of the canvas. A circle's radius may be negative, in which case the circle will rotate along the 
+								inside of the canvas. A circle's radius may be negative, in which case the circle will rotate along the
 								opposite side of its parent circle.
 							</p>
 						</li>

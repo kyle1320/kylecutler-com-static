@@ -5,17 +5,6 @@
 	float: left;
 }
 
-#controls {
-	float: left;
-	width: auto;
-	height: 500px;
-	overflow: visible;
-}
-
-#info {
-	clear: both;
-}
-
 .optional {
 	display: none;
 }

@@ -93,7 +93,7 @@ html, body {
 #titlebar {
 	width: 100%;
 	height: auto;
-	overflow: hidden;
+	/*overflow: hidden;*/
 	background-color: #4DB6AC;
 	border-bottom: 6px solid #00897B;
 	/*box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26);*/
@@ -102,11 +102,11 @@ html, body {
 #title {
 	margin: 0.3em;
 	padding: 0;
+	display: inline-block;
 	font-size: 3em;
 	font-family: 'PT Serif';
 	text-align: center;
 	color: white;
-	float: left;
 	text-shadow: 0 3px 4px rgba(0, 0, 0, 0.2);
 }
 
@@ -131,26 +131,49 @@ html, body {
 	color:  #00BFA5;
 }
 
-#menu {
-	width: auto;
-	height: auto;
-	margin: 0 10px;
-	padding: 0;
-	position: absolute;
-	right: 0;
-	bottom: 6px;
-	display: block;
-	list-style-type: none;
-	z-index: 100;
+@media only screen and (min-device-width: 400px) {
+	#menu {
+		width: auto;
+		height: auto;
+		margin: 0 10px;
+		padding: 0;
+		position: absolute;
+		right: 0;
+		bottom: 6px;
+		display: block;
+		list-style-type: none;
+		z-index: 100;
+	}
+}
+
+@media only screen and (max-device-width: 400px) {
+	#title {
+		width: 100%;
+		margin: .3em auto;
+	}
+
+	#menu {
+		width: 100%;
+		height: auto;
+		margin: 0;
+		padding: 6px 0 0 0;
+		position: relative;
+		bottom: -6px;
+		display: block;
+		text-align: center;
+		background-color: #00897B;
+		list-style-type: none;
+		z-index: 100;
+	}
 }
 
 #menu > li {
 	width: auto;
-	height: 100%;
+	height: auto;
 	padding: 0;
+	display: inline-block;
 	border-left: 1px solid white;
 	position: relative;
-	float: left;
 	color: white;
 }
 
@@ -268,6 +291,7 @@ html, body {
 }
 
 .column {
+	display: block;
 	float: left;
 	margin: 0 10px;
 }

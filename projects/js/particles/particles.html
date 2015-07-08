@@ -4,9 +4,10 @@
 	<head>
 		<title>Particles</title>
 		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width" />
 		<link href="/css/site.css" rel="stylesheet">
 		<script src="/js/site.js" type="text/javascript"></script>
-		
+
 		<link href="particles.css" rel="stylesheet" />
 		<script type="text/javascript" src="particles.js"></script>
 		<script type="text/javascript" src="../util.js"></script>
@@ -16,10 +17,10 @@
 		<div class="contentbox">
 			<h2>Particles</h2>
 			<div id="canvases">
-				<canvas id="trace-canvas" width="500px" height="500px"></canvas>
-				<canvas id="draw-canvas" width="500px" height="500px"></canvas>
+				<canvas id="trace-canvas" width="500" height="500"></canvas>
+				<canvas id="draw-canvas" width="500" height="500"></canvas>
 			</div>
-			
+
 			<div id="controls">
 				<div class="column">
 					<p>Gravity: <input id="gravity" type="number" step="1"></input></p>
@@ -131,7 +132,7 @@
 							<p>
 								Particles are added to the simulation in groups. Every particle in a group shares the same
 								properties of size, density, color, and initial velocity. The folowing settings apply to groups:
-								
+
 								<ul>
 									<li>
 										<h4>Size</h4>
