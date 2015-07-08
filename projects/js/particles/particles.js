@@ -55,8 +55,8 @@ window.onload = function() {
 
 		var canvases = $('canvases');
 		fitElement(canvases, canvases.clientWidth, canvases.clientHeight, function(el) {
-			drawCanvas.style.width = traceCanvas.style.width = '300px';
-			drawCanvas.style.height = traceCanvas.style.height = '300px';
+			drawCanvas.style.width = traceCanvas.style.width = canvases.style.width;
+			drawCanvas.style.height = traceCanvas.style.height = canvases.style.height;
 		});
 
 		width = drawCanvas.drawWidth;

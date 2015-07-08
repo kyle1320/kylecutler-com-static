@@ -93,10 +93,15 @@ html, body {
 #titlebar {
 	width: 100%;
 	height: auto;
-	/*overflow: hidden;*/
 	background-color: #4DB6AC;
 	border-bottom: 6px solid #00897B;
-	/*box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26);*/
+
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 #title {
@@ -144,9 +149,27 @@ html, body {
 		list-style-type: none;
 		z-index: 100;
 	}
+
+	#menu > li > a {
+		position: relative;
+		bottom: 0;
+		font-weight: 600;
+		text-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+		-webkit-transition: all 0.1s ease-in-out;
+		transition: all 0.1s ease-in-out;
+	}
+
+	#menu > li:hover > a {
+		bottom: 2px;
+		text-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
+	}
 }
 
 @media only screen and (max-device-width: 400px) {
+	#titlebar {
+		border: none;
+	}
+
 	#title {
 		width: 100%;
 		margin: .3em auto;
@@ -156,14 +179,27 @@ html, body {
 		width: 100%;
 		height: auto;
 		margin: 0;
-		padding: 6px 0 0 0;
+		padding: 0;
 		position: relative;
-		bottom: -6px;
+		bottom: 0;
 		display: block;
 		text-align: center;
 		background-color: #00897B;
 		list-style-type: none;
 		z-index: 100;
+		box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.2);
+	}
+
+	#menu > li > a {
+		position: relative;
+		bottom: 0;
+		font-weight: 600;
+	}
+
+	#menu > li:hover > a {
+		background-color: #00796B;
+		bottom: initial;
+		text-shadow: none;
 	}
 }
 
@@ -179,20 +215,6 @@ html, body {
 
 #menu > li:first-child {
 	border-left: none;
-}
-
-#menu > li > a {
-	position: relative;
-	bottom: 0;
-	font-weight: 600;
-	text-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
-	-webkit-transition: all 0.1s ease-in-out;
-	transition: all 0.1s ease-in-out;
-}
-
-#menu > li:hover > a {
-	bottom: 2px;
-	text-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
 }
 
 #menu a {
@@ -222,6 +244,7 @@ html, body {
 	left: 0;
 	overflow: hidden;
 	display: none;
+	text-align: left;
 	background-color: white;
 	list-style-type: none;
 	z-index: 1;

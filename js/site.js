@@ -6,8 +6,8 @@
 			<div id="titlebar"> \
 				<h1 id="title">My Projects</h1> \
 				<ul id="menu"> \
-					<li><a href="/index.html">Home</a></li> \
-					<li class="dropdown"> \
+					<li><a href="/index.html">Home</a></li \
+					><li class="dropdown"> \
 						<a>JavaScript</a> \
 						<ul class="submenu"> \
 							<li><a href="/projects/js/spirograph/spiro.html">Spirograph</a></li> \
@@ -15,9 +15,9 @@
 							<li><a href="/projects/js/particles/particles.html">Particles</a></li> \
 							<li><a href="/projects/js/painter/painter.html">Painter</a></li> \
 						</ul> \
-					</li> \
-					<li><a>More to come...</a></li> \
-				</ul> \
+					</li \
+					><li><a>More to come...</a></li \
+				></ul> \
 			</div> \
 		'/*<li class="dropdown"> \
 						<a>Java</a> \
