@@ -40,7 +40,6 @@ function fitElement(el, preferredWidth, preferredHeight, onresize) {
 			newheight = Math.floor(newwidth / preferredRatio);
 		}
 
-		console.log(newwidth, newheight);
 		el.style.width = newwidth+'px';
 		el.style.height = newheight+'px';
 
@@ -62,7 +61,7 @@ function getRelativeCoord(canvas, evt) {
 		x = evt.clientX;
 		y = evt.clientY;
 		pressed = ~evt.buttons;
-	} else if (evt instanceof TouchEvent) {
+	} else if (window.TouchEvent && evt instanceof TouchEvent) {
 		var touch = evt.changedTouches[0];
 		x = touch.clientX;
 		y = touch.clientY;
@@ -77,11 +76,9 @@ function getRelativeCoord(canvas, evt) {
 }
 
 function takeTouchFocus(evt) {
-	console.log(evt);
-	if (evt instanceof TouchEvent) {
+	if (window.TouchEvent && evt instanceof TouchEvent) {
 		if (evt.touches.length < 2) {
 			evt.preventDefault();
-			console.log("prevented");
 		}
 	}
 }

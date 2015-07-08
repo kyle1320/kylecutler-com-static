@@ -76,7 +76,7 @@ window.onload = function() {
 		scaleCanvas(drawCanvas, drawContext);
 		scaleCanvas(neighborCanvas, neighborContext);
 
-		fitElement(drawCanvas, drawCanvas.width, drawCanvas.height);
+		fitElement(drawCanvas);
 
 		linkInputToNumber(inputs.relianceInput, options, 'reliance');
 		linkInputToNumber(inputs.deviationInput, options, 'deviation');
