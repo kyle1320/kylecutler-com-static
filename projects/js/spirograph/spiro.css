@@ -27,6 +27,10 @@
 	margin-bottom: 20px;
 }
 
+#controls {
+	float: left;
+}
+
 #circles {
 	padding: 0 10px;
 	float: right;

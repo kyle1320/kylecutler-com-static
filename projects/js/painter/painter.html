@@ -33,6 +33,35 @@
 					</p>
 				</div>
 				<div class="column">
+					<p title="The width of the painting">
+						Image width: <input id="width" type="number" min="0" step="100"></input>
+					</p>
+					<p title="The height of the painting">
+						Image height: <input id="height" type="number" min="0" step="100"></input>
+					</p>
+					<p title="The pattern of initial cells in the painting">
+						Pattern:
+						<select id="pattern">
+							<option value="center" selected="selected">Center</option>
+							<option value="vertical">Vertical</option>
+							<option value="random">Random</option>
+							<option value="hex">Hex</option>
+						</select>
+					</p>
+					<p class="optional random vertical hex" title="Color deviation of initial cells">
+						Initial deviation: <input id="init-deviation" type="number" min="0" max="255" step="10"></input>
+					</p>
+					<p class="optional random" title="Number of initial points to spawn">
+						Number of points: <input id="num-points" type="number" min="0" step="1"></input>
+					</p>
+					<p class="optional hex" title="Angle of y-axis on which to spawn initial cells">
+						Angle: <input id="hex-angle" type="number" min="5" max="90" step="5"></input>
+					</p>
+					<p class="optional hex" title="Space between axis lines on initial cell grid">
+						Size: <input id="size" type="number" min="0" step="1"></input>
+					</p>
+				</div>
+				<div class="column">
 					<p title="The degree to which cells with more neighbors will grow faster">
 						Reliance: <input id="reliance" type="number" step="any"></input>
 					</p>
@@ -65,35 +94,6 @@
 								<button id="neighbors-reset">Reset Neighbors</button><br>
 							</div>
 						</div>
-					</p>
-				</div>
-				<div class="column">
-					<p title="The width of the painting">
-						Image width: <input id="width" type="number" min="0" step="100"></input>
-					</p>
-					<p title="The height of the painting">
-						Image height: <input id="height" type="number" min="0" step="100"></input>
-					</p>
-					<p title="The pattern of initial cells in the painting">
-						Pattern:
-						<select id="pattern">
-							<option value="center" selected="selected">Center</option>
-							<option value="vertical">Vertical</option>
-							<option value="random">Random</option>
-							<option value="hex">Hex</option>
-						</select>
-					</p>
-					<p class="optional random vertical hex" title="Color deviation of initial cells">
-						Initial deviation: <input id="init-deviation" type="number" min="0" max="255" step="10"></input>
-					</p>
-					<p class="optional random" title="Number of initial points to spawn">
-						Number of points: <input id="num-points" type="number" min="0" step="1"></input>
-					</p>
-					<p class="optional hex" title="Angle of y-axis on which to spawn initial cells">
-						Angle: <input id="hex-angle" type="number" min="5" max="90" step="5"></input>
-					</p>
-					<p class="optional hex" title="Space between axis lines on initial cell grid">
-						Size: <input id="size" type="number" min="0" step="1"></input>
 					</p>
 				</div>
 			</div>

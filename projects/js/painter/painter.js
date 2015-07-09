@@ -15,15 +15,17 @@ window.onload = function() {
 	var mouse = {x: 0, y: 0, pressed: false, dragged: false};
 	var selected = null;
 
+	// used in drawing the neighbor canvas
 	var neighborData = {
 		offsetX: 0.0,
 		offsetY: 0.0,
 		width: 0,
 		height: 0,
-		scale: 11,
+		scale: 12,
 		padding: 1
 	};
 
+	// contains variables that can be changed by the user
 	var options = {
 		get width() {return drawCanvas.width;},
 		get height() {return drawCanvas.height;},
@@ -45,6 +47,8 @@ window.onload = function() {
 		hexAngle: 60
 	};
 
+	// contains references to HTML elements
+	// that are used to change options or perform actions
 	var inputs = {
 		relianceInput: $('reliance'),
 		deviationInput: $('deviation'),
@@ -72,12 +76,17 @@ window.onload = function() {
 
 	init();
 
+	// set everything up
 	function init() {
+
+		// scale the canvases to the actual screen resolution
 		scaleCanvas(drawCanvas, drawContext);
 		scaleCanvas(neighborCanvas, neighborContext);
 
+		// make sure the main canvas fits inside the screen
 		fitElement(drawCanvas);
 
+		// link HTML inputs to their respective options
 		linkInputToNumber(inputs.relianceInput, options, 'reliance');
 		linkInputToNumber(inputs.deviationInput, options, 'deviation');
 		linkInputToNumber(inputs.tendencyInput, options, 'tendency');
@@ -95,6 +104,7 @@ window.onload = function() {
 		linkColorChooserToValues(inputs.goalColorInput, options, 'goalRGB');
 		//linkColorChooserToValues(inputs.drawColorInput, options, 'drawRGB');
 
+		// setup button events
 		inputs.pauseBtn.addEventListener('click', function() {setPaused(!paused);});
 		inputs.resetBtn.addEventListener('click', reset);
 		inputs.saveBtn.addEventListener('click', function() {inputs.saveImg.src = drawCanvas.toDataURL();});
@@ -108,29 +118,37 @@ window.onload = function() {
 		inputs.neighborsCenterBtn.addEventListener('click', centerNeighbors);
 		inputs.neighborsResetBtn.addEventListener('click', resetNeighbors);
 
+		// add mouse event listeners
 		neighborCanvas.addEventListener('mousedown', neighborsMouseDown);
 		neighborCanvas.addEventListener('mousemove', neighborsMouseMove);
 		neighborCanvas.addEventListener('mouseup', neighborsMouseUp);
 		neighborCanvas.addEventListener('mouseleave', neighborsMouseExit);
 
+		// add touch event listeners
 		neighborCanvas.addEventListener('touchstart', neighborsTouchDown);
 		neighborCanvas.addEventListener('touchmove', neighborsTouchMove);
 		neighborCanvas.addEventListener('touchend', neighborsTouchUp);
 
+		// some extra setup
 		hideOptionals();
 		neighborData.width = neighborCanvas.drawWidth;
 		neighborData.height = neighborCanvas.drawHeight;
 		resetNeighbors();
 
+		// run it
 		reset();
 		setPaused(false);
 	}
 
+	// a cell refers to a pixel in the painting. It keeps track of its position,
+	// the summative color of its neighbors (that have been drawn), and the number
+	// of neighbors that have been drawn.
 	function Cell(x, y, rgb) {
 		rgb = rgb || [0, 0, 0];
 		return {x: x, y: y, r: rgb[0], g: rgb[1], b: rgb[2], n: 0};
 	}
 
+	// resets the painting based on options
 	function reset() {
 		width = drawCanvas.width;
 		height = drawCanvas.height;
@@ -140,17 +158,21 @@ window.onload = function() {
 
 		delete cells;
 
+		// initialize an empty grid for the cells
 		cells = new Array(height);
 		for (y = 0; y < height; y++) {
 			cells[y] = new Array(width);
 		}
 		edges = null;
 
+		// add the initial cells based on the pattern
 		switch(options.pattern) {
+			// a single cell is added in the center of the painting
 			default:
 			case 'center':
 				add(Cell(width/2, height/2, options.baseRGB));
 				break;
+			// a line of cells is added in the top row of the painting
 			case 'vertical':
 				for (x = 0; x < width; x++) {
 					cell = Cell(x, 0, options.baseRGB);
@@ -158,6 +180,7 @@ window.onload = function() {
 					add(cell);
 				}
 				break;
+			// cells are added randomly inside the painting
 			case 'random':
 				for (i = 0; i < options.numPoints; i++) {
 					cell = Cell(
@@ -169,6 +192,7 @@ window.onload = function() {
 					add(cell);
 				}
 				break;
+			// cells are added to form a hexagonal grid
 			case 'hex':
 				var a = options.hexAngle * Math.PI / 180;
 				var cos = Math.cos(a);
@@ -193,18 +217,24 @@ window.onload = function() {
 		drawContext.clearRect(0, 0, width, height);
 	}
 
+	// spawns new cells
 	function update() {
 		var curr = edges;
 
+		// loop through the 'edge' cells, that is, cells who have at least
+		// one neighbors who has been added to the image
 		while (curr) {
 			var c = curr.cell;
 
+			// decide if the cell should be added
 			if (randomChance(c)) {
+				// average its neighbors colors, and deviate to determine the new color
 				c.r /= c.n;
 				c.g /= c.n;
 				c.b /= c.n;
 				deviate(c, options.deviation);
 
+				// remove the cell from the edge list
 				if (curr.prev) {
 					curr.prev.next = curr.next;
 				} else {
@@ -214,32 +244,39 @@ window.onload = function() {
 					curr.next.prev = curr.prev;
 				}
 
+				// add the cell to the image
 				add(c);
 			}
 
 			curr = curr.next;
 		}
 
+		// schedule another update
 		if (!paused) setTimeout(update, options.delay);
 	}
 
+	// deviates the given cell's color according to the options
 	function deviate(c, dev) {
 		c.r = Math.clamp(((c.r + options.goalRGB[0]*options.tendency) / (1 + options.tendency)) + Math.random()*dev*2 - dev, 0, 255);
 		c.g = Math.clamp(((c.g + options.goalRGB[1]*options.tendency) / (1 + options.tendency)) + Math.random()*dev*2 - dev, 0, 255);
 		c.b = Math.clamp(((c.b + options.goalRGB[2]*options.tendency) / (1 + options.tendency)) + Math.random()*dev*2 - dev, 0, 255);
 	}
 
+	// determines if a given cell should spawn
 	function randomChance(c) {
 		return Math.random() < (Math.pow(c.n, options.reliance) / Math.pow(options.neighbors.length, options.reliance));
 	}
 
+	// draws the painting to the canvas
 	function draw() {
 		drawContext.putImageData(img, 0, 0);
 	}
 
+	// adds the given cell to the painting
 	function add(c) {
 		var i = options.neighbors.length;
 
+		// update the cell's neighbors
 		while (i--) {
 			var n = options.neighbors[i];
 			var nx = n.x + c.x;
@@ -248,6 +285,7 @@ window.onload = function() {
 			if (ny >= 0 && ny < height && nx >= 0 && nx < width) {
 				var nc = cells[ny][nx];
 
+				// if there is no cell in the array, create a new one and add it to the edge list
 				if (!nc) {
 					nc = cells[ny][nx] = Cell(nx, ny);
 					edges = {cell: nc, next: edges, prev: null};
@@ -261,6 +299,7 @@ window.onload = function() {
 			}
 		}
 
+		// add this cell to the painting image
 		var index = (c.y * width + c.x) * 4;
 		img.data[index+0] = c.r;
 		img.data[index+1] = c.g;
@@ -268,6 +307,7 @@ window.onload = function() {
 		img.data[index+3] = 255;
 	}
 
+	// pause / resume painting
 	function setPaused(p) {
 		if (p && !paused) {
 			paused = p;
@@ -281,17 +321,21 @@ window.onload = function() {
 		inputs.pauseBtn.innerHTML = paused ? 'Resume' : 'Pause';
 	}
 
+	// change the size of the painting. Resets the painting.
 	function setSize(w, h) {
 		drawCanvas.width = width = w;
 		drawCanvas.height = height = h;
 		reset();
 	}
 
+	// hides options that are not relevant to the selected pattern
 	function hideOptionals() {
+		// hide every optional element
 		var optionals = document.querySelectorAll('.optional');
 		var i = optionals.length;
 		while (i--) optionals[i].style.display='none';
 
+		// show optional elements that are part of the selected pattern
 		optionals = document.querySelectorAll('.optional.'+options.pattern);
 		i = optionals.length;
 		while (i--) optionals[i].style.display='block';

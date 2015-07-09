@@ -23,6 +23,15 @@
 
 			<div id="controls">
 				<div class="column">
+					<p><button id="pause">Pause</button></p>
+					<p><button id="clear">Clear</button></p>
+					<p><button id="clear-trace">Clear Trace</button></p>
+					<p>
+						<button id="save-btn">Save trace</button><br>
+						<img id="save-img" width="50" height="50" />
+					</p>
+				</div>
+				<div class="column">
 					<p>Gravity: <input id="gravity" type="number" step="1"></input></p>
 					<p>Decay: <input id="decay" type="number" min="-1" max="1" step="0.01"></input></p>
 					<p>Group size: <input id="group-size" type="number" min="0" step="1"></input></p>
@@ -37,15 +46,6 @@
 					<p>
 						<input id="bounce" type="checkbox">Bounce off edges</input><br>
 						<input id="trace" type="checkbox">Draw traces</input>
-					</p>
-				</div>
-				<div class="column">
-					<p><button id="pause">Pause</button></p>
-					<p><button id="clear">Clear</button></p>
-					<p><button id="clear-trace">Clear Trace</button></p>
-					<p>
-						<button id="save-btn">Save trace</button><br>
-						<img id="save-img" width="50" height="50" />
 					</p>
 				</div>
 			</div>

@@ -61,6 +61,7 @@ function DrawableGraph(graph, canvas) {
     this.context = canvas.getContext("2d");
 
     scaleCanvas(canvas, this.context);
+	fitElement(canvas);
 
     // used in redrawing to determine what has changed and needs to be updated.
     var updates = {
@@ -307,6 +308,7 @@ function DrawableGraph(graph, canvas) {
     };
 
     var mousedown = function(evt) {
+		takeTouchFocus(evt);
 
         // select a node if we are over it
         if (nearestNode.nearby(mouse, nodeSize)) {
@@ -347,6 +349,7 @@ function DrawableGraph(graph, canvas) {
     };
 
     var mouseup = function(evt) {
+		takeTouchFocus(evt);
 
         // if we were creating an edge, finish it
         if (createdEdge !== null) {
@@ -380,6 +383,8 @@ function DrawableGraph(graph, canvas) {
     };
 
     var mousemove = function(evt) {
+		takeTouchFocus(evt);
+
         mouse = getRelativeCoord(self.canvas, evt);
 
         self.findNearestNode();
@@ -469,6 +474,10 @@ function DrawableGraph(graph, canvas) {
     canvas.addEventListener('mouseenter', mouseenter, false);
     canvas.addEventListener('mouseleave', mouseleave, false);
     canvas.addEventListener('mousemove',  mousemove,  false);
+
+	canvas.addEventListener('touchstart', mousedown,  false);
+    canvas.addEventListener('touchend',   mouseleave, false);
+    canvas.addEventListener('touchmove',  mousemove,  false);
 
     window.addEventListener('keydown',    keydown,   false);
 }
