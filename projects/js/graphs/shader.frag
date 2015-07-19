@@ -5,7 +5,9 @@ precision highp float;
 uniform vec4 edges[MAX_EDGES];
 uniform int num_edges;
 uniform int order;
+uniform float range;
 uniform bool highlight;
+uniform bool modulo;
 uniform float scale;
 
 float lineDist(vec4 l, vec2 p) {
@@ -82,9 +84,11 @@ void main() {
 	if (sumsq > sqsum) sumsq = sqsum;
 
 	float stdev = sqrt((sqsum - sumsq) / (float(len) - 1.0));
-	stdev = max(0.0, (255.0 - stdev) / 255.0);
 
-	float threshold = (253.0 - float(order)*3.0) / 255.0;
+	if (modulo) stdev = max(0.0, (range - mod(stdev, range)) / range);
+	else stdev = max(0.0, (range - stdev) / range);
+
+	float threshold = (range*0.99 - float(order)*range*0.01) / range;
 
 	if (highlight && stdev > threshold) {
 		float fade = (1.0 - stdev) / (1.0 - threshold);

@@ -35,10 +35,13 @@ window.onload = function() {
 		edges: [],
 		nEdges: null,
 		order: null,
+		range: null,
 		highlight: null,
+		modulo: null,
 		scale: null
 	}
 	var glReady = false;
+	var glFrameQueued = false;
 
 	var nearestNode;
 	var selectedNode;
@@ -48,22 +51,26 @@ window.onload = function() {
 	var options = {
 		nodeSize: 10,
 		edgeWidth: 1,
-		order: 0,
+		order: 4,
+		range: 250,
 		showNodes: true,
 		showEdges: true,
-		background: false,
+		background: true,
 		edgeDists: false,
 		highlight: false,
-		constantUpdates: false
+		modulo: false,
+		constantUpdates: true
 	}
 
 	var inputs = {
 		orderinput: $('orderinput'),
+		rangeinput: $('rangeinput'),
 		sncheck: $('shownodes'),
 		secheck: $('showedges'),
 		bgcheck: $('background'),
 		edcheck: $('edgedists'),
 		hlcheck: $('highlight'),
+		mocheck: $('modulo'),
 		upcheck: $('updates'),
 	};
 
@@ -97,7 +104,9 @@ window.onload = function() {
 
 			uniforms.nEdges = gl.getUniformLocation(program, 'num_edges');
 			uniforms.order = gl.getUniformLocation(program, 'order');
+			uniforms.range = gl.getUniformLocation(program, 'range');
 			uniforms.highlight = gl.getUniformLocation(program, 'highlight');
+			uniforms.modulo = gl.getUniformLocation(program, 'modulo');
 
 			uniforms.scale = gl.getUniformLocation(program, 'scale');
 			gl.uniform1f(uniforms.scale, scale);
@@ -126,8 +135,6 @@ window.onload = function() {
 		gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 		gl.clearColor(0.0, 0.0, 0.0, 0.0);
 
-		console.log(gl);
-
 		// we want to update te first time we draw, so just... update everything
 		updates.setAll(true);
 
@@ -137,12 +144,14 @@ window.onload = function() {
 		mouse = {x: 0, y: 0, inside: false};
 
 		linkInputToNumber(inputs.orderinput, options, 'order', redrawBackground, false);
+		linkInputToNumber(inputs.rangeinput, options, 'range', redrawBackground, false);
 
 		linkCheckboxToBoolean(inputs.sncheck, options, 'showNodes', redrawGraph);
 		linkCheckboxToBoolean(inputs.secheck, options, 'showEdges', redrawGraph);
 		linkCheckboxToBoolean(inputs.bgcheck, options, 'background', redrawBackground);
 		linkCheckboxToBoolean(inputs.edcheck, options, 'edgeDists');
 		linkCheckboxToBoolean(inputs.hlcheck, options, 'highlight', redrawBackground);
+		linkCheckboxToBoolean(inputs.mocheck, options, 'modulo', redrawBackground);
 		linkCheckboxToBoolean(inputs.upcheck, options, 'constantUpdates');
 
 		drawCanvas.addEventListener('mousedown',  mousedown,  false);
@@ -197,28 +206,15 @@ window.onload = function() {
 
 		// if the background changed, we need to redraw the webgl canvas
 		if (bgchanged && glReady && edges.length <= 16) {
-			gl.clear(gl.COLOR_BUFFER_BIT);
 
-			gl.uniform1i(uniforms.nEdges, edges.length);
-			gl.uniform1i(uniforms.order, options.order);
-			gl.uniform1f(uniforms.highlight, options.highlight);
-
-			for (var i=0; i < edges.length; i++) {
-				var edge = edges[i];
-				gl.uniform4f(
-					uniforms.edges[i],
-					edge.a.x,
-					drawCanvas.drawHeight - edge.a.y,
-					edge.b.x,
-					drawCanvas.drawHeight - edge.b.y
-				);
+			// we only want to use webGL when a refresh occurs, even though
+			// draw() may be called more often than that. We request one
+			// animation frame, and then wait until that one finishes before
+			// requesting another using a boolean flag.
+			if (!glFrameQueued) {
+				glFrameQueued = true;
+				window.requestAnimFrame(drawBackground);
 			}
-
-			gl.bindBuffer(gl.ARRAY_BUFFER, bgbuffer);
-			gl.enableVertexAttribArray(positionAttrib);
-			gl.vertexAttribPointer(positionAttrib, 2, gl.FLOAT, false, 0, 0);
-
-			gl.drawArrays(gl.TRIANGLES, 0, 6);
 		} else if (!options.background) {
 			gl.clear(gl.COLOR_BUFFER_BIT);
 		}
@@ -272,6 +268,35 @@ window.onload = function() {
 				}
 			}
 		}
+	}
+
+	function drawBackground() {
+		gl.clear(gl.COLOR_BUFFER_BIT);
+
+		gl.uniform1i(uniforms.nEdges, edges.length);
+		gl.uniform1i(uniforms.order, options.order);
+		gl.uniform1f(uniforms.range, options.range);
+		gl.uniform1f(uniforms.highlight, options.highlight);
+		gl.uniform1f(uniforms.modulo, options.modulo);
+
+		for (var i=0; i < edges.length; i++) {
+			var edge = edges[i];
+			gl.uniform4f(
+				uniforms.edges[i],
+				edge.a.x,
+				drawCanvas.drawHeight - edge.a.y,
+				edge.b.x,
+				drawCanvas.drawHeight - edge.b.y
+			);
+		}
+
+		gl.bindBuffer(gl.ARRAY_BUFFER, bgbuffer);
+		gl.enableVertexAttribArray(positionAttrib);
+		gl.vertexAttribPointer(positionAttrib, 2, gl.FLOAT, false, 0, 0);
+
+		gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+		glFrameQueued = false;
 	}
 
 	function changeOrder(order) {
@@ -493,7 +518,7 @@ window.onload = function() {
 					}
 				}
 			}
-		} else if (evt.keyCode == 39) { // right arrow
+		} /*else if (evt.keyCode == 39) { // right arrow
 			changeOrder(options.order + 1);
 			updates.orderChanged = true;
 		} else if (evt.keyCode == 37) { // left arrow
@@ -501,7 +526,7 @@ window.onload = function() {
 				changeOrder(options.order - 1);
 				updates.orderChanged = true;
 			}
-		}
+		}*/
 
 		draw();
 	}
