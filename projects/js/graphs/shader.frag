@@ -79,9 +79,9 @@ void main() {
 		sqsum += dists[j] * dists[j];
 	}
 	sumsq = (sumsq * sumsq) / float(len);
+	if (sumsq > sqsum) sumsq = sqsum;
 
 	float stdev = sqrt((sqsum - sumsq) / (float(len) - 1.0));
-
 	stdev = max(0.0, (255.0 - stdev) / 255.0);
 
 	float threshold = (253.0 - float(order)*3.0) / 255.0;
