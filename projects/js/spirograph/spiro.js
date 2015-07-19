@@ -79,21 +79,27 @@ window.onload = function() {
 			switch (evt.keyCode) {
 				case 32:
 					setPaused(!paused);
+					evt.preventDefault();
 					break;
 				case 39:
 					setSpeed(options.speed * 1.1);
+					evt.preventDefault();
 					break;
 				case 37:
 					setSpeed(options.speed / 1.1);
+					evt.preventDefault();
 					break;
 				case 187:
 					setIterations(options.iterations + 10);
+					evt.preventDefault();
 					break;
 				case 189:
 					setIterations(options.iterations - 10);
+					evt.preventDefault();
 					break;
 				case 13:
 					reset();
+					evt.preventDefault();
 					break;
 			}
 		});

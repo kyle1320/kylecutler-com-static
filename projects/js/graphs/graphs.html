@@ -10,13 +10,17 @@
 
 		<link href="graphs.css" rel="stylesheet" />
 		<script type="text/javascript" src="graphs.js"></script>
+		<script type="text/javascript" src="../webgl.js"></script>
 		<script type="text/javascript" src="../util.js"></script>
 	</head>
 
 	<body>
 		<div class="contentbox">
 			<h2>Graphs</h2>
-			<canvas id="drawCanvas" width="500" height="500" style="background: white"></canvas>
+			<div id="canvases">
+				<canvas id="gl-canvas" width="500" height="500"></canvas>
+				<canvas id="draw-canvas" width="500" height="500"></canvas>
+			</div>
 			<div id="controls">
 				<p>
 					Order: <input type="number" id="orderinput" min="0" step="1"></input>

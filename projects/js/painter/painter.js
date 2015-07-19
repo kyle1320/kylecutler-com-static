@@ -341,6 +341,8 @@ window.onload = function() {
 		while (i--) optionals[i].style.display='block';
 	}
 
+	// the rest of this deals with neighbor controls
+
 	function resetNeighbors() {
 		options.neighbors = [{x:0, y:1}, {x:1, y:1}, {x:1, y:0}, {x:1, y:-1}, {x:0, y:-1}, {x:-1, y:-1}, {x:-1, y:0}, {x:-1, y:1}];
 		centerNeighbors();
