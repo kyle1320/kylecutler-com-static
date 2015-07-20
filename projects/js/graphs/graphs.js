@@ -276,18 +276,17 @@ window.onload = function() {
 		gl.uniform1i(uniforms.nEdges, edges.length);
 		gl.uniform1i(uniforms.order, options.order);
 		gl.uniform1f(uniforms.range, options.range);
-		gl.uniform1f(uniforms.highlight, options.highlight);
-		gl.uniform1f(uniforms.modulo, options.modulo);
+		gl.uniform1f(uniforms.highlight, options.highlight ? 1.0 : 0.0);
+		gl.uniform1f(uniforms.modulo, options.modulo ? 1.0 : 0.0);
 
 		for (var i=0; i < edges.length; i++) {
 			var edge = edges[i];
-			gl.uniform4f(
-				uniforms.edges[i],
+			gl.uniform4fv(uniforms.edges[i], new Float32Array([
 				edge.a.x,
 				drawCanvas.drawHeight - edge.a.y,
 				edge.b.x,
 				drawCanvas.drawHeight - edge.b.y
-			);
+			]));
 		}
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, bgbuffer);

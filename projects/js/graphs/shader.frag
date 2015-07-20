@@ -1,4 +1,8 @@
-precision highp float;
+#if GL_FRAGMENT_PRECISION_HIGH == 1
+	precision highp float;
+#else
+	precision mediump float;
+#endif
 
 #define MAX_EDGES 16
 
@@ -6,8 +10,8 @@ uniform vec4 edges[MAX_EDGES];
 uniform int num_edges;
 uniform int order;
 uniform float range;
-uniform bool highlight;
-uniform bool modulo;
+uniform float highlight;
+uniform float modulo;
 uniform float scale;
 
 float lineDist(vec4 l, vec2 p) {
@@ -85,12 +89,12 @@ void main() {
 
 	float stdev = sqrt((sqsum - sumsq) / (float(len) - 1.0));
 
-	if (modulo) stdev = max(0.0, (range - mod(stdev, range)) / range);
+	if (modulo > 0.5) stdev = (range - mod(stdev, range)) / range;
 	else stdev = max(0.0, (range - stdev) / range);
 
 	float threshold = (range*0.99 - float(order)*range*0.01) / range;
 
-	if (highlight && stdev > threshold) {
+	if (highlight > 0.5 && stdev > threshold) {
 		float fade = (1.0 - stdev) / (1.0 - threshold);
 		gl_FragColor = vec4(stdev, fade, fade, 1.0);
 	} else {
