@@ -114,7 +114,7 @@ function linkInputToNumber(input, object, attr, func, instant) {
 	func = func || function() {};
 	if (instant === undefined) instant = true;
 
-	input.valueAsNumber = object[attr];
+	input.valueAsNumber = String(object[attr]);
 	if (instant) input.addEventListener('input', function() {if (!isNaN(input.valueAsNumber)) object[attr] = input.valueAsNumber; func();});
 	else input.addEventListener('change', function() {if (!isNaN(input.valueAsNumber)) object[attr] = input.valueAsNumber; func();});
 
