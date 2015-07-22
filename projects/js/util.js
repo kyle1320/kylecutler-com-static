@@ -118,7 +118,7 @@ function linkInputToNumber(input, object, attr, func, instant) {
 	if (instant) input.addEventListener('input', function() {if (!isNaN(input.valueAsNumber)) object[attr] = input.valueAsNumber; func();});
 	else input.addEventListener('change', function() {if (!isNaN(input.valueAsNumber)) object[attr] = input.valueAsNumber; func();});
 
-	input.addEventListener('blur', function() {input.valueAsNumber = object[attr];});
+	input.addEventListener('blur', function() {input.value = String(object[attr]);});
 }
 
 function linkColorChooserToValues(color, object, attr, func) {

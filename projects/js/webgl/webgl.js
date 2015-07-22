@@ -1,6 +1,6 @@
 window.onload = function() {
 	var drawCanvas = $('draw-canvas');
-	var gl = getGL(drawCanvas);
+	var gl = getGL(drawCanvas, {preserveDrawingBuffer: true});
 
 	if (!gl) return;
 
@@ -19,7 +19,6 @@ window.onload = function() {
 		scaleCanvas(drawCanvas, gl);
 
 		loadFiles(['shader.vert', 'shader.frag'], function(files) {
-			console.log(files);
 			program = getGLProgram(gl, files[0], files[1]);
 			gl.useProgram(program);
 
@@ -48,6 +47,8 @@ window.onload = function() {
 
 		gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 		gl.clearColor(0.0, 0.0, 0.0, 1.0);
+
+		$('save-btn').addEventListener('click', function() {$('save-img').src = drawCanvas.toDataURL('image/png');});
 	}
 
 	function render() {

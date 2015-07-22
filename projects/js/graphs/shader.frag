@@ -97,7 +97,9 @@ void main() {
 	if (highlight > 0.5 && stdev > threshold) {
 		float fade = (1.0 - stdev) / (1.0 - threshold);
 		gl_FragColor = vec4(stdev, fade, fade, 1.0);
+		//gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
 	} else {
 		gl_FragColor = vec4(stdev, stdev, stdev, 1.0);
+		//gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
 	}
 }

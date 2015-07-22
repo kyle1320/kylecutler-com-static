@@ -23,34 +23,34 @@
 
 			<div id="controls">
 				<div class="column">
-					<p><button id="pause">Pause</button></p>
-					<p><button id="clear">Clear</button></p>
-					<p><button id="clear-trace">Clear Trace</button></p>
-					<p>
+					<div class="control"><button id="pause">Pause</button></div>
+					<div class="control"><button id="clear">Clear</button></div>
+					<div class="control"><button id="clear-trace">Clear Trace</button></div>
+					<div class="control">
 						<button id="save-btn">Save trace</button><br>
 						<img id="save-img" width="50" height="50" />
-					</p>
+					</div>
 				</div>
 				<div class="column">
-					<p>Gravity: <input id="gravity" type="number" step="1"></input></p>
-					<p>Decay: <input id="decay" type="number" min="-1" max="1" step="0.01"></input></p>
-					<p>Group size: <input id="group-size" type="number" min="0" step="1"></input></p>
-					<p>Group radius: <input id="group-radius" type="number" min="0" step="1"></input></p>
-					<p>Mouse density: <input id="mouse-density" type="number" min="0" step="1"></input></p>
-					<p>New particle radius: <input id="particle-radius" type="number" min="0" step="1"></input></p>
-					<p>New particle density: <input id="particle-density" type="number" step="0.1"></input></p>
-					<p>
-						<input id="fixed-particles" type="checkbox" >New particles are fixed</input><br>
-						<input id="trace-particles" type="checkbox">Trace new particle paths</input>
-					</p>
-					<p>
-						<input id="bounce" type="checkbox">Bounce off edges</input><br>
-						<input id="trace" type="checkbox">Draw traces</input>
-					</p>
+					<div class="control">Gravity: <input id="gravity" type="number" step="1"></div>
+					<div class="control">Decay: <input id="decay" type="number" min="-1" max="1" step="0.01"></div>
+					<div class="control">Group size: <input id="group-size" type="number" min="0" step="1"></div>
+					<div class="control">Group radius: <input id="group-radius" type="number" min="0" step="1"></div>
+					<div class="control">Mouse density: <input id="mouse-density" type="number" min="0" step="1"></div>
+					<div class="control">New particle radius: <input id="particle-radius" type="number" min="0" step="1"></div>
+					<div class="control">New particle density: <input id="particle-density" type="number" step="0.1"></div>
+					<div class="control">
+						<input id="fixed-particles" type="checkbox" >New particles are fixed<br>
+						<input id="trace-particles" type="checkbox">Trace new particle paths
+					</div>
+					<div class="control">
+						<input id="bounce" type="checkbox">Bounce off edges<br>
+						<input id="trace" type="checkbox">Draw traces
+					</div>
 				</div>
 			</div>
 		</div>
-		<p id="info">
+		<div id="info">
 			<div class="contentbox">
 				ctrl + click (or double tap) to place a new group<br>
 				drag before letting go to set the new group's velocity<br>
@@ -58,7 +58,7 @@
 			</div>
 			<div class="contentbox">
 				<h2>About Particles:</h2>
-				<p>
+				<div>
 					Particles is a 2D N-body gravity simulator. It simulates any number of particles, which may have
 					different sizes and densities. You can use the mouse to interact with the particles, which are
 					attracted to your mouse as if it were a particle. What follows is a description of different options
@@ -84,7 +84,7 @@
 						</li>
 						<li>
 							<h3>Particles</h3>
-							<p>
+							<div>
 								Particles have the following properties:
 								<ul>
 									<li>
@@ -125,11 +125,11 @@
 										</p>
 									</li>
 								</ul>
-							</p>
+							</div>
 						</li>
 						<li>
 							<h3>Groups</h3>
-							<p>
+							<div>
 								Particles are added to the simulation in groups. Every particle in a group shares the same
 								properties of size, density, color, and initial velocity. The folowing settings apply to groups:
 
@@ -155,7 +155,7 @@
 										</p>
 									</li>
 								</ul>
-							</p>
+							</div>
 						</li>
 						<li>
 							<h3>Trace</h3>
@@ -174,8 +174,8 @@
 							</p>
 						</li>
 					</ul>
-				</p>
+				</div>
 			</div>
-		</p>
+		</div>
 	</body>
 </html>

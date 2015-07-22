@@ -24,6 +24,10 @@
 	padding: 0;
 }
 
+.control {
+	margin: 0.5em 0;
+}
+
 #info {
 	clear: both;
 }

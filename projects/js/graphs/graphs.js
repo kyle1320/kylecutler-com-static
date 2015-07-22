@@ -2,7 +2,7 @@ window.onload = function() {
 	var drawCanvas = $('draw-canvas');
 	var glCanvas = $('gl-canvas');
 	var drawContext = drawCanvas.getContext('2d');
-	var gl = getGL(glCanvas);
+	var gl = getGL(glCanvas, {preserveDrawingBuffer: true});
 
 	var nodes, edges;
 
@@ -57,7 +57,7 @@ window.onload = function() {
 		showEdges: true,
 		background: true,
 		edgeDists: false,
-		highlight: false,
+		highlight: true,
 		modulo: false,
 		constantUpdates: true
 	}
@@ -143,8 +143,8 @@ window.onload = function() {
 		createdEdge = null;
 		mouse = {x: 0, y: 0, inside: false};
 
-		linkInputToNumber(inputs.orderinput, options, 'order', redrawBackground, false);
-		linkInputToNumber(inputs.rangeinput, options, 'range', redrawBackground, false);
+		linkInputToNumber(inputs.orderinput, options, 'order', redrawBackground);
+		linkInputToNumber(inputs.rangeinput, options, 'range', redrawBackground);
 
 		linkCheckboxToBoolean(inputs.sncheck, options, 'showNodes', redrawGraph);
 		linkCheckboxToBoolean(inputs.secheck, options, 'showEdges', redrawGraph);
@@ -154,17 +154,17 @@ window.onload = function() {
 		linkCheckboxToBoolean(inputs.mocheck, options, 'modulo', redrawBackground);
 		linkCheckboxToBoolean(inputs.upcheck, options, 'constantUpdates');
 
-		drawCanvas.addEventListener('mousedown',  mousedown,  false);
-		drawCanvas.addEventListener('mouseup',    mouseup,    false);
-		drawCanvas.addEventListener('mouseenter', mouseenter, false);
-		drawCanvas.addEventListener('mouseleave', mouseleave, false);
-		drawCanvas.addEventListener('mousemove',  mousemove,  false);
+		drawCanvas.addEventListener('mousedown',  mousedown);
+		drawCanvas.addEventListener('mouseup',    mouseup);
+		drawCanvas.addEventListener('mouseenter', mouseenter);
+		drawCanvas.addEventListener('mouseleave', mouseleave);
+		drawCanvas.addEventListener('mousemove',  mousemove);
 
-		drawCanvas.addEventListener('touchstart', mousedown,  false);
-		drawCanvas.addEventListener('touchend',   mouseleave, false);
-		drawCanvas.addEventListener('touchmove',  mousemove,  false);
+		drawCanvas.addEventListener('touchstart', mousedown);
+		drawCanvas.addEventListener('touchend',   mouseleave);
+		drawCanvas.addEventListener('touchmove',  mousemove);
 
-		window.addEventListener('keydown', keydown, false);
+		window.addEventListener('keydown', keydown);
 
 		draw();
 	}
@@ -564,6 +564,24 @@ window.onload = function() {
 		return {nodes: nodes, edges: edges};
 	}
 };
+
+/*
+var zip = new JSZip();
+var image = 0;
+var node;
+
+if (image < drawCanvas.height) {
+	gl.finish();
+	zip.file('slice'+("0000"+(image++)).slice(-4)+'.png', glCanvas.toDataURL('image/png').split("base64,")[1], {base64: true, compression : "DEFLATE"});
+	node.y += (drawCanvas.drawHeight / drawCanvas.height);
+	updates.edgesChanged = true;
+	draw();
+} else if (image == drawCanvas.height) {
+	saveAs(zip.generate({type:"blob"}), "model.zip");
+	console.log("saving");
+	image++;
+}
+*/
 
 /*this.getDataImage = function() {
 	if (!bgimage) bgimage = this.context.createImageData(this.canvas.width, this.canvas.height);

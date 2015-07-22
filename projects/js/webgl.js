@@ -1,8 +1,8 @@
-function getGL(canvas) {
+function getGL(canvas, attributes) {
 	var gl = null;
 
 	try {
-		gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+		gl = canvas.getContext('webgl', attributes) || canvas.getContext('experimental-webgl', attributes);
 	} catch (e) {}
 
 	if (!gl) {

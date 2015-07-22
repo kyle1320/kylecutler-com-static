@@ -31,6 +31,10 @@
 	float: left;
 }
 
+.control {
+	margin: 0.5em 0;
+}
+
 #circles {
 	padding: 0 10px;
 	float: right;

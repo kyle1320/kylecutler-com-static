@@ -17,40 +17,42 @@
 		<div class="contentbox">
 			<h2>Spirograph</h2>
 			<div id="canvases">
-				<canvas id="spiro-canvas" width="500px" height="500px"></canvas>
-				<canvas id="info-canvas" width="500px" height="500px"></canvas>
+				<canvas id="spiro-canvas" width="500" height="500"></canvas>
+				<canvas id="info-canvas" width="500" height="500"></canvas>
 			</div>
 
 			<div id="controls">
-				<p><button id="pause-btn">Pause</button></p>
-				<p><button id="reset-btn">Reset</button></p>
-				<p>
+				<div class="control"><button id="pause-btn">Pause</button></div>
+				<div class="control"><button id="reset-btn">Reset</button></div>
+				<div class="control">
 					<button id="save-btn">Save</button><br>
 					<img id="save-img" width="50" height="50" />
-				</p>
-				<p>Speed: <input id="speed-input" type="number" min="0.0" step="any"> rad / sec</input></p>
-				<p>Iterations: <input id="iter-input" type="number" min="0" step="1"></input></p>
-				<p>Pen Distance: <input id="pendist-input" type="number" min="-2" max="2" step="0.1"></input></p>
-				<input type="checkbox" id="show-circles" checked=true>Show circles</input><br>
-				<input type="checkbox" id="show-radii">Show radii</input><br>
-				<input type="checkbox" id="show-pen">Show pen</input><br>
-				<input type="checkbox" id="use-color" checked=true>Use color</input><br>
+				</div>
+				<div class="control">Speed: <input id="speed-input" type="number" min="0.0" step="any"> rad / sec</div>
+				<div class="control">Iterations: <input id="iter-input" type="number" min="0" step="1"></div>
+				<div class="control">Pen Distance: <input id="pendist-input" type="number" min="-2" max="2" step="0.1"></div>
+				<div class="control">
+					<input type="checkbox" id="show-circles">Show circles<br>
+					<input type="checkbox" id="show-radii">Show radii<br>
+					<input type="checkbox" id="show-pen">Show pen<br>
+					<input type="checkbox" id="use-color">Use color<br>
+				</div>
 			</div>
 
 			<div id="circles"></div>
 		</div>
 
 		<div id="info">
-			<p class="contentbox">
+			<div class="contentbox">
 				space to play / pause<br>
 				enter to reset<br>
 				+ / - change the number of iterations<br>
 				left / right arrows change the speed<br>
 				NOTE: things get more interesting at high speeds ;)
-			</p>
+			</div>
 			<div class="contentbox">
 				<h2>About Spirograph:</h2>
-				<p>
+				<div>
 					This is a highly customizable emulator of the classic "Spirograph" toy.
 					It is possible to have many nested "gears" of different sizes, each rotating at different speeds, and a pen
 					at some point along the innermost circle tracing a path on the canvas. What follows is a description
@@ -117,7 +119,7 @@
 							</p>
 						</li>
 					</ul>
-				</p>
+				</div>
 			</div>
 		</div>
 	</body>
