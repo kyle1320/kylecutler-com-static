@@ -6,6 +6,10 @@ window.onload = function() {
 
 	var nodes, edges;
 
+	var zip = new JSZip();
+	var image = 0;
+	var node;
+
 	// used in redrawing to determine what has changed and needs to be updated.
 	var updates = {
 		mouseMotion  : false,
@@ -86,9 +90,37 @@ window.onload = function() {
 			drawCanvas.style.height = glCanvas.style.height = canvases.style.height;
 		});
 
-		var graph = connectedGraph(drawCanvas.drawWidth, drawCanvas.drawHeight, 4);
-		nodes = graph.nodes;
-		edges = graph.edges;
+		var width = drawCanvas.drawWidth;
+		var height = drawCanvas.drawHeight;
+
+		nodes = [];
+		edges = [];
+
+		for (var i=0; i < 3; i++) {
+			nodes[i] = new Node(
+				width / 2 + Math.sin(2*Math.PI*i / 3)*(width / 3),
+				height / 2 + Math.cos(2*Math.PI*i / 3)*(height / 3)
+			);
+			edges[edges.length] = new Edge(nodes[i], nodes[i]);
+		}
+
+		for (var i=0; i < 3; i++) {
+			nodes[i+3] = new Node(
+				width / 2 + Math.sin(2*Math.PI*i / 3)*(width / 3),
+				height / 2 + Math.cos(2*Math.PI*i / 3)*(height / 3)
+			);
+			for (var j=3; j < i+3; j++) {
+				edges[edges.length] = new Edge(nodes[i+3], nodes[j], randomColor());
+			}
+		}
+
+		//var graph = connectedGraph(drawCanvas.drawWidth, drawCanvas.drawHeight, 4);
+		//nodes = [new Node(drawCanvas.drawWidth / 2, 0)].concat(graph.nodes);
+		//edges = [new Edge(nodes[0], nodes[0])].concat(graph.edges);
+
+		node = nodes[0];
+		options.order = 4;
+		options.range = 2500;
 
 		// webGL setup for background drawing
 
@@ -296,6 +328,24 @@ window.onload = function() {
 		gl.drawArrays(gl.TRIANGLES, 0, 6);
 
 		glFrameQueued = false;
+
+		if (image < drawCanvas.height) {
+			gl.finish();
+			zip.file('slice'+("0000"+(image++)).slice(-4)+'.png', glCanvas.toDataURL('image/png').split("base64,")[1], {base64: true, compression : "DEFLATE"});
+			//node.y += (drawCanvas.drawHeight / drawCanvas.height);
+
+			for (var i=0; i < 3; i++) {
+				nodes[i].x += (nodes[((i+1)%3)+3].x - nodes[i+3].x) / drawCanvas.width;
+				nodes[i].y += (nodes[((i+1)%3)+3].y - nodes[i+3].y) / drawCanvas.height;
+			}
+
+			updates.edgesChanged = true;
+			draw();
+		} else if (image == drawCanvas.height) {
+			saveAs(zip.generate({type:"blob"}), "model.zip");
+			console.log("saving");
+			image++;
+		}
 	}
 
 	function changeOrder(order) {
@@ -553,7 +603,7 @@ window.onload = function() {
 		for (var i=0; i < n; i++) {
 			var node = new Node(
 				width / 2 + Math.sin(2*Math.PI*i / n)*(width / 4),
-				height / 2 + Math.cos(2*Math.PI*i / n)*(height / 4), 10
+				height / 2 + Math.cos(2*Math.PI*i / n)*(height / 4)
 			);
 			nodes[i] = node;
 			for (var j=0; j < i; j++) {
