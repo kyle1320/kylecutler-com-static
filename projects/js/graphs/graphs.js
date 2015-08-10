@@ -6,9 +6,8 @@ window.onload = function() {
 
 	var nodes, edges;
 
-	var zip = new JSZip();
-	var image = 0;
-	var node;
+	/*var zip = new JSZip();
+	var image = 0;*/
 
 	// used in redrawing to determine what has changed and needs to be updated.
 	var updates = {
@@ -93,7 +92,7 @@ window.onload = function() {
 		var width = drawCanvas.drawWidth;
 		var height = drawCanvas.drawHeight;
 
-		nodes = [];
+		/*nodes = [];
 		edges = [];
 
 		for (var i=0; i < 3; i++) {
@@ -112,15 +111,14 @@ window.onload = function() {
 			for (var j=3; j < i+3; j++) {
 				edges[edges.length] = new Edge(nodes[i+3], nodes[j], randomColor());
 			}
-		}
 
-		//var graph = connectedGraph(drawCanvas.drawWidth, drawCanvas.drawHeight, 4);
-		//nodes = [new Node(drawCanvas.drawWidth / 2, 0)].concat(graph.nodes);
-		//edges = [new Edge(nodes[0], nodes[0])].concat(graph.edges);
-
-		node = nodes[0];
 		options.order = 4;
 		options.range = 2500;
+		}*/
+
+		var graph = connectedGraph(drawCanvas.drawWidth, drawCanvas.drawHeight, 4);
+		nodes = graph.nodes;
+		edges = graph.edges;
 
 		// webGL setup for background drawing
 
@@ -329,7 +327,7 @@ window.onload = function() {
 
 		glFrameQueued = false;
 
-		if (image < drawCanvas.height) {
+		/*if (image < drawCanvas.height) {
 			gl.finish();
 			zip.file('slice'+("0000"+(image++)).slice(-4)+'.png', glCanvas.toDataURL('image/png').split("base64,")[1], {base64: true, compression : "DEFLATE"});
 			//node.y += (drawCanvas.drawHeight / drawCanvas.height);
@@ -345,7 +343,7 @@ window.onload = function() {
 			saveAs(zip.generate({type:"blob"}), "model.zip");
 			console.log("saving");
 			image++;
-		}
+		}*/
 	}
 
 	function changeOrder(order) {
