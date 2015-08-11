@@ -74,7 +74,7 @@ window.onload = function() {
 		edcheck: $('edgedists'),
 		hlcheck: $('highlight'),
 		mocheck: $('modulo'),
-		upcheck: $('updates'),
+		upcheck: $('updates')
 	};
 
 	init();
@@ -612,92 +612,3 @@ window.onload = function() {
 		return {nodes: nodes, edges: edges};
 	}
 };
-
-/*
-var zip = new JSZip();
-var image = 0;
-var node;
-
-if (image < drawCanvas.height) {
-	gl.finish();
-	zip.file('slice'+("0000"+(image++)).slice(-4)+'.png', glCanvas.toDataURL('image/png').split("base64,")[1], {base64: true, compression : "DEFLATE"});
-	node.y += (drawCanvas.drawHeight / drawCanvas.height);
-	updates.edgesChanged = true;
-	draw();
-} else if (image == drawCanvas.height) {
-	saveAs(zip.generate({type:"blob"}), "model.zip");
-	console.log("saving");
-	image++;
-}
-*/
-
-/*this.getDataImage = function() {
-	if (!bgimage) bgimage = this.context.createImageData(this.canvas.width, this.canvas.height);
-
-	if (graph.edges.length - order < 2) {
-		return null;
-	}
-
-	// go over the entire image
-	for (var x=0; x < bgimage.width; x++) {
-		for (var y=0; y < bgimage.height; y++) {
-
-			// get the image data index
-			var i = (y * this.canvas.width + x) * 4;
-
-			// calculate the edge distances
-			// insert them into the list in sorted order
-			var dists = [];
-			for (var j=0; j < graph.edges.length; j++) {
-				var val = graph.edges[j].distance({
-					x: (x * this.canvas.drawWidth) / this.canvas.width,
-					y: (y * this.canvas.drawHeight) / this.canvas.height
-				});
-
-				var k = j;
-				while (k > 0 && dists[k-1] > val) {
-					dists[k] = dists[k-1];
-					k--;
-				}
-				dists[k] = val;
-			}
-
-			// get the nth order differences between the edge distances
-			var len = dists.length;
-			for (var o = 0; o < order; o++) {
-				len--;
-
-				for (j=0; j < len; j++) {
-					dists[j] = dists[j+1] - dists[j];
-				}
-			}
-
-			// find the standard deviation of the differences
-			var sumsq = 0.0;
-			var sqsum = 0.0;
-			for (j=0; j < len; j++) {
-				sumsq += dists[j];
-				sqsum += dists[j] * dists[j];
-			}
-			sumsq = (sumsq * sumsq) / len;
-
-			var stdev = Math.sqrt((sqsum - sumsq) / (len - 1));
-
-			// a standard deviation of 0 should be white, or 255
-			stdev = 255 - stdev;
-			if (stdev < 0) stdev = 0;
-
-			// if we are highlighting, determine whether or not the pixel
-			// should be red based on the order and standard deviation
-			var threshold = 253 - order*3;
-			var fade = 255 * ((255 - stdev) / (255 - threshold));
-			var val = hlcheck.checked && stdev > threshold ? fade : stdev;
-
-			// set the pixel
-			bgimage.data[i+0] = stdev;
-			bgimage.data[i+1] = val;
-			bgimage.data[i+2] = val;
-			bgimage.data[i+3] = 255;
-		}
-	}
-};*/

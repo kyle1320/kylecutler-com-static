@@ -46,7 +46,7 @@ window.onload = function() {
 		resetBtn: $('reset-btn'),
 		circleDiv: $('circles'),
 		saveBtn: $('save-btn'),
-		saveImg: $('save-img'),
+		saveImg: $('save-img')
 	};
 
 	init();
