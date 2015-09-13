@@ -54,44 +54,42 @@
 				<h2>About Spirograph:</h2>
 				<div>
 					This is a highly customizable emulator of the classic "Spirograph" toy.
-					It is possible to have many nested "gears" of different sizes, each rotating at different speeds, and a pen
-					at some point along the innermost circle tracing a path on the canvas. What follows is a description
-					of each feature or option, and what it does:
+					It is possible to have many nested "gears" of different sizes, each rotating at different speeds, and a pen at some point along the innermost circle tracing a path on the canvas.
+					What follows is a description of each feature or option, and what it does:
 
 					<ul>
 						<li>
 							<h3>Speed</h3>
 							<p>
-								This value represents a global multiplier by which the speed of every circle is multiplied.
+								This value represents a global multiplier by which the speed of every circle is multiplied.<br>
 								The higher this value, the faster the spirograph will move.
 							</p>
 							<p>
-								At high speeds, interesting things start to happen. The precision of the spirograph begins to degrade,
-								and the lines drawn between sample points start to become more visible. Increasing the speed
-								even further can create interesting visual effects, so I encourage you to give it a try.
+								At high speeds, interesting things start to happen.<br>
+								The precision of the spirograph begins to degrade, and the lines drawn between sample points start to become more visible.<br>
+								Increasing the speed even further can create interesting visual effects, so I encourage you to give it a try.
 							</p>
 						</li>
 						<li>
 							<h3>Iterations</h3>
 							<p>
-								Spirograph calculates a new frame roughly every 15 milliseconds. If only a single point
-								along the spirograph was calculated each frame, the precision would degrade quickly,
-								even at low speeds. So a certain number of sample points along the Spirograph are calculated
-								with every frame. This is the number of iterations.
+								The number of sample points calculated along the Spirograph every frame.
 							</p>
 							<p>
-								Increasing this value means that you can get a more accurate Spirograph even at high speeds,
-								at the cost of extra computing power.
+								Spirograph calculates a new frame roughly every 15 milliseconds.<br>
+								If only a single point along the spirograph was calculated each frame, the precision would degrade quickly, even at low speeds.<br>
+								So we take multiple samples (iterations) per frame.<br>
+								Increasing this value means that you can get a more accurate Spirograph even at high speeds, at the cost of extra computing power.
 							</p>
 						</li>
 						<li>
 							<h3>Pen Distance</h3>
 							<p>
-								Each frame, lines are drawn between calculated points along the Spirograph. These lines follow the pen,
-								which is connected to the center-most circle. Changing the pen distance changes how far along the
-								circle's radius the pen lies.
+								How far along the innermost circle's radius the pen lies.<br>
 							</p>
 							<p>
+								Each frame, lines are drawn between calculated points along the Spirograph.<br>
+								These lines follow the pen, which is connected to the center-most circle.<br>
 								Note that the pen distance may lie outside of the circle. This can lead to some interesting effects.
 							</p>
 						</li>
@@ -104,18 +102,18 @@
 						<li>
 							<h3>Circles</h3>
 							<p>
-								Spirograph keeps track of a list of nested circles, which rotate as if they were gears spinning
-								along the inside of the gear above it. Each circle has a radius and a speed.
+								Spirograph keeps track of a list of nested circles, which rotate as if they were gears spinning along the inside of the gear above it.<br>
+								Each circle has a radius and a speed.
 							</p>
 							<p>
-								A circle's speed is a measure of how far along the inside of the parent circle it rotates each second.
-								So a circle with speed 3.14 would complete one half revolution around its parent each second.
+								A circle's speed is a measure of how far along the inside of the parent circle it rotates each second.<br>
+								So a circle with speed 3.14 would complete one half revolution around its parent each second.<br>
 								Speeds may be negative, in which case the circle will simply rotate in the opposite direction.
 							</p>
 							<p>
-								A circle's radius should have absolute value between 0 and 1. Higher values are acceptable, but will not fit
-								inside of the canvas. A circle's radius may be negative, in which case the circle will rotate along the
-								opposite side of its parent circle.
+								A circle's radius should have absolute value between 0 and 1.<br>
+								Higher values are acceptable, but will not fit inside of the canvas.<br>
+								A circle's radius may be negative, in which case the circle will rotate along the opposite side of its parent circle.
 							</p>
 						</li>
 					</ul>

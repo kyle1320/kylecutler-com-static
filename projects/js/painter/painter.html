@@ -103,6 +103,146 @@
 				Click inside the 'neighbors' grid to toggle a neighbor<br>
 				Drag inside the 'neighbors' grid to move around
 			</div>
+			<div class="contentbox">
+				<h2>About Painter:</h2>
+				<div>
+					Painter allows you to create algorithmically generated "paintings" of various colors and patterns, and with varying degrees of randomness in several aspects. What follows is a description of each feature or option, and what it does:
+
+					<ul>
+						<li>
+							<h3>Neighbors</h3>
+							<p>
+								A way of deciding which cells can "grow" off of another cell.<br>
+								This determines the direction and pattern in which new pixels are drawn to the image.<br>
+								When many cells share the same neighbor, that neighbor is more likely to grow.
+							</p>
+						</li>
+						<li>
+							<h3>Reliance</h3>
+							<p>
+								The degree to which cells with more neighbors are more likely to grow.<br>
+								For example, with a reliance of 1, if 5 cells share a common neighbor, that cell is 5 times more likely to grow than if only one cell had it as a neighbor.<br>
+								However, with a reliance of 0, the cell would be just as likely to grow in both situations.<br>
+								Should be positive.
+							</p>
+						</li>
+						<li>
+							<h3>Deviation</h3>
+							<p>
+								The maximum amount that a new cell will change its color from its spawning neighbor cells.<br>
+								When a new cell grows from some number of neighbors, it takes the average color of those neighbors and deviates it by a random amount.<br>
+								Should be 0 - 255.
+							</p>
+						</li>
+						<li>
+							<h3>Tendency</h3>
+							<p>
+								The degree to which new cells' colors will tend toward the target color.
+							</p>
+						</li>
+						<li>
+							<h3>Delay</h3>
+							<p>
+								The amount of time (in milliseconds) to wait between drawing successive iterations of the image.<br>
+								Should be positive.
+							</p>
+						</li>
+						<li>
+							<h3>Base Color</h3>
+							<p>
+								The color that initial cells will spawn with.
+							</p>
+						</li>
+						<li>
+							<h3>Target Color</h3>
+							<p>
+								The color that cells will tend toward as new cells grow.
+							</p>
+						</li>
+						<li>
+							<h3>Pattern</h3>
+							<div>
+								The pattern in which initial cells are placed in the image.
+
+								<ul>
+									<li>
+										<h4>Center</h4>
+										<p>
+											A single cell is placed in the center of the image. Its color is the same as the base color.
+										</p>
+									</li>
+									<li>
+										<h4>Vertical</h4>
+										<div>
+											A row of cells is spawned at the very top of the image. The following options are presented:
+											<ul>
+												<li>
+													<h4>Initial Deviation</h4>
+													<p>
+														The amount to deviate the initial cells' colors from the base color.<br>
+														Should be 0 - 255.
+													</p>
+												</li>
+											</ul>
+										</div>
+									</li>
+									<li>
+										<h4>Random</h4>
+										<div>
+											Cells are placed randomly throughout the image. The following options are presented:
+											<ul>
+												<li>
+													<h4>Initial Deviation</h4>
+													<p>
+														The amount to deviate the initial cells' colors from the base color.<br>
+														Should be 0 - 255.
+													</p>
+												</li>
+												<li>
+													<h4>Number of Points</h4>
+													<p>
+														The number of initial cells to place in the image.
+													</p>
+												</li>
+											</ul>
+										</div>
+									</li>
+									<li>
+										<h4>Hex</h4>
+										<div>
+											Cells are placed along a grid in the image. The following options are presented:
+											<ul>
+												<li>
+													<h4>Initial Deviation</h4>
+													<p>
+														The amount to deviate the initial cells' colors from the base color.<br>
+														Should be 0 - 255.
+													</p>
+												</li>
+												<li>
+													<h4>Angle</h4>
+													<p>
+														The angle formed by the x and y axis of the grid.<br>
+														The initial value (60) creates a grid that will generate hexagons (hence the name).<br>
+														Setting this to 90, for example, will generate squares.
+													</p>
+												</li>
+												<li>
+													<h4>Size</h4>
+													<p>
+														The distance between the imaginary "gridlines".<br>
+														Roughly, the distance between the initial points.
+													</p>
+												</li>
+											</ul>
+										</div>
+									</li>
+								</ul>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
 		</div>
 	</body>
 </html>
