@@ -309,8 +309,6 @@ window.onload = function() {
 		if (mouseparticle) {
 			mouseparticle.x = mousepos.x;
 			mouseparticle.y = mousepos.y;
-		} else {
-			mouseparticle = new Particle(mousepos.x, mousepos.y, 1, options.mouseDensity, '#FFFF00', false, false);
 		}
 
 		draw();
