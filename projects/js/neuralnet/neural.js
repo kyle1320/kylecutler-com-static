@@ -2,276 +2,6 @@ function normRand() {
     return ((Math.random() + Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) - 3) / 3;
 }
 
-function sigmoid(x) {
-    // I just picked a value for Beta. I have no idea what I'm doing.
-    return 1.0 / (1.0 + Math.exp(-8.0 * x));
-}
-
-function Genome(n_neurons, generate) {
-    var i, o;
-
-    this.n_neurons = n_neurons;
-
-    // build the adjacency matrix, generate gene weights
-    this.genes = new Array();
-    for (o = 0; o < this.n_neurons; o++) {
-        this.genes[o] = new Array();
-
-        // if (generate === undefined || generate) {
-        //     for (i = 0; i < o; i++) {
-        //         if (Math.random() < 0.5) {
-        //             this.genes[o][i] = 2.0 * Math.random() - 1.0;
-        //         }
-        //     }
-        // }
-    }
-
-    // generate neuron biases
-    this.neurons = new Array(this.n_neurons);
-    for (i = 0; i < this.n_neurons; i++) {
-        this.neurons[i] = 2.0 * Math.random() - 1.0;
-    }
-}
-
-Genome.prototype.breed = function(mate) {
-    var child, count, samecount, inbreeding, i, o;
-
-    if (this == mate) {
-        // if we are breeding with ourself, ignore inbreeding. Results in smaller deviations.
-        inbreeding = 1.0;
-    } else {
-        samecount = 0;
-        count = 0;
-
-        for (o = 0; o < this.n_neurons; o++) {
-            count++;
-            if (Math.abs(this.neurons[o] - mate.neurons[o]) < 0.1)
-                samecount++;
-
-            for (i = 0; i < this.n_neurons; i++) {
-                if (this.genes[o][i] !== undefined && mate.genes[o][i] !== undefined) {
-                    count++;
-                    if (Math.abs(this.genes[o][i] - mate.genes[o][i]) < 0.1)
-                        samecount++;
-                }
-            }
-        }
-
-        inbreeding = (1 + count) / (1 + count - samecount);
-    }
-
-    child = new Genome(this.n_neurons, false);
-
-    for (o = 0; o < this.n_neurons; o++) {
-        child.neurons[o] = (Math.random() < 0.5) ? this.neurons[o] : mate.neurons[o];
-
-        if (Math.random() < (options.mutation_rate * inbreeding)) {
-            child.neurons[o] += normRand();
-        }
-
-        for (i = 0; i < o; i++) {
-            child.genes[o][i] = (Math.random() < 0.5) ? this.genes[o][i] : mate.genes[o][i];
-
-            if (child.genes[o][i] !== undefined) {
-                if (Math.random() < (options.mutation_rate * inbreeding)) {
-                    child.genes[o][i] += normRand();
-                }
-            }
-
-            if (Math.random() < (options.growth_rate * inbreeding)) {
-                if (child.genes[o][i] !== undefined) {
-                    child.genes[o][i] = undefined;
-                } else {
-                    child.genes[o][i] = 2.0 * Math.random() - 1.0;
-                }
-            }
-        }
-    }
-
-    return child;
-};
-
-function Network(genome, n_inputs, n_outputs) {
-    this.genome = genome;
-    this.neurons = new Array(genome.n_neurons);
-    this.activity = new Array(genome.n_neurons);
-
-    this.n_inputs = n_inputs;
-    this.n_outputs = n_outputs;
-    this.n_neurons = this.genome.n_neurons;
-
-    this.reset();
-}
-
-Network.prototype.update = function() {
-    var i, o, oldvalue, diff;
-
-    for (o = this.n_inputs; o < this.n_neurons; o++) {
-        oldvalue = this.neurons[o];
-
-        this.neurons[o] = this.genome.neurons[o];
-
-        for (i = 0; i < o; i++) {
-            if (this.genome.genes[o][i])
-                this.neurons[o] += this.neurons[i] * this.genome.genes[o][i];
-        }
-
-        this.neurons[o] = sigmoid(this.neurons[o]);
-
-        if (oldvalue) {
-            diff = Math.abs(this.neurons[o] - oldvalue);
-            this.activity[o] += diff;
-            this.activity[o] *= 0.99;
-        }
-    }
-};
-
-Network.prototype.reset = function() {
-    for (i = 0; i < this.n_neurons; i++) {
-        this.neurons[i] = 0.0;
-        this.activity[i] = 1.0;
-    }
-
-    this.fitness = 0;
-};
-
-Network.prototype.input = function() {
-    var len = Math.min(arguments.length, this.n_inputs);
-    for (var i = 0; i < len; i++) {
-        this.neurons[i] = arguments[i];
-    }
-    this.update();
-};
-
-Network.prototype.output = function(i) {
-    return this.neurons[this.n_neurons - this.n_outputs + i];
-};
-
-Network.prototype.draw = function(canvas, ctx) {
-    var unit = canvas.drawWidth / this.n_neurons;
-    var circlesrad = unit * 0.4;
-    var i, o;
-
-    ctx.clearRect(0, 0, canvas.drawWidth, canvas.drawHeight);
-
-    ctx.beginPath();
-    ctx.rect(0, canvas.drawHeight * 0.5 - unit / 2, unit * this.n_inputs, unit);
-    ctx.rect(canvas.drawWidth, canvas.drawHeight * 0.5 - unit / 2, -unit * this.n_outputs, unit);
-
-    ctx.fillStyle = "#CCCCAA";
-    ctx.fill();
-    ctx.strokeStyle = "#000000";
-    ctx.stroke();
-
-    // 2*atan(1/3). First solution to .5cos(x) = 1-sin(x).
-    var theta = 0.6435011088;
-    var rad = unit / (2.0 * Math.cos(theta));
-    var vert = Math.sin(theta);
-
-    this.genome.genes.forEach(function(genes, o) {
-        genes.forEach(function(gene, i) {
-            if (gene) {
-                ctx.beginPath();
-                var radius = rad * Math.abs(i-o);
-                ctx.arc(unit * (i+o+1) / 2.0, (i+o)%2 ? canvas.drawHeight * 0.5 - radius * vert : canvas.drawHeight * 0.5 + radius * vert, radius, (i+o)%2 ? theta : Math.PI + theta, (i+o)%2 ? Math.PI - theta : 2*Math.PI - theta);
-                ctx.strokeStyle = "#000000";
-                ctx.globalAlpha = gene;
-                ctx.stroke();
-                ctx.globalAlpha = 1.0;
-            }
-        });
-    });
-
-    for (i = 0; i < this.n_neurons; i++) {
-        ctx.beginPath();
-        ctx.arc(unit * (i+0.5), canvas.drawHeight * 0.5, circlesrad, 0, 2*Math.PI);
-        ctx.globalAlpha = this.activity[i];
-        ctx.fillStyle = getSaturatedColor(this.neurons[i] * 0.8);
-        ctx.fill();
-        ctx.strokeStyle = "#000000";
-        ctx.stroke();
-        ctx.globalAlpha = 1.0;
-    }
-};
-
-function NeuralSim(population, n_generations, activity, n_inputs, n_neurons, n_outputs) {
-    this.population = population;
-    this.generation = Array(population);
-    this.activity = activity;
-
-    this.gen_num = 0;
-    this.n_gens = n_generations;
-
-    this.n_inputs = n_inputs;
-    this.n_outputs = n_outputs;
-
-    this.bestnet = null;
-
-    for (var i = 0; i < population; i++) {
-        this.generation[i] = new Network(new Genome(n_inputs + n_neurons + n_outputs), n_inputs, n_outputs);
-    }
-}
-
-NeuralSim.prototype.advance = function() {
-    if (this.gen_num >= this.n_gens)
-        return;
-
-    for (var i = 0; i < this.population; i++) {
-        this.activity(this.generation[i]);
-    }
-
-    this.generation.sort(function(a, b) {
-        if (a.fitness > b.fitness) return -1;
-        else if (a.fitness < b.fitness) return 1;
-        else return 0;
-    });
-
-    var num_breed = Math.ceil(this.population * options.breed_percent);
-    var num_top = Math.ceil(this.population * options.top_percent);
-
-    var best = this.generation.slice(0, num_breed);
-
-    this.bestnet = best[0];
-
-    this.bestfit = best[0].fitness;
-    this.worstfit = this.generation[this.generation.length - 1].fitness;
-
-    this.gen_num++;
-
-    if (this.gen_num >= this.n_gens) {
-        return;
-    }
-
-    this.generation = [];
-
-    var i = 0;
-    while (i < num_top) {
-        this.generation[i] = best[i];
-        this.generation[i].reset();
-        i++;
-    }
-
-    for (var j = i; j < this.population; j++) {
-        this.generation[j] = new Network(
-            best[Math.floor(Math.random() * num_top)].genome.breed(
-                best[Math.floor(Math.random() * num_breed)].genome
-            ), this.n_inputs, this.n_outputs
-        );
-        // } else {
-        //     // for performance, reuse networks if possible.
-        //     this.generation[Math.floor(Math.random() * num_top)].breed(
-        //         this.generation[Math.floor(Math.random() * num_breed)],
-        //         this.generation[j] // give the child to reuse
-        //     );
-        // }
-    }
-};
-
-/*
-function normRand() {
-    return ((Math.random() + Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) - 3) / 3;
-}
-
 function NeuralNode(inputs, bias, value) {
     this.inputs = inputs;
     this.value = value;
@@ -407,7 +137,11 @@ NeuralNet.prototype.input = function() {
         this.inputs[i].value = arguments[i];
     }
     this.update();
-}
+};
+
+NeuralNet.prototype.output = function(i) {
+    return this.outputs[i].value;
+};
 
 NeuralNet.prototype.breed = function(mate, child) {
     if (!child) child = new NeuralNet(this.n_inputs, this.layer_sizes, 0, 0);
@@ -609,13 +343,295 @@ NeuralSim.prototype.advance = function() {
             best[Math.floor(Math.random() * num_top)].breed(
                 best[Math.floor(Math.random() * num_breed)]
             );
-        // } else {
-        //     // for performance, reuse networks if possible.
-        //     this.generation[Math.floor(Math.random() * num_top)].breed(
-        //         this.generation[Math.floor(Math.random() * num_breed)],
-        //         this.generation[j] // give the child to reuse
-        //     );
+    }
+};
+
+/*
+function normRand() {
+    // a somewhat normal distribution.
+    return ((Math.random() + Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) - 3) / 3;
+}
+
+function sigmoid(x) {
+    // I just picked a value for Beta. I have no idea what I'm doing.
+    return 1.0 / (1.0 + Math.exp(-8.0 * x));
+}
+
+function Genome(n_neurons, generate) {
+    var i, o;
+
+    this.n_neurons = n_neurons;
+
+    // build the adjacency matrix, generate gene weights
+    this.genes = new Array();
+    for (o = 0; o < this.n_neurons; o++) {
+        this.genes[o] = new Array();
+
+        // if (generate === undefined || generate) {
+        //     for (i = 0; i < o; i++) {
+        //         if (Math.random() < 0.5) {
+        //             this.genes[o][i] = 2.0 * Math.random() - 1.0;
+        //         }
+        //     }
         // }
+    }
+
+    // generate neuron biases
+    this.neurons = new Array(this.n_neurons);
+    for (i = 0; i < this.n_neurons; i++) {
+        this.neurons[i] = 2.0 * Math.random() - 1.0;
+    }
+}
+
+Genome.prototype.breed = function(mate) {
+    var child, count, samecount, inbreeding, i, o;
+
+    if (this == mate) {
+        // if we are breeding with ourself, ignore inbreeding. Results in smaller deviations.
+        inbreeding = 1.0;
+    } else {
+        samecount = 0;
+        count = 0;
+
+        for (o = 0; o < this.n_neurons; o++) {
+            count++;
+            if (Math.abs(this.neurons[o] - mate.neurons[o]) < 0.1)
+                samecount++;
+
+            for (i = 0; i < this.n_neurons; i++) {
+                if (this.genes[o][i] !== undefined && mate.genes[o][i] !== undefined) {
+                    count++;
+                    if (Math.abs(this.genes[o][i] - mate.genes[o][i]) < 0.1)
+                        samecount++;
+                }
+            }
+        }
+
+        // inbreeding (lots of similar genes) results in higher mutation rates
+        inbreeding = (1 + count) / (1 + count - samecount);
+    }
+
+    child = new Genome(this.n_neurons, false);
+
+    for (o = 0; o < this.n_neurons; o++) {
+        child.neurons[o] = (Math.random() < 0.5) ? this.neurons[o] : mate.neurons[o];
+
+        // mutate the neuron bias
+        if (Math.random() < (options.mutation_rate * inbreeding)) {
+            child.neurons[o] += normRand();
+        }
+
+        for (i = 0; i < o; i++) {
+            child.genes[o][i] = (Math.random() < 0.5) ? this.genes[o][i] : mate.genes[o][i];
+
+            // mutate the gene weight
+            if (child.genes[o][i] !== undefined) {
+                if (Math.random() < (options.mutation_rate * inbreeding)) {
+                    child.genes[o][i] += normRand();
+                }
+            }
+
+            // create / destroy the gene
+            if (Math.random() < (options.growth_rate * inbreeding)) {
+                if (child.genes[o][i] !== undefined) {
+                    child.genes[o][i] = undefined;
+                } else {
+                    child.genes[o][i] = 2.0 * Math.random() - 1.0;
+                }
+            }
+        }
+    }
+
+    return child;
+};
+
+function Network(genome, n_inputs, n_outputs) {
+    // the genome this network is based on
+    this.genome = genome;
+
+    // activation values for the neurons in this network
+    this.neurons = new Array(genome.n_neurons);
+
+    // "activity" levels for each neuron.
+    // activity levels fade as a neuron's value continues to stay the same.
+    this.activity = new Array(genome.n_neurons);
+
+    this.n_inputs = n_inputs;
+    this.n_outputs = n_outputs;
+    this.n_neurons = this.genome.n_neurons;
+
+    this.reset();
+}
+
+Network.prototype.update = function() {
+    var i, o, oldvalue, diff;
+
+    // don't calculate values for the input neurons (they are already set)
+    for (o = this.n_inputs; o < this.n_neurons; o++) {
+        oldvalue = this.neurons[o];
+
+        // add the initial bias
+        this.neurons[o] = this.genome.neurons[o];
+
+        // for each gene connected to this neuron, multiply its weight by the connected neuron.
+        for (i = 0; i < o; i++) {
+            if (this.genome.genes[o][i])
+                this.neurons[o] += this.neurons[i] * this.genome.genes[o][i];
+        }
+
+        // apply the activation function
+        this.neurons[o] = sigmoid(this.neurons[o]);
+
+        // update the activity for this neuron
+        if (oldvalue) {
+            diff = Math.abs(this.neurons[o] - oldvalue);
+            this.activity[o] += diff;
+            this.activity[o] *= 0.99;
+        }
+    }
+};
+
+Network.prototype.reset = function() {
+    for (i = 0; i < this.n_neurons; i++) {
+        this.neurons[i] = 0.0;
+        this.activity[i] = 1.0;
+    }
+
+    this.fitness = 0;
+};
+
+Network.prototype.input = function() {
+    var len = Math.min(arguments.length, this.n_inputs);
+    for (var i = 0; i < len; i++) {
+        this.neurons[i] = arguments[i];
+    }
+    this.update();
+};
+
+Network.prototype.output = function(i) {
+    // outputs aren't actually different from other neurons,
+    // but for organization's sake we specify the number of intended outputs.
+    return this.neurons[this.n_neurons - this.n_outputs + i];
+};
+
+Network.prototype.draw = function(canvas, ctx) {
+    var unit = canvas.drawWidth / this.n_neurons;
+    var circlesrad = unit * 0.4;
+    var i, o;
+
+    ctx.clearRect(0, 0, canvas.drawWidth, canvas.drawHeight);
+
+    // draw the boxes around inputs and outputs
+    ctx.beginPath();
+    ctx.rect(0, canvas.drawHeight * 0.5 - unit / 2, unit * this.n_inputs, unit);
+    ctx.rect(canvas.drawWidth, canvas.drawHeight * 0.5 - unit / 2, -unit * this.n_outputs, unit);
+
+    ctx.fillStyle = "#CCCCAA";
+    ctx.fill();
+    ctx.strokeStyle = "#000000";
+    ctx.stroke();
+
+    // 2*atan(1/3). First solution to .5cos(x) = 1-sin(x).
+    var theta = 0.6435011088;
+    var rad = unit / (2.0 * Math.cos(theta));
+    var vert = Math.sin(theta);
+
+    // draw the arcs
+    this.genome.genes.forEach(function(genes, o) {
+        genes.forEach(function(gene, i) {
+            if (gene) {
+                ctx.beginPath();
+                var radius = rad * Math.abs(i-o);
+                ctx.arc(unit * (i+o+1) / 2.0, (i+o)%2 ? canvas.drawHeight * 0.5 - radius * vert : canvas.drawHeight * 0.5 + radius * vert, radius, (i+o)%2 ? theta : Math.PI + theta, (i+o)%2 ? Math.PI - theta : 2*Math.PI - theta);
+                ctx.strokeStyle = "#000000";
+                ctx.globalAlpha = gene;
+                ctx.stroke();
+                ctx.globalAlpha = 1.0;
+            }
+        });
+    });
+
+    // draw the neurons
+    for (i = 0; i < this.n_neurons; i++) {
+        ctx.beginPath();
+        ctx.arc(unit * (i+0.5), canvas.drawHeight * 0.5, circlesrad, 0, 2*Math.PI);
+        ctx.globalAlpha = this.activity[i];
+        ctx.fillStyle = getSaturatedColor(this.neurons[i] * 0.8);
+        ctx.fill();
+        ctx.strokeStyle = "#000000";
+        ctx.stroke();
+        ctx.globalAlpha = 1.0;
+    }
+};
+
+function NeuralSim(population, n_generations, activity, n_inputs, n_neurons, n_outputs) {
+    this.population = population;
+    this.generation = Array(population);
+    this.activity = activity;
+
+    this.gen_num = 0;
+    this.n_gens = n_generations;
+
+    this.n_inputs = n_inputs;
+    this.n_outputs = n_outputs;
+
+    this.bestnet = null;
+
+    // initial population
+    for (var i = 0; i < population; i++) {
+        this.generation[i] = new Network(new Genome(n_inputs + n_neurons + n_outputs), n_inputs, n_outputs);
+    }
+}
+
+NeuralSim.prototype.advance = function() {
+    if (this.gen_num >= this.n_gens)
+        return;
+
+    // run the activity on each network
+    for (var i = 0; i < this.population; i++) {
+        this.activity(this.generation[i]);
+    }
+
+    // sort the networks by fitness
+    this.generation.sort(function(a, b) {
+        if (a.fitness > b.fitness) return -1;
+        else if (a.fitness < b.fitness) return 1;
+        else return 0;
+    });
+
+    var num_breed = Math.ceil(this.population * options.breed_percent);
+    var num_top = Math.ceil(this.population * options.top_percent);
+
+    var best = this.generation.slice(0, num_breed);
+
+    this.bestnet = best[0];
+
+    this.bestfit = best[0].fitness;
+    this.worstfit = this.generation[this.generation.length - 1].fitness;
+
+    this.gen_num++;
+
+    if (this.gen_num >= this.n_gens) {
+        return;
+    }
+
+    this.generation = [];
+
+    // copy the top networks to the next generation
+    var i = 0;
+    while (i < num_top) {
+        this.generation[i] = best[i];
+        this.generation[i].reset();
+        i++;
+    }
+
+    // breed new networks from the top and breeding networks
+    for (var j = i; j < this.population; j++) {
+        this.generation[j] = new Network(
+            best[Math.floor(Math.random() * num_top)].genome.breed(
+                best[Math.floor(Math.random() * num_breed)].genome
+            ), this.n_inputs, this.n_outputs
+        );
     }
 };
 */

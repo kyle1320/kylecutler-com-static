@@ -1,12 +1,11 @@
 // contains variables that can be changed by the user
 var options = {
     mutation_rate: 0.05,
-    growth_rate: 0.01,
     breed_percent: 0.1,
     top_percent: 0.01,
 
     population: 1000,
-    neurons: 10,
+    layers: [10, 10],
 };
 
 window.onload = function() {
@@ -64,7 +63,7 @@ window.onload = function() {
         game = new FlappyGame();
         sim = new NeuralSim(options.population, Infinity, function(net) {
             game.run(net);
-        }, game.num_inputs, options.neurons, game.num_outputs);
+        }, game.num_inputs, options.layers, game.num_outputs);
     }
 
     // update what's running
@@ -91,7 +90,6 @@ window.onload = function() {
         evolving = e;
 
         if (!e) {
-            window.bestnet = sim.bestnet;
             console.log(sim.bestnet);
         }
 
