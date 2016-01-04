@@ -1,0 +1,17 @@
+#draw-canvas {
+	margin-right: 20px;
+	margin-bottom: 20px;
+	background-color: white;
+	float: left;
+}
+
+#net-canvas {
+	margin-right: 20px;
+	margin-bottom: 20px;
+	background-color: white;
+	float: left;
+}
+
+.control {
+	margin: 0.5em 0;
+}
