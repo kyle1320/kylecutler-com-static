@@ -159,15 +159,35 @@ window.onload = function() {
 		var drsq = dr*dr;
 		if (dsq <= drsq) dsq = drsq;
 
-		var e = options.gravity * time / dsq;
+		// packing density ~= b / a
+		// force ~= b
+		// reactivity ~= a
+
+		var d4 = dsq * dsq;
+		var d8 = d4 * d4;
+
+		var a = 2.5e6;
+		var b = 2.5e3;
+
+		var e = ((b * d4 - a) / d8) * time + (this.mass * p.mass * options.gravity * time / dsq);
 		var rx = dx * e;
 		var ry = dy * e;
 
-		p.mx += rx * this.mass;
-		p.my += ry * this.mass;
+		p.mx += rx / p.mass;
+		p.my += ry / p.mass;
 
-		this.mx -= rx * p.mass;
-		this.my -= ry * p.mass;
+		this.mx -= rx / this.mass;
+		this.my -= ry / this.mass;
+
+		// var e = options.gravity * time / dsq;
+		// var rx = dx * e;
+		// var ry = dy * e;
+		//
+		// p.mx += rx * this.mass;
+		// p.my += ry * this.mass;
+		//
+		// this.mx -= rx * p.mass;
+		// this.my -= ry * p.mass;
 	};
 
 	function addGroup(x, y) {
@@ -182,7 +202,8 @@ window.onload = function() {
 		var group = [];
 
 		for (var i=0; i < options.groupSize; i++) {
-			var d = options.groupRadius*i/options.groupSize;
+			// var min = (options.particleRadius + 2) / Math.sin(Math.PI / options.groupSize)
+			var d = options.groupRadius*i/options.groupSize;// + min;
 			var px = x + d*Math.cos(i);
 			var py = y + d*Math.sin(i);
 			group[group.length] = new Particle(px, py, options.particleRadius, options.particleDensity, color, options.traceNew, options.fixedParticles);
