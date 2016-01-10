@@ -27,24 +27,25 @@ window.onload = function() {
 
 	// contains variables that can be changed by the user
 	var options = {
-		get width() {return drawCanvas.width;},
-		get height() {return drawCanvas.height;},
-		set width(w) {setSize(w, height);},
-		set height(h) {setSize(width, h);},
-
 		pattern: 'center',
 		neighbors: [],
 		baseRGB: [255, 165, 0],
-		goalRGB: [255, 100, 100],
+		// goalRGB: [255, 100, 100],
 		//drawRGB: [255, 255, 255],
 		deviation: 5,
 		reliance: 1.0,
-		tendency: 0.002,
+		// tendency: 0.002,
 		delay: 0,
 		initialDeviation: 50,
 		numPoints: 10,
 		size: 100,
-		hexAngle: 60
+		hexAngle: 60,
+
+		// apparently these have been removed. I add them in init() instead.
+		// get width() {return drawCanvas.width;},
+		// get height() {return drawCanvas.height;},
+		// set width(w) {setSize(w, height);},
+		// set height(h) {setSize(width, h);},
 	};
 
 	// contains references to HTML elements
@@ -53,9 +54,9 @@ window.onload = function() {
 		relianceInput: $('reliance'),
 		deviationInput: $('deviation'),
 		colorInput: $('color'),
-		goalColorInput: $('goal-color'),
+		// goalColorInput: $('goal-color'),
 		//drawColorInput: $('draw-color'),
-		tendencyInput: $('tendency'),
+		// tendencyInput: $('tendency'),
 		delayInput: $('delay'),
 		widthInput: $('width'),
 		heightInput: $('height'),
@@ -78,7 +79,6 @@ window.onload = function() {
 
 	// set everything up
 	function init() {
-
 		// scale the canvases to the actual screen resolution
 		scaleCanvas(drawCanvas, drawContext);
 		scaleCanvas(neighborCanvas, neighborContext);
@@ -86,10 +86,20 @@ window.onload = function() {
 		// make sure the main canvas fits inside the screen
 		fitElement(drawCanvas);
 
+		Object.defineProperty(options, "width", {
+			get: function() {return drawCanvas.width;},
+			set: function(w) {setSize(w, height);},
+		});
+
+		Object.defineProperty(options, "height", {
+			get: function() {return drawCanvas.height;},
+			set: function(h) {setSize(width, h);},
+		});
+
 		// link HTML inputs to their respective options
 		linkInputToNumber(inputs.relianceInput, options, 'reliance');
 		linkInputToNumber(inputs.deviationInput, options, 'deviation');
-		linkInputToNumber(inputs.tendencyInput, options, 'tendency');
+		// linkInputToNumber(inputs.tendencyInput, options, 'tendency');
 		linkInputToNumber(inputs.delayInput, options, 'delay');
 		linkInputToNumber(inputs.widthInput, options, 'width', null, false);
 		linkInputToNumber(inputs.heightInput, options, 'height', null, false);
@@ -101,7 +111,7 @@ window.onload = function() {
 		linkSelectToString(inputs.patternSelect, options, 'pattern', hideOptionals);
 
 		linkColorChooserToValues(inputs.colorInput, options, 'baseRGB');
-		linkColorChooserToValues(inputs.goalColorInput, options, 'goalRGB');
+		// linkColorChooserToValues(inputs.goalColorInput, options, 'goalRGB');
 		//linkColorChooserToValues(inputs.drawColorInput, options, 'drawRGB');
 
 		// setup button events
@@ -212,6 +222,21 @@ window.onload = function() {
 					}
 				}
 				break;
+			case 'distributed':
+				// coming up with a radius is difficult... we can approximate the distance between points
+				// by dividing the total area by the number of desired points times a "packing constant",
+				// then taking the square root of that individual area to get a radius.
+				// a packing constant of 1.5 seems to work okay...
+				// it seems to be a touch high for small numbers (< 150)
+				// and a touch low for large numbers (> 150)
+				var pts = poissonDisk(0, 0, width, height, Math.sqrt(width * height / (1.5 * options.numPoints)));
+
+				for (var i = 0; i < pts.length; i++) {
+					cell = Cell(Math.floor(pts[i].x), Math.floor(pts[i].y), options.baseRGB);
+					deviate(cell, options.initialDeviation);
+					add(cell);
+				}
+				break;
 		}
 
 		drawContext.clearRect(0, 0, width, height);
@@ -257,9 +282,12 @@ window.onload = function() {
 
 	// deviates the given cell's color according to the options
 	function deviate(c, dev) {
-		c.r = Math.clamp(((c.r + options.goalRGB[0]*options.tendency) / (1 + options.tendency)) + Math.random()*dev*2 - dev, 0, 255);
-		c.g = Math.clamp(((c.g + options.goalRGB[1]*options.tendency) / (1 + options.tendency)) + Math.random()*dev*2 - dev, 0, 255);
-		c.b = Math.clamp(((c.b + options.goalRGB[2]*options.tendency) / (1 + options.tendency)) + Math.random()*dev*2 - dev, 0, 255);
+		// c.r = Math.clamp(((c.r + options.goalRGB[0]*options.tendency) / (1 + options.tendency)) + Math.random()*dev*2 - dev, 0, 255);
+		// c.g = Math.clamp(((c.g + options.goalRGB[1]*options.tendency) / (1 + options.tendency)) + Math.random()*dev*2 - dev, 0, 255);
+		// c.b = Math.clamp(((c.b + options.goalRGB[2]*options.tendency) / (1 + options.tendency)) + Math.random()*dev*2 - dev, 0, 255);
+		c.r = Math.clamp(c.r + Math.random()*dev*2 - dev, 0, 255);
+		c.g = Math.clamp(c.g + Math.random()*dev*2 - dev, 0, 255);
+		c.b = Math.clamp(c.b + Math.random()*dev*2 - dev, 0, 255);
 	}
 
 	// determines if a given cell should spawn
