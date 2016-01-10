@@ -190,9 +190,9 @@ Math.clamp = function(num, min, max) {
 
 // pushes every element in the given list into this list
 Array.prototype.pushAll = function(list) {
-	for (var i = 0; i < list.length; i++) {
-		this.push(list[i]);
-	}
+    for (var i = 0; i < list.length; i++) {
+        this.push(list[i]);
+    }
 };
 
 // definition for a point quadtree. Useful every now and again.. especially when working with 2D grids ;)
@@ -213,7 +213,7 @@ function QuadTree(minx, miny, maxx, maxy) {
 
 QuadTree.prototype.insert = function(obj) {
 
-	// first make sure that the object goes inside our region.
+    // first make sure that the object goes inside our region.
     if (obj.x < this.minx || obj.x >= this.maxx || obj.y < this.miny || obj.y >= this.maxy) {
         return false;
     }
@@ -238,7 +238,7 @@ QuadTree.prototype.insert = function(obj) {
 
 QuadTree.prototype.subdivide = function(obj) {
 
-	// split up into four quadrants (child nodes)
+    // split up into four quadrants (child nodes)
     this.nw = new QuadTree(this.minx, this.miny, this.midx, this.midy);
     this.ne = new QuadTree(this.midx, this.miny, this.maxx, this.midy);
     this.sw = new QuadTree(this.minx, this.midy, this.midx, this.maxy);
@@ -253,7 +253,7 @@ QuadTree.prototype.subdivide = function(obj) {
 
 QuadTree.prototype.inRegion = function(minx, miny, maxx, maxy) {
 
-	// check that we overlap with the region
+    // check that we overlap with the region
     if (maxx < this.minx || minx >= this.maxx || maxy < this.miny || miny >= this.maxy) {
         return [];
     }
@@ -265,7 +265,7 @@ QuadTree.prototype.inRegion = function(minx, miny, maxx, maxy) {
 
     var found = [];
 
-	// push the contents of our children into the array and return it
+    // push the contents of our children into the array and return it
     found.pushAll(this.nw.inRegion(minx, miny, maxx, maxy));
     found.pushAll(this.ne.inRegion(minx, miny, maxx, maxy));
     found.pushAll(this.sw.inRegion(minx, miny, maxx, maxy));
