@@ -19,12 +19,10 @@ window.onload = function() {
 
     // contains variables that can be changed by the user
     var options = {
-        width: 3000,
-        height: 3000,
         samples: 30,
-        padding: 12,
-        min_rad: 6,
-        max_rad: 300,
+        padding: 4,
+        min_rad: 2,
+        max_rad: 100,
         maxlevel: -1,
         inactivity: 100, // not user-changeable at the moment, but it could be.
         pattern: "alternate",
@@ -66,6 +64,16 @@ window.onload = function() {
 
         fitElement(drawCanvas);
 
+        Object.defineProperty(options, "width", {
+            get: function() {return drawCanvas.width;},
+            set: function(w) {setSize(w, drawCanvas.height);},
+        });
+
+        Object.defineProperty(options, "height", {
+            get: function() {return drawCanvas.height;},
+            set: function(h) {setSize(drawCanvas.width, h);},
+        });
+
         // setup button events
         inputs.pauseBtn.addEventListener('click', function() {setPaused(!paused);});
         inputs.resetBtn.addEventListener('click', reset);
@@ -87,13 +95,13 @@ window.onload = function() {
         linkSelectToString(inputs.pattern, options, 'pattern', reset);
 
         // run it
-        resize();
+        reset();
         setPaused(false);
     }
 
     // used as a callback to width / height inputs
-    function resize() {
-        resizeCanvas(drawCanvas, drawContext, options.width, options.height, false);
+    function resize(width, height) {
+        resizeCanvas(drawCanvas, drawContext, width, height, false);
         reset();
     }
 
@@ -146,7 +154,7 @@ window.onload = function() {
                 }
             }
         } else if (options.pattern == "rainbow") {
-            drawContext.fillStyle = getSaturatedColor(currlevel / 6);
+            drawContext.fillStyle = getSaturatedColor((currlevel-1) / 6);
         }
     }
 
