@@ -249,6 +249,7 @@ html, body {
 	list-style-type: none;
 	z-index: 1;
 	box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.2);
+	overflow-x: hidden;
 	/* just in case... */
 	overflow-y: scroll;
 }
@@ -332,4 +333,8 @@ table.aligned tr td:first-child {
 
 .control input, .control select {
 	width: 10em;
+}
+
+.control input[type="checkbox"] {
+	width: auto;
 }
