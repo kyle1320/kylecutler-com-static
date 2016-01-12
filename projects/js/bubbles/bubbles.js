@@ -125,7 +125,7 @@ window.onload = function() {
         outputs.status.innerHTML = "Running";
         outputs.level.innerHTML = currlevel;
         outputs.points.innerHTML = points;
-        outputs.level.innerHTML = progress + "%";
+        outputs.progress.innerHTML = progress + "%";
     }
 
     function setColor() {
