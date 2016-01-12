@@ -14,6 +14,7 @@
 							<li><a href="/projects/js/graphs/graphs.html">Graphs</a></li> \
 							<li><a href="/projects/js/particles/particles.html">Particles</a></li> \
 							<li><a href="/projects/js/painter/painter.html">Painter</a></li> \
+							<li><a href="/projects/js/bubbles/bubbles.html">Bubbles</a></li> \
 						</ul> \
 					</li \
 					><li><a>More to come...</a></li \
