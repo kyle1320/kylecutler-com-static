@@ -17,18 +17,19 @@ window.onload = function() {
     var density;
     var progress;
 
+    // contains variables that can be changed by the user
     var options = {
         width: 3000,
         height: 3000,
         samples: 30,
         padding: 12,
-        min_r: 6,
-        max_r: 300,
+        min_rad: 6,
+        max_rad: 300,
         maxlevel: -1,
-        inactivity: 100,
+        inactivity: 100, // not user-changeable at the moment, but it could be.
         pattern: "alternate",
         bgcolor: null,//"#000000",//"#F36E21",
-        maincolor: null,//"#513127",
+        // maincolor: null,//"#513127",
     };
 
     // contains references to HTML elements
@@ -42,13 +43,15 @@ window.onload = function() {
         height: $('height'),
         samples: $('samples'),
         padding: $('padding'),
-        min_r: $('min-rad'),
-        max_r: $('max-rad'),
+        min_rad: $('min-rad'),
+        max_rad: $('max-rad'),
         maxlevel: $('max-level'),
         bgcolor: $('bg-color'),
         pattern: $('pattern'),
     };
 
+    // contains references to HTML elements
+    // that are used to display information to the user
     var outputs = {
         status: $('status'),
         level: $('level'),
@@ -66,15 +69,17 @@ window.onload = function() {
         // setup button events
         inputs.pauseBtn.addEventListener('click', function() {setPaused(!paused);});
         inputs.resetBtn.addEventListener('click', reset);
-        inputs.saveBtn.addEventListener('click', function() {inputs.saveImg.src = drawCanvas.toDataURL();});
+        inputs.saveBtn.addEventListener('click',
+            function() {inputs.saveImg.src = drawCanvas.toDataURL();}
+        );
 
         // link numerical options to their html inputs
         linkInputToNumber(inputs.width, options, 'width', resize, false);
         linkInputToNumber(inputs.height, options, 'height', resize, false);
         linkInputToNumber(inputs.samples, options, 'samples', reset, false);
         linkInputToNumber(inputs.padding, options, 'padding', reset, false);
-        linkInputToNumber(inputs.min_r, options, 'min_r', reset, false);
-        linkInputToNumber(inputs.max_r, options, 'max_r', reset, false);
+        linkInputToNumber(inputs.min_rad, options, 'min_rad', reset, false);
+        linkInputToNumber(inputs.max_rad, options, 'max_rad', reset, false);
         linkInputToNumber(inputs.maxlevel, options, 'maxlevel', reset, false);
 
         linkColorChooserToHexString(inputs.bgcolor, options, 'bgcolor', reset);
@@ -86,6 +91,7 @@ window.onload = function() {
         setPaused(false);
     }
 
+    // used as a callback to width / height inputs
     function resize() {
         resizeCanvas(drawCanvas, drawContext, options.width, options.height, false);
         reset();
@@ -93,6 +99,8 @@ window.onload = function() {
 
     // reset everything
     function reset() {
+
+        // erase the canvas
         if (options.bgcolor) {
             drawContext.fillStyle = options.bgcolor;
             drawContext.fillRect(0, 0, drawCanvas.drawWidth, drawCanvas.drawHeight);
@@ -100,11 +108,12 @@ window.onload = function() {
             drawContext.clearRect(0, 0, drawCanvas.drawWidth, drawCanvas.drawHeight);
         }
 
+        // generate a new tree to hold points
         tree = new QuadTree(0, 0, drawCanvas.drawWidth, drawCanvas.drawHeight);
         inactive = 0;
         points = 0;
         currlevel = 1;
-        prevmax = 2 * options.max_r + options.padding;
+        prevmax = 2 * options.max_rad + options.padding;
         currmax = 0;
 
         densitysamples = new Array(options.inactivity * 10);
@@ -112,27 +121,32 @@ window.onload = function() {
         density = 0;
         progress = 0;
 
+        // reset status outputs
         outputs.status.innerHTML = "Running";
         outputs.level.innerHTML = currlevel;
+        outputs.points.innerHTML = points;
+        outputs.level.innerHTML = progress + "%";
     }
 
     function setColor() {
         if (options.pattern == "alternate") {
-            if (bestp % 2) {
+            if (currlevel % 2) {
+                // if (options.maincolor) {
+                //     drawContext.fillStyle = options.maincolor;
+                // } else {
+                    drawContext.fillStyle = randomColor();
+                // }
+            } else {
                 if (options.bgcolor) {
                     drawContext.fillStyle = options.bgcolor;
                 } else {
+
+                    // eraser
                     drawContext.globalCompositeOperation = "destination-out";
-                }
-            } else {
-                if (options.maincolor) {
-                    drawContext.fillStyle = options.maincolor;
-                } else {
-                    drawContext.fillStyle = randomColor();
                 }
             }
         } else if (options.pattern == "rainbow") {
-            drawContext.fillStyle = getSaturatedColor(bestp / 6);
+            drawContext.fillStyle = getSaturatedColor(currlevel / 6);
         }
     }
 
@@ -141,10 +155,26 @@ window.onload = function() {
 
     // update what's running
     function update() {
-        if (inactive < options.inactivity) {
-            var best = -Infinity, bestx, besty;
 
-            // do 30 random points before we give up
+        /*
+         * Run the best candidate search.
+         *
+         * This places some number of points randomly, then evaluates each of them
+         * based on their distance to the nearest cell.
+         * The cell with the largest distance (if it is large enough) gets placed.
+         * This repeats until no cell gets placed for some number of iterations.
+         * Then we move onto the next level.
+         *
+         * I split the generation into levels to allow a narrower search as we progress.
+         * This is due to the fact that the higher the level, the smaller the cells will be.
+         * We keep track of the largest cell in the previous level, because that is how far
+         * we will have to search to find our neighbors.
+         */
+
+        if (inactive < options.inactivity) {
+            var bestdist = -Infinity, bestx, besty, bestlevel;
+
+            // select some number of random points
             for (var k = 0; k < options.samples; k++) {
 
                 var px = Math.random() * drawCanvas.drawWidth;
@@ -154,60 +184,93 @@ window.onload = function() {
                 // get points close to the newly created one
                 var nearby = tree.inRegion(px-prevmax, py-prevmax, px+prevmax, py+prevmax);
 
-                var min = Infinity;
-                var minin = Infinity;
+                var closest = Infinity;
+                var parentdist = Infinity;
 
+                // find our closest neighbor (and our parent's level)
                 for (var j = 0; j < nearby.length; j++) {
                     var dx = px - nearby[j].x;
                     var dy = py - nearby[j].y;
-                    var d_ = Math.sqrt(dx*dx + dy*dy) - nearby[j].r;
-                    var d = Math.abs(d_);
+                    var dist = Math.sqrt(dx*dx + dy*dy) - nearby[j].r;
+                    var absdist = Math.abs(dist);
 
-                    if (d_ < 0 && nearby[j].r < minin) {
+                    // if we are inside a cell, they may be our parent.
+                    // (the closest cell that we are inside of is our real parent)
+                    if (dist < 0 && nearby[j].r < parentdist) {
                         level = nearby[j].p + 1;
-                        minin = nearby[j].r;
+                        parentdist = nearby[j].r;
                     }
 
-                    if (d < min) {
-                        min = d;
+                    // find the closest distance
+                    if (absdist < closest) {
+                        closest = absdist;
                     }
                 }
 
-                if (level == currlevel-1 && min > best) {
-                    best = min;
+                // if this point is on the current level,
+                // update the best point data.
+                if (level == currlevel-1 && closest > bestdist) {
+                    bestdist = closest;
                     bestx = px;
                     besty = py;
-                    bestp = level;
+                    bestlevel = level;
                 }
             }
 
-            // if there are no neighbors that are too close, and we are in bounds
-            if (best > options.min_r + options.padding) {
+            // if there are no neighbors that are too close
+            if (bestdist > options.min_rad + options.padding) {
+
+                // create the point
+                var newpt = {
+                    x: bestx,
+                    y: besty,
+                    r: Math.min(options.max_rad, bestdist-options.padding),
+                    p: bestlevel,
+                    color: randomColor()
+                };
+
+                // draw the point
                 drawContext.beginPath();
-                drawContext.arc(bestx, besty, Math.min(options.max_r, best-options.padding), 0, 2*Math.PI);
+                drawContext.arc(newpt.x, newpt.y, newpt.r, 0, 2*Math.PI);
                 drawContext.closePath();
                 setColor();
                 drawContext.fill();
                 drawContext.globalCompositeOperation = "source-over";
 
-                var newpt = {x: bestx, y: besty, r: Math.min(options.max_r, best-options.padding), p: bestp,
-                             color: randomColor()};
-
-                // insert into the tree and the active points list
-                if (newpt.r > currmax) currmax = newpt.r;
+                // insert into the tree
                 tree.insert(newpt);
+
+                // keep track of the largest cell in this level (so the next level can use it)
+                if (newpt.r > currmax) currmax = newpt.r;
+
+                // we have gone 0 iterations without placing a cell..
                 inactive = 0;
 
+                // update the counter and display
                 outputs.points.innerHTML = (++points);
             } else {
+
+                // we didn't place a point
                 inactive++;
             }
 
+            // calculating the percent complete.
+            // not entirely perfect; it's hard to predict a random event.
+
+            // we keep track of whether or not previous iterations have resulted in a point placed.
             var oldsample = densitysamples[currsample];
             densitysamples[currsample] = (inactive ? 1 : 0);
             if (oldsample) density -= oldsample;
+
+            // we calculate a "density": the number of iterations that resulted in a point placed.
             density += densitysamples[currsample];
             currsample = (currsample + 1) % densitysamples.length;
+
+            // now we can generally assume that a higher density means we are more likely to finish.
+
+            // we apply a function to make the density (mostly) linear with regards to time elapsed
+            // lots of effort went into coming up with this function,
+            // but what is important is that 0 -> 0, 1 -> 1, and it seems to work ok..
             var x = density / densitysamples.length;
             progress = Math.clamp(Math.floor(130*Math.sqrt(x)/Math.sqrt(26-25*x)), progress, 99);
 
@@ -221,10 +284,14 @@ window.onload = function() {
             //     drawContext.stroke();
             // }
 
+            // show the progress
             outputs.progress.innerHTML = progress + "%";
         } else {
+
+            // we need to move up a level. Reset anything related to this level.
             if (currlevel != options.maxlevel && currmax > 0) {
                 currlevel++;
+
                 inactive = 0;
                 prevmax = currmax;
                 currmax = 0;
@@ -234,25 +301,19 @@ window.onload = function() {
                 density = 0.0;
                 progress = 0;
 
-                outputs.status.innerHTML = "Running";
                 outputs.level.innerHTML = currlevel;
 
             } else {
                 outputs.status.innerHTML = "Done";
-                outputs.progress.innerHTML = "100%";
 
-                // setPaused(true);
+                // progress never actually ends on 100%, so it looks nicer this way..
+                outputs.progress.innerHTML = "100%";
             }
         }
 
         // schedule another update
         if (!paused) setTimeout(update, 0);
     }
-
-    // draw to the canvas
-    // function draw() {
-    //
-    // }
 
     // pause / resume
     function setPaused(p) {
