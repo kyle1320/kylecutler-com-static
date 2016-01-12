@@ -82,8 +82,8 @@ window.onload = function() {
         );
 
         // link numerical options to their html inputs
-        linkInputToNumber(inputs.width, options, 'width', resize, false);
-        linkInputToNumber(inputs.height, options, 'height', resize, false);
+        linkInputToNumber(inputs.width, options, 'width', null, false);
+        linkInputToNumber(inputs.height, options, 'height', null, false);
         linkInputToNumber(inputs.samples, options, 'samples', reset, false);
         linkInputToNumber(inputs.padding, options, 'padding', reset, false);
         linkInputToNumber(inputs.min_rad, options, 'min_rad', reset, false);
@@ -100,8 +100,9 @@ window.onload = function() {
     }
 
     // used as a callback to width / height inputs
-    function resize(width, height) {
+    function setSize(width, height) {
         resizeCanvas(drawCanvas, drawContext, width, height, false);
+        console.log(drawCanvas.width, drawCanvas.height);
         reset();
     }
 
