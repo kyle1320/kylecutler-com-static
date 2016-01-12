@@ -175,6 +175,8 @@ window.onload = function() {
         }
         edges = null;
 
+        drawContext.clearRect(0, 0, drawCanvas.drawWidth, drawCanvas.drawHeight);
+
         // add the initial cells based on the pattern
         switch(options.pattern) {
             // a single cell is added in the center of the painting
@@ -238,8 +240,6 @@ window.onload = function() {
                 }
                 break;
         }
-
-        drawContext.clearRect(0, 0, width, height);
     }
 
     // spawns new cells
@@ -351,8 +351,9 @@ window.onload = function() {
 
     // change the size of the painting. Resets the painting.
     function setSize(w, h) {
-        drawCanvas.width = width = w;
-        drawCanvas.height = height = h;
+        width = w;
+        height = h;
+        resizeCanvas(drawCanvas, drawContext, w, h);
         reset();
     }
 
@@ -366,7 +367,7 @@ window.onload = function() {
         // show optional elements that are part of the selected pattern
         optionals = document.querySelectorAll('.optional.'+options.pattern);
         i = optionals.length;
-        while (i--) optionals[i].style.display='block';
+        while (i--) optionals[i].style.display='table-row';
     }
 
     // the rest of this deals with neighbor controls

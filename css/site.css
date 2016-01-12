@@ -249,6 +249,8 @@ html, body {
 	list-style-type: none;
 	z-index: 1;
 	box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.2);
+	/* just in case... */
+	overflow-y: scroll;
 }
 
 .submenu li {
@@ -307,10 +309,10 @@ html, body {
 	content: '\f054';
 	color: #795548;
 	position: absolute;
- 	left: -2.14285714em;
- 	width: 2.14285714em;
- 	top: 0.14285714em;
- 	text-align: center;
+	left: -2.14285714em;
+	width: 2.14285714em;
+	top: 0.14285714em;
+	text-align: center;
 }
 
 .column {
@@ -321,4 +323,13 @@ html, body {
 
 .column:after {
 	clear: left;
+}
+
+table.aligned tr td:first-child {
+	font-weight: bold;
+	text-align: right;
+}
+
+.control input, .control select {
+	width: 10em;
 }

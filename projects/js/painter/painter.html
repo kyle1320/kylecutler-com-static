@@ -33,58 +33,41 @@
                     </div>
                 </div>
                 <div class="column">
-                    <div class="control" title="The width of the painting">
-                        Image width: <input id="width" type="number" min="0" step="100">
-                    </div>
-                    <div class="control" title="The height of the painting">
-                        Image height: <input id="height" type="number" min="0" step="100">
-                    </div>
-                    <div class="control" title="The pattern of initial cells in the painting">
-                        Pattern:
-                        <select id="pattern">
-                            <option value="center" selected="selected">Center</option>
-                            <option value="vertical">Vertical</option>
-                            <option value="random">Random</option>
-                            <option value="hex">Hex</option>
-                            <option value="distributed">Distributed</option>
-                        </select>
-                    </div>
-                    <div class="control optional random vertical hex distributed" title="Color deviation of initial cells">
-                        Initial deviation: <input id="init-deviation" type="number" min="0" max="255" step="10">
-                    </div>
-                    <div class="control optional random distributed" title="Number of initial points to spawn">
-                        Number of points: <input id="num-points" type="number" min="0" step="1">
-                        <div class="optional distributed"
-                            <br>(approximate)
-                        </div>
-                    </div>
-                    <div class="control optional hex" title="Angle of y-axis on which to spawn initial cells">
-                        Angle: <input id="hex-angle" type="number" min="5" max="90" step="5">
-                    </div>
-                    <div class="control optional hex" title="Space between axis lines on initial cell grid">
-                        Size: <input id="size" type="number" min="0" step="1">
-                    </div>
-                </div>
-                <div class="column">
-                    <div class="control" title="The degree to which cells with more neighbors will grow faster">
-                        Reliance: <input id="reliance" type="number" step="any">
-                    </div>
-                    <div class="control" title="The amount that a cells color will change from its neighbors">
-                        Deviation: <input id="deviation" type="number" min="0" max="255" step="1">
-                    </div>
-                    <!-- <div class="control" title="The rate at which cells will change to the target color">
-                        Tendency: <input id="tendency" type="number" min="0" max="0.1" step="0.001">
-                    </div> -->
-                    <div class="control" title="The delay in milliseconds between cell growth cycles">
-                        Delay: <input id="delay" type="number" min="0" step="1">
-                    </div>
-                    <div class="control" title="The color that initial cells are based on">
-                        Base color: <input id="color" class="color">
-                    </div>
-                    <!-- <div class="control" title="The color that cells will change to over time">
-                        Target color: <input id="goal-color" class="color">
-                    </div> -->
-                    <!--<div>Draw color: <input id="draw-color" class="color"></div>-->
+                    <table class="aligned">
+                        <tr class="control" title="The width of the painting, in pixels">
+                            <td>Image width: </td>
+                            <td><input id="width" type="number" min="0" step="100"></td>
+                        </tr>
+                        <tr class="control" title="The height of the painting, in pixels">
+                            <td>Image height: </td>
+                            <td><input id="height" type="number" min="0" step="100"></td>
+                        </tr>
+                        <tr class="control" title="The degree to which cells with more neighbors will grow faster">
+                            <td>Reliance: </td>
+                            <td><input id="reliance" type="number" step="any"></td>
+                        </tr>
+                        <tr class="control" title="The amount that a cells color will change from its neighbors">
+                            <td>Deviation: </td>
+                            <td><input id="deviation" type="number" min="0" max="255" step="1"></td>
+                        </tr>
+                        <!-- class="control" title="The rate at which cells will change to the target color" <tr>
+                        <td>Tendency: </td>
+                            <td><input id="tendency" type="number" min="0" max="0.1" step="0.001"></td>
+                        </div> -->
+                        <tr class="control" title="The delay in milliseconds between cell growth cycles">
+                            <td>Delay: </td>
+                            <td><input id="delay" type="number" min="0" step="1"></td>
+                        </tr>
+                        <tr class="control" title="The color that initial cells are based on">
+                            <td>Base color: </td>
+                            <td><input id="color" class="color"></td>
+                        </tr>
+                        <!-- class="control" title="The color that cells will change to over time" <tr>
+                        <td>Target color: </td>
+                            <td><input id="goal-color" class="color"></td>
+                        </div> --><!--<div>Draw color: </td>
+                        <td><input id="draw-color" class="color"></div>-->
+                    </table>
                     <div class="control" title="The cells that are considered 'neighbors' relative to a given cell">
                         Neighbors:<br>
                         <div>
@@ -99,6 +82,45 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="column">
+                    <table class="aligned">
+                        <tr class="control" title="The pattern of initial cells in the painting">
+                            <td>Pattern:</td>
+                            <td>
+                                <select id="pattern">
+                                    <option value="center" selected="selected">Center</option>
+                                    <option value="vertical">Vertical</option>
+                                    <option value="random">Random</option>
+                                    <option value="hex">Hex</option>
+                                    <option value="distributed">Distributed</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="control optional random vertical hex distributed" title="Color deviation of initial cells">
+                            <td>Initial deviation: </td>
+                            <td><input id="init-deviation" type="number" min="0" max="255" step="10"></td>
+                        </tr>
+                        <tr class="control optional random distributed" title="Number of initial points to spawn">
+                            <td>
+                                Number of points:
+                                <span class="optional distributed"
+                                    <br>(approximate)
+                                </span>
+                            </td>
+                            <td>
+                                <input id="num-points" type="number" min="0" step="1">
+                            </td>
+                        </tr>
+                        <tr class="control optional hex" title="Angle of y-axis on which to spawn initial cells">
+                            <td>Angle: </td>
+                            <td><input id="hex-angle" type="number" min="5" max="90" step="5"></td>
+                        </tr>
+                        <tr class="control optional hex" title="Space between axis lines on initial cell grid">
+                            <td>Size: </td>
+                            <td><input id="size" type="number" min="0" step="1"></td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>
