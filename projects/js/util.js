@@ -5,7 +5,7 @@ var isNaN = Number.isNaN || window.isNaN || function(n) {return typeof n === 'nu
  *    CANVAS    *
  ****************/
 
-function scaleCanvas(canvas, context) {
+function scaleCanvas(canvas, context, scaleContext) {
     var devicePixelRatio = window.devicePixelRatio || 1;
     var backingStoreRatio = context.webkitBackingStorePixelRatio ||
     context.mozBackingStorePixelRatio ||
@@ -20,23 +20,23 @@ function scaleCanvas(canvas, context) {
     canvas.drawWidth = canvas.width;
     canvas.drawHeight = canvas.height;
 
-    resizeCanvas(canvas, context, canvas.width * scale, canvas.height * scale);
+    resizeCanvas(canvas, context, canvas.width * scale, canvas.height * scale, scaleContext);
 
     return scale;
 }
 
-function resizeCanvas(canvas, context, width, height, scale) {
-    if (scale === undefined) scale = true;
+function resizeCanvas(canvas, context, width, height, scaleContext) {
+    if (scaleContext === undefined) scaleContext = true;
 
     canvas.width = width;
     canvas.height = height;
 
-    if (!scale || !canvas.drawWidth || !canvas.drawHeight) {
+    if (!scaleContext || !canvas.drawWidth || !canvas.drawHeight) {
         canvas.drawWidth = width;
         canvas.drawHeight = height;
     }
 
-    if (scale) {
+    if (scaleContext) {
         var scalex = width / canvas.drawWidth;
         var scaley = height / canvas.drawHeight;
 
@@ -162,11 +162,11 @@ function linkInputToNumber(input, object, attr, func, instant) {
 function linkColorChooserToValues(color, object, attr, func) {
     func = func || function() {};
 
-    color.color.fromRGB(object[attr][0] / 255, object[attr][1] / 255, object[attr][2] / 255);
+    color.jscolor.fromRGB(object[attr][0], object[attr][1], object[attr][2]);
     color.addEventListener('change', function() {
-        object[attr][0] = Math.floor(color.color.rgb[0] * 255);
-        object[attr][1] = Math.floor(color.color.rgb[1] * 255);
-        object[attr][2] = Math.floor(color.color.rgb[2] * 255);
+        object[attr][0] = Math.floor(color.jscolor.rgb[0] * 255);
+        object[attr][1] = Math.floor(color.jscolor.rgb[1] * 255);
+        object[attr][2] = Math.floor(color.jscolor.rgb[2] * 255);
         func();
     });
 }
@@ -174,9 +174,9 @@ function linkColorChooserToValues(color, object, attr, func) {
 function linkColorChooserToHexString(color, object, attr, func) {
     func = func || function() {};
 
-    color.color.fromString(object[attr] ? object[attr].slice(1) : "");
+    color.jscolor.fromString(object[attr] ? object[attr].slice(1) : "");
     color.addEventListener('change', function() {
-        object[attr] = color.value ? "#" + color.color.toString() : null;
+        object[attr] = color.value ? "#" + color.jscolor.toString() : null;
         func();
     });
 }
