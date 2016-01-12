@@ -1,6 +1,10 @@
 var $ = function(e) { return document.getElementById(e); };
 var isNaN = Number.isNaN || window.isNaN || function(n) {return typeof n === 'number' && n !== n;};
 
+/****************
+ *    CANVAS    *
+ ****************/
+
 function scaleCanvas(canvas, context) {
     var devicePixelRatio = window.devicePixelRatio || 1;
     var backingStoreRatio = context.webkitBackingStorePixelRatio ||
@@ -15,14 +19,34 @@ function scaleCanvas(canvas, context) {
     canvas.style.height = canvas.height + 'px';
     canvas.drawWidth = canvas.width;
     canvas.drawHeight = canvas.height;
-    canvas.width *= scale;
-    canvas.height *= scale;
 
-    if (context instanceof CanvasRenderingContext2D) {
-        context.scale(scale, scale);
-    }
+    resizeCanvas(canvas, context, canvas.width * scale, canvas.height * scale);
 
     return scale;
+}
+
+function resizeCanvas(canvas, context, width, height, scale) {
+    if (scale === undefined) scale = true;
+
+    canvas.width = width;
+    canvas.height = height;
+
+    if (!scale || !canvas.drawWidth || !canvas.drawHeight) {
+        canvas.drawWidth = width;
+        canvas.drawHeight = height;
+    }
+
+    if (scale) {
+        var scalex = width / canvas.drawWidth;
+        var scaley = height / canvas.drawHeight;
+
+        canvas.scalex = scalex;
+        canvas.scaley = scaley;
+
+        if (context instanceof CanvasRenderingContext2D) {
+            context.scale(scalex, scaley);
+        }
+    }
 }
 
 function fitElement(el, preferredWidth, preferredHeight, onresize) {
@@ -55,9 +79,38 @@ function fitElement(el, preferredWidth, preferredHeight, onresize) {
     window.addEventListener('resize', resize);
 }
 
+/****************
+ *    COLORS    *
+ ****************/
+
 function randomColor() {
     return '#'+('00000'+(Math.floor(Math.random()*16777216)).toString(16)).slice(-6);
 }
+
+function getSaturatedColor(v) {
+    var i = Math.floor(v * 6);
+    var f = ((v * 6 - i) + 1) % 1;
+    var q = ('0' + Math.round(255 * (1 - f)).toString(16)).slice(-2);
+    var t = ('0' + Math.round(255 * f).toString(16)).slice(-2);
+    switch ((i + 6) % 6) {
+        case 0: return '#FF' + t + '00';
+        case 1: return '#' + q + 'FF00';
+        case 2: return '#00FF' + t;
+        case 3: return '#00' + q + 'FF';
+        case 4: return '#' + t + '00FF';
+        case 5: return '#FF00' + q;
+    }
+}
+
+function toRGBString(r, g, b) {
+    return "#" + ('0' + Math.floor(r).toString(16)).slice(-2) +
+                 ('0' + Math.floor(g).toString(16)).slice(-2) +
+                 ('0' + Math.floor(b).toString(16)).slice(-2);
+}
+
+/****************
+ *    EVENTS    *
+ ****************/
 
 function getRelativeCoord(canvas, evt) {
     var x, y;
@@ -85,21 +138,6 @@ function takeTouchFocus(evt) {
         if (evt.touches.length < 2) {
             evt.preventDefault();
         }
-    }
-}
-
-function getSaturatedColor(v) {
-    var i = Math.floor(v * 6);
-    var f = ((v * 6 - i) + 1) % 1;
-    var q = ('0' + Math.round(255 * (1 - f)).toString(16)).slice(-2);
-    var t = ('0' + Math.round(255 * f).toString(16)).slice(-2);
-    switch ((i + 6) % 6) {
-        case 0: return '#FF' + t + '00';
-        case 1: return '#' + q + 'FF00';
-        case 2: return '#00FF' + t;
-        case 3: return '#00' + q + 'FF';
-        case 4: return '#' + t + '00FF';
-        case 5: return '#FF00' + q;
     }
 }
 
@@ -133,12 +171,26 @@ function linkColorChooserToValues(color, object, attr, func) {
     });
 }
 
+function linkColorChooserToHexString(color, object, attr, func) {
+    func = func || function() {};
+
+    color.color.fromString(object[attr] ? object[attr].slice(1) : "");
+    color.addEventListener('change', function() {
+        object[attr] = color.value ? "#" + color.color.toString() : null;
+        func();
+    });
+}
+
 function linkSelectToString(select, object, attr, func) {
     func = func || function() {};
 
     select.value = object[attr];
     select.addEventListener('change', function() {object[attr] = select.value; func();});
 }
+
+/****************
+ *    FILES     *
+ ****************/
 
 function loadFile(url, data, callback, errorCallback) {
     errorCallback = errorCallback || function() {};
@@ -183,6 +235,10 @@ function loadFiles(urls, callback, errorCallback) {
         loadFile(urls[i], i, partialCallback, errorCallback);
     }
 }
+
+/****************
+ *     MISC     *
+ ****************/
 
 Math.clamp = function(num, min, max) {
     return Math.max(min, Math.min(num, max));
@@ -274,6 +330,43 @@ QuadTree.prototype.inRegion = function(minx, miny, maxx, maxy) {
     return found;
 };
 
+QuadTree.prototype.draw = function(canvas, ctx, minx, miny, maxx, maxy) {
+    var midx = (minx + maxx) / 2;
+    var midy = (miny + maxy) / 2;
+
+    // if (this.nw || this.bucket.length > 0) {
+        // ctx.strokeStyle = "#FF0000";
+        // ctx.strokeRect(minx * canvas.drawWidth, miny * canvas.drawHeight, (maxx - minx) * canvas.drawWidth, (maxy - miny) * canvas.drawHeight);
+    // }
+
+    if (this.nw) {
+        ctx.beginPath();
+        ctx.moveTo(minx * canvas.drawWidth, midy * canvas.drawHeight);
+        ctx.lineTo(maxx * canvas.drawWidth, midy * canvas.drawHeight);
+        ctx.moveTo(midx * canvas.drawWidth, miny * canvas.drawHeight);
+        ctx.lineTo(midx * canvas.drawWidth, maxy * canvas.drawHeight);
+        ctx.closePath();
+        ctx.strokeStyle = "#FF0000";
+        ctx.stroke();
+
+        this.nw.draw(canvas, ctx, minx, miny, midx, midy);
+        this.ne.draw(canvas, ctx, midx, miny, maxx, midy);
+        this.sw.draw(canvas, ctx, minx, midy, midx, maxy);
+        this.se.draw(canvas, ctx, midx, midy, maxx, maxy);
+    } else {
+        for (var i = 0; i < this.bucket.length; i++) {
+            var p = this.bucket[i];
+            var x = minx + ((p.x - this.minx) / (this.maxx - this.minx)) * (maxx - minx);
+            var y = miny + ((p.y - this.miny) / (this.maxy - this.miny)) * (maxy - miny);
+
+            // console.log(x, y);
+
+            ctx.fillStyle = "#0000FF";
+            ctx.fillRect(x * canvas.drawWidth, y * canvas.drawHeight, 1, 1);
+        }
+    }
+};
+
 function poissonDisk(minx, miny, width, height, r) {
     var r2 = r * r;
     var maxx = minx + width;
@@ -344,6 +437,17 @@ function poissonDisk(minx, miny, width, height, r) {
             active.splice(ind, 1);
         }
     }
+
+    var cvs = $('draw-canvas');
+    var ctx = cvs.getContext('2d');
+
+    for (var i = 0; i < points.length; i++) {
+        for (var j = 0; j < points.length; j++) {
+            ctx.fillRect(cvs.drawWidth / 2 + (points[j].x - points[i].x),
+                         cvs.drawHeight / 2 + (points[j].y - points[i].y), 1, 1);
+        }
+    }
+    // tree.draw(cvs, ctx, 0, 0, 1, 1);
 
     return points;
 }
