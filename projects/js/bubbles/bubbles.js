@@ -60,7 +60,7 @@ window.onload = function() {
     // set everything up
     function init() {
         // scale the canvases to the actual screen resolution
-        scaleCanvas(drawCanvas, drawContext);
+        scaleCanvas(drawCanvas, drawContext, false);
 
         fitElement(drawCanvas);
 

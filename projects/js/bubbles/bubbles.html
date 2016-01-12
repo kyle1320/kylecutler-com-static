@@ -17,7 +17,27 @@
     <body>
         <div class="contentbox">
             <h2>Bubbles</h2>
-            <canvas id="draw-canvas" width="500" height="500"></canvas>
+            <div id="canvases">
+                <canvas id="draw-canvas" width="500" height="500"></canvas>
+                <table class="aligned" style="clear: both;">
+                    <tr>
+                        <td>Status: </td>
+                        <td id="status"></td>
+                    </tr>
+                    <tr>
+                        <td>Points: </td>
+                        <td id="points"></td>
+                    </tr>
+                    <tr>
+                        <td>Layer: </td>
+                        <td id="level"></td>
+                    </tr>
+                    <tr>
+                        <td>Progress: </td>
+                        <td id="progress"></td>
+                    </tr>
+                </table>
+            </div>
 
             <div id="controls" class="column">
                 <div class="control" title="Pauses / resumes cell generation">
@@ -64,7 +84,7 @@
                     </tr>
                     <tr class="control" title='The color of empty space in the image'>
                         <td>Background Color: </td>
-                        <td><input id="bg-color" class="color {required:false}"> (empty for clear)</td>
+                        <td><input id="bg-color" class="jscolor {required:false}"> (empty for clear)</td>
                     </tr>
                     <tr class="control" title="The pattern to follow when coloring cells">
                         <td>Pattern:</td>
@@ -77,24 +97,6 @@
                     </tr>
                 </table>
             </div>
-            <table class="aligned" style="clear: both;">
-                <tr>
-                    <td>Status: </td>
-                    <td id="status"></td>
-                </tr>
-                <tr>
-                    <td>Points: </td>
-                    <td id="points"></td>
-                </tr>
-                <tr>
-                    <td>Layer: </td>
-                    <td id="level"></td>
-                </tr>
-                <tr>
-                    <td>Progress: </td>
-                    <td id="progress"></td>
-                </tr>
-            </table>
         </div>
         <!-- <div id="info" class="contentbox">Bubbles</div> -->
     </body>
