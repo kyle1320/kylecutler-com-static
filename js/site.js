@@ -4,11 +4,11 @@
 		header.id = 'header';
 		header.innerHTML = '\
 			<div id="titlebar"> \
-				<h1 id="title">My Projects</h1> \
+				<a href="/index.html"><h1 id="title">My Projects</h1></a> \
 				<ul id="menu"> \
 					<li><a href="/index.html">Home</a></li \
 					><li class="dropdown"> \
-						<a>JavaScript</a> \
+						<a href="/projects/js/index.html">JavaScript</a> \
 						<ul class="submenu"> \
 							<li><a href="/projects/js/spirograph/spiro.html">Spirograph</a></li> \
 							<li><a href="/projects/js/graphs/graphs.html">Graphs</a></li> \
