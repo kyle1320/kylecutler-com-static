@@ -41,6 +41,9 @@ window.onload = function() {
         scaleCanvas(drawCanvas, drawContext);
         scaleCanvas(netCanvas, netContext);
 
+        fitElement(drawCanvas);
+        fitElement(netCanvas);
+
         // setup button events
         inputs.pauseBtn.addEventListener('click', function() {setPaused(!paused);});
         inputs.evolveBtn.addEventListener('click', function() {setEvolving(!evolving);});
