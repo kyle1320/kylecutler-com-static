@@ -1,0 +1,54 @@
+{
+	"width": 401,
+	"height": 502,
+	"columns": [
+		{
+			"name":  "black",
+			"x": 1,
+			"y": 1,
+			"width": 49,
+			"height": ,
+			"header": {
+				"x": 1,
+				"y": 1,
+				"width": 49,
+				"height": 20,
+				"color": "#000000"
+			}
+			"rules": {
+				"x": 22,
+				"y": 1,
+				"width": 49,
+				"height":
+			}
+		},
+		{
+			"name":  "red",
+			"color": "#FF0000"
+		},
+		{
+			"name":  "orange",
+			"color": "#FF9900"
+		},
+		{
+			"name":  "yellow",
+			"color": "#FFFF00"
+		},
+		{
+			"name":  "green",
+			"color": "#00FF00"
+		},
+		{
+			"name":  "cyan",
+			"color": "#00FFFF"
+		},
+		{
+			"name":  "blue",
+			"color": "#0000FF"
+		},
+		{
+			"name":  "magenta",
+			"color": "#FF00FF"
+		}
+	],
+}

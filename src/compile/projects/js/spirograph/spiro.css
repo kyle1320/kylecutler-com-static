@@ -1,0 +1,46 @@
+#spiro-canvas {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 0;
+}
+
+#info-canvas {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 1;
+}
+
+#canvases {
+	position: relative;
+	display: block;
+	width: 500px;
+	height: 500px;
+	background-color: white;
+	float: left;
+	margin-right: 20px;
+	margin-bottom: 20px;
+}
+
+#controls {
+	float: left;
+}
+
+.control {
+	margin: 0.5em 0;
+}
+
+#circles {
+	padding: 0 10px;
+	float: right;
+	width: auto;
+}
+
+#info {
+	clear: both;
+}

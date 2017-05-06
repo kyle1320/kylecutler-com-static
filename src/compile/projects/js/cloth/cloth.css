@@ -1,0 +1,14 @@
+#drawCanvas {
+	position: relative;
+	display: block;
+	width: 500px;
+	height: 500px;
+	background-color: white;
+	float: left;
+	margin-right: 20px;
+	margin-bottom: 20px;
+}
+
+#info {
+	clear: both;
+}
