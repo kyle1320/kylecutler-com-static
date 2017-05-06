@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Bubbles</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width" />
+        <link href="/css/site.css" rel="stylesheet">
+        <script src="/js/site.min.js" type="text/javascript"></script>
+         
+<script src="/js/jscolor.min.js" type="text/javascript"></script>
+
+<link href="bubbles.css" rel="stylesheet">
+<script type="text/javascript" src="bubbles.min.js"></script>
+<script type="text/javascript" src="../util.min.js"></script>
+
+    </head>
+
+    <body>
+        <div id="header">
+            <div id="titlebar">
+                <a href="/index.html"><h1 id="title">My Projects</h1></a>
+                <ul id="menu">
+                    <li><a href="/index.html">Home</a></li>
+                    <li class="dropdown">
+                        <a href="/projects/js/index.html">JavaScript</a>
+                        <ul class="submenu">
+                            <li><a href="/projects/js/spirograph/spiro.html">Spirograph</a></li>
+                            <li><a href="/projects/js/graphs/graphs.html">Graphs</a></li>
+                            <li><a href="/projects/js/particles/particles.html">Particles</a></li>
+                            <li><a href="/projects/js/painter/painter.html">Painter</a></li>
+                            <li><a href="/projects/js/bubbles/bubbles.html">Bubbles</a></li>
+                        </ul>
+                    </li>
+                    <li><a>More to come...</a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="content">
+            
+    <div class="contentbox">
+        <h2>Bubbles</h2>
+        <div id="canvases">
+            <canvas id="draw-canvas" width="500" height="500"></canvas>
+            <table class="aligned" style="clear: both;">
+                <tr>
+                    <td>Status: </td>
+                    <td id="status"></td>
+                </tr>
+                <tr>
+                    <td>Points: </td>
+                    <td id="points"></td>
+                </tr>
+                <tr>
+                    <td>Layer: </td>
+                    <td id="level"></td>
+                </tr>
+                <tr>
+                    <td>Progress: </td>
+                    <td id="progress"></td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="controls" class="column">
+            <div class="control" title="Pauses / resumes cell generation">
+                <button id="pause">Pause</button>
+            </div>
+            <div class="control" title="Resets and clears the image">
+                <button id="reset">Reset</button>
+            </div>
+            <div class="control" title="Copies the canvas so that the image can be saved locally">
+                <button id="save-btn">Save</button><br>
+                <img id="save-img" width="50" height="50" />
+            </div>
+
+        </div>
+        <div class="column">
+            <table class="aligned">
+                <tr class="control" title="The width of the image, in pixels">
+                    <td>Image Width: </td>
+                    <td><input id="width" type="number" min="0" step="10"></td>
+                </tr>
+                <tr class="control" title="The height of the image, in pixels">
+                    <td>Image Height: </td>
+                    <td><input id="height" type="number" min="0" step="10"></td>
+                </tr>
+                <tr class="control" title="The number of points to test in each iteration">
+                    <td>Random Samples: </td>
+                    <td><input id="samples" type="number" min="0" step="1"></td>
+                </tr>
+                <tr class="control" title="The minimum distance between cell edges">
+                    <td>Padding: </td>
+                    <td><input id="padding" type="number" min="0" step="1"></td>
+                </tr>
+                <tr class="control" title="The minimum size of a cell">
+                    <td>Min Radius: </td>
+                    <td><input id="min-rad" type="number" min="0" step="1"></td>
+                </tr>
+                <tr class="control" title="The maximum size of a cell">
+                    <td>Max Radius: </td>
+                    <td><input id="max-rad" type="number" min="0" step="1"></td>
+                </tr>
+                <tr class="control" title="The maximum number of layers to generate in the image">
+                    <td>Max Layers: </td>
+                    <td><input id="max-level" type="number" min="-1" step="1"> (-1 for infinite)</td>
+                </tr>
+                <tr class="control" title='The color of empty space in the image'>
+                    <td>Background Color: </td>
+                    <td><input id="bg-color" class="jscolor {required:false}"> (empty for clear)</td>
+                </tr>
+                <tr class="control" title="The pattern to follow when coloring cells">
+                    <td>Pattern:</td>
+                    <td>
+                        <select id="pattern">
+                            <option value="alternate" selected="selected">Alternate</option>
+                            <option value="rainbow">Rainbow</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <!-- <div id="info" class="contentbox">Bubbles</div> -->
+
+        </div>
+        <div id="footer">
+            <hr>
+            <div id="links">
+                <a href="http://www.facebook.com/kyle1321" title="Facebook" target="kc_social_fb" class="fa-facebook-square"></a>
+                <a href="mailto:kyle1320@gmail.com" title="E-mail" class="fa-envelope-square"></a>
+                <a href="https://plus.google.com/+KyleCutler1" title="Google+" target="kc_social_gplus" class="fa-google-plus-square"></a>
+                <a href="http://github.com/kyle1320" title="GitHub" target="kc_social_github" class="fa-github-square"></a>
+            </div>
+        </div>
+        <script type="text/javascript">
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');ga('create', 'UA-82208907-1', 'auto');ga('send', 'pageview');
+        </script>
+        
+    </body>
+</html>
