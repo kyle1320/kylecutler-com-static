@@ -26,7 +26,7 @@ window.onload = function() {
         maxlevel: -1,
         inactivity: 100, // not user-changeable at the moment, but it could be.
         pattern: "alternate",
-        bgcolor: "#F36E21",
+        bgcolor: "",
         maincolor: "",
     };
 
