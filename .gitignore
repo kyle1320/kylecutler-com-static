@@ -61,5 +61,8 @@ typings/
 config.sh
 deploy.sh
 
+# Gulp target folder
+public/
+
 # VS Code config
-.vscode
+.vscode/
