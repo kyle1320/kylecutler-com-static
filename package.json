@@ -1,5 +1,5 @@
 {
-  "name": "kylecutler-com",
+  "name": "kylecutler-com-static",
   "version": "0.0.1",
   "dependencies": {
     "express": "^4.14.0"
@@ -13,12 +13,6 @@
     "gulp-minify": "0.0.15",
     "gulp-nunjucks-render": "^2.0.0"
   },
-  "scripts": {
-    "preinstall": "npm install modules/*/",
-    "start": "node app.js",
-    "deploy": "./deploy.sh"
-  },
-  "engines": {
-    "node": "8.0.0"
-  }
+  "scripts": {},
+  "engines": {}
 }
