@@ -1,10 +1,12 @@
 const express = require('express');
-const groupme = require('./groupme-bot');
+const modules = require('./modules');
 
 var app = express();
 
+// static files always come first
 app.use(express.static('public'));
 
-app.use('/groupme', groupme);
+// then route to any additional modules
+app.use('/', modules);
 
 app.listen(process.env.PORT || 3000);

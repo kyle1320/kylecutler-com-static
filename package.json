@@ -2,8 +2,7 @@
   "name": "kylecutler-com",
   "version": "0.0.1",
   "dependencies": {
-    "express": "^4.14.0",
-    "groupme-bot": "file:./groupme-bot"
+    "express": "^4.14.0"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.24.0",
@@ -15,10 +14,11 @@
     "gulp-nunjucks-render": "^2.0.0"
   },
   "scripts": {
+    "preinstall": "npm install modules/*/",
     "start": "node app.js",
     "deploy": "./deploy.sh"
   },
   "engines": {
-    "node": "6.4.0"
+    "node": "8.0.0"
   }
 }
