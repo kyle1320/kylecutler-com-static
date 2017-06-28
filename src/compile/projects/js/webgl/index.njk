@@ -1,0 +1,27 @@
+{% extends "layout.njk" %}
+{% block title %}WebGL{% endblock %}
+
+{% block resources %}
+<link href="webgl.css" rel="stylesheet" />
+<script type="text/javascript" src="/js/jscolor.js"></script>
+<script type="text/javascript" src="webgl.js"></script>
+<script type="text/javascript" src="../webgl.js"></script>
+<script type="text/javascript" src="../util.js"></script>
+{% endblock %}
+
+{% block content %}
+	<div class="contentbox">
+		<h2>WebGL</h2>
+		<canvas id="draw-canvas" width="500px" height="500px"></canvas>
+	</div>
+	<div>
+		<button id="save-btn">Save</button><br>
+		<img id="save-img" width="50" height="50" />
+	</div>
+	<div id="info">
+		<div class="contentbox">
+			Click inside the 'neighbors' grid to toggle a neighbor<br>
+			Drag inside the 'neighbors' grid to move around
+		</div>
+	</div>
+{% endblock %}

@@ -94,7 +94,7 @@ function NeuralNet(n_inputs, layer_sizes, n_outputs, initial_weights) {
     }
 
     var i, j, k;
-    var edges, len, nodes;
+    var edges, len, nodes, layer;
     var prev_len = n_inputs;
     var prev_layer = this.inputs;
 

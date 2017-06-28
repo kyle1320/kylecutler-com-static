@@ -23,7 +23,7 @@ gulp.task('compile-js', function () {
         .pipe(minify({
             ext: {
                 src: '.debug.js',
-                min: '.min.js'
+                min: '.js'
             }
         }))
         .pipe(gulp.dest(target()));
