@@ -6,13 +6,19 @@
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.24.0",
+    "browser-sync": "^2.24.6",
     "gulp": "^3.9.1",
-    "gulp-babel": "^6.1.2",
+    "gulp-autoprefixer": "^5.0.0",
+    "gulp-babel": "^7.0.1",
     "gulp-clean-css": "^3.0.4",
-    "gulp-less": "^3.3.0",
-    "gulp-minify": "0.0.15",
-    "gulp-nunjucks-render": "^2.0.0"
+    "gulp-minify": "3.1.0",
+    "gulp-notify": "^3.2.0",
+    "gulp-pug": "^4.0.1",
+    "gulp-sass": "^4.0.1"
   },
+  "browserslist": [
+    "cover 98%"
+  ],
   "scripts": {},
   "engines": {}
 }

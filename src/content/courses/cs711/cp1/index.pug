@@ -1,0 +1,52 @@
+extends /shared/main.pug
+
+include /components/controls.pug
+
+block title
+  | CSCI711 – Checkpoint 1
+
+block scripts
+  script(type="text/javascript" src="/js/three.js")
+  script(type="text/javascript" src="src.js")
+  script(type="text/javascript" src="/projects/js/util.js")
+
+block content
+  .contentbox
+    h2 Checkpoint 1
+    .canvas-container
+      img#target-image(src='/img/courses/cs711/cp1_target.png', width='375', height='225' style='z-index: 10')
+    +controls
+      +control('Camera Position')
+        +control-point('X:')(id='camera-pos-x', type='number', step='0.1')
+        +control-point('Y:')(id='camera-pos-y', type='number', step='0.1')
+        +control-point('Z:')(id='camera-pos-z', type='number', step='0.1')
+      +control('Camera LookAt')
+        +control-point('X:')(id='camera-look-x', type='number', step='0.1')
+        +control-point('Y:')(id='camera-look-y', type='number', step='0.1')
+        +control-point('Z:')(id='camera-look-z', type='number', step='0.1')
+      +control('Camera FOV')
+        +control-point('degrees', true)(id='camera-fov', type='number', step='1')
+      +control('Sphere 1 (red)')
+        +control-point('X:')(id='sphere-1-x', type='number', step='0.1')
+        +control-point('Y:')(id='sphere-1-y', type='number', step='0.1')
+        +control-point('Z:')(id='sphere-1-z', type='number', step='0.1')
+        +control-point('Radius:')(id='sphere-1-radius', type='number', step='0.1')
+      +control('Sphere 2 (green)')
+        +control-point('X:')(id='sphere-2-x', type='number', step='0.1')
+        +control-point('Y:')(id='sphere-2-y', type='number', step='0.1')
+        +control-point('Z:')(id='sphere-2-z', type='number', step='0.1')
+        +control-point('Radius:')(id='sphere-2-radius', type='number', step='0.1')
+      +control('Light Position')
+        +control-point('X:')(id='light-x', type='number', step='0.1')
+        +control-point('Y:')(id='light-y', type='number', step='0.1')
+        +control-point('Z:')(id='light-z', type='number', step='0.1')
+      +control('Floor')
+        +control-point('Width:')(id='floor-width', type='number', step='1')
+        +control-point('Length:')(id='floor-length', type='number', step='1')
+      +control('Target Image Opacity')
+        +control-point(id='target-opacity', type='number', step='0.1')
+  #info
+    .contentbox
+      | Feel free to adjust the values :)
+      br
+      | The floor is centered at 0, 0, 0

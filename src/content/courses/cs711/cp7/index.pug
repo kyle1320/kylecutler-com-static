@@ -1,0 +1,25 @@
+extends /shared/main.pug
+
+block title
+  | CSCI711 – Checkpoint 7
+
+block content
+  h1.content-header Checkpoint 7
+  .contentbox
+    h3 Ward Operator
+    div Note that all light sources (including sky color and ambient light) are scaled.
+    br
+    img(src='/img/courses/cs711/cp7_ward_1.png', width='375')
+    .img-desc Illuminance: 1 nit
+    img(src='/img/courses/cs711/cp7_ward_1000.png', width='375')
+    .img-desc Illuminance: 1000 nits
+    img(src='/img/courses/cs711/cp7_ward_10000.png', width='375')
+    .img-desc Illuminance: 10000 nits
+  .contentbox
+    h3 Reinhard Operator
+    img(src='/img/courses/cs711/cp7_reinhard_1.png', width='375')
+    .img-desc Illuminance: 1 nit
+    img(src='/img/courses/cs711/cp7_reinhard_1000.png', width='375')
+    .img-desc Illuminance: 1000 nits
+    img(src='/img/courses/cs711/cp7_reinhard_10000.png', width='375')
+    .img-desc Illuminance: 10000 nits

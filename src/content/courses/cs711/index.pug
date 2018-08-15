@@ -1,0 +1,33 @@
+extends /shared/main.pug
+
+include /components/project-header.pug
+
+block title
+  | CS711 – Global Illumination
+
+block content
+  h1.content-header CSCI711 – Global Illumination
+  h2.content-header Regular Checkpoints
+  +project-header('cp1', '/img/courses/cs711/cp1_preview.png', 'Checkpoint 1')
+    div Setting the Scene
+  +project-header('cp2', '/img/courses/cs711/cp2_preview.png', 'Checkpoint 2')
+    div Raytracing Framework
+  +project-header('cp3', '/img/courses/cs711/cp3_preview.png', 'Checkpoint 3')
+    div Basic Shading
+  +project-header('cp4', '/img/courses/cs711/cp4_preview.png', 'Checkpoint 4')
+    div Procedural Shading
+  +project-header('cp5', '/img/courses/cs711/cp5_preview.png', 'Checkpoint 5')
+    div Recursive Ray Tracing – Reflection
+  +project-header('cp6', '/img/courses/cs711/cp6_preview.png', 'Checkpoint 6')
+    div Recursive Ray Tracing – Transmission
+  +project-header('cp7', '/img/courses/cs711/cp7_preview.png', 'Checkpoint 7')
+    div Tone Reproduction
+
+  h2.content-header Advanced Checkpoints
+  +project-header('acp1', '/img/courses/cs711/acp1_preview.png', 'Advanced Checkpoint 1')
+    div K-d Trees
+  +project-header('acp2', '/img/courses/cs711/acp2_preview.png', 'Advanced Checkpoint 2')
+    div Photon Mapping
+
+  h2.content-header Project
+  +project-header('project', '/img/courses/cs711/project_preview.png', 'Selected GIFs from the Project')

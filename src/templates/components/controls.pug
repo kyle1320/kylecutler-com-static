@@ -1,0 +1,33 @@
+mixin controls
+  .controls
+    table
+      tbody
+        block
+
+mixin control(name)
+  tr.control
+    td.control__title= name
+    td
+      block
+
+mixin _control-point-base(name, labelAfter)
+  span.control__control-point
+    if name && !labelAfter
+      span.control-label= name
+    block
+    if name && labelAfter
+      span.control-label= name
+
+mixin control-point(name, labelAfter)
+  +_control-point-base(name, labelAfter)
+    input.short-input&attributes(attributes)
+
+mixin control-point-select(name, labelAfter)
+  +_control-point-base(name, labelAfter)
+    select&attributes(attributes)
+      block
+
+mixin control-point-button(name, labelAfter)
+  +_control-point-base(name, labelAfter)
+    button&attributes(attributes)
+      block

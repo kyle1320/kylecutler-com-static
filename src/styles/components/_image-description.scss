@@ -1,0 +1,11 @@
+.img-desc {
+  font-weight: bold;
+
+  img + & {
+    margin-bottom: 1em;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}

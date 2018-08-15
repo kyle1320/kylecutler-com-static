@@ -1,0 +1,11 @@
+.content-header {
+  padding: .2em;
+  padding-left: rem(10px);
+  border-left: .3em solid $primary-dark;
+}
+
+h1, h2, h3, h4, h5 {
+  .content > & {
+    @extend .content-header;
+  }
+}

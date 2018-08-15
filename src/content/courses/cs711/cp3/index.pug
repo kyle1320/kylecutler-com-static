@@ -1,0 +1,40 @@
+extends /shared/main.pug
+
+block title
+  | CSCI711 – Checkpoint 3
+
+block content
+  h1.content-header Checkpoint 3
+  .contentbox
+    h3 Primary Goal – Phong Shading
+    img(src='/img/courses/cs711/cp3_primary.png', width='375')
+    .img-desc
+      | Parameters used for all objects in this image are #[i k#[sub d]] = 0.5, #[i k#[sub s]] = 0.5, and #[i k#[sub e]] = 20.
+    img(src='/img/courses/cs711/cp3_phong.png', width='300')
+    .img-desc
+      | Showing how the #[i k#[sub d]] and #[i k#[sub s]] parameters affect the material. #[i k#[sub d]] varies along the horizontal axis, and #[i k#[sub s]] varies along the vertical axis. #[i k#[sub e]] is held constant at 20.
+  .contentbox
+    h3 Bonus – Multiple Light Sources
+    img(src='/img/courses/cs711/cp3_bonus2.png', width='375')
+  .contentbox
+    h3 Bonus – Phong-Blinn Shading
+    img(src='/img/courses/cs711/cp3_bonus1.png', width='375')
+    .img-desc
+      | Parameters used for all objects in this image are #[i k#[sub d]] = 0.5, #[i k#[sub s]] = 0.5, and #[i k#[sub e]] = 50.
+    img(src='/img/courses/cs711/cp3_phongBlinn.png', width='300')
+    .img-desc
+      | Showing how the #[i k#[sub d]] and #[i k#[sub s]] parameters affect the material. #[i k#[sub d]] varies along the horizontal axis, and #[i k#[sub s]] varies along the vertical axis. #[i k#[sub e]] is held constant at 50.
+  .contentbox
+    h3 Bonus – Strauss Shading
+    img(src='/img/courses/cs711/cp3_bonus4.png', width='375')
+    .img-desc
+      | Parameters used for all objects in this image are #[i s] = 0.7 and #[i m] = 0.5 (#[i t] is not used).
+    img(src='/img/courses/cs711/cp3_strauss.png', width='300')
+    .img-desc
+      | Showing how the #[i s] and #[i m] parameters affect the material. #[i s] varies along the horizontal axis, and #[i m] varies along the vertical axis.
+  .contentbox
+    h3 Bonus – Supersampling
+    img(src='/img/courses/cs711/cp3_bonus3.png', width='375')
+    .img-desc This images uses 16 samples per pixel, arranged in a grid pattern.
+    img(src='/img/courses/cs711/cp3_supersample.png', width='300')
+    .img-desc A close-up from the above image.

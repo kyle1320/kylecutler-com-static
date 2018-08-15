@@ -1,0 +1,121 @@
+.header {
+  width: 100%;
+  background: #4DB6AC url('/img/voronoi.svg');
+  background-size: 600px 600px;
+  border-bottom: rem(6px) solid #00897B;
+  color: white;
+
+  .container {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  a {
+    color: white;
+    text-decoration: none;
+  }
+
+  &__title {
+    margin: 0;
+    padding: rem(12px) 0;
+    font-size: rem(48px);
+    font-family: 'PT Serif';
+    font-weight: bold;
+    text-shadow: 0 rem(3px) rem(4px) rgba(0, 0, 0, 0.2);
+  }
+
+  &__menu {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-flow: row nowrap;
+    list-style-type: none;
+    z-index: 100;
+    align-self: flex-end;
+    letter-spacing: rem(0.4px);
+
+    a {
+      margin: 0;
+      padding: rem(10px) rem(15px);
+      display: block;
+    }
+
+    & > li {
+      padding: 0;
+      border-left: 1px solid white;
+      position: relative;
+      color: white;
+      font-weight: bold;
+
+      &:first-child {
+        border-left: none;
+      }
+
+      & > a {
+        position: relative;
+        bottom: 0;
+        text-shadow: 0 rem(2px) rem(3px) rgba(0, 0, 0, 0.2);
+        transition: all 0.1s ease-in-out;
+        font-weight: bold;
+      }
+
+      &:hover > a {
+        bottom: rem(2px);
+        text-shadow: 0 rem(4px) rem(4px) rgba(0, 0, 0, 0.2);
+      }
+    }
+
+    li:hover > .submenu {
+      display: block;
+    }
+
+    .submenu {
+      margin: 0;
+      padding: 0;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      display: none;
+      background-color: white;
+      list-style-type: none;
+      box-shadow: 0 0 rem(3px) rem(1px) rgba(0, 0, 0, 0.2);
+      overflow-x: hidden;
+      overflow-y: scroll;
+
+      & > li {
+        width: 100%;
+        position: relative;
+        margin: 0;
+        border-left: rem(6px) solid $primary-accent;
+        transition: all 0.1s ease-in-out;
+        font-weight: normal;
+
+        a {
+          color: $dark-gray;
+          font-weight: normal;
+        }
+
+        &:hover {
+          background-color: $primary-lighter;
+          margin-right: rem(-2px);
+          border-left: rem(8px) solid $primary-dark;
+        }
+      }
+    }
+  }
+
+  @include mobile-only {
+    .container {
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    &__menu {
+      align-self: initial;
+    }
+  }
+}

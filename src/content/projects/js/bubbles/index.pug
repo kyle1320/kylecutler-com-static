@@ -1,0 +1,62 @@
+extends /shared/main.pug
+
+include /components/controls.pug
+
+block title
+  | Bubbles
+
+block scripts
+  script(type="text/javascript" src="/js/jscolor.js")
+  script(type="text/javascript" src="bubbles.js")
+  script(type="text/javascript" src="../util.js")
+
+block content
+  .contentbox
+    h2 Bubbles
+    .column
+      .canvas-container
+        canvas#draw-canvas(width='500', height='500')
+      table.aligned(style='clear: both;')
+        tbody
+          tr
+            td Status:
+            td#status
+          tr
+            td Points:
+            td#points
+          tr
+            td Layer:
+            td#level
+          tr
+            td Progress:
+            td#progress
+    +controls
+      tr
+        td
+        td
+          img#save-img(width='50', height='50')
+      +control('Controls')
+        +control-point-button()(id='pause') Pause
+        +control-point-button()(id='reset') Reset
+        +control-point-button()(id='save-btn') Save
+      +control('Image Size')
+        +control-point('Width:')(id='width', type='number', min='0', step='10')
+        +control-point('Height:')(id='height', type='number', min='0', step='10')
+      +control('Random Samples')
+        +control-point()(id='samples', type='number', min='0', step='1')
+      +control('Padding')
+        +control-point()(id='padding', type='number', min='0', step='1')
+      +control('Radius')
+        +control-point('Min:')(id='min-rad', type='number', min='0', step='1')
+        +control-point('Max:')(id='max-rad', type='number', min='0', step='1')
+      +control('Max Layers')
+        +control-point()(id='max-level', type='number', min='-1', step='1')
+        |  (-1 for infinite)
+      +control('Background Color')
+        +control-point()(id='bg-color', class='jscolor')
+        |  (empty for clear)
+      +control('Pattern')
+        +control-point-select()(id='pattern')
+          option(value='alternate', selected='selected') Alternate
+          option(value='rainbow') Rainbow
+

@@ -1,0 +1,18 @@
+body {
+  font-family: 'Source Sans Pro';
+  color: $dark-gray;
+}
+
+a {
+  color: $primary-dark;
+  font-weight: bold;
+  text-decoration: none;
+
+  &:hover {
+    color: $primary-accent;
+  }
+}
+
+img:not([src]) {
+  display: none;
+}

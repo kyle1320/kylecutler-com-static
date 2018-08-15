@@ -1,0 +1,174 @@
+extends /shared/main.pug
+
+include /components/controls.pug
+
+block title
+  | Painter
+
+block scripts
+  script(type="text/javascript" src="/js/jscolor.js")
+  script(type="text/javascript" src="painter.js")
+  script(type="text/javascript" src="../util.js")
+
+block content
+  .contentbox
+    h2 Painter
+    .canvas-container
+      canvas#draw-canvas(width='500', height='500')
+    #controls
+      .column
+        .control(title='Toggles painting')
+          button#pause Pause
+        .control(title='Resets the painting')
+          button#reset Reset
+        .control(title='Copies the painting so that it can be saved locally')
+          button#save-btn Save
+          br
+          img#save-img(width='50', height='50')
+      .column
+        table.aligned
+          tbody
+            tr.control(title='The width of the painting, in pixels')
+              td Image width:
+              td
+                input#width(type='number', min='0', step='100')
+            tr.control(title='The height of the painting, in pixels')
+              td Image height:
+              td
+                input#height(type='number', min='0', step='100')
+            tr.control(title='The degree to which cells with more neighbors will grow faster')
+              td Reliance:
+              td
+                input#reliance(type='number', step='any')
+            tr.control(title='The amount that a cells color will change from its neighbors')
+              td Deviation:
+              td
+                input#deviation(type='number', min='0', max='255', step='1')
+            tr.control(title='The delay in milliseconds between cell growth cycles')
+              td Delay:
+              td
+                input#delay(type='number', min='0', step='1')
+            tr.control(title='The color that initial cells are based on')
+              td Base color:
+              td
+                input#color.jscolor
+        .control(title="The cells that are considered 'neighbors' relative to a given cell")
+          | Neighbors:
+          br
+          div
+            .column
+              canvas#neighbor-canvas(width='100', height='100')
+            .column
+              button#neighbors-zoom-in Zoom In
+              br
+              button#neighbors-zoom-out Zoom Out
+              br
+              button#neighbors-center Center
+              br
+              button#neighbors-reset Reset Neighbors
+              br
+      .column
+        table.aligned
+          tbody
+            tr.control(title='The pattern of initial cells in the painting')
+              td Pattern:
+              td
+                select#pattern
+                  option(value='center', selected='selected') Center
+                  option(value='vertical') Vertical
+                  option(value='random') Random
+                  option(value='hex') Hex
+                  option(value='distributed') Distributed
+            tr.control.optional.random.vertical.hex.distributed(title='Color deviation of initial cells')
+              td Initial deviation:
+              td
+                input#init-deviation(type='number', min='0', max='255', step='10')
+            tr.control.optional.random.distributed(title='Number of initial points to spawn')
+              td
+                | Number of points:
+                span.optional.distributed (approximate)
+              td
+                input#num-points(type='number', min='0', step='1')
+            tr.control.optional.hex(title='Angle of y-axis on which to spawn initial cells')
+              td Angle:
+              td
+                input#hex-angle(type='number', min='5', max='90', step='5')
+            tr.control.optional.hex(title='Space between axis lines on initial cell grid')
+              td Size:
+              td
+                input#size(type='number', min='0', step='1')
+  #info
+    .contentbox
+      p Click inside the 'neighbors' grid to toggle a neighbor
+      p Drag inside the 'neighbors' grid to move around
+    .contentbox
+      h2 About Painter:
+      div Painter allows you to create algorithmically generated "paintings" of various colors and patterns, and with varying degrees of randomness in several aspects. What follows is a description of each feature or option, and what it does:
+        ul
+          li
+            h3 Neighbors
+            p A way of deciding which cells can "grow" off of another cell.
+            p This determines the direction and pattern in which new pixels are drawn to the image.
+            p When many cells share the same neighbor, that neighbor is more likely to grow.
+          li
+            h3 Reliance
+            p The degree to which cells with more neighbors are more likely to grow.
+            p For example, with a reliance of 1, if 5 cells share a common neighbor, that cell is 5 times more likely to grow than if only one cell had it as a neighbor.
+            p However, with a reliance of 0, the cell would be just as likely to grow in both situations.
+            p Should be positive.
+          li
+            h3 Deviation
+            p The maximum amount that a new cell will change its color from its spawning neighbor cells.
+            p When a new cell grows from some number of neighbors, it takes the average color of those neighbors and deviates it by a random amount.
+            p Should be 0 - 255.
+          li
+            h3 Delay
+            p The amount of time (in milliseconds) to wait between drawing successive iterations of the image.
+            p Should be positive.
+          li
+            h3 Base Color
+            p The color that initial cells will spawn with.
+          li
+            h3 Pattern
+            div The pattern in which initial cells are placed in the image.
+              ul
+                li
+                  h4 Center
+                  p A single cell is placed in the center of the image. Its color is the same as the base color.
+                li
+                  h4 Vertical
+                  div A row of cells is spawned at the very top of the image. The following options are presented:
+                    ul
+                      li
+                        h4 Initial Deviation
+                        p The amount to deviate the initial cells' colors from the base color.
+                        p Should be 0 - 255.
+                li
+                  h4 Random
+                  div Cells are placed randomly throughout the image. The following options are presented:
+                    ul
+                      li
+                        h4 Initial Deviation
+                        p The amount to deviate the initial cells' colors from the base color.
+                        p Should be 0 - 255.
+                      li
+                        h4 Number of Points
+                        p The number of initial cells to place in the image.
+                li
+                  h4 Hex
+                  div Cells are placed along a grid in the image. The following options are presented:
+                    ul
+                      li
+                        h4 Initial Deviation
+                        p The amount to deviate the initial cells' colors from the base color.
+                        p Should be 0 - 255.
+                      li
+                        h4 Angle
+                        p The angle formed by the x and y axis of the grid.
+                        p The initial value (60) creates a grid that will generate hexagons (hence the name).
+                        p Setting this to 90, for example, will generate squares.
+                      li
+                        h4 Size
+                        p The distance between the imaginary "gridlines".
+                        p Roughly, the distance between the initial points.
+

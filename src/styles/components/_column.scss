@@ -1,0 +1,9 @@
+.column {
+  display: block;
+  float: left;
+  margin: 0 rem(10px);
+
+  &:after {
+    clear: left;
+  }
+}

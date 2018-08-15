@@ -1,0 +1,24 @@
+.footer {
+  padding: rem(10px);
+  text-align: center;
+  color: $gray;
+
+  &__links a {
+    font-size: rem(32px);
+    text-decoration: none;
+    color: $primary-darker;
+    margin-right: rem(5px);
+
+    &:hover {
+      color: $primary;
+    }
+
+    &:active {
+      color:  $primary-accent;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}

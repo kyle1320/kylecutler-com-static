@@ -1,0 +1,32 @@
+extends /shared/main.pug
+
+block title
+  | Home
+
+block content
+  .contentbox
+    h2 Welcome!
+    p
+      | This is a place for me to put information about various projects I've worked on.
+      | This could be anything from screenshots and descriptions to working demos.
+    p
+      | This site is very much a work in progress, so check back often!
+  .contentbox
+    h2 A little about me...
+    img(src="/img/kyle1.jpg" height="160px" style="float: left; padding: 10px 10px 10px 0;")
+    p
+      | My name is Kyle Cutler, I'm a fourth-year Computer Science student at Rochester Institute of Technology.
+    p
+      | I have been programming for about six years, and I learn more every day. At the moment, I consider myself fluent in Java, Python, C, and JavaScript, but I have dabbled in many other languages as well.
+    p
+      | I love to create visual programs, such as fractal generators, simulations, games, and anything else I come up with. (check out <a href="/projects/js">my JavaScript programs!</a>)
+    p
+      | My other hobbies include playing
+      a(href="https://en.wikipedia.org/wiki/Go_(game)" target="_blank")  Go
+      | , attending hackathons, practicing guitar, and cooking.
+    p
+      | If you want to contact me, the best way is by
+      a&attributes(obfuscate({href: "mailto:kyle1320@gmail.com"}))  Email
+      | . You can also find links to my GitHub, LinkedIn, and more at the bottom of the page.
+    p
+      | Enjoy your visit!

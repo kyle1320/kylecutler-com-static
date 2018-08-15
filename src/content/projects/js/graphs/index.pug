@@ -1,0 +1,46 @@
+extends /shared/main.pug
+
+include /components/controls.pug
+
+block title
+  | Graphs
+
+block scripts
+  script(type="text/javascript" src="/js/jszip.js")
+  script(type="text/javascript" src="/js/FileSaver.js")
+  script(type="text/javascript" src="graphs.js")
+  script(type="text/javascript" src="../webgl.js")
+  script(type="text/javascript" src="../util.js")
+
+block content
+  .contentbox
+    h2 Graphs
+    #canvases.canvas-container
+      canvas#gl-canvas(width='500', height='500')
+      canvas#draw-canvas(width='500', height='500')
+    +controls
+      +control('Show / Hide')
+        +control-point('Nodes', true)(id="shownodes", type="checkbox")
+        +control-point('Edges', true)(id="showedges", type="checkbox")
+        +control-point('Edge Distances', true)(id="edgedists", type="checkbox")
+      +control('Draw background')
+        +control-point()(id='background', type='checkbox')
+      +control('Highlight white background areas')
+        +control-point()(id='highlight', type='checkbox')
+      +control('Use modulo on background values')
+        +control-point()(id='modulo', type='checkbox')
+      +control('Constant updates')
+        +control-point()(id='updates', type='checkbox')
+      +control('Order')
+        +control-point()(id='orderinput', type='number', min='0', step='1')
+      +control('Range')
+        +control-point()(id='rangeinput', type='number', step='10')
+  .contentbox
+    | drag a node to move it
+    br
+    | press 'q' over a node / edge to delete it
+    br
+    | ctrl + click adds a new node
+    br
+    | ctrl + drag adds a new edge
+

@@ -1,0 +1,16 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: url('/img/grid.png') repeat 0 0;
+  background-size: 26px 26px;
+
+  @include hi-res {
+    background: url('/img/grid@2X.png') repeat 0 0;
+    background-size: 26px 26px;
+  }
+}
+
+.content {
+  margin: rem(10px);
+  position: relative;
+}

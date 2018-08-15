@@ -1,0 +1,43 @@
+.controls {
+  float: left;
+}
+
+.control {
+  input, select {
+    width: 10em;
+  }
+
+  input[type="checkbox"] {
+    width: auto;
+  }
+
+  input.short-input {
+    max-width: 4em;
+  }
+
+  &__control-point {
+    display: inline-flex;
+    align-items: center;
+    margin: rem(1px);
+    background-color: #4DB6AC;
+    border: rem(2px) solid #00897B;
+    color: white;
+    height: 1em;
+    padding: rem(5px);
+    font-weight: bold;
+    white-space: nowrap;
+
+    & > * {
+      margin-left: rem(5px);
+
+      &:first-child {
+        margin-left: 0;
+      }
+    }
+  }
+
+  &__title {
+    text-align: right;
+    padding-right: rem(5px);
+  }
+}

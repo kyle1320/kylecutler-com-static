@@ -1,0 +1,108 @@
+extends /shared/main.pug
+
+include /components/controls.pug
+
+block title
+  | Particles
+
+block scripts
+  script(type="text/javascript" src="particles.js")
+  script(type="text/javascript" src="../util.js")
+
+block content
+  .contentbox
+    h2 Particles
+    #canvases.canvas-container
+      canvas#trace-canvas(width='500', height='500')
+      canvas#draw-canvas(width='500', height='500')
+    +controls
+      tr
+          td
+          td
+            img#save-img(width='50', height='50')
+      +control('Controls')
+        +control-point-button()(id='pause') Pause
+        +control-point-button()(id='clear') Clear
+        +control-point-button()(id='clear-trace') Clear Trace
+        +control-point-button()(id='save-btn') Save trace
+      +control('Physical constants')
+        +control-point('Gravity:')(id='gravity', type='number', step='1')
+        +control-point('Decay:')(id='decay', type='number', min='-1', max='1', step='0.01')
+        +control-point('Mouse density:')(id='mouse-density', type='number', min='0', step='1')
+      +control('New group parameters')
+        +control-point('Size:')(id='group-size', type='number', min='0', step='1')
+        +control-point('Radius:')(id='group-radius', type='number', min='0', step='1')
+      +control('New particle parameters')
+        +control-point('Radius:')(id='particle-radius', type='number', min='0', step='1')
+        +control-point('Density:')(id='particle-density', type='number', step='0.1')
+      +control('Toggles')
+       +control-point('New particles are fixed', true)(id='fixed-particles', type='checkbox')
+       +control-point('Trace new particle paths', true)(id='trace-particles', type='checkbox')
+       +control-point('Bounce off edges', true)(id='bounce', type='checkbox')
+       +control-point('Draw traces', true)(id='trace', type='checkbox')
+  .contentbox
+    p ctrl + click (or double tap) to place a new group
+    p drag before letting go to set the new group's velocity
+    p hold down the mouse to interact
+  .contentbox
+    h2 About Particles:
+    div
+      | Particles is a 2D N-body gravity simulator.
+      | It simulates any number of particles, which may have different sizes and densities.
+      | You can use the mouse to interact with the particles, which are attracted to your mouse as if it were a particle.
+      | What follows is a description of different options or features, and what each does:
+      ul
+        li
+          h3 Gravity
+          p The global gravity constant. The larger this value, the greater effect particles have on one another.
+          p This may be positive, negative, or zero. If negative, particles will be repulsed by one another.
+        li
+          h3 Decay
+          p Decay allows you to gradually slow down the particles.
+          p Particles are slowed down on every frame, which occur approximately every 15 milliseconds.
+          p The decay value is the percentage of motion taken away from the particles each frame, and may be positive, negative, or zero.
+        li
+          h3 Particles
+          div Particles have the following properties:
+            ul
+              li
+                h4 Radius
+                p Half the width of the particle. This contributes to the mass of the particle.
+                p Should be greater than zero.
+              li
+                h4 Density
+                p The density of the particle. This contributes to the mass of the particle.
+                p This may be positive, negative, or zero. If negative, this particle will push other particles away. If zero, this particle will have no effect on other particles.
+              li
+                h4 Color
+                p The inner color of the particle.
+                p This is also the color that gets drawn on the trace image (if enabled).
+              li
+                h4 Trace
+                p Individual particles may or may not be drawn on the trace image (if enabled).
+                p This is toggled by enabling the "Trace new particle paths" checkbox.
+              li
+                h4 Fixed
+                p Particles may be fixed, in which case they will never move.
+                p They will still affect other particles, but will not themselves be affected.
+        li
+          h3 Groups
+          div Particles are added to the simulation in groups. Every particle in a group shares the same properties of size, density, color, and initial velocity. The folowing settings apply to groups:
+            ul
+              li
+                h4 Size
+                p The number of particles in a single group
+              li
+                h4 Radius
+                p The initial radius of a new group. Particles are spawned in a spiral pattern within this radius.
+                p Should be positive or zero.
+              li
+                h4 Initial Velocity
+                p You can click and drag whwn creating a group to incur an initial velocity upon the group. In this case, every particle in the newly spawned group will start out with that same initial velocity.
+        li
+          h3 Trace
+          p Particles may draw on a background image, called the trace image. This does not get reset each frame, but gets overdrawn. The trace image may be cleared, and can also be saved.
+        li
+          h3 Mouse
+          p When pressed, the mouse is treated as a particle with a 1-pixel radius and the chosen density. That density may be positive, in which case particles will be attracted to it, or negative, in which case particles will be repulsed by it.
+

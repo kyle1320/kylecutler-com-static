@@ -1,0 +1,36 @@
+extends /shared/main.pug
+
+block title
+  | CSCI711 – Advanced Checkpoint 1
+
+block content
+  .contentbox
+    h2 Advanced Checkpoint 1
+    h3 Bunny (69,451 triangles) – 600x600
+    div(style='display: flex; align-items: center')
+      img(src='/img/courses/cs711/acp1_bunny.png', width='300')
+      table(style='padding: 1em')
+        tbody
+          tr
+            th(style='text-align: right') Time to render (no k-d tree):
+            td 8 minutes, 11 seconds
+          tr
+            th(style='text-align: right') Time to build k-d tree:
+            td 1.10 seconds
+          tr
+            th(style='text-align: right') Time to render (with k-d tree):
+            td 0.29 seconds
+    h3 Dragon (1,132,830 triangles) – 600x600
+    div(style='display: flex; align-items: center')
+      img(src='/img/courses/cs711/acp1_dragon.png', width='300')
+      table(style='padding: 1em')
+        tbody
+          tr
+            th(style='text-align: right') Time to render (no k-d tree):
+            td TOO LONG (est. about 2 hours)
+          tr
+            th(style='text-align: right') Time to build k-d tree:
+            td 12.30 seconds
+          tr
+            th(style='text-align: right') Time to render (with k-d tree):
+            td 0.51 seconds

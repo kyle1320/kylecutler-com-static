@@ -1,0 +1,21 @@
+@mixin hi-res {
+  @media only screen and (min-resolution: 2dppx) {
+    @content;
+  }
+}
+
+@function rem($value) {
+  @return ($value / 16px) * 1rem;
+}
+
+@mixin mobile-only {
+  @media (max-width: $small - 1px) {
+    @content;
+  }
+}
+
+@mixin desktop-only {
+  @media (min-width: $small) {
+    @content;
+  }
+}
