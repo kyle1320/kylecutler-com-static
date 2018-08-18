@@ -1,6 +1,6 @@
 #minigame-toggle {
   position: relative;
-  border: 1px solid rgba($secondary, 0.1);
+  border: 1px solid rgba($secondary, 0.2);
   text-align: center;
   transition: border-color 300ms ease-in-out;
 
@@ -11,12 +11,12 @@
   .text-container {
     position: relative;
     padding: rem(5px);
-    border: 1px solid rgba($secondary, 0.1);
+    border: 1px solid rgba($secondary, 0.2);
   }
 
   table {
     border-spacing: 0;
-    // border-bottom: 1px solid rgba($secondary, 0.1);
+    // border-bottom: 1px solid rgba($secondary, 0.2);
   }
 
   .win-screen {
@@ -69,12 +69,11 @@
 
   td {
     position: relative;
-    min-width: rem(24px);
-    min-height: rem(24px);
-    width: rem(24px);
-    height: rem(24px);
-    border: 1px solid rgba($secondary, 0.1);
+    width: rem(32px);
+    height: rem(32px);
     margin: 0;
+    padding: 0;
+    border: 1px solid rgba($secondary, 0.2);
 
     &::after {
       position: absolute;
@@ -83,8 +82,8 @@
       right: rem(2px);
       bottom: rem(2px);
       left: rem(2px);
-      width: rem(22px);
-      height: rem(22px);
+      width: rem(28px);
+      height: rem(28px);
       border-radius: 50%;
       background-color: rgba($primary, 0.8);
       transition: transform 150ms ease-in-out;
