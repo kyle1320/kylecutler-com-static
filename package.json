@@ -12,7 +12,8 @@
     "babelify": "^8.0.0",
     "browser-sync": "^2.24.6",
     "browserify": "^16.2.2",
-    "gulp": "^3.9.1",
+    "del": "^3.0.0",
+    "gulp": "^4.0.0",
     "gulp-autoprefixer": "^5.0.0",
     "gulp-babel": "^7.0.1",
     "gulp-clean-css": "^3.0.4",
@@ -37,6 +38,8 @@
       "transform-runtime"
     ]
   },
-  "scripts": {},
+  "scripts": {
+    "gulp": "./node_modules/gulp/bin/gulp.js"
+  },
   "engines": {}
 }

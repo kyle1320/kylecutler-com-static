@@ -1,5 +1,6 @@
 const gulp = require('gulp');
 const path = require('path');
+const del = require('del');
 
 const autoprefixer = require('gulp-autoprefixer');
 const babel = require('gulp-babel');
@@ -65,7 +66,7 @@ function bundleSiteScripts(bundler) {
         .pipe(gulp.dest(target('js')));
 }
 
-gulp.task('styles-production', function () {
+gulp.task('styles:prod', function () {
     return gulp.src('src/styles/**/*.scss')
         .pipe(sass().on('error', sass.logError))
         .pipe(autoprefixer())
@@ -73,7 +74,7 @@ gulp.task('styles-production', function () {
         .pipe(gulp.dest(target('css')));
 });
 
-gulp.task('content-scripts-production', function () {
+gulp.task('content-scripts:prod', function () {
     return gulp.src('src/content/**/*.js')
         .pipe(babel())
         .pipe(uglify())
@@ -83,7 +84,7 @@ gulp.task('content-scripts-production', function () {
         .pipe(gulp.dest(target()));
 });
 
-gulp.task('site-scripts-production', function () {
+gulp.task('site-scripts:prod', function () {
     return browserify('./src/scripts/site.js')
         .transform(babelify)
         .plugin(tinyify)
@@ -121,37 +122,75 @@ gulp.task('assets', function () {
         .pipe(gulp.dest(target()));
 });
 
-gulp.task('deploy', [
-    'styles-production',
-    'content-scripts-production',
-    'site-scripts-production',
-    'content',
-    'assets'
-]);
-
-gulp.task('default', ['deploy'], function() {
-    browserSync.init("public/**/*", {
-        server: {
-            baseDir: "./public"
-        }
-    });
-
+gulp.task('watch:content', function () {
     gulp.watch([
         'src/**/*.pug'
-    ], ['content']);
+    ], gulp.series('content'));
+});
 
+gulp.task('watch:content-scripts', function () {
     gulp.watch([
         'src/content/**/*.js'
-    ], ['content-scripts']);
+    ], gulp.series('content-scripts'));
+});
 
+gulp.task('watch:styles', function () {
     gulp.watch([
         'src/styles/**/*.scss'
-    ], ['styles']);
+    ], gulp.series('styles'));
+});
 
+gulp.task('watch:assets', function () {
     gulp.watch([
         'src/assets/**/*',
         'src/content/**/*',
         '!src/content/**/*.js',
         '!src/content/**/*.pug'
-    ], ['assets']);
+    ], gulp.series('assets'));
+})
+
+gulp.task('watch', gulp.parallel(
+    'watch:content',
+    'watch:content-scripts',
+    'watch:styles',
+    'watch:assets'
+));
+
+gulp.task('browser-sync', function (done) {
+    browserSync("public/**/*", {
+        server: {
+            baseDir: "./public"
+        }
+    }, done);
 });
+
+gulp.task('clean', function () {
+    return del('public');
+});
+
+gulp.task('build', gulp.series(
+    'clean',
+    gulp.parallel(
+        'styles',
+        'content-scripts',
+        'site-scripts',
+        'content',
+        'assets'
+    )
+));
+
+gulp.task('build:prod', gulp.series(
+    'clean',
+    gulp.parallel(
+        'styles:prod',
+        'content-scripts:prod',
+        'site-scripts:prod',
+        'content',
+        'assets'
+    )
+));
+
+gulp.task('default', gulp.series(
+    'build',
+    gulp.parallel('watch', 'browser-sync')
+));
