@@ -30,14 +30,6 @@
   "browserslist": [
     "cover 98%"
   ],
-  "babel": {
-    "presets": [
-      "env"
-    ],
-    "plugins": [
-      "transform-runtime"
-    ]
-  },
   "scripts": {
     "gulp": "./node_modules/gulp/bin/gulp.js"
   },

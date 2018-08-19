@@ -20,6 +20,21 @@ const watchify = require('watchify');
 const buffer = require('vinyl-buffer');
 const source = require('vinyl-source-stream');
 
+const babelConfig_noTransform = {
+    "presets": [
+        "env"
+    ]
+};
+
+const babelConfig_withTransform = {
+    "presets": [
+        "env"
+    ],
+    "plugins": [
+        "transform-runtime"
+    ]
+};
+
 function target(fpath = '') {
     return path.join('public', fpath);
 }
@@ -36,7 +51,7 @@ gulp.task('styles', function () {
 
 gulp.task('content-scripts', function () {
     return gulp.src('src/content/**/*.js')
-        .pipe(babel())
+        .pipe(babel(babelConfig_noTransform))
         .on('error', notify.onError(function (error) {
             return 'An error occured compiling a js source file: ' + error;
         }))
@@ -46,7 +61,7 @@ gulp.task('content-scripts', function () {
 gulp.task('site-scripts', function () {
     var args = Object.assign({}, watchify.args, { debug: true });
     var bundler = watchify(browserify('./src/scripts/site.js', args))
-        .transform(babelify);
+        .transform(babelify, babelConfig_withTransform);
 
     bundler.on('update', function () {
       bundleSiteScripts(bundler);
@@ -76,7 +91,7 @@ gulp.task('styles:prod', function () {
 
 gulp.task('content-scripts:prod', function () {
     return gulp.src('src/content/**/*.js')
-        .pipe(babel())
+        .pipe(babel(babelConfig_noTransform))
         .pipe(uglify())
         .on('error', notify.onError(function (error) {
             return 'An error occured compiling a js source file: ' + error;
@@ -86,7 +101,7 @@ gulp.task('content-scripts:prod', function () {
 
 gulp.task('site-scripts:prod', function () {
     return browserify('./src/scripts/site.js')
-        .transform(babelify)
+        .transform(babelify, babelConfig_withTransform)
         .plugin(tinyify)
         .bundle()
         .on('error', notify.onError(function (error) {
