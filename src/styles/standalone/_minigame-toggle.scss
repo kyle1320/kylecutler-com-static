@@ -12,6 +12,17 @@
     position: relative;
     padding: rem(5px);
     border: 1px solid rgba($secondary, 0.2);
+
+    .reset-btn {
+      position: absolute;
+      top: 50%;
+      right: rem(5px);
+      transform: translateY(-50%);
+      font-size: rem(24px);
+      padding: rem(5px);
+      color: $primary;
+      cursor: pointer;
+    }
   }
 
   table {

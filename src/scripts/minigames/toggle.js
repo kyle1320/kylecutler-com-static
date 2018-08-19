@@ -1,4 +1,4 @@
-import { importStylesheet } from '../utils';
+import { importStylesheet, delay } from '../utils';
 
 window.addEventListener('load', async function () {
   var element = document.getElementById('minigame-toggle');
@@ -20,6 +20,7 @@ class ToggleGame {
     this.size = size;
     this.board = [];
     this.isGaveOver = false;
+    this.isResetting = false;
 
     for (var y = 0; y < size; y++) {
       var row = [];
@@ -71,6 +72,11 @@ class ToggleGame {
     hint.className = "hint";
     textContainer.appendChild(hint);
 
+    var resetBtn = document.createElement('i');
+    resetBtn.className = "fa fa-undo reset-btn";
+    resetBtn.addEventListener('click', this.reset.bind(this, true));
+    textContainer.appendChild(resetBtn);
+
     this.elements.root.appendChild(textContainer);
 
     var winScreen = document.createElement('div');
@@ -116,7 +122,7 @@ class ToggleGame {
     this.toggle(x, y + 1, undefined, showUpdate);
     this.toggle(x, y - 1, undefined, showUpdate);
 
-    if (!this.isGameOver) {
+    if (!this.isGameOver && !this.isResetting) {
       this.checkForWin();
     }
   }
@@ -155,17 +161,34 @@ class ToggleGame {
       }
     }
 
+    if (this.isGameOver || this.isResetting) {
+      return;
+    }
+
     this.isGameOver = true;
     this.elements.root.className = "game-over";
   }
 
-  reset() {
+  async reset(animateClear) {
     this.elements.root.className = "";
+    this.isGameOver = false;
+
+    if (this.isResetting) {
+      return;
+    }
+
+    this.isResetting = true;
 
     for (var y = 0; y < this.size; y++) {
       for (var x = 0; x < this.size; x++) {
-        this.toggle(x, y, false);
+        this.toggle(x, y, false, !animateClear);
       }
+    }
+
+    if (animateClear) {
+      this.updateClasses(true);
+
+      await delay(250);
     }
 
     var numToggles = this.size * this.size * 0.25;
@@ -176,8 +199,8 @@ class ToggleGame {
       this.toggleAround(x, y, false);
     }
 
-    this.isGameOver = false;
-
     this.updateClasses(true);
+
+    this.isResetting = false;
   }
 }
