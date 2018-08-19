@@ -1,20 +1,20 @@
-@import 'base/_fonts';
-@import 'base/_variables';
-@import 'base/_mixins';
-@import 'base/_normalize.scss';
+@import 'base/fonts';
+@import 'base/variables';
+@import 'base/mixins';
+@import 'base/normalize.scss';
 
-@import 'layout/_container';
+@import 'layout/container';
 
-@import 'shared/_footer';
-@import 'shared/_header';
-@import 'shared/_main';
+@import 'shared/footer';
+@import 'shared/header';
+@import 'shared/main';
 
-@import 'components/_canvas';
-@import 'components/_column';
-@import 'components/_content-header';
-@import 'components/_contentbox';
-@import 'components/_control';
-@import 'components/_image-description';
-@import 'components/_minigames';
-@import 'components/_project-header';
-@import 'components/_tables';
+@import 'components/canvas';
+@import 'components/column';
+@import 'components/content-header';
+@import 'components/contentbox';
+@import 'components/control';
+@import 'components/image-description';
+@import 'components/minigames';
+@import 'components/project-header';
+@import 'components/tables';

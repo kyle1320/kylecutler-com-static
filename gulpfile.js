@@ -21,7 +21,7 @@ function target(fpath = '') {
 }
 
 gulp.task('styles', function () {
-    return gulp.src(['src/styles/**/*.scss', '!src/styles/**/_*.scss'])
+    return gulp.src('src/styles/**/*.scss')
         .pipe(sourcemaps.init())
         .pipe(sass().on('error', sass.logError))
         .pipe(autoprefixer())
@@ -65,7 +65,7 @@ function bundleSiteScripts(bundler) {
 }
 
 gulp.task('styles-production', function () {
-    return gulp.src(['src/styles/**/*.scss', '!src/styles/**/_*.scss'])
+    return gulp.src('src/styles/**/*.scss')
         .pipe(sass().on('error', sass.logError))
         .pipe(autoprefixer())
         .pipe(cleanCSS({compatibility: 'ie8'}))
