@@ -5,8 +5,10 @@
     "express": "^4.14.0"
   },
   "devDependencies": {
+    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.7.0",
+    "babel-runtime": "^6.26.0",
     "babelify": "^8.0.0",
     "browser-sync": "^2.24.6",
     "browserify": "^16.2.2",
@@ -19,6 +21,7 @@
     "gulp-sass": "^4.0.1",
     "gulp-sourcemaps": "^2.6.4",
     "gulp-uglify": "^3.0.1",
+    "tinyify": "^2.4.3",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
     "watchify": "^3.11.0"
@@ -26,6 +29,14 @@
   "browserslist": [
     "cover 98%"
   ],
+  "babel": {
+    "presets": [
+      "env"
+    ],
+    "plugins": [
+      "transform-runtime"
+    ]
+  },
   "scripts": {},
   "engines": {}
 }

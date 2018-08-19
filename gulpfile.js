@@ -3,18 +3,21 @@ const path = require('path');
 
 const autoprefixer = require('gulp-autoprefixer');
 const babel = require('gulp-babel');
-const babelify = require('babelify');
-const browserify = require('browserify');
 const browserSync = require('browser-sync');
-const buffer = require('vinyl-buffer');
 const cleanCSS = require('gulp-clean-css');
 const notify = require('gulp-notify');
 const pug = require('gulp-pug');
 const sass = require('gulp-sass');
-const source = require('vinyl-source-stream');
 const sourcemaps = require('gulp-sourcemaps');
 const uglify = require('gulp-uglify');
+
+const babelify = require('babelify');
+const browserify = require('browserify');
+const tinyify = require('tinyify');
 const watchify = require('watchify');
+
+const buffer = require('vinyl-buffer');
+const source = require('vinyl-source-stream');
 
 function target(fpath = '') {
     return path.join('public', fpath);
@@ -32,9 +35,7 @@ gulp.task('styles', function () {
 
 gulp.task('content-scripts', function () {
     return gulp.src('src/content/**/*.js')
-        .pipe(babel({
-            presets: ['env']
-        }))
+        .pipe(babel())
         .on('error', notify.onError(function (error) {
             return 'An error occured compiling a js source file: ' + error;
         }))
@@ -44,7 +45,7 @@ gulp.task('content-scripts', function () {
 gulp.task('site-scripts', function () {
     var args = Object.assign({}, watchify.args, { debug: true });
     var bundler = watchify(browserify('./src/scripts/site.js', args))
-        .transform(babelify, { presets: ['env'] });
+        .transform(babelify);
 
     bundler.on('update', function () {
       bundleSiteScripts(bundler);
@@ -74,9 +75,7 @@ gulp.task('styles-production', function () {
 
 gulp.task('content-scripts-production', function () {
     return gulp.src('src/content/**/*.js')
-        .pipe(babel({
-            presets: ['env']
-        }))
+        .pipe(babel())
         .pipe(uglify())
         .on('error', notify.onError(function (error) {
             return 'An error occured compiling a js source file: ' + error;
@@ -86,14 +85,14 @@ gulp.task('content-scripts-production', function () {
 
 gulp.task('site-scripts-production', function () {
     return browserify('./src/scripts/site.js')
-        .transform(babelify, { presets: ['env'] })
+        .transform(babelify)
+        .plugin(tinyify)
         .bundle()
         .on('error', notify.onError(function (error) {
             return 'An error occured compiling a js source file: ' + error;
         }))
         .pipe(source("site.js"))
         .pipe(buffer())
-        .pipe(uglify())
         .pipe(gulp.dest(target('js')));
 });
 
@@ -122,14 +121,6 @@ gulp.task('assets', function () {
         .pipe(gulp.dest(target()));
 });
 
-gulp.task('browser-sync', function() {
-    browserSync.init("public/**/*", {
-        server: {
-            baseDir: "./public"
-        }
-    });
-});
-
 gulp.task('deploy', [
     'styles-production',
     'content-scripts-production',
@@ -138,7 +129,13 @@ gulp.task('deploy', [
     'assets'
 ]);
 
-gulp.task('default', ['styles', 'content-scripts', 'site-scripts', 'content', 'assets', 'browser-sync'], function() {
+gulp.task('default', ['deploy'], function() {
+    browserSync.init("public/**/*", {
+        server: {
+            baseDir: "./public"
+        }
+    });
+
     gulp.watch([
         'src/**/*.pug'
     ], ['content']);
