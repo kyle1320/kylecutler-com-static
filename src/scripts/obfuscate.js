@@ -1,18 +1,29 @@
 window.addEventListener('load', function () {
   var obfuscated = document.querySelectorAll('[data-obf]');
 
-  for (var i = 0; i < obfuscated.length; i++) {
+  function deobfuscate() {
     try {
-      var el = obfuscated[i];
-      var attrs = JSON.parse(el.getAttribute('data-obf'));
+      var attrs = JSON.parse(this.getAttribute('data-obf'));
 
       for (var key in attrs) {
-        el.setAttribute(key, atob(attrs[key]));
+        if (key === 'content') {
+          this.innerHTML = atob(attrs[key]);
+        } else {
+          this.setAttribute(key, atob(attrs[key]));
+        }
       }
 
-      el.removeAttribute('data-obf');
+      this.removeAttribute('data-obf');
     } catch (e) {
 
     }
+  }
+
+  for (var i = 0; i < obfuscated.length; i++) {
+    var el = obfuscated[i];
+
+    el.addEventListener('focus', deobfuscate);
+    el.addEventListener('mouseenter', deobfuscate);
+    el.addEventListener('touchstart', deobfuscate);
   }
 });
