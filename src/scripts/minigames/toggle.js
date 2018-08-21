@@ -1,4 +1,4 @@
-import { importStylesheet, delay } from '../utils';
+import { importStylesheet, delay, makeElement, count } from '../utils';
 
 window.addEventListener('load', async function () {
   var element = document.getElementById('minigame-toggle');
@@ -11,9 +11,10 @@ window.addEventListener('load', async function () {
 });
 
 class ToggleGame {
-  constructor(element, size = 8) {
+  constructor(element, size = 8, difficulty = 'medium', shape = 'plus') {
     this.elements = {
       root: element,
+      options: {},
       cells: []
     };
 
@@ -21,6 +22,8 @@ class ToggleGame {
     this.board = [];
     this.isGaveOver = false;
     this.isResetting = false;
+    this.difficulty = difficulty;
+    this.shape = shape;
 
     for (var y = 0; y < size; y++) {
       var row = [];
@@ -36,65 +39,65 @@ class ToggleGame {
   }
 
   init() {
-    var gameContainer = document.createElement('div');
-    gameContainer.className = "game-container";
+    [
+      makeElement({className: 'game-container'}, [
+        makeElement({tag: 'table'}, count(this.size, y =>
+          makeElement({tag: 'tr'}, this.elements.cells[y] = count(this.size, x =>
+            makeElement({tag: 'td'}, '', {
+              click: this.toggleAround.bind(this, x, y)
+            })
+          ), {})
+        )),
+        makeElement({className: 'win-screen'}, [
+          makeElement({className: 'win-text'}, 'You Win!'),
+          makeElement({className: 'reset-text'}, 'Play Again')
+        ])
+      ]),
+      makeElement({className: 'text-container'}, [
+        makeElement({}, 'Turn off all the cells!'),
+        makeElement({className: 'hint'}, '(It is possible, I promise)'),
+        makeElement({className: 'fa fa-undo reset-btn'}, '', {
+          click: this.reset.bind(this)
+        })
+      ]),
+      makeElement({className: 'options-container'}, [
+        makeElement({className: 'options-row'}, [
+          this.elements.options.difficultyEasy =
+            makeElement({className: 'option'}, 'Easy', {
+            click: () => this.setDifficulty('easy')
+          }),
+          this.elements.options.difficultyMedium =
+            makeElement({className: 'option'}, 'Medium', {
+            click: () => this.setDifficulty('medium')
+          }),
+          this.elements.options.difficultyHard =
+            makeElement({className: 'option'}, 'Hard', {
+            click: () => this.setDifficulty('hard')
+          })
+        ]),
+        makeElement({className: 'options-row'}, [
+          this.elements.options.shapePlus =
+            makeElement({className: 'option shape-plus'}, '<span></span>', {
+            click: () => this.setShape('plus')
+          }),
+          this.elements.options.shapeDiamond =
+            makeElement({className: 'option shape-diamond'}, '<span></span>', {
+            click: () => this.setShape('diamond')
+          }),
+          this.elements.options.shapeX =
+            makeElement({className: 'option shape-x'}, '<span></span>', {
+            click: () => this.setShape('x')
+          }),
+          this.elements.options.shapeO =
+            makeElement({className: 'option shape-o'}, '<span></span>', {
+            click: () => this.setShape('o')
+          })
+        ])
+      ])
+    ].forEach(el => this.elements.root.appendChild(el));
 
-    var table = document.createElement('table');
-    for (var y = 0; y < this.size; y++) {
-      var rowEl = document.createElement('tr');
-      var rowContents = [];
-
-      for (var x = 0; x < this.size; x++) {
-        var cellEl = document.createElement('td');
-
-        cellEl.addEventListener('click', this.toggleAround.bind(this, x, y));
-
-        rowEl.appendChild(cellEl);
-        rowContents[x] = cellEl;
-      }
-
-      table.appendChild(rowEl);
-      this.elements.cells[y] = rowContents;
-    }
-    gameContainer.appendChild(table);
-
-    this.elements.root.appendChild(gameContainer);
-
-    var textContainer = document.createElement('div');
-    textContainer.className = "text-container";
-
-    var goal = document.createElement('div');
-    goal.textContent = "Turn off all the cells!";
-    textContainer.appendChild(goal);
-
-    var hint = document.createElement('div');
-    hint.textContent = "(It is possible, I promise)";
-    hint.className = "hint";
-    textContainer.appendChild(hint);
-
-    var resetBtn = document.createElement('i');
-    resetBtn.className = "fa fa-undo reset-btn";
-    resetBtn.addEventListener('click', this.reset.bind(this, true));
-    textContainer.appendChild(resetBtn);
-
-    this.elements.root.appendChild(textContainer);
-
-    var winScreen = document.createElement('div');
-    winScreen.className = "win-screen";
-
-    var winText = document.createElement('div');
-    winText.className = "win-text";
-    winText.textContent = "You Win!"
-    winScreen.appendChild(winText);
-
-    var resetText = document.createElement('div');
-    resetText.className = "reset-text";
-    resetText.textContent = "Play again"
-    resetText.addEventListener('click', this.reset.bind(this));
-    winScreen.appendChild(resetText);
-
-    this.elements.root.appendChild(winScreen);
-
+    this.setDifficulty(this.difficulty, false);
+    this.setShape(this.shape, false)
     this.reset();
   }
 
@@ -115,12 +118,39 @@ class ToggleGame {
   }
 
   toggleAround(x, y, showUpdate) {
-    this.toggle(x, y, undefined, showUpdate);
-
-    this.toggle(x + 1, y, undefined, showUpdate);
-    this.toggle(x - 1, y, undefined, showUpdate);
-    this.toggle(x, y + 1, undefined, showUpdate);
-    this.toggle(x, y - 1, undefined, showUpdate);
+    switch (this.shape) {
+      default:
+      case 'plus':
+        this.toggle(x, y, undefined, showUpdate);
+        this.toggle(x + 1, y, undefined, showUpdate);
+        this.toggle(x - 1, y, undefined, showUpdate);
+        this.toggle(x, y + 1, undefined, showUpdate);
+        this.toggle(x, y - 1, undefined, showUpdate);
+        break;
+      case 'diamond':
+        this.toggle(x + 1, y, undefined, showUpdate);
+        this.toggle(x - 1, y, undefined, showUpdate);
+        this.toggle(x, y + 1, undefined, showUpdate);
+        this.toggle(x, y - 1, undefined, showUpdate);
+        break;
+      case 'x':
+        this.toggle(x, y, undefined, showUpdate);
+        this.toggle(x + 1, y + 1, undefined, showUpdate);
+        this.toggle(x - 1, y + 1, undefined, showUpdate);
+        this.toggle(x + 1, y - 1, undefined, showUpdate);
+        this.toggle(x - 1, y - 1, undefined, showUpdate);
+        break;
+      case 'o':
+        this.toggle(x, y + 1, undefined, showUpdate);
+        this.toggle(x + 1, y + 1, undefined, showUpdate);
+        this.toggle(x + 1, y, undefined, showUpdate);
+        this.toggle(x + 1, y - 1, undefined, showUpdate);
+        this.toggle(x, y - 1, undefined, showUpdate);
+        this.toggle(x - 1, y - 1, undefined, showUpdate);
+        this.toggle(x - 1, y, undefined, showUpdate);
+        this.toggle(x - 1, y + 1, undefined, showUpdate);
+        break;
+    }
 
     if (!this.isGameOver && !this.isResetting) {
       this.checkForWin();
@@ -169,7 +199,41 @@ class ToggleGame {
     this.elements.root.className = "game-over";
   }
 
-  async reset(animateClear) {
+  setShape(shape, reset = true) {
+    this.shape = shape;
+
+    this.elements.options.shapePlus.className = shape === 'plus'
+      ? 'option shape-plus active' : 'option shape-plus';
+    this.elements.options.shapeDiamond.className = shape === 'diamond'
+      ? 'option shape-diamond active' : 'option shape-diamond';
+    this.elements.options.shapeX.className = shape === 'x'
+      ? 'option shape-x active' : 'option shape-x';
+    this.elements.options.shapeO.className = shape === 'o'
+      ? 'option shape-o active' : 'option shape-o';
+
+    if (reset) {
+      this.reset();
+    }
+  }
+
+  setDifficulty(difficulty, reset = true) {
+    this.difficulty = difficulty;
+
+    this.elements.options.difficultyEasy.className = difficulty === 'easy'
+      ? 'option active' : 'option';
+    this.elements.options.difficultyMedium.className = difficulty === 'medium'
+      ? 'option active' : 'option';
+    this.elements.options.difficultyHard.className = difficulty === 'hard'
+      ? 'option active' : 'option';
+
+    if (reset) {
+      this.reset();
+    }
+  }
+
+  async reset() {
+    var wasGameOver = this.isGameOver;
+
     this.elements.root.className = "";
     this.isGameOver = false;
 
@@ -181,17 +245,31 @@ class ToggleGame {
 
     for (var y = 0; y < this.size; y++) {
       for (var x = 0; x < this.size; x++) {
-        this.toggle(x, y, false, !animateClear);
+        this.toggle(x, y, false, wasGameOver);
       }
     }
 
-    if (animateClear) {
+    if (!wasGameOver) {
       this.updateClasses(true);
 
       await delay(250);
     }
 
-    var numToggles = this.size * this.size * 0.25;
+    var numToggles;
+
+    switch (this.difficulty) {
+      default:
+      case 'easy':
+        numToggles = this.size * this.size * 0.1;
+        break;
+      case 'medium':
+        numToggles = this.size * this.size * 0.25;
+        break;
+      case 'hard':
+        numToggles = this.size * this.size * 0.5;
+        break;
+    }
+
     for (var i = 0; i < numToggles; i++) {
       var x = Math.floor(Math.random() * this.size);
       var y = Math.floor(Math.random() * this.size);

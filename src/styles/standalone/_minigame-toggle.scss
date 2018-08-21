@@ -4,6 +4,11 @@
   text-align: center;
   transition: border-color 300ms ease-in-out;
 
+  .options-container {
+    display: flex;
+    flex-flow: column nowrap;
+  }
+
   .game-container {
     position: relative;
   }
@@ -12,17 +17,103 @@
     position: relative;
     padding: rem(5px);
     border: 1px solid rgba($secondary, 0.2);
+  }
 
-    .reset-btn {
-      position: absolute;
-      top: 50%;
-      right: rem(5px);
-      transform: translateY(-50%);
-      font-size: rem(24px);
-      padding: rem(5px);
-      color: $primary;
-      cursor: pointer;
+  .reset-btn {
+    position: absolute;
+    top: 50%;
+    right: rem(5px);
+    font-size: rem(24px);
+    width: rem(24px);
+    height: rem(24px);
+    padding: rem(5px);
+    color: rgba($secondary, 0.5);
+    border-radius: 50%;
+    cursor: pointer;
+    transform: translateY(-50%) rotate(0);
+
+    &:hover {
+      color: rgba($primary, 0.8);
     }
+  }
+
+  &.game-over .reset-btn {
+    color: $primary;
+    background-color: white;
+    transform: translateY(-50%) rotate(-360deg);
+    transition: transform .4s ease-in-out;
+  }
+
+  .options-row {
+    display: flex;
+    flex-flow: row wrap;
+  }
+
+  .option {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+    min-height: rem(30px);
+    flex-grow: 1;
+    color: rgba($primary, 0.8);
+    text-align: center;
+    border: 1px solid rgba($secondary, 0.2);
+    cursor: pointer;
+    font-weight: bold;
+    background-clip: padding-box;
+
+    &.active {
+      background-color: rgba($primary, 0.8);
+      color: white;
+    }
+
+    &:not(.active):hover {
+      background-color: rgba($secondary, 0.1);
+    }
+  }
+
+  .shape-plus, .shape-diamond, .shape-x, .shape-o {
+    height: rem(18px);
+
+    span {
+      display: inline-block;
+      position: relative;
+      width: rem(6px);
+      height: rem(6px);
+      padding: 0;
+      margin: rem(6px);
+    }
+  }
+
+  .shape-diamond span {
+    box-shadow:
+      0 rem(6px) 0 0 currentColor,
+      0 rem(-6px) 0 0 currentColor,
+      rem(6px) 0 0 0 currentColor,
+      rem(-6px) 0 0 0 currentColor;
+  }
+
+  .shape-plus span {
+    background-color: currentColor;
+    box-shadow:
+      0 rem(6px) 0 0 currentColor,
+      0 rem(-6px) 0 0 currentColor,
+      rem(6px) 0 0 0 currentColor,
+      rem(-6px) 0 0 0 currentColor;
+  }
+
+  .shape-x span {
+    background-color: currentColor;
+    box-shadow:
+      rem(6px)  rem(6px)  0 0 currentColor,
+      rem(6px)  rem(-6px) 0 0 currentColor,
+      rem(-6px) rem(6px)  0 0 currentColor,
+      rem(-6px) rem(-6px) 0 0 currentColor;
+  }
+
+  .shape-o span {
+    box-shadow: 0 0 0 rem(6px) currentColor;
   }
 
   table {
@@ -38,8 +129,6 @@
     width: 100%;
     height: 100%;
     box-sizing: border-box;
-    display: flex;
-    flex-flow: column nowrap;
     color: white;
     background-color: $primary;
     transition: transform 300ms ease-in-out;
@@ -51,18 +140,38 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      width: 100%;
+      height: 100%;
       flex-grow: 1;
       font-size: rem(40px);
       font-weight: bold;
     }
 
     .reset-text {
-      cursor: pointer;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      text-align: right;
       font-size: rem(18px);
+      line-height: rem(18px);
       font-weight: bold;
-      padding: rem(12px);
-      color: $primary;
-      background-color: white;
+      padding: rem(5px);
+      padding-right: rem(18px);
+      margin-right: rem(15px);
+
+      &::after {
+        position: absolute;
+        content: "";
+        right: 0;
+        top: rem(12px);
+        width: 0;
+        height: 0;
+        border-radius: 3px;
+        border: 5px solid transparent;
+        border-bottom-color: currentColor;
+        border-right-color: currentColor;
+        transform: rotate(45deg);
+      }
     }
   }
 
