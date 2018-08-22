@@ -1,0 +1,122 @@
+include /components/analytics.pug
+
+doctype html
+
+html
+    head
+        title
+            block title
+            | Résumé for Kyle Cutler
+        meta(charset="utf-8")
+        meta(name="viewport" content="width=device-width")
+        link(href="/css/font-awesome.css" rel="stylesheet")
+        link(href="/css/standalone/resume.css" rel="stylesheet")
+        script(src="/js/site.js" type="text/javascript")
+
+    body
+      .header
+        .header__row
+          .header__name Kyle Cutler
+          .info
+            .info__item
+              .info__item__label
+                span.fa.fa-envelope
+              span&attributes(obfuscate({content: "<a href='mailto:kyle1320@gmail.com'>kyle1320@gmail.com</a>"}))
+            .info__item
+              .info__item__label
+                span.fa.fa-github-alt
+              span&attributes(obfuscate({content: "<a href='github.com/kyle1320'>github.com/kyle1320</a>"}))
+            .info__item
+              .info__item__label
+                span.fa.fa-linkedin-square
+              span&attributes(obfuscate({content: "<a href='https://www.linkedin.com/in/kyle-cutler-30aa40112/'>View Me on LinkedIn</a>"}))
+
+        .header__statement
+          | Computer Science B.S. / M.S. student with experience in web and mobile development seeking new opportunities within the field of computer science.
+      .section
+        .section__header Education
+        .item
+          .item__title Rochester Institute of Technology
+          .info
+            .info__item Rochester, NY
+            .info__item December, 2020
+          .item__subtitle B.S. / M.S. in Computer Science, 5#[sup th] year
+          ul
+            li GPA: 3.97 / 4
+            li Academic Honors: Outstanding Undergraduate Scholar Award, Dean’s List (7 semesters)
+            li Minoring in mathematics
+      .section
+        .section__header Technical Skills
+        table
+          tbody
+            tr
+              th Programming Languages
+              td Java, Javascript, C, Python, C++, C#
+            tr
+              th Database Languages
+              td SQL, MongoDB
+            tr
+              th Design Languages
+              td HTML, CSS, LESS, SASS
+            tr
+              th Runtimes & APIs
+              td Node.js, Android SDK, ReactJS, OpenGL, ASP.NET
+            tr
+              th Version Control
+              td Git, Subversion, Microsoft Team Foundation Server
+      .section
+        .section__header Work Experience
+        .item
+          .item__title On Track Themes
+          .info
+            .info__item Burbank, CA
+            .into__item July – Aug 2017
+          .item__subtitle Software Development Intern
+          ul
+            li Research emerging technologies for use in the themed entertainment industry
+            li Develop mobile and server-side applications showcasing the capabilities of emerging technologies
+        .item
+          .item__title Fujifilm Holdings America Corporation
+          .info
+            .info__item Rochester, NY
+            .into__item May – Dec 2016
+          .item__subtitle Co-op Software Developer
+          ul
+            li Design and implement enterprise software applications for use in the consumer photo industry
+            li Research and develop software using new technologies, and integrate with existing software
+            li Cooperate and work effectively as part of a team
+        .item
+          .item__title Rochester Institute of Technology
+          .info
+            .info__item Rochester, NY
+            .into__item Aug 2015 – Present
+          .item__subtitle Student Lab Instructor, Computer Science I & II
+          ul
+            li Provide guidance and assistance to a class of students during bi-weekly problem solving and lab sessions.
+            li Evaluate and grade student assignments and provide relevant and thoughtful feedback
+            li Hold tutoring sessions twice per week to aid students who seek help outside of class
+      .section
+        .section__header Selected Projects
+        .item
+          .item__title Voxel Engine
+          .info
+            .info__item Personal Project
+            .info__item March 2015
+          .item__subtitle C, OpenGL
+          ul
+            li A voxel game engine created from scratch
+            li Supports advanced lighting and shadows, saving and loading of custom-built worlds, rendering optimizations, and a logic / wiring system that allows for the simulation of advanced electrical circuits
+        .item
+          .item__title Pantry Packer
+          .info
+            .info__item Team Class Project
+            .info__item Jan – May 2017
+          .item__subtitle Java, SQL, HTML, CSS, Javascript
+          ul
+            li A web application that tracks items in a user’s pantry and displays relevant recipes to the user
+            li Supports creation and deletion of user accounts, recipes, and reviews, as well as an extensive search system that allows the user to find recipes based on ingredients, rating, tags, and more
+
+
+      //- end of resume content
+
+      +analytics

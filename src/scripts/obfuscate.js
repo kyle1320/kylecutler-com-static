@@ -2,6 +2,10 @@ window.addEventListener('load', function () {
   var obfuscated = document.querySelectorAll('[data-obf]');
 
   function deobfuscate() {
+    if (!this.hasAttribute('data-obf')) {
+      return;
+    }
+
     try {
       var attrs = JSON.parse(this.getAttribute('data-obf'));
 
@@ -12,11 +16,24 @@ window.addEventListener('load', function () {
           this.setAttribute(key, atob(attrs[key]));
         }
       }
-
-      this.removeAttribute('data-obf');
     } catch (e) {
 
     }
+
+    this.removeAttribute('data-obf');
+
+    this.removeEventListener('focus', deobfuscate);
+    this.removeEventListener('mouseenter', deobfuscate);
+    this.removeEventListener('touchstart', deobfuscate);
+  }
+
+  function deobfuscateAll() {
+    for (var i = 0; i < obfuscated.length; i++) {
+      var el = obfuscated[i];
+      deobfuscate.call(el);
+    }
+
+    window.removeEventListener('touchmove', deobfuscateAll);
   }
 
   for (var i = 0; i < obfuscated.length; i++) {
@@ -26,4 +43,6 @@ window.addEventListener('load', function () {
     el.addEventListener('mouseenter', deobfuscate);
     el.addEventListener('touchstart', deobfuscate);
   }
+
+  window.addEventListener('touchmove', deobfuscateAll);
 });
