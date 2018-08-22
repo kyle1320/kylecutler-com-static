@@ -190,9 +190,10 @@ sup {
 
     li {
       position: relative;
-      margin: 0;
+      margin: .2em 0;
       padding: 0;
       color: $darker-gray;
+      line-height: 1.3em;
 
       &::before {
         display: block;

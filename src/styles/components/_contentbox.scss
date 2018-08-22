@@ -17,6 +17,10 @@
     position: relative;
   }
 
+  p {
+    margin: 0 0 rem(15px) 0;
+  }
+
   li::before {
     font-family: 'FontAwesome';
     content: '\f054';
