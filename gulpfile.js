@@ -6,6 +6,7 @@ const autoprefixer = require('gulp-autoprefixer');
 const babel = require('gulp-babel');
 const browserSync = require('browser-sync');
 const cleanCSS = require('gulp-clean-css');
+const htmlmin = require('gulp-htmlmin');
 const notify = require('gulp-notify');
 const pug = require('gulp-pug');
 const sass = require('gulp-sass');
@@ -128,6 +129,13 @@ gulp.task('content', function () {
         }))
         .on('error', notify.onError(function (error) {
             return 'An error occured compiling a pug template: ' + error;
+        }))
+        .pipe(htmlmin({
+            collapseBooleanAttributes: true,
+            collapseWhitespace: true,
+            minifyCSS: true,
+            minifyJS: true,
+            removeComments: true
         }))
         .pipe(gulp.dest(target()));
 });

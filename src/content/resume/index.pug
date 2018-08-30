@@ -10,22 +10,23 @@ html
     link(href="/css/font-awesome.css" rel="stylesheet")
     link(href="/css/standalone/resume.css" rel="stylesheet")
     script(src="/js/site.js" type="text/javascript")
-    script(type="text/javascript").
-      window.addEventListener('load', function () {
-        var showMoreButtons = document.querySelectorAll('.show-more-btn');
+    script(type="text/javascript")
+      :babel(presets=['env'])
+        window.addEventListener('load', function () {
+          var showMoreButtons = document.querySelectorAll('.show-more-btn');
 
-        for (var i = 0; i < showMoreButtons.length; i++) {
-          showMoreButtons[i].addEventListener('click', function (event) {
-            var parent = event.target.parentElement.parentElement;
+          for (var i = 0; i < showMoreButtons.length; i++) {
+            showMoreButtons[i].addEventListener('click', function (event) {
+              var parent = event.target.parentElement.parentElement;
 
-            if (parent.className.match(/show-all/)) {
-              parent.className = parent.className.replace(/\s*show-all/g, ' ');
-            } else {
-              parent.className += ' show-all';
-            }
-          });
-        }
-      });
+              if (parent.className.match(/show-all/)) {
+                parent.className = parent.className.replace(/\s*show-all/g, ' ');
+              } else {
+                parent.className += ' show-all';
+              }
+            });
+          }
+        });
 
   body
     .header
