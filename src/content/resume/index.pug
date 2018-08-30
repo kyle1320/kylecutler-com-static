@@ -10,6 +10,22 @@ html
     link(href="/css/font-awesome.css" rel="stylesheet")
     link(href="/css/standalone/resume.css" rel="stylesheet")
     script(src="/js/site.js" type="text/javascript")
+    script(type="text/javascript").
+      window.addEventListener('load', function () {
+        var showMoreButtons = document.querySelectorAll('.show-more-btn');
+
+        for (var i = 0; i < showMoreButtons.length; i++) {
+          showMoreButtons[i].addEventListener('click', function (event) {
+            var parent = event.target.parentElement.parentElement;
+
+            if (parent.className.match(/show-all/)) {
+              parent.className = parent.className.replace(/\s*show-all/g, ' ');
+            } else {
+              parent.className += ' show-all';
+            }
+          });
+        }
+      });
 
   body
     .header
@@ -31,7 +47,8 @@ html
         | Computer Science B.S. / M.S. student with experience in web and mobile development seeking new opportunities within the field of computer science.
 
     .section
-      .section__header Education
+      .section__header
+        span Education
       .item
         .item__title Rochester Institute of Technology
         .info
@@ -44,7 +61,8 @@ html
           li Minoring in mathematics
 
     .section
-      .section__header Technical Skills
+      .section__header
+        span Technical Skills
       table
         tbody
           tr
@@ -64,7 +82,9 @@ html
             td Git, Subversion, Microsoft Team Foundation Server
 
     .section
-      .section__header Work Experience
+      .section__header
+        span Work Experience
+        .show-more-btn
       .item
         .item__title GeekHive
         .info
@@ -74,6 +94,15 @@ html
         ul
           li Develop comprehensive marketing solutions using modern web technologies
           li Work together with designers and end clients to develop solutions that are reliable, maintainable, and fit the specific needs of each client
+      .item.hidden
+        .item__title On Track Themes
+        .info
+          .info__item Burbank, CA
+          .into__item July – Aug 2017
+        .item__subtitle Software Development Intern
+        ul
+          li Research emerging technologies for use in the themed entertainment industry
+          li Develop mobile and server-side applications showcasing the capabilities of emerging technologies
       .item
         .item__title Fujifilm Holdings America Corporation
         .info
@@ -96,7 +125,19 @@ html
           li Hold tutoring sessions twice per week to aid students who seek help outside of class
 
     .section
-      .section__header Selected Projects
+      .section__header
+        span Selected Projects
+        .show-more-btn
+      .item
+        .item__title Time Tracker
+        .info
+          .info__item Personal Project
+          .info__item June – Aug 2018
+        .item__subtitle Javascript, ReactJS, CSS
+        ul
+          li A web application designed to solve the issue of inaccurately logged time at work by allowing the user to easily track time spent between various tasks
+          li Any task can be selected with a single click; time spent working on the selected task will be logged automatically
+          li Tasks can be edited, reordered, organized into projects, and more. A daily summary allows the user to easily see what they worked on each day in order to make time entry as painless as possible
       .item
         .item__title Voxel Engine
         .info
@@ -106,7 +147,7 @@ html
         ul
           li A voxel game engine created from scratch
           li Supports advanced lighting and shadows, saving and loading of custom-built worlds, rendering optimizations, and a logic / wiring system that allows for the simulation of advanced electrical circuits
-      .item
+      .item.hidden
         .item__title Pantry Packer
         .info
           .info__item Team Class Project

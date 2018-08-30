@@ -60,6 +60,35 @@ sup {
   line-height: 1em;
 }
 
+.show-more-btn {
+  align-self: stretch;
+  font-size: rem(10px);
+  line-height: rem(16px);
+  text-transform: uppercase;
+  opacity: 0.5;
+  letter-spacing: 0.1em;
+  vertical-align: middle;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &::before {
+    content: 'Show More';
+  }
+
+  .show-all & {
+    &::before {
+      content: 'Show Less';
+    }
+  }
+
+  @media print {
+    display: none;
+  }
+}
+
 .header {
   position: relative;
   margin-bottom: rem(15px);
@@ -110,11 +139,10 @@ sup {
 
 .info {
   display: block;
-  line-height: 1.5em;
   width: rem(150px);
   text-align: left;
   float: right;
-  margin: 0 0 rem(10px) rem(10px);
+  margin-left: rem(10px);
 
   &__item {
     position: relative;
@@ -140,6 +168,11 @@ sup {
 
 .section {
   &__header {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+
     border-top: 1px solid $dark-gray;
     border-bottom: 1px solid black;
     margin: rem(10px) 0;
@@ -172,11 +205,25 @@ sup {
       }
     }
   }
+
+  @media print {
+    &__header {
+      margin: rem(8px) 0;
+    }
+  }
 }
 
 .item {
   position: relative;
   margin: rem(10px) 0;
+
+  &.hidden {
+    display: none;
+
+    .show-all & {
+      display: block;
+    }
+  }
 
   &__title {
     font-weight: 600;
@@ -213,5 +260,9 @@ sup {
 
   .info {
     color: $gray;
+  }
+
+  @media print {
+    margin: rem(8px) 0;
   }
 }
