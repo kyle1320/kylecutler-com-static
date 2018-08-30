@@ -192,16 +192,16 @@ sup {
     tr {
       margin: 0;
       padding: 0;
-      line-height: 1.6em;
+      line-height: 1.3em;
 
       th {
         font-weight: 600;
         text-align: right;
-        padding: 0 rem(10px) 0 0;
+        padding: rem(2px) rem(10px) rem(2px) 0;
       }
 
       td {
-        padding: 0;
+        padding: rem(2px) 0;
       }
     }
   }
