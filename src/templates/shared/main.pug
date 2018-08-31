@@ -1,4 +1,4 @@
-include /components/analytics.pug
+include /components/gtm.pug
 
 doctype html
 
@@ -9,6 +9,7 @@ html
             |  – Kyle Cutler
         meta(charset="utf-8")
         meta(name="viewport" content="width=device-width")
+        +gtmScript
         link(href="https://fonts.googleapis.com/css?family=PT+Serif|Source+Sans+Pro:400,600" rel="stylesheet")
         link(href="/css/main.css" rel="stylesheet")
         link(href="/css/font-awesome.css" rel="stylesheet")
@@ -16,9 +17,9 @@ html
         block scripts
 
     body
+        +gtmNoscript
         include header.pug
         .content.container
             block content
         include footer.pug
-        +analytics
         block lazy-scripts
