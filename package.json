@@ -5,17 +5,18 @@
     "express": "^4.14.0"
   },
   "devDependencies": {
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-polyfill": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-runtime": "^6.26.0",
-    "babelify": "^8.0.0",
-    "browser-sync": "^2.24.6",
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/runtime": "^7.0.0",
+    "@babel/runtime-corejs2": "^7.0.0",
+    "babelify": "^10.0.0",
+    "browser-sync": "^2.24.7",
     "browserify": "^16.2.2",
     "del": "^3.0.0",
     "gulp": "^4.0.0",
     "gulp-autoprefixer": "^5.0.0",
-    "gulp-babel": "^7.0.1",
+    "gulp-babel": "^8.0.0",
     "gulp-clean-css": "^3.0.4",
     "gulp-htmlmin": "^4.0.0",
     "gulp-notify": "^3.2.0",
@@ -23,15 +24,12 @@
     "gulp-sass": "^4.0.1",
     "gulp-sourcemaps": "^2.6.4",
     "gulp-uglify": "^3.0.1",
-    "jstransformer-babel": "^2.1.0",
     "tinyify": "^2.4.3",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
     "watchify": "^3.11.0"
   },
-  "browserslist": [
-    "cover 98%"
-  ],
+  "browserslist": "> 0.25%, not dead",
   "scripts": {
     "gulp": "./node_modules/gulp/bin/gulp.js"
   },

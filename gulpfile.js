@@ -2,6 +2,8 @@ const gulp = require('gulp');
 const path = require('path');
 const del = require('del');
 
+const babelCore = require('@babel/core');
+
 const autoprefixer = require('gulp-autoprefixer');
 const babel = require('gulp-babel');
 const browserSync = require('browser-sync');
@@ -23,16 +25,18 @@ const source = require('vinyl-source-stream');
 
 const babelConfig_noTransform = {
     "presets": [
-        "env"
+        "@babel/preset-env"
     ]
 };
 
 const babelConfig_withTransform = {
     "presets": [
-        "env"
+        "@babel/preset-env"
     ],
     "plugins": [
-        "transform-runtime"
+        ["@babel/plugin-transform-runtime", {
+            corejs: 2
+        }]
     ]
 };
 
@@ -125,7 +129,12 @@ gulp.task('content', function () {
     return gulp.src('src/content/**/*.pug')
         .pipe(pug({
             basedir: 'src/templates',
-            globals: ['obfuscate']
+            globals: ['obfuscate'],
+            filters: {
+                babel: function (text) {
+                    return babelCore.transformSync(text, babelConfig_noTransform).code;
+                }
+            }
         }))
         .on('error', notify.onError(function (error) {
             return 'An error occured compiling a pug template: ' + error;
