@@ -10,24 +10,7 @@ html
     +gtmScript
     link(href="/css/font-awesome.css" rel="stylesheet")
     link(href="/css/standalone/resume.css" rel="stylesheet")
-    script(src="/js/site.js" type="text/javascript" async)
-    script(type="text/javascript")
-      :babel
-        window.addEventListener('load', function () {
-          var showMoreButtons = document.querySelectorAll('.show-more-btn');
-
-          for (var i = 0; i < showMoreButtons.length; i++) {
-            showMoreButtons[i].addEventListener('click', function (event) {
-              var parent = event.target.parentElement.parentElement;
-
-              if (parent.className.match(/show-all/)) {
-                parent.className = parent.className.replace(/\s*show-all/g, ' ');
-              } else {
-                parent.className += ' show-all';
-              }
-            });
-          }
-        });
+    script(src="/js/standalone/resume.js" type="text/javascript" async)
 
   body
     +gtmNoscript

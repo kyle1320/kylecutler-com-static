@@ -3,6 +3,9 @@ extends /shared/main.pug
 block title
   | 404 Page Not Found
 
+block scripts
+  script(src="/js/standalone/minigames.js" type="text/javascript" async)
+
 block content
   h1.error 404 – Page Not Found
   .contentbox

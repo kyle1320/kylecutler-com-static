@@ -1,4 +1,4 @@
-import { importStylesheet, delay, makeElement, count } from '../utils';
+import { importStylesheet, delay, makeElement, count } from '../../utils';
 
 window.addEventListener('load', async function () {
   var element = document.getElementById('minigame-toggle');

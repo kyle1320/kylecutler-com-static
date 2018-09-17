@@ -1,2 +1,1 @@
 require('./obfuscate');
-require('./minigames');

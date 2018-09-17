@@ -1,6 +1,8 @@
 const gulp = require('gulp');
 const path = require('path');
 const del = require('del');
+const glob = require('glob');
+const es = require('event-stream');
 
 const babelCore = require('@babel/core');
 
@@ -63,25 +65,34 @@ gulp.task('content-scripts', function () {
         .pipe(gulp.dest(target()));
 });
 
-gulp.task('site-scripts', function () {
-    var args = Object.assign({}, watchify.args, { debug: true });
-    var bundler = watchify(browserify('./src/scripts/site.js', args))
-        .transform(babelify, babelConfig_withTransform);
+gulp.task('site-scripts', function (done) {
+    glob('{src/scripts/site.js,src/scripts/standalone/*.js}', function (err, files) {
+        if (err) done(err);
 
-    bundler.on('update', function () {
-      bundleSiteScripts(bundler);
+        var tasks = files.map(function (entry) {
+            var args = Object.assign({}, watchify.args, { debug: true });
+            var bundler = watchify(browserify(entry, args))
+                .transform(babelify, babelConfig_withTransform);
+            var relPath = path.relative('src/scripts', entry);
+
+            bundler.on('update', function () {
+                bundleSiteScripts(bundler, relPath);
+            });
+
+            return bundleSiteScripts(bundler, relPath);
+        });
+
+        es.merge(tasks).on('end', done);
     });
-
-    return bundleSiteScripts(bundler);
 });
 
-function bundleSiteScripts(bundler) {
+function bundleSiteScripts(bundler, filename) {
     return bundler
         .bundle()
         .on('error', notify.onError(function (error) {
             return 'An error occured compiling a js source file: ' + error;
         }))
-        .pipe(source("site.js"))
+        .pipe(source(filename))
         .pipe(buffer())
         .pipe(gulp.dest(target('js')));
 }
@@ -104,17 +115,27 @@ gulp.task('content-scripts:prod', function () {
         .pipe(gulp.dest(target()));
 });
 
-gulp.task('site-scripts:prod', function () {
-    return browserify('./src/scripts/site.js')
-        .transform(babelify, babelConfig_withTransform)
-        .plugin(tinyify)
-        .bundle()
-        .on('error', notify.onError(function (error) {
-            return 'An error occured compiling a js source file: ' + error;
-        }))
-        .pipe(source("site.js"))
-        .pipe(buffer())
-        .pipe(gulp.dest(target('js')));
+gulp.task('site-scripts:prod', function (done) {
+    glob('{src/scripts/site.js,src/scripts/standalone/*.js}', function (err, files) {
+        if (err) done(err);
+
+        var tasks = files.map(function (entry) {
+            var relPath = path.relative('src/scripts', entry);
+
+            return browserify(entry)
+                .transform(babelify, babelConfig_withTransform)
+                .plugin(tinyify)
+                .bundle()
+                .on('error', notify.onError(function (error) {
+                    return 'An error occured compiling a js source file: ' + error;
+                }))
+                .pipe(source(relPath))
+                .pipe(buffer())
+                .pipe(gulp.dest(target('js')));
+        });
+
+        es.merge(tasks).on('end', done);
+    });
 });
 
 global.obfuscate = function (attributes) {
