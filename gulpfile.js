@@ -175,6 +175,10 @@ gulp.task('assets', function () {
         .pipe(gulp.dest(target()));
 });
 
+gulp.task('hidden-items:prod', function () {
+    return del(['public/circuits']);
+});
+
 gulp.task('watch:content', function () {
     gulp.watch([
         'src/**/*.pug'
@@ -240,7 +244,8 @@ gulp.task('build:prod', gulp.series(
         'site-scripts:prod',
         'content',
         'assets'
-    )
+    ),
+    'hidden-items:prod'
 ));
 
 gulp.task('default', gulp.series(

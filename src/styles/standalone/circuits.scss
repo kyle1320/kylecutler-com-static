@@ -1,0 +1,84 @@
+@import '../base/mixins';
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  flex-flow: column nowrap;
+  width: 100vw;
+  height: 100vh;
+}
+
+.header {
+  position: relative;
+  display: flex;
+  flex-flow: row nowrap;
+  box-shadow: 0 0 rem(5px) rgba(0, 0, 0, 0.3);
+  z-index: 100;
+
+  .logo {
+    font-size: rem(20px);
+    margin: auto 0;
+    padding: 0 rem(40px);
+    box-sizing: border-box;
+    width: rem(200px);
+  }
+
+  .toolbar {
+    display: flex;
+    flex-flow: row nowrap;
+    flex-grow: 1;
+    overflow-x: auto;
+
+    .tool {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: rem(45px);
+      height: rem(35px);
+      font-size: rem(16px);
+      margin: rem(5px) rem(9px) rem(5px) rem(10px);
+
+      &.selected {
+        background-color: #eeeeee;
+      }
+
+      &::after {
+        position: absolute;
+        content: '';
+        left: rem(-10px);
+        top: 0;
+        bottom: 0;
+        border-right: rem(1px) solid #eeeeee;
+      }
+    }
+  }
+}
+
+.content {
+  display: flex;
+  flex-flow: row nowrap;
+  flex-grow: 1;
+
+  .sidebar {
+    width: rem(200px);
+    box-shadow: 0 0 rem(5px) rgba(0, 0, 0, 0.3);
+  }
+
+  .canvas {
+    flex-grow: 1;
+    position: relative;
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+    }
+  }
+}

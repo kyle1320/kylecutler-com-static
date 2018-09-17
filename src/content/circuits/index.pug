@@ -1,0 +1,27 @@
+include /components/gtm.pug
+
+doctype html
+
+html
+  head
+    title Circuits
+    meta(charset="utf-8")
+    meta(name="viewport" content="width=device-width")
+    +gtmScript
+    link(href="/css/standalone/circuits.css" rel="stylesheet")
+    script(src="/js/standalone/circuits.js" type="text/javascript" async)
+
+  body
+    +gtmNoscript
+    .header
+      .logo Logo Here
+      .toolbar
+        .tool.selected#tool-drag A
+        .tool#tool-create B
+        .tool#tool-delete C
+        .tool#tool-save D
+        .tool#tool-load E
+    .content
+      .sidebar
+      .canvas
+        <canvas id="canvas"></canvas>
