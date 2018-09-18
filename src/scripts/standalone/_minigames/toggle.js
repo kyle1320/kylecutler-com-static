@@ -1,13 +1,7 @@
 import { importStylesheet, delay, makeElement, count } from '../../utils';
 
 window.addEventListener('load', async function () {
-  var element = document.getElementById('minigame-toggle');
-
-  if (element) {
-    await importStylesheet("/css/standalone/minigames.css");
-
-    new ToggleGame(element);
-  }
+  new ToggleGame(document.getElementById('minigame-toggle'));
 });
 
 class ToggleGame {
@@ -41,9 +35,9 @@ class ToggleGame {
   init() {
     [
       makeElement({className: 'game-container'}, [
-        makeElement({tag: 'table'}, count(this.size, y =>
-          makeElement({tag: 'tr'}, this.elements.cells[y] = count(this.size, x =>
-            makeElement({tag: 'td'}, '', {
+        makeElement('table', count(this.size, y =>
+          makeElement('tr', this.elements.cells[y] = count(this.size, x =>
+            makeElement('td', '', {
               click: this.toggleAround.bind(this, x, y)
             })
           ), {})

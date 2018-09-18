@@ -34,9 +34,12 @@ export function count(max, callback) {
   return arr;
 }
 
-export function makeElement(keys = {}, content, events = {}) {
-  var el = document.createElement(keys.tag || 'div');
+export function makeElement(keys, content, events = {}) {
+  if (typeof keys === 'string') {
+    keys = { tag: keys };
+  }
 
+  var el = document.createElement(keys.tag || 'div');
   delete keys.tag;
 
   for (let key in keys) {
@@ -56,18 +59,4 @@ export function makeElement(keys = {}, content, events = {}) {
   }
 
   return el;
-}
-
-function processContent(el, content) {
-  if (!content) return;
-
-  if (typeof content === 'string') {
-    el.innerHTML = content;
-  } else if (typeof content === 'function') {
-    processContent(el, content());
-  } else if (content instanceof Array) {
-    content.forEach(function (child) {
-      el.appendChild(child);
-    });
-  }
 }
