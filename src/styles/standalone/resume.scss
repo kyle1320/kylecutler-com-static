@@ -4,6 +4,10 @@
 @import '../vendor/fontawesome/solid';
 @import '../vendor/fontawesome/brands';
 
+@include fa-envelope;
+@include fa-github-alt;
+@include fa-linkedin;
+
 html {
   background-color: #fcfcfc;
   margin: 0;

@@ -5,13 +5,13 @@
 
 @import 'layout/container';
 
-@import 'shared/footer';
-@import 'shared/header';
-@import 'shared/main';
-
 @import 'vendor/fontawesome/fontawesome';
 @import 'vendor/fontawesome/solid';
 @import 'vendor/fontawesome/brands';
+
+@import 'shared/footer';
+@import 'shared/header';
+@import 'shared/main';
 
 @import 'components/canvas';
 @import 'components/column';
