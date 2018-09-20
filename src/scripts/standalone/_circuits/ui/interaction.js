@@ -1,17 +1,56 @@
-import {Location, Size} from '../utils/props';
 import Node from '../model/Node';
+import { makeElement } from '../../../utils';
 
-var selectedItem;
-var userDragging = false;
-var userDidDrag = false;
-var previousX, previousY;
-var intermediateX, intermediateY;
+var selectedTool;
 
-export function init(ui) {
+function init(ui) {
+  addTools(ui);
   addEventListeners(ui);
 }
 
+function addTools(ui) {
+  const tools = [
+    { name: 'point',  icon: 'fa fa-mouse-pointer', cursor: null,   label: 'Interact with objects' },
+    { name: 'drag',   icon: 'fa fa-hand-rock',     cursor: 'grab', label: "Move the canvas or objects" },
+    { name: 'create', icon: 'fa fa-plus',          cursor: null,   label: "Create new objects" },
+    { name: 'save',   icon: 'fa fa-save',          cursor: null,   label: "Save the current workspace" },
+    { name: 'load',   icon: 'fa fa-folder-open',   cursor: null,   label: "Load a previously saved workspace" }
+  ];
+
+  function selectTool(name) {
+    selectedTool = name;
+
+    tools.forEach(function (tool) {
+      tool.element.className = tool.element.className.replace(/\s*selected/g, '');
+
+      if (tool.name === name) {
+        tool.element.className += ' selected';
+
+        ui.canvas.style.cursor = tool.cursor;
+      }
+    });
+  }
+
+  tools.forEach(function (tool) {
+    tool.element = makeElement({
+        className: `tool ${tool.icon}`,
+        id: `tool-${tool.name}`,
+        title: tool.label
+      }, '', {
+        click: () => selectTool(tool.name)
+    });
+    ui.toolbar.appendChild(tool.element);
+  });
+
+  selectTool(tools[0].name);
+}
+
 function addEventListeners(ui) {
+  var hoverItem;
+  var userDragging = false;
+  var previousX, previousY;
+  var intermediateX, intermediateY;
+
   // TODO: add support for touch events
 
   ui.canvas.addEventListener("mousedown", e => {
@@ -19,50 +58,46 @@ function addEventListeners(ui) {
   });
 
   ui.canvas.addEventListener("mousemove", e => {
-    if (userDragging) {
-      if (selectedItem) {
+    var grid = ui.grid;
+
+    if (selectedTool === 'drag' && userDragging) {
+      if (hoverItem) {
         var prevX = Math.round(intermediateX),
             prevY = Math.round(intermediateY);
-        intermediateX += (e.offsetX - previousX) / ui.viewParams.scale;
-        intermediateY += (e.offsetY - previousY) / ui.viewParams.scale;
+        intermediateX += (e.offsetX - previousX) / grid.renderParams.scale;
+        intermediateY += (e.offsetY - previousY) / grid.renderParams.scale;
         var x = Math.round(intermediateX),
             y = Math.round(intermediateY);
 
         if (x !== prevX || y !== prevY) {
-          try {
-            ui.grid.move(selectedItem, x, y);
-          } catch (e) {
-            // TODO: show invalid location (instead of actual?)
-          }
-
-          userDidDrag = true;
+          grid.move(hoverItem, x, y);
         }
       } else {
-        ui.viewParams.offsetX -= (e.offsetX - previousX) / ui.viewParams.scale;
-        ui.viewParams.offsetY -= (e.offsetY - previousY) / ui.viewParams.scale;
-
-        ui.refresh();
+        grid.scroll(
+          -(e.offsetX - previousX) / grid.renderParams.scale,
+          -(e.offsetY - previousY) / grid.renderParams.scale
+        );
       }
     } else {
-      var x = (e.offsetX / ui.viewParams.scale) + ui.viewParams.offsetX;
-      var y = (e.offsetY / ui.viewParams.scale) + ui.viewParams.offsetY;
+      var x = (e.offsetX / grid.renderParams.scale) + grid.renderParams.offsetX;
+      var y = (e.offsetY / grid.renderParams.scale) + grid.renderParams.offsetY;
 
-      var selected = ui.grid.find(x, y);
+      var hover = grid.find(x, y)[0];
 
-      if (selectedItem) {
-        if (selectedItem !== selected) {
-          selectedItem.setHover(false);
+      if (hoverItem) {
+        if (hoverItem !== hover) {
+          hoverItem.setAttribute('hover', false);
         }
       }
 
-      if (selected) {
-        selected.setHover(true);
-        var {x, y} = Location.get(selected.item);
+      if (hover) {
+        hover.setAttribute('hover', true);
+        var {x, y} = hover.location;
         intermediateX = x;
         intermediateY = y;
       }
 
-      selectedItem = selected;
+      hoverItem = hover;
     }
 
     previousX = e.offsetX;
@@ -74,14 +109,16 @@ function addEventListeners(ui) {
   });
 
   ui.canvas.addEventListener("click", e => {
-    if (!userDidDrag && selectedItem) {
-      var item = selectedItem.item;
+    if (selectedTool === 'point' && hoverItem) {
+      var item = hoverItem.data;
 
       if (item instanceof Node) {
         item.set(!item.isSource);
       }
     }
-
-    userDidDrag = false;
   });
 }
+
+export {
+  init
+};

@@ -35,6 +35,12 @@ class Circuit extends EventEmitter {
   doUpdate() {
     throw new Error("doUpdate() must be overridden by subclass");
   }
+
+  getConnections() {
+    return this.pins
+      .map(pin => pin.getConnections())
+      .reduce((arr, data) => arr.concat(data), []);
+  }
 }
 
 class AndCircuit extends Circuit {

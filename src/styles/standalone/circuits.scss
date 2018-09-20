@@ -1,4 +1,13 @@
+@import '../base/_variables';
 @import '../base/mixins';
+@import '../vendor/fontawesome/fontawesome';
+@import '../vendor/fontawesome/solid';
+
+@include fa-mouse-pointer;
+@include fa-hand-rock;
+@include fa-plus;
+@include fa-save;
+@include fa-folder-open;
 
 html, body {
   margin: 0;
@@ -41,19 +50,13 @@ body {
       width: rem(45px);
       height: rem(35px);
       font-size: rem(16px);
-      margin: rem(5px) rem(9px) rem(5px) rem(10px);
+      padding: rem(5px) rem(10px);
+      cursor: pointer;
+      border-left: 1px solid #eeeeee;
 
       &.selected {
         background-color: #eeeeee;
-      }
-
-      &::after {
-        position: absolute;
-        content: '';
-        left: rem(-10px);
-        top: 0;
-        bottom: 0;
-        border-right: rem(1px) solid #eeeeee;
+        color: #4080FF;
       }
     }
   }

@@ -70,4 +70,11 @@ export default class Node extends EventEmitter {
       node.connect(this);
     }
   }
+
+  getConnections() {
+    return this.connections.map(node => {
+      if (node._id > this._id) return [this._id, node._id];
+      else                     return [node._id, this._id];
+    });
+  }
 }

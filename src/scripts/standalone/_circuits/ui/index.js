@@ -1,13 +1,15 @@
 import {AndCircuit, OrCircuit, NotCircuit} from '../model/Circuits';
 import Node from '../model/Node';
-import Grid from './canvas/Grid';
+import Grid from '../viewmodel/Grid';
 import bufferEvent from '../utils/eventBuffer';
-import { init } from './interaction';
+import { defaultStyle } from './styles';
+import getItemView from './getItemView';
+
+const Interaction = require('./interaction');
 
 export default class UI {
-  constructor(canvas) {
-    var grid = new Grid();
-    var viewParams = require('./viewParams');
+  constructor(canvas, toolbar, sidebar) {
+    var grid = new Grid(defaultStyle);
 
     function resizeCanvas() {
       canvas.width = canvas.parentElement.clientWidth;
@@ -21,7 +23,7 @@ export default class UI {
       console.log("redraw");
 
       context.clearRect(0, 0, canvas.width, canvas.height);
-      grid.draw(context, viewParams);
+      grid.draw(context);
     }
 
     function refresh() {
@@ -33,18 +35,24 @@ export default class UI {
 
     addDefaultItems(grid);
 
-    // TODO: setup toolbar, etc..
-
     grid.on('update', refresh);
     refresh();
 
     this.grid = grid;
-    this.viewParams = viewParams;
     this.canvas = canvas;
-    this.refresh = refresh;
+    this.toolbar = toolbar;
+    this.sidebar = sidebar;
 
-    init(this);
+    Interaction.init(this);
   }
+}
+
+function addItem(grid, item, x, y) {
+  var view = getItemView(item, defaultStyle);
+
+  view.move(x, y);
+
+  grid.insert(view);
 }
 
 // an XOR gate
@@ -71,12 +79,12 @@ function addDefaultItems(grid) {
   and2.pins[2].connect(or.pins[1]);
   or.pins[2].connect(output);
 
-  grid.addItem(input1, 1, 1);
-  grid.addItem(input2, 1, 7);
-  grid.addItem(not1, 3, 3);
-  grid.addItem(not2, 3, 5);
-  grid.addItem(and1, 6, 1);
-  grid.addItem(and2, 6, 5);
-  grid.addItem(or, 10, 3);
-  grid.addItem(output, 14, 4);
+  addItem(grid, input1, 1, 1);
+  addItem(grid, input2, 1, 7);
+  addItem(grid, not1, 3, 3);
+  addItem(grid, not2, 3, 5);
+  addItem(grid, and1, 6, 1);
+  addItem(grid, and2, 6, 5);
+  addItem(grid, or, 10, 3);
+  addItem(grid, output, 14, 4);
 }
