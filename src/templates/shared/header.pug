@@ -7,8 +7,9 @@ mixin menu-item(name, href)
 
 header.header
   .container
-    .header__title
-      a(href="/") My Projects
+    a.header__title(href="/")
+      img(src="/img/kyle_circle.png" alt="A picture of me")
+      | My Projects
     ul.header__menu
       +menu-item('JavaScript', '#')
         +menu-item('Spirograph', '/projects/js/spirograph')

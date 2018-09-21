@@ -1,15 +1,15 @@
 .header {
   width: 100%;
-  background: #4DB6AC url('/img/voronoi.svg');
-  background-size: 600px 600px;
-  border-bottom: rem(6px) solid #00897B;
+  background: url('/img/voronoi.svg'), linear-gradient(120deg, $primary-light 0%, $primary-accent 100%);
+  background-size: 600px 600px, cover;
+  border-bottom: rem(6px) solid $primary-dark;
   color: white;
 
   .container {
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-end;
   }
 
   a {
@@ -18,12 +18,25 @@
   }
 
   &__title {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
     margin: 0;
-    padding: rem(12px) 0;
-    font-size: rem(48px);
+    padding: 0;
+    font-size: rem(36px);
     font-family: 'PT Serif';
     font-weight: bold;
+    letter-spacing: rem(0.4px);
     text-shadow: 0 rem(3px) rem(4px) rgba(0, 0, 0, 0.2);
+
+    img {
+      width: 50px;
+      height: 50px;
+      margin: rem(10px);
+      margin-right: rem(15px);
+      border-radius: 50%;
+      border: 1px solid white;
+    }
   }
 
   &__menu {
@@ -33,7 +46,6 @@
     flex-flow: row nowrap;
     list-style-type: none;
     z-index: 100;
-    align-self: flex-end;
     letter-spacing: rem(0.4px);
 
     a {
@@ -48,6 +60,7 @@
       position: relative;
       color: white;
       font-weight: bold;
+      text-align: center;
 
       &:first-child {
         border-left: none;
@@ -83,6 +96,7 @@
       box-shadow: 0 0 rem(3px) rem(1px) rgba(0, 0, 0, 0.2);
       overflow-x: hidden;
       overflow-y: scroll;
+      text-align: left;
 
       & > li {
         width: 100%;
@@ -114,8 +128,17 @@
       align-items: center;
     }
 
+    &__title {
+      padding-right: rem(40px);
+    }
+
     &__menu {
-      align-self: initial;
+      align-self: stretch;
+
+      & > li {
+        flex-basis: 0;
+        flex-grow: 1;
+      }
     }
   }
 }

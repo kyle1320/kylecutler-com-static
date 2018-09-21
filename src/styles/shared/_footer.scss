@@ -1,6 +1,6 @@
-@include fa-github-square;
-@include fa-linkedin;
-@include fa-envelope-square;
+@include fa-github-alt;
+@include fa-linkedin-in;
+@include fa-envelope;
 
 .footer {
   padding: rem(10px);
@@ -8,10 +8,10 @@
   color: $gray;
 
   &__links a {
-    font-size: rem(32px);
+    font-size: rem(22px);
     text-decoration: none;
     color: $primary-darker;
-    margin-right: rem(5px);
+    margin-right: rem(16px);
 
     &:hover {
       color: $primary;
