@@ -1,0 +1,20 @@
+extends /shared/main.pug
+
+include /components/project-header.pug
+
+block title
+  | Javascript Experiments
+
+block content
+  h1.content-header Javascript Experiments
+  +project-header('spirograph', '/img/experiments/js-spirograph_sm.png', 'Spirograph')
+    div A simulation of the classic "Spirograph" toy.
+  +project-header('graphs', '/img/experiments/js-graphs_sm.png', 'Graphs')
+    div A unique creation of my own.
+  +project-header('particles', '/img/experiments/js-particles_sm.png', 'Particles')
+    div A 2D particle interaction simulation.
+  +project-header('painter', '/img/experiments/js-painter_sm.png', 'Painter')
+    div An algorithmic "painting" program. Great for generating wallpapers.
+  +project-header('bubbles', '/img/experiments/js-bubbles_sm.png', 'Bubbles')
+    div A simple program that generates images filled with "bubbles". Also great for wallpapers.
+
