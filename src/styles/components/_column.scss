@@ -7,3 +7,10 @@
     clear: left;
   }
 }
+
+.prefer-row {
+  display: inline-flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+}
