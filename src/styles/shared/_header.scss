@@ -94,8 +94,7 @@
       background-color: white;
       list-style-type: none;
       box-shadow: 0 0 rem(3px) rem(1px) rgba(0, 0, 0, 0.2);
-      overflow-x: hidden;
-      overflow-y: scroll;
+      overflow: hidden;
       text-align: left;
 
       & > li {
