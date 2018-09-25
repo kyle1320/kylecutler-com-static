@@ -1,9 +1,7 @@
 {
   "name": "kylecutler-com-static",
   "version": "0.0.1",
-  "dependencies": {
-    "express": "^4.14.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.0.0",
     "@babel/plugin-transform-runtime": "^7.0.0",
