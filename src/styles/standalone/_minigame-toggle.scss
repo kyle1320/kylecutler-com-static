@@ -1,3 +1,5 @@
+@include fa-undo;
+
 #minigame-toggle {
   position: relative;
   border: 1px solid rgba($secondary, 0.2);
@@ -23,10 +25,10 @@
     position: absolute;
     top: 50%;
     right: rem(5px);
-    font-size: rem(24px);
-    width: rem(24px);
-    height: rem(24px);
-    padding: rem(5px);
+    font-size: rem(20px);
+    width: rem(20px);
+    height: rem(20px);
+    padding: rem(7px);
     color: rgba($secondary, 0.5);
     border-radius: 50%;
     cursor: pointer;
@@ -34,6 +36,11 @@
 
     &:hover {
       color: rgba($primary, 0.8);
+    }
+
+    &::before {
+      position: relative;
+      top: 1px;
     }
   }
 
