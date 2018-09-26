@@ -46,71 +46,82 @@ function addTools(ui) {
 }
 
 function addEventListeners(ui) {
-  var hoverItem;
-  var userDragging = false;
-  var previousX, previousY;
-  var intermediateX, intermediateY;
+  var shared_hoverItem;
+  var shared_userDragging = false;
+
+  var drag_previousX, drag_previousY;
+  var drag_intermediateX, drag_intermediateY;
+
+  var create_dragStart;
 
   // TODO: add support for touch events
 
   ui.canvas.addEventListener("mousedown", e => {
-    userDragging = true;
+    shared_userDragging = true;
+
+    if (shared_hoverItem) {
+      var {x, y} = shared_hoverItem.getDimensions();
+      drag_intermediateX = x;
+      drag_intermediateY = y;
+
+      create_dragStart = shared_hoverItem;
+    }
+
+    drag_previousX = e.offsetX;
+    drag_previousY = e.offsetY;
   });
 
   ui.canvas.addEventListener("mousemove", e => {
     var grid = ui.grid;
 
-    if (selectedTool === 'drag' && userDragging) {
-      if (hoverItem) {
-        var prevX = Math.round(intermediateX),
-            prevY = Math.round(intermediateY);
-        intermediateX += (e.offsetX - previousX) / grid.renderParams.scale;
-        intermediateY += (e.offsetY - previousY) / grid.renderParams.scale;
-        var x = Math.round(intermediateX),
-            y = Math.round(intermediateY);
+    if (selectedTool === 'drag' && shared_userDragging) {
+      if (shared_hoverItem) {
+        drag_intermediateX += (e.offsetX - drag_previousX) / grid.renderParams.scale;
+        drag_intermediateY += (e.offsetY - drag_previousY) / grid.renderParams.scale;
 
-        if (x !== prevX || y !== prevY) {
-          grid.move(hoverItem, x, y);
-        }
+        shared_hoverItem.move(
+          Math.round(drag_intermediateX),
+          Math.round(drag_intermediateY)
+        );
       } else {
         grid.scroll(
-          -(e.offsetX - previousX) / grid.renderParams.scale,
-          -(e.offsetY - previousY) / grid.renderParams.scale
+          -(e.offsetX - drag_previousX) / grid.renderParams.scale,
+          -(e.offsetY - drag_previousY) / grid.renderParams.scale
         );
       }
+
+      drag_previousX = e.offsetX;
+      drag_previousY = e.offsetY;
     } else {
       var x = (e.offsetX / grid.renderParams.scale) + grid.renderParams.offsetX;
       var y = (e.offsetY / grid.renderParams.scale) + grid.renderParams.offsetY;
 
       var hover = grid.find(x, y)[0];
 
-      if (hoverItem) {
-        if (hoverItem !== hover) {
-          hoverItem.setAttribute('hover', false);
-        }
+      if (shared_hoverItem !== hover) {
+        shared_hoverItem && shared_hoverItem.setAttribute('hover', false);
+        hover            && hover.setAttribute('hover', true);
       }
 
-      if (hover) {
-        hover.setAttribute('hover', true);
-        var {x, y} = hover.location;
-        intermediateX = x;
-        intermediateY = y;
-      }
-
-      hoverItem = hover;
+      shared_hoverItem = hover;
     }
-
-    previousX = e.offsetX;
-    previousY = e.offsetY;
   });
 
   ui.canvas.addEventListener("mouseup", e => {
-    userDragging = false;
+    shared_userDragging = false;
+
+    if (selectedTool === 'create' && create_dragStart && shared_hoverItem) {
+      if (create_dragStart !== shared_hoverItem) {
+        create_dragStart.data.connect(shared_hoverItem);
+      }
+    }
+
+    create_dragStart = null;
   });
 
   ui.canvas.addEventListener("click", e => {
-    if (selectedTool === 'point' && hoverItem) {
-      var item = hoverItem.data;
+    if (selectedTool === 'point' && shared_hoverItem) {
+      var item = shared_hoverItem.data;
 
       if (item instanceof Node) {
         item.set(!item.isSource);

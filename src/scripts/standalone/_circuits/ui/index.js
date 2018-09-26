@@ -69,6 +69,15 @@ function addDefaultItems(grid) {
   var not1 = new NotCircuit("not 1");
   var not2 = new NotCircuit("not 2");
 
+  addItem(grid, input1, 1, 1);
+  addItem(grid, input2, 1, 7);
+  addItem(grid, not1, 3, 3);
+  addItem(grid, not2, 3, 5);
+  addItem(grid, and1, 6, 1);
+  addItem(grid, and2, 6, 5);
+  addItem(grid, or, 10, 3);
+  addItem(grid, output, 14, 4);
+
   input1.connect(and1.pins[0]);
   input2.connect(not1.pins[0]);
   input1.connect(not2.pins[0]);
@@ -78,13 +87,4 @@ function addDefaultItems(grid) {
   and1.pins[2].connect(or.pins[0]);
   and2.pins[2].connect(or.pins[1]);
   or.pins[2].connect(output);
-
-  addItem(grid, input1, 1, 1);
-  addItem(grid, input2, 1, 7);
-  addItem(grid, not1, 3, 3);
-  addItem(grid, not2, 3, 5);
-  addItem(grid, and1, 6, 1);
-  addItem(grid, and2, 6, 5);
-  addItem(grid, or, 10, 3);
-  addItem(grid, output, 14, 4);
 }

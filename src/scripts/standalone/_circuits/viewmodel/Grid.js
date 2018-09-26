@@ -1,6 +1,7 @@
 import KDTree from './spatial/KDTree';
 import BoundingBox from './spatial/BoundingBox';
-import { errorStyle, defaultStyle } from '../ui/styles';
+import Connection from './Connection';
+import rendering from '../ui/rendering';
 
 const EventEmitter = require('events');
 
@@ -12,6 +13,8 @@ export default class Grid extends EventEmitter {
     //       likely using a service worker?
     this.items = new KDTree();
 
+    this.connections = new Map();
+
     this.renderParams = {
       scale: 20,
       offsetX: 0,
@@ -19,33 +22,47 @@ export default class Grid extends EventEmitter {
     };
     this.renderStyle = style;
 
-    this.update = () => this.emit('update');
+    const _updateConnections = view => {
+      if (view.data.getConnections) {
+        var conns = view.data.getConnections();
+
+        conns.forEach(c => {
+          var key = c[0]._id + ", " + c[1]._id;
+          if (!this.connections.has(key)) {
+            var connView = new Connection(c[0], c[1], rendering.drawConnection)
+            this.connections.set(key, connView);
+            this.insert(connView);
+          }
+        });
+      }
+    }
+
+    this.update = view => {
+      view && _updateConnections(view);
+      this.emit('update');
+    };
+    this.remove = view => this.items.remove(view);
+    this.move   = view => {
+      // TODO: check for collisions (somewhere)
+
+      this.items.remove(view);
+
+      this.items.insert(view, new BoundingBox(view.getDimensions()));
+
+      this.update();
+    }
   }
 
   insert(view) {
     // TODO: check for collisions (somewhere)
 
-    this.items.insert(view, view.boundingBox);
+    this.items.insert(view, new BoundingBox(view.getDimensions()));
 
     view.on('update', this.update);
+    view.on('remove', this.remove);
+    view.on('move', this.move);
 
-    this.update();
-  }
-
-  move(view, x, y) {
-    // TODO: check for collisions (somewhere)
-
-    this.items.remove(view);
-
-    view.move(x, y);
-
-    this.items.insert(view, view.boundingBox);
-
-    this.update();
-  }
-
-  remove(view) {
-    this.items.remove(view);
+    this.update(view);
   }
 
   find(x, y) {
@@ -60,7 +77,7 @@ export default class Grid extends EventEmitter {
   }
 
   draw(context) {
-    var {scale, offsetX, offsetY} = this.renderParams;
+    var { scale, offsetX, offsetY } = this.renderParams;
 
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
