@@ -35,6 +35,8 @@ export default class CanvasView extends View {
   addChild(view) {
     this.children.insert(view, new BoundingBox(view.getDimensions()));
 
+    view.parent = this;
+
     view.on('update', this.update);
     view.on('remove', this.remove);
     view.on('move', this.moveChild);
@@ -44,6 +46,7 @@ export default class CanvasView extends View {
 
   setPreviewChild(view) {
     this.previewChild = view;
+    view.parent = this;
 
     if (view) {
       view.on('update', this.update);

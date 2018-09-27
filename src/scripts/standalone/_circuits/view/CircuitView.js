@@ -13,6 +13,7 @@ export default class CircuitView extends View {
 
     this.children = data.definition.pins.map((pin, i) => {
       var node = new NodeView(data.pins[i], pin.x, pin.y, style);
+      node.parent = this;
 
       node.on('update', this.update);
 
@@ -36,7 +37,7 @@ export default class CircuitView extends View {
   draw(context) {
     var style = this.style.general.gate;
 
-    var {x, y, width, height} = this.getDimensions();
+    var {x, y} = this.getDimensions();
 
     if (this.attributes.hidden) return;
 

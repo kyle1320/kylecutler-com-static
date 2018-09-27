@@ -1,6 +1,8 @@
 import NodeView from "../view/NodeView";
 import CircuitView from "../view/CircuitView";
 import Circuit from "../model/Circuit";
+import ConnectionView from "../view/ConnectionView";
+import Node from "../model/Node";
 
 export default class Controller {
   constructor (canvas, toolbar, sidebar) {
@@ -9,24 +11,13 @@ export default class Controller {
     this.sidebar = sidebar;
 
     this.selectedTool = 'move';
-
-    // TODO: break this up into smaller components
-
-    this.shared_userDragging = false;
-
-    this.drag_target = null;
-    this.drag_previousX = null
-    this.drag_previousY = null;
-    this.drag_intermediateX = null
-    this.drag_intermediateY = null;
-
-    this.create_dragStart = null;
+    this.userDragging = false;
   }
 
   handleEvent(e) {
     switch (e.type) {
       case 'down':
-        this.shared_userDragging = true;
+        this.userDragging = true;
 
         var drag = getMoveableTarget(e.root);
         if (drag) {
@@ -36,7 +27,16 @@ export default class Controller {
           this.drag_intermediateY = y;
         }
 
-        this.create_dragStart = findNodeView(e.root);
+        if (this.selectedTool === 'create' && !this.create_previewCircuit) {
+          this.create_dragStart = findNodeView(e.root);
+          if (this.create_dragStart) {
+            this.create_dragEnd = new NodeView(new Node(), e.root.x, e.root.y);
+            this.create_dragEnd.parent = this.canvas;
+            this.create_previewCircuit = new ConnectionView(this.create_dragStart, this.create_dragEnd, this.canvas);
+            this.create_previewCircuit.setAttribute('hidden', true);
+            this.canvas.setPreviewChild(this.create_previewCircuit);
+          }
+        }
 
         this.drag_previousX = e.x;
         this.drag_previousY = e.y;
@@ -45,7 +45,7 @@ export default class Controller {
       case 'move':
         var grid = e.root.view;
 
-        if (this.selectedTool === 'drag' && this.shared_userDragging) {
+        if (this.selectedTool === 'drag' && this.userDragging) {
           this.drag_intermediateX += (e.x - this.drag_previousX) / grid.attributes.scale;
           this.drag_intermediateY += (e.y - this.drag_previousY) / grid.attributes.scale;
 
@@ -61,6 +61,8 @@ export default class Controller {
 
           this.drag_previousX = e.x;
           this.drag_previousY = e.y;
+        } else if (this.create_dragEnd) {
+          this.create_dragEnd.move(e.root.x, e.root.y);
         } else if (this.create_previewCircuit) {
           this.create_previewCircuit.setAttribute('hidden', false);
           this.create_previewCircuit.move(e.root.x, e.root.y);
@@ -70,13 +72,9 @@ export default class Controller {
 
         break;
       case 'up':
-        this.shared_userDragging = false;
+        this.userDragging = false;
 
-        if (this.create_previewCircuit) {
-          this.canvas.addPreviewChild();
-          this.create_previewCircuit = null;
-          this.toolbar.selectTool('point');
-        } else if (this.selectedTool === 'point') {
+        if (this.selectedTool === 'point') {
           var nodeView = findNodeView(e.root);
 
           if (nodeView) {
@@ -84,14 +82,23 @@ export default class Controller {
             node.set(!node.isSource);
           }
         } else if (this.selectedTool === 'create') {
-          var endNode = findNodeView(e.root);
+          if (this.create_dragStart) {
+            var endNode = findNodeView(e.root);
 
-          if (this.create_dragStart && endNode && this.create_dragStart !== endNode) {
-            this.create_dragStart.data.connect(endNode.data);
+            if (endNode && this.create_dragStart !== endNode) {
+              this.create_previewCircuit.data[1] = endNode;
+              this.create_dragStart.data.connect(endNode.data);
+              this.canvas.addPreviewChild();
+            }
+          } else if (this.create_previewCircuit) {
+            this.canvas.addPreviewChild();
+            this.toolbar.selectTool('point');
           }
         }
 
         this.create_dragStart = null;
+        this.create_dragEnd = null;
+        this.create_previewCircuit = null;
 
         break;
       case 'enter':

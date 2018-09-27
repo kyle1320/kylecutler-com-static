@@ -22,6 +22,7 @@ export default class View extends EventEmitter {
     this.dimensions = dimensions;
     this.attributes = attributes;
     this.style = style;
+    this.parent = null;
 
     this.update = () => this.emit('update', this);
 
@@ -67,14 +68,37 @@ export default class View extends EventEmitter {
   }
 
   findAll(x, y) {
-    throw new Error("View subclass must override method findAll()");
+    var relX = x - this.dimensions.x;
+    var relY = y - this.dimensions.y;
+
+    return {
+      view: this,
+      x: relX, y: relY,
+      children: []
+    };
   }
 
   draw(context) {
     throw new Error("View subclass must override method draw()");
   }
 
-  static GetViewFromDatasource(data) {
+  static getViewFromDatasource(data) {
     return data[viewKey];
+  }
+
+  static getRelativePosition(view, ancestor) {
+    var pos = { x: 0, y: 0 };
+
+    do {
+      var dimens = view.getDimensions();
+
+      pos.x += dimens.x;
+      pos.y += dimens.y;
+
+      view = view.parent;
+      if (!view) throw new Error("Did not find ancestor view");
+    } while (view !== ancestor);
+
+    return pos;
   }
 }

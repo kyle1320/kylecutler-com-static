@@ -10,6 +10,8 @@ import NodeView from "./view/NodeView";
 import Toolbar from './view/Toolbar';
 import Sidebar from './view/Sidebar';
 import Controller from "./controller";
+import ConnectionView from './view/ConnectionView';
+import View from './view/View';
 
 window.addEventListener('load', function () {
   var canvasView = getCanvasView(document.getElementById('canvas'));
@@ -74,6 +76,17 @@ function addItem(canvasView, item, x, y) {
   canvasView.addChild(view);
 }
 
+function addConnection(canvasView, nodeA, nodeB) {
+  var nodeViewA = View.getViewFromDatasource(nodeA);
+  var nodeViewB = View.getViewFromDatasource(nodeB);
+
+  nodeA.connect(nodeB);
+
+  var connectionView = new ConnectionView(nodeViewA, nodeViewB, canvasView);
+
+  canvasView.addChild(connectionView);
+}
+
 function addDefaultItems(canvasView) {
   var input1 = new Node("input A");
   var input2 = new Node("input B");
@@ -96,15 +109,15 @@ function addDefaultItems(canvasView) {
   addItem(canvasView, or, 10, 3);
   addItem(canvasView, output, 14, 4);
 
-  input1.connect(and1.pins[0]);
-  input2.connect(not1.pins[0]);
-  input1.connect(not2.pins[0]);
-  input2.connect(and2.pins[1]);
-  not1.pins[1].connect(and1.pins[1]);
-  not2.pins[1].connect(and2.pins[0]);
-  and1.pins[2].connect(or.pins[0]);
-  and2.pins[2].connect(or.pins[1]);
-  or.pins[2].connect(output);
+  addConnection(canvasView, input1, and1.pins[0]);
+  addConnection(canvasView, input2, not1.pins[0]);
+  addConnection(canvasView, input1, not2.pins[0]);
+  addConnection(canvasView, input2, and2.pins[1]);
+  addConnection(canvasView, not1.pins[1], and1.pins[1]);
+  addConnection(canvasView, not2.pins[1], and2.pins[0]);
+  addConnection(canvasView, and1.pins[2], or.pins[0]);
+  addConnection(canvasView, and2.pins[2], or.pins[1]);
+  addConnection(canvasView, or.pins[2], output);
 
   // setInterval(() => input1.set(!input1.isSource), 2000);
   // setTimeout(() => {

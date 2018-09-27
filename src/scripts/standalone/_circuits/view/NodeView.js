@@ -5,17 +5,6 @@ export default class NodeView extends View {
     super(data, { x, y, width: 0, height: 0 }, {}, style);
   }
 
-  findAll(x, y) {
-    var relX = x - this.dimensions.x;
-    var relY = y - this.dimensions.y;
-
-    return {
-      view: this,
-      x: relX, y: relY,
-      children: []
-    };
-  }
-
   draw(context) {
     var style = this.style.node;
 
