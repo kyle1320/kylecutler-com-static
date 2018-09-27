@@ -1,4 +1,6 @@
 import NodeView from "../view/NodeView";
+import CircuitView from "../view/CircuitView";
+import Circuit from "../model/Circuit";
 
 export default class Controller {
   constructor (canvas, toolbar, sidebar) {
@@ -59,25 +61,32 @@ export default class Controller {
 
           this.drag_previousX = e.x;
           this.drag_previousY = e.y;
+        } else if (this.create_previewCircuit) {
+          this.create_previewCircuit.setAttribute('hidden', false);
+          this.create_previewCircuit.move(e.root.x, e.root.y);
         }
-        // else {
-        //   var hover = e.root;
 
-        //   this.shared_hoverItem && traverse(this.shared_hoverItem, x => x.setAttribute('hover', false));
-
-        //   // TODO: make this more efficient
-        //   traverse(hover, x => x.setAttribute('hover', true));
-
-        //   this.shared_hoverItem = hover;
-        // }
+        // TODO: highlight hovered element
 
         break;
       case 'up':
         this.shared_userDragging = false;
 
-        var endNode = findNodeView(e.root);
-        if (this.selectedTool === 'create' && this.create_dragStart && endNode) {
-          if (this.create_dragStart !== endNode) {
+        if (this.create_previewCircuit) {
+          this.canvas.addPreviewChild();
+          this.create_previewCircuit = null;
+          this.toolbar.selectTool('point');
+        } else if (this.selectedTool === 'point') {
+          var nodeView = findNodeView(e.root);
+
+          if (nodeView) {
+            var node = nodeView.data;
+            node.set(!node.isSource);
+          }
+        } else if (this.selectedTool === 'create') {
+          var endNode = findNodeView(e.root);
+
+          if (this.create_dragStart && endNode && this.create_dragStart !== endNode) {
             this.create_dragStart.data.connect(endNode.data);
           }
         }
@@ -85,14 +94,16 @@ export default class Controller {
         this.create_dragStart = null;
 
         break;
-      case 'click':
-        if (this.selectedTool === 'point') {
-          var nodeView = findNodeView(e.root);
+      case 'enter':
+        if (this.create_previewCircuit) {
+          this.create_previewCircuit.move(e.root.x, e.root.y);
+          this.create_previewCircuit.setAttribute('hidden', false);
+        }
 
-          if (nodeView) {
-            var node = nodeView.data;
-            node.set(!node.isSource);
-          }
+        break;
+      case 'leave':
+        if (this.create_previewCircuit) {
+          this.create_previewCircuit.setAttribute('hidden', true);
         }
 
         break;
@@ -100,9 +111,28 @@ export default class Controller {
   }
 
   selectTool(tool) {
+    if (tool === this.selectedTool) return;
+
     this.canvas.canvas.style.cursor = tool.cursor;
 
+    if (this.create_previewCircuit) {
+      this.canvas.setPreviewChild(null);
+      this.create_previewCircuit = null;
+    }
+
+    if (tool.name === 'create') {
+      this.sidebar.showCircuitsList();
+    }
+
     this.selectedTool = tool.name;
+  }
+
+  selectCircuit(circuit) {
+    if (this.selectedTool === 'create') {
+      this.create_previewCircuit = new CircuitView(new Circuit(circuit));
+      this.create_previewCircuit.setAttribute('hidden', true);
+      this.canvas.setPreviewChild(this.create_previewCircuit);
+    }
   }
 }
 

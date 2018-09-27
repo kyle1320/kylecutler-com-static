@@ -1,3 +1,5 @@
+import BoundingBox from "./BoundingBox";
+
 const wrapperKey = Symbol('KD Tree Item Wrapper');
 
 export default class KDTree {
@@ -34,6 +36,10 @@ export default class KDTree {
   cleanup() {
     this.items = this.items.filter(i => i.isValid);
     this.rootNode = buildNode(this.items);
+  }
+
+  draw(context, boundingBox) {
+    drawNode(context, this.rootNode, boundingBox);
   }
 }
 
@@ -146,7 +152,7 @@ function buildNode(items) {
       var above = items.filter(i => i.boundingBox.max[axis] >= coord);
 
       // not the best heuristic, but not terrible for an infinite plane
-      var heuristic = (above.length * below.length);
+      var heuristic = (above.length**2 * below.length**2);
 
       if (above.length < items.length &&
           below.length < items.length &&
@@ -170,4 +176,53 @@ function buildNode(items) {
   node.lower = buildNode(bestBelow);
 
   return node;
+}
+
+function drawNode(context, node, bb) {
+  if (node instanceof LeafNode) return;
+
+  if (node.coord < bb.min[node.axis]) {
+    drawNode(context, node.upper, bb);
+  } else if (node.coord > bb.max[node.axis]) {
+    drawNode(context, node.lower, bb)
+  } else {
+    context.save();
+
+    var start = [node.coord, bb.min[1 - node.axis]];
+    var end = [node.coord, bb.max[1 - node.axis]];
+
+    if (node.axis === 1) {
+      start.reverse();
+      end.reverse();
+    }
+
+    context.strokeStyle = "rgba(0, 0, 255, 0.1)";
+
+    context.beginPath();
+      context.moveTo(start[0], start[1]);
+      context.lineTo(end[0], end[1])
+    context.closePath();
+
+    context.stroke();
+
+    drawNode(context, node.lower, bbFromBounds(
+      bb.min[0],
+      bb.min[1],
+      Math.min(bb.max[0], end[0]),
+      Math.min(bb.max[1], end[1])
+    ));
+
+    drawNode(context, node.upper, bbFromBounds(
+      Math.max(bb.min[0], start[0]),
+      Math.max(bb.min[1], start[1]),
+      bb.max[0],
+      bb.max[1]
+    ));
+
+    context.restore();
+  }
+}
+
+function bbFromBounds(minx, miny, maxx, maxy) {
+  return new BoundingBox(minx, miny, maxx - minx, maxy - miny);
 }

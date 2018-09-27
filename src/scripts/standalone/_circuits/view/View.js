@@ -1,3 +1,5 @@
+import { defaultStyle } from './styles';
+
 const EventEmitter = require('events');
 
 const viewKey = Symbol("View");
@@ -5,7 +7,7 @@ const viewKey = Symbol("View");
 var uniqueViewId = 0;
 
 export default class View extends EventEmitter {
-  constructor (data, dimensions, attributes = {}) {
+  constructor (data, dimensions, attributes = {}, style = defaultStyle) {
     super();
 
     this._id = uniqueViewId++;
@@ -19,6 +21,7 @@ export default class View extends EventEmitter {
 
     this.dimensions = dimensions;
     this.attributes = attributes;
+    this.style = style;
 
     this.update = () => this.emit('update', this);
 

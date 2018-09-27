@@ -8,7 +8,8 @@ export default class CanvasView extends View {
     super(
       null,
       { x: 0, y: 0, width: Infinity, height: Infinity },
-      { scale: 20, style }
+      { scale: 20 },
+      style
     );
 
     this.canvas = canvasEl;
@@ -41,6 +42,24 @@ export default class CanvasView extends View {
     this.update(view);
   }
 
+  setPreviewChild(view) {
+    this.previewChild = view;
+
+    if (view) {
+      view.on('update', this.update);
+      view.on('move', this.update);
+    }
+
+    this.update();
+  }
+
+  addPreviewChild() {
+    if (this.previewChild) {
+      this.addChild(this.previewChild);
+      this.previewChild = null;
+    }
+  }
+
   findChild(x, y, grow) {
     return this.children.find(new BoundingBox(x-grow, y-grow, grow*2, grow*2));
   }
@@ -70,8 +89,8 @@ export default class CanvasView extends View {
   draw() {
     var context = this.canvas.getContext("2d");
 
-    var { scale, style } = this.attributes;
-
+    var { scale } = this.attributes;
+    var style = this.style;
     var offsetX = -this.dimensions.x;
     var offsetY = -this.dimensions.y;
 
@@ -116,6 +135,13 @@ export default class CanvasView extends View {
     this.children.find(viewport).forEach(function (item) {
       item.draw(context);
     });
+
+    if (this.previewChild) {
+      context.globalAlpha = 0.5;
+      this.previewChild.draw(context);
+    }
+
+    this.children.draw(context, viewport);
 
     context.restore();
   }

@@ -2,7 +2,7 @@ import View from "./View";
 
 export default class NodeView extends View {
   constructor (data, x, y, style) {
-    super(data, { x, y, width: 0, height: 0 }, { style });
+    super(data, { x, y, width: 0, height: 0 }, {}, style);
   }
 
   findAll(x, y) {
@@ -17,7 +17,7 @@ export default class NodeView extends View {
   }
 
   draw(context) {
-    var style = this.attributes.style.node;
+    var style = this.style.node;
 
     context.save();
 

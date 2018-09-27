@@ -5,31 +5,31 @@ const circuits = require('./model/circuits');
 const tools = require('./model/tools');
 
 import CanvasView from "./view/CanvasView";
-import NodeView from "./view/NodeView";
 import CircuitView from "./view/CircuitView";
-import { defaultStyle } from './view/styles';
-import Controller from "./controller";
+import NodeView from "./view/NodeView";
 import Toolbar from './view/Toolbar';
 import Sidebar from './view/Sidebar';
+import Controller from "./controller";
 
 window.addEventListener('load', function () {
   var canvasView = getCanvasView(document.getElementById('canvas'));
   var toolbar = new Toolbar(document.getElementById('toolbar'), tools);
-  var sidebar = new Sidebar(document.getElementById('sidebar'));
+  var sidebar = new Sidebar(document.getElementById('sidebar'), circuits);
 
   var controller = new Controller(canvasView, toolbar, sidebar);
 
   addCanvasListeners(canvasView, controller);
   toolbar.on('change', tool => controller.selectTool(tool));
+  sidebar.on('select-circuit', circuit => controller.selectCircuit(circuit));
 
   addDefaultItems(canvasView);
+  toolbar.selectTool(tools[0].name);
 
   canvasView.drawBuffered();
-  toolbar.updateHTML();
 });
 
 function getCanvasView(canvasEl) {
-  const canvasView = new CanvasView(canvasEl, defaultStyle);
+  const canvasView = new CanvasView(canvasEl);
 
   function resizeCanvas() {
     canvasEl.width = canvasEl.parentElement.clientWidth;
@@ -50,22 +50,26 @@ function addCanvasListeners(canvasView, controller) {
   var canvas = canvasView.canvas;
 
   const positionalAction = type => event => {
+    event.preventDefault();
+
     var x = event.offsetX, y = event.offsetY;
     var root = canvasView.findAll(x, y);
 
     controller.handleEvent({ type, x, y, root, event });
   };
 
-  canvas.addEventListener('mousedown', positionalAction('down'));
-  canvas.addEventListener('mouseup',   positionalAction('up'));
-  canvas.addEventListener('mousemove', positionalAction('move'));
-  canvas.addEventListener('click',     positionalAction('click'));
+  canvas.addEventListener('mousedown',  positionalAction('down'));
+  canvas.addEventListener('mouseup',    positionalAction('up'));
+  canvas.addEventListener('mousemove',  positionalAction('move'));
+  canvas.addEventListener('mouseenter', positionalAction('enter'));
+  canvas.addEventListener('mouseleave', positionalAction('leave'));
+  // canvas.addEventListener('click',     positionalAction('click'));
 }
 
 function addItem(canvasView, item, x, y) {
   var view = (item instanceof Node)
-              ? new NodeView(item, x, y, defaultStyle)
-              : new CircuitView(item, x, y, defaultStyle);
+              ? new NodeView(item, x, y)
+              : new CircuitView(item, x, y);
 
   canvasView.addChild(view);
 }

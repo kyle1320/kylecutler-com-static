@@ -54,9 +54,18 @@ body {
       cursor: pointer;
       border-left: 1px solid #eeeeee;
 
+      &::before {
+        padding: 2px;
+        border-bottom: 2px solid transparent;
+      }
+
       &.selected {
         background-color: #eeeeee;
         color: #4080FF;
+
+        &::before {
+          border-color: currentColor;
+        }
       }
     }
   }
@@ -70,6 +79,15 @@ body {
   .sidebar {
     width: rem(200px);
     box-shadow: 0 0 rem(5px) rgba(0, 0, 0, 0.3);
+
+    .circuit {
+      padding: rem(15px);
+
+      &.selected {
+        background-color: #eeeeee;
+        text-decoration: underline;
+      }
+    }
   }
 
   .canvas {
