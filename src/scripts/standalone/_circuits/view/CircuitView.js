@@ -34,6 +34,10 @@ export default class CircuitView extends View {
     };
   }
 
+  getRenderOrder() {
+    return 2;
+  }
+
   draw(context) {
     var style = this.style.general.gate;
 

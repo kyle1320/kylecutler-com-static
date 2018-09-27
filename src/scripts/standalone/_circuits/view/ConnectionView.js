@@ -16,6 +16,10 @@ export default class ConnectionView extends View {
     // TODO: update path here
   }
 
+  getRenderOrder() {
+    return 1;
+  }
+
   draw(context) {
     var style = this.style.connection;
 

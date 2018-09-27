@@ -135,7 +135,10 @@ export default class CanvasView extends View {
     }
 
     var viewport = new BoundingBox(offsetX, offsetY, width, height);
-    this.children.find(viewport).forEach(function (item) {
+    this.children
+      .find(viewport)
+      .sort((a, b) => a.getRenderOrder() - b.getRenderOrder())
+      .forEach(function (item) {
       item.draw(context);
     });
 

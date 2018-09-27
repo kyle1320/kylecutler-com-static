@@ -78,6 +78,10 @@ export default class View extends EventEmitter {
     };
   }
 
+  getRenderOrder() {
+    return 0;
+  }
+
   draw(context) {
     throw new Error("View subclass must override method draw()");
   }

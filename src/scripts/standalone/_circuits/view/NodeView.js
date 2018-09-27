@@ -5,6 +5,10 @@ export default class NodeView extends View {
     super(data, { x, y, width: 0, height: 0 }, {}, style);
   }
 
+  getRenderOrder() {
+    return 3;
+  }
+
   draw(context) {
     var style = this.style.node;
 
