@@ -7,18 +7,18 @@ export default class CanvasView extends View {
   constructor (canvasEl, style) {
     super(
       null,
-      { x: -Infinity, y: -Infinity, width: Infinity, height: Infinity },
-      { scale: 20, offsetX: 0, offsetY: 0, style }
+      { x: 0, y: 0, width: Infinity, height: Infinity },
+      { scale: 20, style }
     );
 
     this.canvas = canvasEl;
     this.children = new KDTree();
 
-    // TODO: store / update connections
+    // TODO: draw connections !!!
 
-    this.update = view => this.emit('update');
-    this.remove = view => this.children.remove(view);
-    this.move   = view => {
+    this.update    = view => this.emit('update');
+    this.remove    = view => this.children.remove(view);
+    this.moveChild = view => {
       // TODO: check for collisions (somewhere)
 
       this.children.remove(view);
@@ -36,7 +36,7 @@ export default class CanvasView extends View {
 
     view.on('update', this.update);
     view.on('remove', this.remove);
-    view.on('move', this.move);
+    view.on('move', this.moveChild);
 
     this.update(view);
   }
@@ -45,10 +45,21 @@ export default class CanvasView extends View {
     return this.children.find(new BoundingBox(x-grow, y-grow, grow*2, grow*2));
   }
 
-  scroll(scrollX, scrollY) {
-    this.attributes.offsetX += scrollX;
-    this.attributes.offsetY += scrollY;
+  findAll(x, y) {
+    var gridX = (x / this.attributes.scale) - this.dimensions.x;
+    var gridY = (y / this.attributes.scale) - this.dimensions.y;
 
+    return {
+      view: this,
+      x: gridX, y: gridY,
+      children: this.children
+                  .find(new BoundingBox(gridX - 0.5, gridY - 0.5, 1, 1))
+                  .map(view => view.findAll(gridX, gridY))
+    };
+  }
+
+  move(x, y) {
+    super.move(x, y);
     this.update();
   }
 
@@ -59,7 +70,10 @@ export default class CanvasView extends View {
   draw() {
     var context = this.canvas.getContext("2d");
 
-    var { scale, offsetX, offsetY, style } = this.attributes;
+    var { scale, style } = this.attributes;
+
+    var offsetX = -this.dimensions.x;
+    var offsetY = -this.dimensions.y;
 
     context.save();
 

@@ -1,6 +1,6 @@
 import Node from './Node';
 import bufferEvent from '../utils/eventBuffer';
-import parse from './Parser';
+import parse from './parse';
 
 const EventEmitter = require('events');
 
@@ -38,10 +38,13 @@ export default class Circuit extends EventEmitter {
   }
 
   doUpdate() {
+    var scope = this.pins.map(pin => pin.get());
     this.definition.rules.forEach(rule => {
       switch (rule.type) {
         case "output":
-          this._set(rule.target, parse(rule.value, this));
+          var expr = parse(rule.value);
+          var res = expr(scope);
+          this._set(rule.target, res);
           break;
       }
     });

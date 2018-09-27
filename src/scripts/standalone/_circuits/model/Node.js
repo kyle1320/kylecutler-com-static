@@ -25,6 +25,7 @@ export default class Node extends EventEmitter {
     this.isSource = state;
     console.log(`Toggle source "${this.name}" ${this.isSource ? "on" : "off"}`)
     this.update(this);
+    this.emit('update');
   }
 
   update (source) {

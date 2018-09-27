@@ -54,13 +54,17 @@ export default class View extends EventEmitter {
     return this.dimensions;
   }
 
-  overlaps(x, y, grow = 0) {
-    var dim = this.getDimensions();
+  intersects(x, y, grow = 0) {
+    var dim = this.dimensions;
 
     return (dim.x <= x + grow) &&
            (dim.y <= y + grow) &&
            (dim.x + dim.width >= x - grow) &&
            (dim.y + dim.height >= y - grow);
+  }
+
+  findAll(x, y) {
+    throw new Error("View subclass must override method findAll()");
   }
 
   draw(context) {

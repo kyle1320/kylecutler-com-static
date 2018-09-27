@@ -18,6 +18,19 @@ export default class CircuitView extends View {
     });
   }
 
+  findAll(x, y) {
+    var relX = x - this.dimensions.x;
+    var relY = y - this.dimensions.y;
+
+    return {
+      view: this,
+      x: relX, y: relY,
+      children: this.children
+                  .filter(view => view.intersects(relX, relY, 0.5))
+                  .map(view => view.findAll(relX, relY))
+    };
+  }
+
   draw(context) {
     var style = this.attributes.style.general.gate;
 
