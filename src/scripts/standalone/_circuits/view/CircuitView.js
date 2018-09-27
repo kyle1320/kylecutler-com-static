@@ -1,6 +1,8 @@
 import View from "./View";
 import NodeView from "./NodeView";
 
+require('path2d-polyfill');
+
 export default class CircuitView extends View {
   constructor (data, x, y, style) {
     super(data, {
@@ -43,16 +45,12 @@ export default class CircuitView extends View {
     context.fillStyle = style.fillColor;
     context.strokeStyle = style.strokeColor;
 
-    // TODO: fetch design from circuit definition
-    context.beginPath();
-        context.rect(x, y, width, height);
-    context.closePath();
-
-    context.fill();
-    context.stroke();
-
-    // child position is relative to this view, but it doesn't need to know that
     context.translate(x, y);
+
+    // TODO: fetch design from circuit definition
+    var path = new Path2D(this.data.definition.path);
+    context.fill(path);
+    context.stroke(path);
 
     this.children.forEach(view => view.draw(context))
 

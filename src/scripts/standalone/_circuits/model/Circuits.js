@@ -9,7 +9,8 @@ module.exports = {
     ],
     "rules": [
       { "type": "output", "target": 2, "value": "0 & 1" }
-    ]
+    ],
+    "path": "M0,0 L1,0 A1,1 0 1,1 1,2 L0,2 Z"
   },
   "Or": {
     "name": "Or",
@@ -21,7 +22,8 @@ module.exports = {
     ],
     "rules": [
       { "type": "output", "target": 2, "value": "0 | 1" }
-    ]
+    ],
+    "path": "M0,0 L2,1 L0,2 Z"
   },
   "Not": {
     "name": "Not",
@@ -32,6 +34,7 @@ module.exports = {
     ],
     "rules": [
       { "type": "output", "target": 1, "value": "! 0" }
-    ]
+    ],
+    "path": "M0,-.5 L1,0 L0,.5 Z"
   }
 };
