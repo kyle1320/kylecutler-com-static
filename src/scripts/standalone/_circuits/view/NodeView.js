@@ -22,11 +22,18 @@ export default class NodeView extends View {
     context.strokeStyle = strokeColor;
 
     context.beginPath();
-        context.arc(x, y, style.size, 0, 2 * Math.PI);
+      context.arc(x, y, style.size, 0, 2 * Math.PI);
     context.closePath();
 
     context.fill();
     context.stroke();
+
+    if (this.data.isSource) {
+      context.beginPath();
+        context.arc(x, y, style.size + this.style.general.lineWidth * 2, 0, 2 * Math.PI);
+      context.closePath();
+      context.stroke();
+    }
 
     context.restore();
   }

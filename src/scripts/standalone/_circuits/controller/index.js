@@ -3,6 +3,7 @@ import CircuitView from "../view/CircuitView";
 import Circuit from "../model/Circuit";
 import ConnectionView from "../view/ConnectionView";
 import Node from "../model/Node";
+import View from "../view/View";
 
 export default class Controller {
   constructor (canvas, toolbar, sidebar) {
@@ -11,14 +12,11 @@ export default class Controller {
     this.sidebar = sidebar;
 
     this.selectedTool = 'move';
-    this.userDragging = false;
   }
 
   handleEvent(e) {
     switch (e.type) {
       case 'down':
-        this.userDragging = true;
-
         var drag = getMoveableTarget(e.root);
         if (drag) {
           this.drag_target = drag.view
@@ -27,7 +25,7 @@ export default class Controller {
           this.drag_intermediateY = y;
         }
 
-        if (this.selectedTool === 'create' && !this.create_previewCircuit) {
+        if (this.selectedTool === 'create' || (e.event.buttons & 2)) {
           this.create_dragStart = findNodeView(e.root);
           if (this.create_dragStart) {
             this.create_dragEnd = new NodeView(new Node(), e.root.x, e.root.y);
@@ -45,7 +43,7 @@ export default class Controller {
       case 'move':
         var grid = e.root.view;
 
-        if (this.selectedTool === 'drag' && this.userDragging) {
+        if (this.selectedTool === 'drag' && (e.event.buttons & 1)) {
           this.drag_intermediateX += (e.x - this.drag_previousX) / grid.attributes.scale;
           this.drag_intermediateY += (e.y - this.drag_previousY) / grid.attributes.scale;
 
@@ -61,19 +59,32 @@ export default class Controller {
 
           this.drag_previousX = e.x;
           this.drag_previousY = e.y;
-        } else if (this.create_dragEnd) {
-          this.create_dragEnd.move(e.root.x, e.root.y);
+        } else if (this.create_dragStart) {
+          var endNode = findNodeView(e.root);
+
+          if (endNode) {
+            var pos = View.getRelativePosition(endNode, this.canvas);
+            this.create_dragEnd.move(pos.x, pos.y);
+          } else {
+            if (e.event.shiftKey) {
+              this.create_dragEnd.move(Math.round(e.root.x), Math.round(e.root.y));
+            } else {
+              this.create_dragEnd.move(e.root.x, e.root.y);
+            }
+          }
         } else if (this.create_previewCircuit) {
           this.create_previewCircuit.setAttribute('hidden', false);
-          this.create_previewCircuit.move(e.root.x, e.root.y);
+          if (e.event.shiftKey) {
+            this.create_previewCircuit.move(Math.round(e.root.x), Math.round(e.root.y));
+          } else {
+            this.create_previewCircuit.move(e.root.x, e.root.y);
+          }
         }
 
         // TODO: highlight hovered element
 
         break;
       case 'up':
-        this.userDragging = false;
-
         if (this.selectedTool === 'point') {
           var nodeView = findNodeView(e.root);
 
@@ -81,24 +92,37 @@ export default class Controller {
             var node = nodeView.data;
             node.set(!node.isSource);
           }
-        } else if (this.selectedTool === 'create') {
+        }
+
+        if (this.create_previewCircuit) {
           if (this.create_dragStart) {
             var endNode = findNodeView(e.root);
 
-            if (endNode && this.create_dragStart !== endNode) {
+            if (!endNode) {
+              this.canvas.addChild(this.create_dragEnd);
+              endNode = this.create_dragEnd;
+            }
+
+            if (this.create_dragStart !== endNode) {
               this.create_previewCircuit.data[1] = endNode;
               this.create_dragStart.data.connect(endNode.data);
               this.canvas.addPreviewChild();
             }
-          } else if (this.create_previewCircuit) {
+          } else {
             this.canvas.addPreviewChild();
-            this.toolbar.selectTool('point');
+          }
+
+          if (this.selectedTool === 'create') {
+            this.create_previewCircuit = new NodeView(new Node());
+            this.create_previewCircuit.setAttribute('hidden', true);
+            this.canvas.setPreviewChild(this.create_previewCircuit);
+          } else {
+            this.create_previewCircuit = null;
           }
         }
 
         this.create_dragStart = null;
         this.create_dragEnd = null;
-        this.create_previewCircuit = null;
 
         break;
       case 'enter':
@@ -129,6 +153,9 @@ export default class Controller {
 
     if (tool.name === 'create') {
       this.sidebar.showCircuitsList();
+      this.create_previewCircuit = new NodeView(new Node());
+      this.create_previewCircuit.setAttribute('hidden', true);
+      this.canvas.setPreviewChild(this.create_previewCircuit);
     }
 
     this.selectedTool = tool.name;

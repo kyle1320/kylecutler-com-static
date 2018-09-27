@@ -66,6 +66,8 @@ function addCanvasListeners(canvasView, controller) {
   canvas.addEventListener('mouseenter', positionalAction('enter'));
   canvas.addEventListener('mouseleave', positionalAction('leave'));
   // canvas.addEventListener('click',     positionalAction('click'));
+
+  canvas.oncontextmenu = () => false;
 }
 
 function addItem(canvasView, item, x, y) {

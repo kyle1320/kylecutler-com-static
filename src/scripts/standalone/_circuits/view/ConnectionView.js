@@ -25,7 +25,7 @@ export default class ConnectionView extends View {
 
     context.save();
 
-    var color = (this.data[0].data.isSource || this.data[1].data.isSource)
+    var color = (this.data[0].data.get() || this.data[1].data.get())
                   ? style.colorOn
                   : style.colorOff;
     var start = View.getRelativePosition(this.data[0], this.parent);

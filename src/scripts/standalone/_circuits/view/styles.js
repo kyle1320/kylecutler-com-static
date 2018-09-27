@@ -13,7 +13,7 @@ export const defaultStyle = {
     strokeColorOff: "#A08080",
     fillColorSource: "#00FF00",
     fillColorReceiver: "#FFFFFF",
-    size: 0.25
+    size: 0.15
   },
   connection: {
     colorOn: "#00FF00",

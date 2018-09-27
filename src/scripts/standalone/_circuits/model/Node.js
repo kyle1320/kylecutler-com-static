@@ -18,12 +18,14 @@ export default class Node extends EventEmitter {
   }
 
   get () {
-    return this.sources.size > 0;
+    return this.isSource || this.sources.size > 0;
   }
 
   set (state) {
+    if (state === this.isSource) return;
+
     this.isSource = state;
-    console.log(`Toggle source "${this.name}" ${this.isSource ? "on" : "off"}`)
+    console.log(`Toggle source "${this.name}" ${this.isSource ? "on" : "off"}`);
     this.update(this);
     this.emit('update');
   }
@@ -58,7 +60,7 @@ export default class Node extends EventEmitter {
     console.log(`"${this.name}" is ${this.get() ? (this.isSource ? "*on*" : "on") : "off"} (${this.sources.size} sources)`);
 
     // update connected nodes
-    this.connections.forEach(node => node.update(source));
+    this.connections.forEach(node => node !== source && node.update(source));
   }
 
   connect (node) {
@@ -66,18 +68,11 @@ export default class Node extends EventEmitter {
 
     if (!this.connections.has(node)) {
       this.connections.add(node);
-      this.update(node);
 
+      this.update(node);
       node.connect(this);
 
       this.emit('update');
     }
-  }
-
-  getConnections() {
-    return Array.from(this.connections.values()).map(node => {
-      if (node._id > this._id) return [this, node];
-      else                     return [node, this];
-    });
   }
 }

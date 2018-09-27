@@ -46,9 +46,9 @@ export default class CanvasView extends View {
 
   setPreviewChild(view) {
     this.previewChild = view;
-    view.parent = this;
 
     if (view) {
+      view.parent = this;
       view.on('update', this.update);
       view.on('move', this.update);
     }
