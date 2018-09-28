@@ -17,9 +17,12 @@ export default class CanvasView extends View {
 
     // TODO: draw connections !!!
 
-    this.update    = view => this.emit('update');
-    this.remove    = view => this.children.remove(view);
-    this.moveChild = view => {
+    this.update      = view => this.emit('update');
+    this.removeChild = view => {
+      this.children.remove(view);
+      this.update();
+    }
+    this.moveChild   = view => {
       // TODO: check for collisions (somewhere)
 
       this.children.remove(view);
@@ -32,13 +35,17 @@ export default class CanvasView extends View {
     this.draw = this.draw.bind(this);
   }
 
+  remove() {
+
+  }
+
   addChild(view) {
     this.children.insert(view, new BoundingBox(view.getDimensions()));
 
     view.parent = this;
 
     view.on('update', this.update);
-    view.on('remove', this.remove);
+    view.on('remove', this.removeChild);
     view.on('move', this.moveChild);
 
     this.update(view);

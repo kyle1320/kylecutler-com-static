@@ -5,6 +5,12 @@ export default class NodeView extends View {
     super(data, { x, y, width: 0, height: 0 }, {}, style);
   }
 
+  remove() {
+    super.remove();
+
+    this.data.disconnect();
+  }
+
   getRenderOrder() {
     return 3;
   }

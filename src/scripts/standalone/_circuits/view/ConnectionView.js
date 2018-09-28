@@ -2,12 +2,25 @@ import View from "./View";
 
 export default class ConnectionView extends View {
   constructor (nodeA, nodeB, parent, style) {
-    super([nodeA, nodeB], getDimensions(nodeA, nodeB, parent), {}, style);
+    super([], getDimensions(nodeA, nodeB, parent), {}, style);
 
     this.parent = parent;
 
-    nodeA.on('move', () => this.update());
-    nodeB.on('move', () => this.update());
+    this.setEndpoint(0, nodeA);
+    this.setEndpoint(1, nodeB);
+  }
+
+  setEndpoint(index, node) {
+    node.on('move', () => this.update());
+    node.on('remove', () => this.remove());
+    node.on('update', this.update);
+    this.data[index] = node;
+  }
+
+  remove() {
+    super.remove();
+
+    this.data[0].data.disconnect(this.data[1].data);
   }
 
   update() {

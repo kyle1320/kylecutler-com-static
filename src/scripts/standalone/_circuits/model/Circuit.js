@@ -28,7 +28,7 @@ export default class Circuit extends EventEmitter {
 
   _set(index, state) {
     this.internalPins[index].set(state);
-    this.pins[index].update(this.internalPins[index]);
+    this.pins[index].update(this.internalPins[index], this.internalPins[index]);
   }
 
   _get(index) {
@@ -53,9 +53,8 @@ export default class Circuit extends EventEmitter {
     });
   }
 
-  getConnections() {
-    return this.pins
-      .map(pin => pin.getConnections())
-      .reduce((arr, data) => arr.concat(data), []);
+  disconnect() {
+    this.pins.forEach(pin => pin.disconnect());
+    this.emit('update');
   }
 }

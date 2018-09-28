@@ -41,7 +41,7 @@ export default class Controller {
     this.hoverTree = tree;
   }
 
-  handleEvent(e) {
+  handleMouseEvent(e) {
     this.hover(e.root);
 
     if (this.selectedTool === 'debug') {
@@ -137,7 +137,7 @@ export default class Controller {
             }
 
             if (this.create_dragStart !== endNode) {
-              this.create_previewCircuit.data[1] = endNode;
+              this.create_previewCircuit.setEndpoint(1, endNode);
               this.create_dragStart.data.connect(endNode.data);
               this.canvas.addPreviewChild();
             }
@@ -170,6 +170,17 @@ export default class Controller {
           this.create_previewCircuit.setAttribute('hidden', true);
         }
 
+        break;
+    }
+  }
+
+  handleKeyEvent(e) {
+    console.log(e);
+    switch (e.keyCode) {
+      case 8:
+      case 46:
+        e.preventDefault();
+        traverse(this.hoverTree, x => x.remove());
         break;
     }
   }

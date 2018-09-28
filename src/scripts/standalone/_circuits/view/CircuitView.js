@@ -21,6 +21,14 @@ export default class CircuitView extends View {
     });
   }
 
+  remove() {
+    super.remove();
+
+    this.children.forEach(child => child.remove());
+
+    this.data.disconnect();
+  }
+
   findAll(x, y) {
     var relX = x - this.dimensions.x;
     var relY = y - this.dimensions.y;

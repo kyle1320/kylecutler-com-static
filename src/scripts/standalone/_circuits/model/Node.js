@@ -78,4 +78,20 @@ export default class Node extends EventEmitter {
       this.emit('update');
     }
   }
+
+  disconnect(node) {
+    if (node === this) {
+      this.sources.delete(this);
+      return;
+    }
+
+    if (node) {
+      // TODO: update sources.
+      this.connections.delete(node);
+    } else {
+      for (var node of this.connections) {
+        this.disconnect(node);
+      }
+    }
+  }
 }

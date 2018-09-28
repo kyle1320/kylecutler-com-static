@@ -24,6 +24,8 @@ window.addEventListener('load', function () {
   toolbar.on('change', tool => controller.selectTool(tool));
   sidebar.on('select-circuit', circuit => controller.selectCircuit(circuit));
 
+  window.addEventListener('keydown', e => controller.handleKeyEvent(e));
+
   addDefaultItems(canvasView);
   toolbar.selectTool(tools[0].name);
 
@@ -57,7 +59,7 @@ function addCanvasListeners(canvasView, controller) {
     var x = event.offsetX, y = event.offsetY;
     var root = canvasView.findAll(x, y);
 
-    controller.handleEvent({ type, x, y, root, event });
+    controller.handleMouseEvent({ type, x, y, root, event });
   };
 
   canvas.addEventListener('mousedown',  positionalAction('down'));
