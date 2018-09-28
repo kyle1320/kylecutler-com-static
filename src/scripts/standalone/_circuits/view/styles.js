@@ -11,9 +11,8 @@ export const defaultStyle = {
   node: {
     strokeColorOn: "#00FF00",
     strokeColorOff: "#A08080",
-    fillColorSource: "#00FF00",
-    fillColorReceiver: "#FFFFFF",
-    size: 0.15
+    fillColorOn: "#00FF00",
+    fillColorOff: "#FFFFFF",
   },
   connection: {
     colorOn: "#00FF00",
@@ -34,9 +33,8 @@ export const errorStyle = {
   node: {
     strokeColorOn: "#80FF00",
     strokeColorOff: "#FF8080",
-    fillColorSource: "#80FF00",
-    fillColorReceiver: "#FFA0A0",
-    size: 0.25
+    fillColorOn: "#80FF00",
+    fillColorOff: "#FFA0A0",
   },
   connection: {
     colorOn: "#00FF00",

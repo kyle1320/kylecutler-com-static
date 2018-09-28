@@ -14,26 +14,30 @@ export default class NodeView extends View {
 
     context.save();
 
-    var strokeColor = this.data.get()    ? style.strokeColorOn   : style.strokeColorOff;
-    var fillColor   = this.data.isSource ? style.fillColorSource : style.fillColorReceiver;
+    var strokeColor = this.data.get() ? style.strokeColorOn : style.strokeColorOff;
     var {x, y} = this.getDimensions();
 
-    context.fillStyle = fillColor;
+    context.fillStyle = style.fillColorOff;
     context.strokeStyle = strokeColor;
 
+    if (this.data.isSource) {
+      context.beginPath();
+        context.arc(x, y, 0.15 + this.style.general.lineWidth * 2, 0, 2 * Math.PI);
+      context.closePath();
+      context.fill();
+      context.stroke();
+    }
+
+    if (this.data.get()) {
+      context.fillStyle = style.fillColorOn;
+    }
+
     context.beginPath();
-      context.arc(x, y, style.size, 0, 2 * Math.PI);
+      context.arc(x, y, 0.15, 0, 2 * Math.PI);
     context.closePath();
 
     context.fill();
     context.stroke();
-
-    if (this.data.isSource) {
-      context.beginPath();
-        context.arc(x, y, style.size + this.style.general.lineWidth * 2, 0, 2 * Math.PI);
-      context.closePath();
-      context.stroke();
-    }
 
     context.restore();
   }
