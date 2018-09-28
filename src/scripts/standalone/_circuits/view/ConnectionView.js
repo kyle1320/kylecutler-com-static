@@ -31,6 +31,19 @@ export default class ConnectionView extends View {
     var start = View.getRelativePosition(this.data[0], this.parent);
     var end = View.getRelativePosition(this.data[1], this.parent);
 
+    if (this.attributes.hover) {
+      context.save();
+      context.strokeStyle = this.style.general.highlightColor;
+      context.lineWidth = 0.5;
+      context.lineJoin = 'round';
+      context.beginPath();
+        context.moveTo(start.x, start.y);
+        context.lineTo(end.x, end.y);
+      context.closePath();
+      context.stroke();
+      context.restore();
+    }
+
     context.strokeStyle = color;
 
     context.beginPath();

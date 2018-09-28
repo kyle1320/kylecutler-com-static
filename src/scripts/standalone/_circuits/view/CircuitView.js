@@ -53,8 +53,7 @@ export default class CircuitView extends View {
 
     if (this.attributes.hover) {
       context.save();
-      context.strokeStyle = this.style.general.highlight.baseColor;
-      context.globalAlpha *= this.style.general.highlight.opacity;
+      context.strokeStyle = this.style.general.highlightColor;
       context.lineWidth = 1;
       context.lineJoin = 'round';
       context.stroke(path);

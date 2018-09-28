@@ -15,17 +15,30 @@ export default class Controller {
     this.hoverTree = null;
   }
 
-  hover(view) {
-    if (this.hoverTree === view) return;
+  hover(tree) {
+    if (this.hoverTree === tree) return;
+
+    switch (this.selectedTool) {
+      case 'point':
+        tree = findNode(tree);
+        break;
+      case 'create':
+        tree = null;
+        break;
+      case 'drag':
+        tree = getMoveableTarget(tree);
+        tree.children = null;
+        break;
+    }
 
     diff(
       this.hoverTree,
-      view,
+      tree,
       x => x.setAttribute('hover', true),
       x => x.setAttribute('hover', false)
     );
 
-    this.hoverTree = view;
+    this.hoverTree = tree;
   }
 
   handleEvent(e) {
@@ -220,36 +233,31 @@ function traverse(tree, cb) {
   }
 }
 
-function getMoveableTarget(tree, level = 0) {
+function findFirst(tree, predicate, level = 0) {
   if (!tree) return null;
 
-  if (level === 1) {
-    return tree;
-  }
+  if (predicate(tree, level)) return tree;
 
   if (!tree.children) return null;
 
   for (var i = 0; i < tree.children.length; i++) {
-    var found = getMoveableTarget(tree.children[i], level + 1);
-
-    if (found) return found;
-  }
-
-  return tree;
-}
-
-function findNodeView(tree) {
-  if (!tree) return null;
-
-  if (tree.view instanceof NodeView) return tree.view;
-
-  if (!tree.children) return null;
-
-  for (var i = 0; i < tree.children.length; i++) {
-    var found = findNodeView(tree.children[i]);
+    var found = findFirst(tree.children[i], predicate, level + 1);
 
     if (found) return found;
   }
 
   return null;
+}
+
+function getMoveableTarget(tree) {
+  return findFirst(tree, (x, l) => l === 1 && !(x.view instanceof ConnectionView)) || tree;
+}
+
+function findNode(tree) {
+  return findFirst(tree, x => x.view instanceof NodeView);
+}
+
+function findNodeView(tree) {
+  var node = findNode(tree);
+  return node && node.view;
 }

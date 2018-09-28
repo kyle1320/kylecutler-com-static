@@ -2,10 +2,7 @@ export const defaultStyle = {
   general: {
     lineWidth: 0.1,
     gridColor: "#eeeeee",
-    highlight: {
-      baseColor: "#000000",
-      opacity: 0.1
-    },
+    highlightColor: "rgba(0, 0, 0, 0.15)",
     gate: {
       strokeColor: "#333333",
       fillColor: "#FFFFFF"
