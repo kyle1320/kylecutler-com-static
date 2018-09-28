@@ -10,14 +10,8 @@ export default class Circuit extends EventEmitter {
 
     this.definition = def;
 
-    this.pins = def.pins.map((_, i) => new Node(def.name + ":" + i));
-
-    // use internal pins to keep external pins from being powered directly
-    // and to prevent toggling the output of a circuit
-    this.internalPins = def.pins.map((options, i) => {
-      var node = new Node(def.name + ":internal:" + i);
-
-      node.connect(this.pins[i]);
+    this.pins = def.pins.map((options, i) => {
+      var node = new Node(def.name + ":" + i);
 
       if (!options.ignoreInput) {
         node.on('update', () => bufferEvent('circuit-update', this.update));
@@ -26,16 +20,19 @@ export default class Circuit extends EventEmitter {
       return node;
     });
 
+    this.internalPins = def.pins.map((_, i) => new Node(def.name + ":internal:" + i));
+
     this.update = this.update.bind(this);
     this.update();
   }
 
   _set(index, state) {
     this.internalPins[index].set(state);
+    this.pins[index].update(this.internalPins[index]);
   }
 
   _get(index) {
-    return this.internalPins[index].get();
+    return this.pins[index].get();
   }
 
   update() {
@@ -44,7 +41,7 @@ export default class Circuit extends EventEmitter {
   }
 
   doUpdate() {
-    var scope = this.internalPins.map(pin => pin.get());
+    var scope = this.pins.map(pin => pin.get());
     this.definition.rules.forEach(rule => {
       switch (rule.type) {
         case "output":
@@ -54,5 +51,11 @@ export default class Circuit extends EventEmitter {
           break;
       }
     });
+  }
+
+  getConnections() {
+    return this.pins
+      .map(pin => pin.getConnections())
+      .reduce((arr, data) => arr.concat(data), []);
   }
 }

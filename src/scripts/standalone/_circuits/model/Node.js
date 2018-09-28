@@ -25,17 +25,17 @@ export default class Node extends EventEmitter {
     if (state === this.isSource) return;
 
     this.isSource = state;
-    console.log(`Toggle source "${this.name}" ${this.isSource ? "on" : "off"}`);
-    this.update(this);
+    // console.log(`Toggle source "${this.name}" ${this.isSource ? "on" : "off"}`);
+    this.update(this, this);
     this.emit('update');
   }
 
-  update (source) {
+  update (source, caller) {
     if (source === undefined) {
       throw new TypeError("source must be provided");
     }
 
-    console.log(`Update "${this.name}", source "${source.name}" is ${source.isSource ? "on" : "off"}`);
+    // console.log(`Update "${this.name}", source "${source.name}" is ${source.isSource ? "on" : "off"}`);
 
     if (source.isSource) {
       if (this.sources.has(source)) {
@@ -57,10 +57,10 @@ export default class Node extends EventEmitter {
       }
     }
 
-    console.log(`"${this.name}" is ${this.get() ? (this.isSource ? "*on*" : "on") : "off"} (${this.sources.size} sources)`);
+    // console.log(`"${this.name}" is ${this.get() ? (this.isSource ? "*on*" : "on") : "off"} (${this.sources.size} sources)`);
 
     // update connected nodes
-    this.connections.forEach(node => node !== source && node.update(source));
+    this.connections.forEach(node => node !== caller && node.update(source, this));
   }
 
   connect (node) {
@@ -69,7 +69,10 @@ export default class Node extends EventEmitter {
     if (!this.connections.has(node)) {
       this.connections.add(node);
 
-      this.update(node);
+      for (var source of this.sources) {
+        node.update(source);
+      }
+
       node.connect(this);
 
       this.emit('update');
