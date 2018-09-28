@@ -2,7 +2,10 @@ export const defaultStyle = {
   general: {
     lineWidth: 0.1,
     gridColor: "#eeeeee",
-    highlightOverlayColor: "rgba(0, 0, 0, 0.1)",
+    highlight: {
+      baseColor: "#000000",
+      opacity: 0.1
+    },
     gate: {
       strokeColor: "#333333",
       fillColor: "#FFFFFF"
@@ -20,28 +23,24 @@ export const defaultStyle = {
   }
 };
 
-export const errorStyle = {
-  general: {
-    lineWidth: 0.1,
-    gridColor: "#eeeeee",
-    highlightOverlayColor: "rgba(255, 0, 0, 0.1)",
-    gate: {
-      strokeColor: "#FF3333",
-      fillColor: "#FFA0A0"
-    }
-  },
-  node: {
-    strokeColorOn: "#80FF00",
-    strokeColorOff: "#FF8080",
-    fillColorOn: "#80FF00",
-    fillColorOff: "#FFA0A0",
-  },
-  connection: {
-    colorOn: "#00FF00",
-    colorOff: "#A08080"
-  }
-};
-
-export function getStyle(view) {
-  return defaultStyle;
-}
+// export const errorStyle = {
+//   general: {
+//     lineWidth: 0.1,
+//     gridColor: "#eeeeee",
+//     highlightOverlayColor: "rgba(255, 0, 0, 0.1)",
+//     gate: {
+//       strokeColor: "#FF3333",
+//       fillColor: "#FFA0A0"
+//     }
+//   },
+//   node: {
+//     strokeColorOn: "#80FF00",
+//     strokeColorOff: "#FF8080",
+//     fillColorOn: "#80FF00",
+//     fillColorOff: "#FFA0A0",
+//   },
+//   connection: {
+//     colorOn: "#00FF00",
+//     colorOff: "#A08080"
+//   }
+// };

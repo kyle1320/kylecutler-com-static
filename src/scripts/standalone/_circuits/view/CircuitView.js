@@ -41,19 +41,29 @@ export default class CircuitView extends View {
   draw(context) {
     var style = this.style.general.gate;
 
-    var {x, y} = this.getDimensions();
+    var {x, y, width, height} = this.getDimensions();
 
     if (this.attributes.hidden) return;
 
     context.save();
 
-    context.fillStyle = style.fillColor;
-    context.strokeStyle = style.strokeColor;
+    var path = new Path2D(this.data.definition.path);
 
     context.translate(x, y);
 
-    // TODO: fetch design from circuit definition
-    var path = new Path2D(this.data.definition.path);
+    if (this.attributes.hover) {
+      context.save();
+      context.strokeStyle = this.style.general.highlight.baseColor;
+      context.globalAlpha *= this.style.general.highlight.opacity;
+      context.lineWidth = 1;
+      context.lineJoin = 'round';
+      context.stroke(path);
+      context.restore();
+    }
+
+    context.fillStyle = style.fillColor;
+    context.strokeStyle = style.strokeColor;
+
     context.fill(path);
     context.stroke(path);
 

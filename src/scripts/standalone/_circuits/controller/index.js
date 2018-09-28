@@ -12,9 +12,29 @@ export default class Controller {
     this.sidebar = sidebar;
 
     this.selectedTool = 'move';
+    this.hoverTree = null;
+  }
+
+  hover(view) {
+    if (this.hoverTree === view) return;
+
+    diff(
+      this.hoverTree,
+      view,
+      x => x.setAttribute('hover', true),
+      x => x.setAttribute('hover', false)
+    );
+
+    this.hoverTree = view;
   }
 
   handleEvent(e) {
+    this.hover(e.root);
+
+    if (this.selectedTool === 'debug') {
+      console.log(e);
+    }
+
     switch (e.type) {
       case 'down':
         var drag = getMoveableTarget(e.root);
@@ -171,6 +191,34 @@ export default class Controller {
 }
 
 // TODO: move these functions into a helper file?
+
+function diff(before, after, onInsert, onRemove) {
+  if (!before || !after || before.view !== after.view) {
+    if (before) traverse(before, onRemove);
+    if (after)  traverse(after,  onInsert);
+    return;
+  }
+
+  var childrenBefore = before.children || [];
+  var childrenAfter = after.children || [];
+  var count = Math.max(childrenBefore.length, childrenAfter.length);
+
+  for (var i = 0; i < count; i++) {
+    diff(childrenBefore[i], childrenAfter[i], onInsert, onRemove);
+  }
+}
+
+function traverse(tree, cb) {
+  if (!tree) return;
+
+  cb(tree.view);
+
+  if (!tree.children) return;
+
+  for (var i = 0; i < tree.children.length; i++) {
+    traverse(tree.children[i], cb);
+  }
+}
 
 function getMoveableTarget(tree, level = 0) {
   if (!tree) return null;

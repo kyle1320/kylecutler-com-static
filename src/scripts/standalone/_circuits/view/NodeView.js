@@ -39,6 +39,17 @@ export default class NodeView extends View {
     context.fill();
     context.stroke();
 
+    if (this.attributes.hover) {
+      context.save();
+      context.fillStyle = this.style.general.highlight.baseColor;
+      context.globalAlpha *= this.style.general.highlight.opacity;
+      context.beginPath();
+        context.arc(x, y, .5, 0, 2 * Math.PI);
+      context.closePath();
+      context.fill();
+      context.restore();
+    }
+
     context.restore();
   }
 }
