@@ -82,7 +82,7 @@ module.exports = {
     ],
     "rules": [],
     "style": {
-      "fillColor": "'#FFFFFF' '#FFFF00' $2 if '#FF00FF' '#FF0000' $2 if $1 if '#00FFFF' '#00FF00' $2 if '#0000FF' '#000000' $2 if $1 if $0 if",
+      "fillColor": "'#FF' '#00' $0 if 'FF' '00' $1 if 'FF' '00' $2 if + +",
       "path": "M0,0 2,0 2,2 0,2 Z"
     }
   },

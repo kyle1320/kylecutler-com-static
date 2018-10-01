@@ -55,7 +55,7 @@ function parseExpr(tokens, stack) {
     return evalIf.bind(null, stack.pop(), stack.pop(), stack.pop());
 
   // binary operators
-  } else if (next === '|' || next === '&' || next === '^') {
+  } else if (next === '|' || next === '&' || next === '^' || next === '+') {
     return evalBinaryOp.bind(null, next, stack.pop(), stack.pop());
 
   // unary operators
@@ -71,6 +71,7 @@ function evalBinaryOp(op, rhs, lhs, scope) {
     case '&': return lhs(scope) && rhs(scope);
     case '|': return lhs(scope) || rhs(scope);
     case '^': return lhs(scope) ^  rhs(scope);
+    case '+': return lhs(scope) +  rhs(scope);
   }
 }
 
