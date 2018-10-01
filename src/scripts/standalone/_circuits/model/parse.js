@@ -1,26 +1,72 @@
+// Parses a simple stack-based language.
 export default function parse(expr) {
-  var tokens = expr.split(/\s+/).filter(x => !!x);
+  var tokens = consume(expr, parseToken);
+  var expressions = consume(tokens, parseExpr);
 
-  return parseExpr(new ConsumableStream(tokens));
+  return expressions.pop();
 }
 
-function parseExpr(tokens) {
-  var next, stack = [];
+function consume(arr, consumer) {
+  var stream = new ConsumableStream(arr);
+  var res = [];
+  while (stream.peek()) {
+    var elem = consumer(stream, res);
+    elem && res.push(elem);
+  }
+  return res;
+}
 
-  while (next = tokens.peek()) {
-    if (next.match(/\d+/)) {
-      stack.push(evalVar.bind(null, tokens.next()));
-    } else if (next.match(/[\|&\^]/)) {
-      stack.push(evalBinaryOp.bind(null, stack.pop(), tokens.next(), stack.pop()));
-    } else {
-      stack.push(evalUnaryOp.bind(null, tokens.next(), stack.pop()));
-    }
+function parseToken(stream) {
+
+  // skip past spaces
+  stream.forward(x => x === ' ');
+
+  var next = stream.next();
+
+  if (!next) return;
+
+  // capture entire text between single quotes, otherwise only split by spaces
+  if (next === '\'') {
+    return [next].concat(stream.forward(x => x && x !== '\'')).join('');
+  } else {
+    return [next].concat(stream.forward(x => x && x !== ' ')).join('');
+  }
+}
+
+function parseExpr(tokens, stack) {
+  var next = tokens.next();
+
+  // variables
+  if (next.startsWith('$')) {
+    return evalVar.bind(null, next.substring(1));
+
+  // string literals
+  } else if (next.match(/^'.*'$/)) {
+    return evalLiteral.bind(null, next.substring(1, next.length - 1));
+
+  // boolean literals
+  } else if (next === 'true') {
+    return evalLiteral.bind(null, true);
+  } else if (next === 'false') {
+    return evalLiteral.bind(null, false);
+
+  // if statements
+  } else if (next === 'if') {
+    return evalIf.bind(null, stack.pop(), stack.pop(), stack.pop());
+
+  // binary operators
+  } else if (next === '|' || next === '&' || next === '^') {
+    return evalBinaryOp.bind(null, next, stack.pop(), stack.pop());
+
+  // unary operators
+  } else if (next === '!') {
+    return evalUnaryOp.bind(null, next, stack.pop());
   }
 
-  return stack.pop();
+  throw new Error('Unexpected token ' + next);
 }
 
-function evalBinaryOp(lhs, op, rhs, scope) {
+function evalBinaryOp(op, rhs, lhs, scope) {
   switch (op) {
     case '&': return lhs(scope) && rhs(scope);
     case '|': return lhs(scope) || rhs(scope);
@@ -34,8 +80,16 @@ function evalUnaryOp(op, val, scope) {
   }
 }
 
+function evalIf(cond, ifTrue, ifFalse, scope) {
+  return cond(scope) ? ifTrue(scope) : ifFalse(scope);
+}
+
 function evalVar(sym, scope) {
   return scope[sym];
+}
+
+function evalLiteral(val, scope) {
+  return val;
 }
 
 class ConsumableStream {
@@ -54,5 +108,13 @@ class ConsumableStream {
 
   size() {
     return this.arr.length - this.index;
+  }
+
+  forward(cond) {
+    var res = [];
+    while (cond(this.peek())) {
+      res.push(this.next());
+    }
+    return res;
   }
 }

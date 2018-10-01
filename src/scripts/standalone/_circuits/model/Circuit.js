@@ -10,6 +10,7 @@ export default class Circuit extends EventEmitter {
 
     this.definition = def;
     this.update = this.update.bind(this);
+    this.doUpdate = getUpdateFunc(def.rules);
 
     this.pins = def.pins.map((options, i) => {
       var node = new Node(def.name + ":" + i);
@@ -45,21 +46,25 @@ export default class Circuit extends EventEmitter {
     this.doUpdate();
   }
 
-  doUpdate() {
-    var scope = this.pins.map(pin => pin.get());
-    this.definition.rules.forEach(rule => {
-      switch (rule.type) {
-        case "output":
-          var expr = parse(rule.value);
-          var res = expr(scope);
-          this._set(rule.target, res);
-          break;
-      }
-    });
-  }
-
   disconnect() {
     this.pins.forEach(pin => pin.disconnect());
     this.emit('update');
+  }
+}
+
+function getUpdateFunc(rules) {
+  var funcs = rules.map(rule => {
+    switch (rule.type) {
+      case "output":
+        var expr = parse(rule.value);
+        return function (scope) { this._set(rule.target, expr(scope)); }
+        break;
+    }
+  });
+
+  return function () {
+    var scope = this.pins.map(pin => pin.get());
+
+    funcs.forEach(f => f.call(this, scope));
   }
 }
