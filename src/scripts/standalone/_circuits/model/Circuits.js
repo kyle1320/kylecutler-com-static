@@ -10,7 +10,9 @@ module.exports = {
     "rules": [
       { "type": "output", "target": 2, "value": "$0 $1 &" }
     ],
-    "path": "M0,0 1,0 A1,1 0 1,1 1,2 L0,2 Z"
+    "style": {
+      "path": "M0,0 1,0 A1,1 0 1,1 1,2 L0,2 Z"
+    }
   },
   "Or": {
     "name": "Or",
@@ -23,7 +25,9 @@ module.exports = {
     "rules": [
       { "type": "output", "target": 2, "value": "$0 $1 |" }
     ],
-    "path": "M0,0 C0,0 1.3,0 2,1 2,1 1.3,2 0,2 0,2 1,1 0,0 Z"
+    "style": {
+      "path": "M0,0 C0,0 1.3,0 2,1 2,1 1.3,2 0,2 0,2 1,1 0,0 Z"
+    }
   },
   "Not": {
     "name": "Not",
@@ -35,7 +39,9 @@ module.exports = {
     "rules": [
       { "type": "output", "target": 1, "value": "$0 !" }
     ],
-    "path": "M0,-.5 1,0 0,.5 Z M.75,.01 A.25,.25 0 1,0 .75,-.01 Z"
+    "style": {
+      "path": "M0,-.5 1,0 0,.5 Z M.75,.01 A.25,.25 0 1,0 .75,-.01 Z"
+    }
   },
   "Diode": {
     "name": "Diode",
@@ -47,7 +53,9 @@ module.exports = {
     "rules": [
       { "type": "output", "target": 1, "value": "$0" }
     ],
-    "path": "M0,-.5 1,0 0,.5 Z"
+    "style": {
+      "path": "M0,-.5 1,0 0,.5 Z"
+    }
   },
   "Xor": {
     "name": "Xor",
@@ -60,6 +68,22 @@ module.exports = {
     "rules": [
       { "type": "output", "target": 2, "value": "$0 $1 ^" }
     ],
-    "path": "M.2,0 C.2,0 1.4,0 2,1 2,1 1.4,2 .2,2 .2,2 1.2,1 .2,0 Z M0,0 C0,0 1,1 0,2 0,2 1,1 0,0 Z"
+    "style": {
+      "path": "M.2,0 C.2,0 1.4,0 2,1 2,1 1.4,2 .2,2 .2,2 1.2,1 .2,0 Z M0,0 C0,0 1,1 0,2 0,2 1,1 0,0 Z"
+    }
+  },
+  "RGB": {
+    "name": "RGB",
+    "size": { "width": 2, "height": 2 },
+    "pins": [
+      { "x": 0, "y": 0, "ignoreInput": false },
+      { "x": 0, "y": 1, "ignoreInput": false },
+      { "x": 0, "y": 2, "ignoreInput": false }
+    ],
+    "rules": [],
+    "style": {
+      "fillColor": "'#FFFFFF' '#FFFF00' $2 if '#FF00FF' '#FF0000' $2 if $1 if '#00FFFF' '#00FF00' $2 if '#0000FF' '#000000' $2 if $1 if $0 if",
+      "path": "M0,0 2,0 2,2 0,2 Z"
+    }
   },
 };

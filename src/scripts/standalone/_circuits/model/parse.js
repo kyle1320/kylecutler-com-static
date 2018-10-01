@@ -27,7 +27,7 @@ function parseToken(stream) {
 
   // capture entire text between single quotes, otherwise only split by spaces
   if (next === '\'') {
-    return [next].concat(stream.forward(x => x && x !== '\'')).join('');
+    return [next].concat(stream.forward(x => x !== '\'', true)).join('');
   } else {
     return [next].concat(stream.forward(x => x && x !== ' ')).join('');
   }
@@ -63,7 +63,7 @@ function parseExpr(tokens, stack) {
     return evalUnaryOp.bind(null, next, stack.pop());
   }
 
-  throw new Error('Unexpected token ' + next);
+  throw new Error('Unexpected token "' + next + '"');
 }
 
 function evalBinaryOp(op, rhs, lhs, scope) {
@@ -80,7 +80,7 @@ function evalUnaryOp(op, val, scope) {
   }
 }
 
-function evalIf(cond, ifTrue, ifFalse, scope) {
+function evalIf(cond, ifFalse, ifTrue, scope) {
   return cond(scope) ? ifTrue(scope) : ifFalse(scope);
 }
 
@@ -110,9 +110,12 @@ class ConsumableStream {
     return this.arr.length - this.index;
   }
 
-  forward(cond) {
+  forward(cond, takeLast = false) {
     var res = [];
     while (cond(this.peek())) {
+      res.push(this.next());
+    }
+    if (takeLast) {
       res.push(this.next());
     }
     return res;

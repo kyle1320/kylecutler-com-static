@@ -1,5 +1,6 @@
 import View from "./View";
 import NodeView from "./NodeView";
+import parse from '../model/parse';
 
 require('path2d-polyfill');
 
@@ -46,16 +47,22 @@ export default class CircuitView extends View {
     return 2;
   }
 
+  eval(stmt) {
+    var scope = this.data.pins.map(pin => pin.get());
+    var expr = parse(stmt);
+    return expr(scope);
+  }
+
   draw(context) {
     var style = this.style.general.gate;
 
-    var {x, y, width, height} = this.getDimensions();
+    var {x, y} = this.getDimensions();
 
     if (this.attributes.hidden) return;
 
     context.save();
 
-    var path = new Path2D(this.data.definition.path);
+    var path = new Path2D(this.data.definition.style.path);
 
     context.translate(x, y);
 
@@ -68,7 +75,9 @@ export default class CircuitView extends View {
       context.restore();
     }
 
-    context.fillStyle = style.fillColor;
+    context.fillStyle = this.data.definition.style.fillColor
+                        ? this.eval(this.data.definition.style.fillColor)
+                        : style.fillColor;
     context.strokeStyle = style.strokeColor;
 
     context.fill(path);
