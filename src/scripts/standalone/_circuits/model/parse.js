@@ -4,24 +4,28 @@ export default function parse(expr) {
   return parseExpr(new ConsumableStream(tokens));
 }
 
-function parseExpr(tokens) {
-  var first = tokens.peek();
+function parseExpr(tokens, stack = []) {
+  var next;
 
-  // TODO: flesh this out more
-
-  if (first.match(/\d+/)) {
-    return parseBinaryOp(tokens);
-  } else {
-    return parseUnaryOp(tokens);
+  while (next = tokens.peek()) {
+    if (next.match(/\d+/)) {
+      stack.push(parseVar(tokens));
+    } else {
+      stack.push(parseOp(tokens, stack));
+    }
   }
+
+  return stack.pop();
 }
 
-function parseBinaryOp(tokens) {
-  return evalBinaryOp.bind(null, parseVar(tokens), tokens.next(), parseVar(tokens));
-}
+function parseOp(tokens, stack) {
+  var op = tokens.next();
 
-function parseUnaryOp(tokens) {
-  return evalUnaryOp.bind(null, tokens.next(), parseVar(tokens));
+  if (op.match(/[\|&]/)) {
+    return evalBinaryOp.bind(null, stack.pop(), op, stack.pop());
+  } else {
+    return evalUnaryOp.bind(null, op, stack.pop());
+  }
 }
 
 function parseVar(tokens) {
@@ -57,5 +61,9 @@ class ConsumableStream {
 
   next() {
     return this.arr[this.index++];
+  }
+
+  size() {
+    return this.arr.length - this.index;
   }
 }
