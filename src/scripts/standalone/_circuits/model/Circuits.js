@@ -3,9 +3,9 @@ module.exports = {
     "name": "And",
     "size": { "width": 2, "height": 2 },
     "pins": [
-      { "x": 0, "y": 0, "ignoreInput": false },
-      { "x": 0, "y": 2, "ignoreInput": false },
-      { "x": 2, "y": 1, "ignoreInput": true }
+      { "x": 0, "y": 0.3, "ignoreInput": false },
+      { "x": 0, "y": 1.7, "ignoreInput": false },
+      { "x": 2, "y": 1,   "ignoreInput": true }
     ],
     "rules": [
       { "type": "output", "target": 2, "value": "$0 $1 &" }
@@ -18,9 +18,9 @@ module.exports = {
     "name": "Or",
     "size": { "width": 2, "height": 2 },
     "pins": [
-      { "x": 0, "y": 0, "ignoreInput": false },
-      { "x": 0, "y": 2, "ignoreInput": false },
-      { "x": 2, "y": 1, "ignoreInput": true }
+      { "x": 0.2, "y": 0.3, "ignoreInput": false },
+      { "x": 0.2, "y": 1.7, "ignoreInput": false },
+      { "x": 2,   "y": 1,   "ignoreInput": true }
     ],
     "rules": [
       { "type": "output", "target": 2, "value": "$0 $1 |" }
@@ -31,16 +31,16 @@ module.exports = {
   },
   "Not": {
     "name": "Not",
-    "size": { "width": 1, "height": 0 },
+    "size": { "width": 1.2, "height": 0 },
     "pins": [
-      { "x": 0, "y": 0, "ignoreInput": false },
-      { "x": 1, "y": 0, "ignoreInput": true }
+      { "x": 0,   "y": 0, "ignoreInput": false },
+      { "x": 1.2, "y": 0, "ignoreInput": true }
     ],
     "rules": [
       { "type": "output", "target": 1, "value": "$0 !" }
     ],
     "style": {
-      "path": "M0,-.5 1,0 0,.5 Z M.75,.01 A.25,.25 0 1,0 .75,-.01 Z"
+      "path": "M0,-.5 1,0 0,.5 Z M.95,.01 A.25,.25 0 1,0 .95,-.01 Z"
     }
   },
   "Diode": {
@@ -61,9 +61,9 @@ module.exports = {
     "name": "Xor",
     "size": { "width": 2, "height": 2 },
     "pins": [
-      { "x": 0, "y": 0, "ignoreInput": false },
-      { "x": 0, "y": 2, "ignoreInput": false },
-      { "x": 2, "y": 1, "ignoreInput": true }
+      { "x": 0.2, "y": 0.3, "ignoreInput": false },
+      { "x": 0.2, "y": 1.7, "ignoreInput": false },
+      { "x": 2,   "y": 1,   "ignoreInput": true }
     ],
     "rules": [
       { "type": "output", "target": 2, "value": "$0 $1 ^" }
@@ -76,9 +76,9 @@ module.exports = {
     "name": "RGB",
     "size": { "width": 2, "height": 2 },
     "pins": [
-      { "x": 0, "y": 0, "ignoreInput": false },
-      { "x": 0, "y": 1, "ignoreInput": false },
-      { "x": 0, "y": 2, "ignoreInput": false }
+      { "x": 0, "y": 0.3, "ignoreInput": false },
+      { "x": 0, "y": 1,   "ignoreInput": false },
+      { "x": 0, "y": 1.7, "ignoreInput": false }
     ],
     "rules": [],
     "style": {
