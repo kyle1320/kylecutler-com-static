@@ -4,38 +4,27 @@ export default function parse(expr) {
   return parseExpr(new ConsumableStream(tokens));
 }
 
-function parseExpr(tokens, stack = []) {
-  var next;
+function parseExpr(tokens) {
+  var next, stack = [];
 
   while (next = tokens.peek()) {
     if (next.match(/\d+/)) {
-      stack.push(parseVar(tokens));
+      stack.push(evalVar.bind(null, tokens.next()));
+    } else if (next.match(/[\|&\^]/)) {
+      stack.push(evalBinaryOp.bind(null, stack.pop(), tokens.next(), stack.pop()));
     } else {
-      stack.push(parseOp(tokens, stack));
+      stack.push(evalUnaryOp.bind(null, tokens.next(), stack.pop()));
     }
   }
 
   return stack.pop();
 }
 
-function parseOp(tokens, stack) {
-  var op = tokens.next();
-
-  if (op.match(/[\|&]/)) {
-    return evalBinaryOp.bind(null, stack.pop(), op, stack.pop());
-  } else {
-    return evalUnaryOp.bind(null, op, stack.pop());
-  }
-}
-
-function parseVar(tokens) {
-  return evalVar.bind(null, tokens.next());
-}
-
 function evalBinaryOp(lhs, op, rhs, scope) {
   switch (op) {
     case '&': return lhs(scope) && rhs(scope);
     case '|': return lhs(scope) || rhs(scope);
+    case '^': return lhs(scope) ^  rhs(scope);
   }
 }
 
