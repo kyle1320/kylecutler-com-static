@@ -10,7 +10,7 @@ module.exports = {
     "rules": [
       { "type": "output", "target": 2, "value": "0 1 &" }
     ],
-    "path": "M0,0 L1,0 A1,1 0 1,1 1,2 L0,2 Z"
+    "path": "M0,0 1,0 A1,1 0 1,1 1,2 L0,2 Z"
   },
   "Or": {
     "name": "Or",
@@ -23,7 +23,7 @@ module.exports = {
     "rules": [
       { "type": "output", "target": 2, "value": "0 1 |" }
     ],
-    "path": "M0,0 S1.3,0 2,1 M0,2 S1.3,2 2,1 M0,0 S1,1 0,2"
+    "path": "M0,0 C0,0 1.3,0 2,1 2,1 1.3,2 0,2 0,2 1,1 0,0 Z"
   },
   "Not": {
     "name": "Not",
@@ -35,7 +35,7 @@ module.exports = {
     "rules": [
       { "type": "output", "target": 1, "value": "0 !" }
     ],
-    "path": "M0,-.5 L1,0 L0,.5 Z M.75,.01 A.25,.25 0 1,0 .75,-.01 Z"
+    "path": "M0,-.5 1,0 0,.5 Z M.75,.01 A.25,.25 0 1,0 .75,-.01 Z"
   },
   "Diode": {
     "name": "Diode",
@@ -47,7 +47,7 @@ module.exports = {
     "rules": [
       { "type": "output", "target": 1, "value": "0" }
     ],
-    "path": "M0,-.5 L1,0 L0,.5 Z"
+    "path": "M0,-.5 1,0 0,.5 Z"
   },
   "Xor": {
     "name": "Xor",
@@ -60,6 +60,6 @@ module.exports = {
     "rules": [
       { "type": "output", "target": 2, "value": "0 1 ^" }
     ],
-    "path": "M.2,0 S1.4,0 2,1 M.2,2 S1.4,2 2,1 M.2,0 S1.2,1 .2,2 M0,0 S1,1 0,2"
+    "path": "M.2,0 C.2,0 1.4,0 2,1 2,1 1.4,2 .2,2 .2,2 1.2,1 .2,0 Z M0,0 C0,0 1,1 0,2 0,2 1,1 0,0 Z"
   },
 };
