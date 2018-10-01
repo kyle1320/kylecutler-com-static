@@ -15,8 +15,6 @@ export default class CanvasView extends View {
     this.canvas = canvasEl;
     this.children = new KDTree();
 
-    // TODO: draw connections !!!
-
     this.update      = view => this.emit('update');
     this.removeChild = view => {
       this.children.remove(view);
@@ -99,7 +97,7 @@ export default class CanvasView extends View {
   draw() {
     var context = this.canvas.getContext("2d");
 
-    var { scale } = this.attributes;
+    var scale = this.attributes.scale * (window.devicePixelRatio || 1);
     var style = this.style;
     var offsetX = -this.dimensions.x;
     var offsetY = -this.dimensions.y;

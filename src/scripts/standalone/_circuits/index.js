@@ -27,6 +27,7 @@ window.addEventListener('load', function () {
   window.addEventListener('keydown', e => controller.handleKeyEvent(e));
 
   addDefaultItems(canvasView);
+  // stressTest(canvasView);
   toolbar.selectTool(tools[0].name);
 
   canvasView.drawBuffered();
@@ -34,10 +35,17 @@ window.addEventListener('load', function () {
 
 function getCanvasView(canvasEl) {
   const canvasView = new CanvasView(canvasEl);
+  const scale = window.devicePixelRatio || 1;
 
   function resizeCanvas() {
-    canvasEl.width = canvasEl.parentElement.clientWidth;
-    canvasEl.height = canvasEl.parentElement.clientHeight;
+    var rawWidth = canvasEl.parentElement.clientWidth;
+    var rawHeight = canvasEl.parentElement.clientHeight;
+
+    canvasEl.style.width = rawWidth + 'px';
+    canvasEl.style.height = rawHeight + 'px';
+
+    canvasEl.width = rawWidth * scale;
+    canvasEl.height = rawHeight * scale;
 
     canvasView.drawBuffered();
   }
@@ -127,4 +135,47 @@ function addDefaultItems(canvasView) {
   // setTimeout(() => {
   //   setInterval(() => input2.set(!input2.isSource), 2000);
   // }, 1000);
+}
+
+function stressTest(canvasView) {
+  var ccts = Object.values(circuits);
+  const randomCircuit = () => new Circuit(ccts[Math.floor(Math.random() * ccts.length)]);
+  const randomObject = () => Math.random() < (1 / (ccts.length + 1)) ? new Node("") : randomCircuit();
+  const numObjects = 3000;
+  const numConnections = 3000;
+  const span = 150;
+
+  var nodes = [];
+
+  for (var i = 0; i < numObjects; i++) {
+    var item = randomObject();
+    var view = (item instanceof Node)
+      ? new NodeView(item, (Math.random() - .5) * span, (Math.random() - .5) * span)
+      : new CircuitView(item, (Math.random() - .5) * span, (Math.random() - .5) * span);
+    canvasView.addChild(view);
+    if (item instanceof Node) {
+      nodes.push(item);
+    } else {
+      nodes = nodes.concat(item.pins);
+    }
+    console.log(i);
+  }
+
+  for (var i = 0; i < numConnections; i++) {
+    var nodeA = nodes[Math.floor(Math.random() * nodes.length)];
+    var nodeViewA = View.getViewFromDatasource(nodeA);
+    var {x, y} = View.getRelativePosition(nodeViewA, canvasView)
+    var nearby = canvasView.findChild(x, y, 5);
+    var nearbyNodes = nearby.reduce((agg, view) => {
+      return agg.concat(view instanceof NodeView ? view.data : view.data.pins)
+    }, []).filter(x => !!x);
+    if (nearbyNodes.length === 0) continue;
+    var nodeB = nearbyNodes[Math.floor(Math.random() * nearbyNodes.length)];
+
+    nodeA.connect(nodeB);
+    canvasView.addChild(new ConnectionView(
+      View.getViewFromDatasource(nodeA),
+      View.getViewFromDatasource(nodeB), canvasView));
+    console.log(i);
+  }
 }

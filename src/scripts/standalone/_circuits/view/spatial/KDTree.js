@@ -1,11 +1,12 @@
 import BoundingBox from "./BoundingBox";
 
 const wrapperKey = Symbol('KD Tree Item Wrapper');
+const splitThreshold = 200;
 
 export default class KDTree {
   constructor () {
     this.items = [];
-    this.rootNode = new LeafNode();
+    this.rootNode = new LeafNode(this);
   }
 
   all() {
@@ -15,9 +16,9 @@ export default class KDTree {
   }
 
   find(boundingBox) {
-    return this.rootNode
-      .find(boundingBox)
-      .map(i => i.innerItem);
+    return Array.from(
+      new Set(this.rootNode.find(boundingBox))
+    ).map(i => i.innerItem);
   }
 
   insert(item, boundingBox) {
@@ -33,9 +34,13 @@ export default class KDTree {
     }
   }
 
+  refresh() {
+    this.rootNode = this.rootNode.rebuild();
+  }
+
   cleanup() {
     this.items = this.items.filter(i => i.isValid);
-    this.rootNode = buildNode(this.items);
+    this.rootNode = buildNode(this, this.items);
   }
 
   draw(context, boundingBox) {
@@ -48,6 +53,7 @@ class InternalItem {
     this.innerItem = item;
     this.boundingBox = boundingBox;
     this.isValid = true;
+    this.containerNode = null;
 
     item[wrapperKey] = this;
   }
@@ -56,6 +62,7 @@ class InternalItem {
     if (!this.isValid) return;
 
     this.isValid = false;
+    this.containerNode.refresh();
 
     delete this.innerItem[wrapperKey];
     this.innerItem = null;
@@ -63,25 +70,26 @@ class InternalItem {
 }
 
 class InternalNode {
-  constructor (axis, coord) {
+  constructor (axis, coord, parent) {
     this.axis = axis;
     this.coord = coord;
     this.items = [];
-    this.upper = new LeafNode();
-    this.lower = new LeafNode();
+    this.upper = new LeafNode(this);
+    this.lower = new LeafNode(this);
+    this.parent = parent;
   }
 
   find(boundingBox) {
-    var items = new Set();
+    var items = [];
 
     if (boundingBox.min[this.axis] <= this.coord) {
-      this.lower.find(boundingBox).forEach(i => items.add(i));
+      items = items.concat(this.lower.find(boundingBox));
     }
     if (boundingBox.max[this.axis] >= this.coord) {
-      this.upper.find(boundingBox).forEach(i => items.add(i));
+      items = items.concat(this.upper.find(boundingBox));
     }
 
-    return Array.from(items.values());
+    return items;
   }
 
   insert(item) {
@@ -89,8 +97,8 @@ class InternalNode {
 
     this.items = this.items.filter(i => i.isValid);
 
-    if (this.items.length < 5) {
-      return new LeafNode(this.items);
+    if (this.items.length < splitThreshold) {
+      return new LeafNode(this.parent, this.items);
     }
 
     if (item.boundingBox.min[this.axis] <= this.coord) {
@@ -102,11 +110,31 @@ class InternalNode {
 
     return this;
   }
+
+  refresh() {
+    this.items = this.items.filter(i => i.isValid);
+
+    if (this.items.length < splitThreshold) {
+      this.parent && this.parent.refresh();
+    } else {
+      this.upper = this.upper.rebuild();
+      this.lower = this.lower.rebuild();
+    }
+  }
+
+  rebuild() {
+    if (this.items.length < splitThreshold) {
+      return new LeafNode(this.parent, this.items);
+    }
+    return this;
+  }
 }
 
 class LeafNode {
-  constructor (items = []) {
+  constructor (parent, items = []) {
     this.items = items;
+    this.items.forEach(i => i.containerNode = this);
+    this.parent = parent;
   }
 
   find(boundingBox) {
@@ -116,21 +144,35 @@ class LeafNode {
   }
 
   insert(item) {
+    item.containerNode = this;
+
     this.items.push(item);
 
     this.items = this.items.filter(i => i.isValid);
 
-    if (this.items.length >= 5) {
-      return buildNode(this.items);
+    if (this.items.length >= splitThreshold) {
+      return buildNode(this.parent, this.items);
     }
 
     return this;
   }
+
+  refresh() {
+    this.items = this.items.filter(i => i.isValid);
+
+    if (this.items.length < splitThreshold) {
+      this.parent && this.parent.refresh();
+    }
+  }
+
+  rebuild() {
+    return this;
+  }
 }
 
-function buildNode(items) {
-  if (items.length < 5) {
-    return new LeafNode(items);
+function buildNode(parent, items) {
+  if (items.length < splitThreshold) {
+    return new LeafNode(parent, items);
   }
 
   var bestHeuristic = Infinity;
@@ -152,7 +194,7 @@ function buildNode(items) {
       var above = items.filter(i => i.boundingBox.max[axis] >= coord);
 
       // not the best heuristic, but not terrible for an infinite plane
-      var heuristic = (above.length**2 * below.length**2);
+      var heuristic = (above.length**2 + below.length**2);
 
       if (above.length < items.length &&
           below.length < items.length &&
@@ -167,13 +209,13 @@ function buildNode(items) {
   }
 
   if (bestAxis < 0) {
-    return new LeafNode(items);
+    return new LeafNode(parent, items);
   }
 
-  var node = new InternalNode(bestAxis, bestCoord);
+  var node = new InternalNode(bestAxis, bestCoord, parent);
   node.items = items;
-  node.upper = buildNode(bestAbove);
-  node.lower = buildNode(bestBelow);
+  node.upper = buildNode(node, bestAbove);
+  node.lower = buildNode(node, bestBelow);
 
   return node;
 }
