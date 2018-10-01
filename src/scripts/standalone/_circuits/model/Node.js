@@ -86,12 +86,55 @@ export default class Node extends EventEmitter {
     }
 
     if (node) {
-      // TODO: update sources.
       this.connections.delete(node);
+      node.connections.delete(this);
+
+      // in order to keep sources current, we do a search for connected nodes
+      // whenever two nodes are disconnected.
+      // Due to this, connections must be bi-directional.
+      updateSourcesAfterDisconnect(this, node);
     } else {
       for (var node of this.connections) {
         this.disconnect(node);
       }
     }
   }
+}
+
+function updateSourcesAfterDisconnect(nodeA, nodeB) {
+  var foundA = findAllDFS(nodeA);
+
+  if (foundA.has(nodeB)) {
+    // nodes are still connected, no need to update
+    return;
+  }
+
+  var foundB = findAllDFS(nodeB);
+
+  updateSources(foundA);
+  updateSources(foundB);
+}
+
+function updateSources(nodes) {
+  var sources = Array.from(nodes.values()).filter(x => x.isSource);
+  for (var node of nodes) {
+    node.sources = new Set(sources);
+    node.emit('update');
+  }
+}
+
+function findAllDFS(start) {
+  var found = new Set();
+  var front = [start];
+
+  while (front.length > 0) {
+    var node = front.pop();
+    found.add(node);
+    front = front.concat(
+      Array.from(node.connections.values())
+           .filter(nb => !found.has(nb))
+    );
+  }
+
+  return found;
 }

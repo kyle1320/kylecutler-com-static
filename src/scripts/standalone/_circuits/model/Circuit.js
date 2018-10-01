@@ -9,6 +9,7 @@ export default class Circuit extends EventEmitter {
     super();
 
     this.definition = def;
+    this.update = this.update.bind(this);
 
     this.pins = def.pins.map((options, i) => {
       var node = new Node(def.name + ":" + i);
@@ -20,15 +21,19 @@ export default class Circuit extends EventEmitter {
       return node;
     });
 
-    this.internalPins = def.pins.map((_, i) => new Node(def.name + ":internal:" + i));
+    this.internalPins = def.pins.map((_, i) => {
+      var node = new Node(def.name + ":internal:" + i);
 
-    this.update = this.update.bind(this);
+      node.connect(this.pins[i]);
+
+      return node;
+    });
+
     this.update();
   }
 
   _set(index, state) {
     this.internalPins[index].set(state);
-    this.pins[index].update(this.internalPins[index], this.internalPins[index]);
   }
 
   _get(index) {
