@@ -23,12 +23,14 @@ export default class Controller {
       case 'point':
         tree = findNode(tree) || findCircuit(tree) || findConnection(tree);
         break;
-      case 'create':
-        tree = null;
-        break;
       case 'drag':
         tree = getMoveableTarget(tree);
         tree.children = null;
+        break;
+      case 'debug':
+        break;
+      default:
+        tree = null;
         break;
     }
 
@@ -47,6 +49,17 @@ export default class Controller {
 
     if (shouldSnap) el.move(Math.round(dx), Math.round(dy));
     else            el.move(dx, dy);
+  }
+
+  zoom(delta, cx = 0, cy = 0) {
+    var { x, y } = this.canvas.getDimensions();
+    var curScale = this.canvas.attributes.scale;
+    var newScale = Math.min(70, Math.max(5, curScale + delta));
+    var factor = curScale / newScale;
+    var offsetX = (cx + x) * (1 - factor);
+    var offsetY = (cy + y) * (1 - factor);
+    this.canvas.move(x - offsetX, y - offsetY);
+    this.canvas.setAttribute('scale', newScale);
   }
 
   select(view) {
@@ -78,7 +91,11 @@ export default class Controller {
 
     switch (e.type) {
       case 'down':
-        if (this.selectedTool === 'drag' && (e.event.buttons & 1)) {
+        if (this.selectedTool === 'zoomin') {
+          this.zoom(5, e.root.x, e.root.y);
+        } else if (this.selectedTool === 'zoomout') {
+          this.zoom(-5, e.root.x, e.root.y);
+        } else if (this.selectedTool === 'drag' && (e.event.buttons & 1)) {
           var drag = getMoveableTarget(e.root);
           if (drag) {
             this.drag_target = drag.view;
@@ -98,9 +115,12 @@ export default class Controller {
 
         break;
       case 'move':
-        var grid = e.root.view;
-
         if (this.drag_target) {
+          if (this.drag_target === this.canvas) {
+            var {x, y} = this.canvas.dimensions;
+            e.root.x += x;
+            e.root.y += y;
+          }
           this.move(
             this.drag_target,
             e.root.x - this.drag_offsetX,
@@ -170,6 +190,9 @@ export default class Controller {
           this.create_previewCircuit.setAttribute('hidden', true);
         }
 
+        break;
+      case 'scroll':
+        this.zoom(-e.event.deltaY / 20, e.root.x, e.root.y);
         break;
     }
   }

@@ -75,6 +75,7 @@ function addCanvasListeners(canvasView, controller) {
   canvas.addEventListener('mousemove',  positionalAction('move'));
   canvas.addEventListener('mouseenter', positionalAction('enter'));
   canvas.addEventListener('mouseleave', positionalAction('leave'));
+  canvas.addEventListener('wheel',      positionalAction('scroll'));
 
   canvas.oncontextmenu = () => false;
 }
