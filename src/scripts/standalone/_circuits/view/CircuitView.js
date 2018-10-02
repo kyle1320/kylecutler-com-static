@@ -12,6 +12,10 @@ export default class CircuitView extends View {
       height: data.definition.size.height
     }, {}, style);
 
+    // represents the number of 90-degree rotations this circuit has undergone.
+    // the top-left of the circuit always remains at the current position.
+    this.rotation = 0;
+
     this.children = data.definition.pins.map((pin, i) => {
       var node = new NodeView(data.pins[i], pin.x, pin.y, style);
       node.parent = this;
@@ -28,6 +32,30 @@ export default class CircuitView extends View {
     this.children.forEach(child => child.emit('move'));
   }
 
+  rotate(delta) {
+    if (delta % 4 === 0) return;
+
+    this.rotation = ((this.rotation + delta) % 4 + 4) % 4;
+
+    this.emit('move', this);
+    this.children.forEach(child => child.emit('move'));
+  }
+
+  getDimensions() {
+    var dims = super.getDimensions();
+
+    if (this.rotation % 2 !== 0) {
+      return {
+        x: dims.x,
+        y: dims.y,
+        width: dims.height,
+        height: dims.width
+      };
+    }
+
+    return dims;
+  }
+
   remove() {
     super.remove();
 
@@ -37,8 +65,10 @@ export default class CircuitView extends View {
   }
 
   findAll(x, y) {
-    var relX = x - this.dimensions.x;
-    var relY = y - this.dimensions.y;
+    var { x: relX, y: relY } = getUnrotatedPosition({
+      x: x - this.dimensions.x,
+      y: y - this.dimensions.y
+    }, this.dimensions, this.rotation);
 
     return {
       view: this,
@@ -51,6 +81,11 @@ export default class CircuitView extends View {
 
   getRenderOrder() {
     return this.attributes.zIndex || 0;
+  }
+
+  getRelativePosition(x, y) {
+    var {x, y} = getRotatedPosition({x, y}, this.dimensions, this.rotation);
+    return super.getRelativePosition(x, y);
   }
 
   eval(stmt) {
@@ -69,6 +104,9 @@ export default class CircuitView extends View {
     var path = new Path2D(this.data.definition.style.path);
 
     context.translate(x, y);
+    var trans = getRotatedPosition({x: 0, y: 0}, this.dimensions, this.rotation);
+    context.translate(trans.x, trans.y);
+    context.rotate(this.rotation * Math.PI / 2);
 
     if (this.attributes.hover || this.attributes.active) {
       context.save();
@@ -92,5 +130,23 @@ export default class CircuitView extends View {
     this.children.forEach(view => view.draw(context))
 
     context.restore();
+  }
+}
+
+function getRotatedPosition(pos, dim, rotation) {
+  switch (rotation) {
+    case 0: return { x: pos.x, y: pos.y };
+    case 1: return { x: dim.height - pos.y, y: pos.x };
+    case 2: return { x: dim.width - pos.x, y: dim.height - pos.y };
+    case 3: return { x: pos.y, y: dim.width - pos.x };
+  }
+}
+
+function getUnrotatedPosition(pos, dim, rotation) {
+  switch (rotation) {
+    case 0: return { x: pos.x, y: pos.y };
+    case 1: return { x: pos.y, y: dim.height - pos.x };
+    case 2: return { x: dim.width - pos.x, y: dim.height - pos.y };
+    case 3: return { x: dim.width - pos.y, y: pos.x };
   }
 }

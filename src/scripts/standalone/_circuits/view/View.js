@@ -66,7 +66,7 @@ export default class View extends EventEmitter {
   }
 
   intersects(x, y, grow = 0) {
-    var dim = this.dimensions;
+    var dim = this.getDimensions();
 
     return (dim.x <= x + grow) &&
            (dim.y <= y + grow) &&
@@ -89,6 +89,13 @@ export default class View extends EventEmitter {
     return 0;
   }
 
+  getRelativePosition(x, y) {
+    return {
+      x: x + this.dimensions.x,
+      y: y + this.dimensions.y
+    };
+  }
+
   draw(context) {
     throw new Error("View subclass must override method draw()");
   }
@@ -101,10 +108,7 @@ export default class View extends EventEmitter {
     var pos = { x: 0, y: 0 };
 
     do {
-      var dimens = view.getDimensions();
-
-      pos.x += dimens.x;
-      pos.y += dimens.y;
+      pos = view.getRelativePosition(pos.x, pos.y);
 
       view = view.parent;
       if (!view) throw new Error("Did not find ancestor view");

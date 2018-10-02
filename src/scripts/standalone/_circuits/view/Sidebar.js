@@ -77,7 +77,13 @@ export default class Sidebar extends EventEmitter {
       this.element.innerHTML = "Select an element to edit";
       return;
     }
-    this.element.innerHTML = `Editing ${view.constructor.name} ${view._id}`;
+    if (view instanceof CircuitView) {
+      this.element.appendChild(makeElement("button", "Rotate 90", {
+        click: () => view.rotate(1)
+      }))
+    } else {
+      this.element.innerHTML = `Editing ${view.constructor.name} ${view._id}`;
+    }
   }
 
   showEmpty() {
