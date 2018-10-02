@@ -99,7 +99,7 @@ module.exports = {
     "size": { "width": 2, "height": 2 },
     "pins": [
       { "x": 0.2, "y": 0.3, "ignoreInput": false },
-      { "x": 0.2, "y": 1,   "ignoreInput": false },
+      { "x": 0.4, "y": 1,   "ignoreInput": false },
       { "x": 0.2, "y": 1.7, "ignoreInput": false },
       { "x": 2,   "y": 1,   "ignoreInput": true }
     ],
