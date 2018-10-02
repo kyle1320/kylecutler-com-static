@@ -148,7 +148,12 @@ export default class Controller {
           }
         } else if (this.create_previewCircuit) {
           this.create_previewCircuit.setAttribute('hidden', false);
-          this.move(this.create_previewCircuit, e.root.x, e.root.y, e.event.shiftKey);
+          this.move(
+            this.create_previewCircuit,
+            e.root.x - this.create_previewCircuit.dimensions.width / 2,
+            e.root.y - this.create_previewCircuit.dimensions.height / 2,
+            e.event.shiftKey
+          );
         }
 
         break;
