@@ -13,6 +13,7 @@ export default class Controller {
 
     this.selectedTool = 'move';
     this.hoverTree = null;
+    this.zIndex = 0;
   }
 
   hover(tree) {
@@ -39,6 +40,11 @@ export default class Controller {
     );
 
     this.hoverTree = tree;
+  }
+
+  move(el, dx, dy) {
+    el.setAttribute('zIndex', this.zIndex) && this.zIndex++;
+    el.move(dx, dy);
   }
 
   handleMouseEvent(e) {
@@ -82,12 +88,12 @@ export default class Controller {
 
           // TODO: if shift held, round these numbers to "snap" item
           if (e.event.shiftKey) {
-            this.drag_target.move(
+            this.move(this.drag_target,
               Math.round(this.drag_intermediateX),
               Math.round(this.drag_intermediateY)
             );
           } else {
-            this.drag_target.move(this.drag_intermediateX, this.drag_intermediateY);
+            this.move(this.drag_target, this.drag_intermediateX, this.drag_intermediateY);
           }
 
           this.drag_previousX = e.x;
@@ -97,20 +103,20 @@ export default class Controller {
 
           if (endNode) {
             var pos = View.getRelativePosition(endNode, this.canvas);
-            this.create_dragEnd.move(pos.x, pos.y);
+            this.move(this.create_dragEnd, pos.x, pos.y);
           } else {
             if (e.event.shiftKey) {
-              this.create_dragEnd.move(Math.round(e.root.x), Math.round(e.root.y));
+              this.move(this.create_dragEnd, Math.round(e.root.x), Math.round(e.root.y));
             } else {
-              this.create_dragEnd.move(e.root.x, e.root.y);
+              this.move(this.create_dragEnd, e.root.x, e.root.y);
             }
           }
         } else if (this.create_previewCircuit) {
           this.create_previewCircuit.setAttribute('hidden', false);
           if (e.event.shiftKey) {
-            this.create_previewCircuit.move(Math.round(e.root.x), Math.round(e.root.y));
+            this.move(this.create_previewCircuit, Math.round(e.root.x), Math.round(e.root.y));
           } else {
-            this.create_previewCircuit.move(e.root.x, e.root.y);
+            this.move(this.create_previewCircuit, e.root.x, e.root.y);
           }
         }
 
@@ -145,12 +151,10 @@ export default class Controller {
             this.canvas.addPreviewChild();
           }
 
+          this.create_previewCircuit = null;
+
           if (this.selectedTool === 'create') {
-            this.create_previewCircuit = new NodeView(new Node());
-            this.create_previewCircuit.setAttribute('hidden', true);
-            this.canvas.setPreviewChild(this.create_previewCircuit);
-          } else {
-            this.create_previewCircuit = null;
+            this.selectTool('point');
           }
         }
 
@@ -160,7 +164,7 @@ export default class Controller {
         break;
       case 'enter':
         if (this.create_previewCircuit) {
-          this.create_previewCircuit.move(e.root.x, e.root.y);
+          this.move(this.create_previewCircuit, e.root.x, e.root.y);
           this.create_previewCircuit.setAttribute('hidden', false);
         }
 
@@ -175,7 +179,6 @@ export default class Controller {
   }
 
   handleKeyEvent(e) {
-    console.log(e);
     switch (e.keyCode) {
       case 8:
       case 46:
@@ -188,6 +191,8 @@ export default class Controller {
   selectTool(tool) {
     if (tool === this.selectedTool) return;
 
+    this.selectedTool = tool.name;
+
     this.canvas.canvas.style.cursor = tool.cursor;
 
     if (this.create_previewCircuit) {
@@ -197,17 +202,15 @@ export default class Controller {
 
     if (tool.name === 'create') {
       this.sidebar.showCircuitsList();
-      this.create_previewCircuit = new NodeView(new Node());
-      this.create_previewCircuit.setAttribute('hidden', true);
-      this.canvas.setPreviewChild(this.create_previewCircuit);
+      this.sidebar.selectCircuit('Node');
+    } else {
+      this.sidebar.showEmpty();
     }
-
-    this.selectedTool = tool.name;
   }
 
-  selectCircuit(circuit) {
+  selectCircuit(creator) {
     if (this.selectedTool === 'create') {
-      this.create_previewCircuit = new CircuitView(new Circuit(circuit));
+      this.create_previewCircuit = creator();
       this.create_previewCircuit.setAttribute('hidden', true);
       this.canvas.setPreviewChild(this.create_previewCircuit);
     }

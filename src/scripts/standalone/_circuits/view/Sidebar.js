@@ -1,3 +1,8 @@
+import NodeView from "../view/NodeView";
+import CircuitView from "../view/CircuitView";
+import Node from "../model/Node";
+import Circuit from "../model/Circuit";
+
 import { EventEmitter } from "events";
 import { makeElement } from "../../../utils";
 
@@ -11,10 +16,16 @@ export default class Sidebar extends EventEmitter {
   }
 
   setCircuits(circuits) {
-    this.circuitsMap = {};
+    this.circuitsMap = {
+      Node: {
+        creator: () => new NodeView(new Node(), 0, 0),
+        element: null
+      }
+    };
     for (var c in circuits) {
+      let data = circuits[c];
       this.circuitsMap[c] = {
-        data: circuits[c],
+        creator: () => new CircuitView(new Circuit(data), 0, 0),
         element: null
       };
     }
@@ -41,11 +52,11 @@ export default class Sidebar extends EventEmitter {
 
     this.selectedCircuit = name;
 
-    this.emit('select-circuit', this.circuitsMap[name].data);
+    this.emit('select-circuit', this.circuitsMap[name].creator);
   }
 
   showCircuitsList() {
-    this.element.innerHtml = "";
+    this.element.innerHTML = "";
     for (var cName in this.circuitsMap) {
       var c = this.circuitsMap[cName];
       let name = cName;
@@ -58,5 +69,9 @@ export default class Sidebar extends EventEmitter {
       }
       this.element.appendChild(c.element);
     }
+  }
+
+  showEmpty() {
+    this.element.innerHTML = "";
   }
 }

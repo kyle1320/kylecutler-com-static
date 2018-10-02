@@ -12,7 +12,7 @@ export default class NodeView extends View {
   }
 
   getRenderOrder() {
-    return 3;
+    return Infinity;
   }
 
   draw(context) {

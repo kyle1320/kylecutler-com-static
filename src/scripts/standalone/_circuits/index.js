@@ -22,7 +22,7 @@ window.addEventListener('load', function () {
 
   addCanvasListeners(canvasView, controller);
   toolbar.on('change', tool => controller.selectTool(tool));
-  sidebar.on('select-circuit', circuit => controller.selectCircuit(circuit));
+  sidebar.on('select-circuit', c => controller.selectCircuit(c));
 
   window.addEventListener('keydown', e => controller.handleKeyEvent(e));
 

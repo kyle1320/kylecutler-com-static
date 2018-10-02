@@ -83,6 +83,11 @@ body {
 
     .circuit {
       padding: rem(15px);
+      cursor: pointer;
+
+      &:hover {
+        background-color: #f8f8f8;
+      }
 
       &.selected {
         background-color: #eeeeee;

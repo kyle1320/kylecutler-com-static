@@ -37,7 +37,9 @@ export default class View extends EventEmitter {
     if (this.attributes[name] !== value) {
       this.attributes[name] = value;
       this.emit('update', this);
+      return true;
     }
+    return false;
   }
 
   move(x, y) {

@@ -44,7 +44,7 @@ export default class CircuitView extends View {
   }
 
   getRenderOrder() {
-    return 2;
+    return this.attributes.zIndex || 0;
   }
 
   eval(stmt) {

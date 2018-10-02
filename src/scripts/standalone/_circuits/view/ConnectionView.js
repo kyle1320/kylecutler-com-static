@@ -30,7 +30,7 @@ export default class ConnectionView extends View {
   }
 
   getRenderOrder() {
-    return 1;
+    return -1;
   }
 
   draw(context) {
