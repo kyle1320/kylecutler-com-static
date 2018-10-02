@@ -6,6 +6,14 @@ import Circuit from "../model/Circuit";
 import { EventEmitter } from "events";
 import { makeElement } from "../../../utils";
 
+const toolText = {
+  point: "Select an element to edit",
+  drag: "Drag an object or the grid to move it",
+  debug: "Move the cursor around to print information for debugging",
+  zoomin: "Click on the grid to zoom in",
+  zoomout: "Click on the grid to zoom out"
+};
+
 export default class Infobar extends EventEmitter {
   constructor (element, circuits) {
     super();
@@ -55,7 +63,7 @@ export default class Infobar extends EventEmitter {
     this.emit('select-circuit', this.circuitsMap[name].creator);
   }
 
-  showCircuitsList() {
+  showCircuitsInfo() {
     this.showEmpty();
     for (var cName in this.circuitsMap) {
       var c = this.circuitsMap[cName];
@@ -71,19 +79,19 @@ export default class Infobar extends EventEmitter {
     }
   }
 
-  editView(view) {
+  showPointerInfo(view) {
     this.showEmpty();
-    if (!view) {
-      this.element.innerHTML = "Select an element to edit";
-      return;
-    }
     if (view instanceof CircuitView) {
       this.element.appendChild(makeElement("button", "Rotate 90", {
         click: () => view.rotate(1)
       }))
     } else {
-      this.element.innerHTML = `Editing ${view.constructor.name} ${view._id}`;
+      this.element.textContent = `Editing ${view.constructor.name} ${view._id}`;
     }
+  }
+
+  showInfo(toolName) {
+    this.element.innerHTML = `<div class="info">${toolText[toolName]}</div>`;
   }
 
   showEmpty() {

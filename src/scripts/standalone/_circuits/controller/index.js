@@ -78,7 +78,11 @@ export default class Controller {
     this.select_selectedView = view;
 
     if (this.selectedTool === 'point') {
-      this.infobar.editView(view);
+      if (view) {
+        this.infobar.showPointerInfo(view);
+      } else {
+        this.infobar.showInfo('point');
+      }
     }
   }
 
@@ -235,12 +239,12 @@ export default class Controller {
     this.select(null);
 
     if (tool.name === 'create') {
-      this.infobar.showCircuitsList();
+      this.infobar.showCircuitsInfo();
       this.infobar.selectCircuit('Node');
     } else if (tool.name === 'point') {
 
     } else {
-      this.infobar.showEmpty();
+      this.infobar.showInfo(tool.name);
     }
   }
 

@@ -107,6 +107,12 @@ body {
   border-top: 1px solid #eeeeee;
   overflow-x: auto;
   overflow-y: hidden;
+
+  .info {
+    padding: rem(15px);
+    font-size: rem(15px);
+    line-height: 1;
+  }
 }
 
 .canvas {
