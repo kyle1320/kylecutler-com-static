@@ -33,7 +33,7 @@
   },
   "browserslist": "> 0.25%, not dead",
   "scripts": {
-    "gulp": "./node_modules/gulp/bin/gulp.js"
+    "gulp": "node ./node_modules/gulp/bin/gulp.js"
   },
   "engines": {}
 }
