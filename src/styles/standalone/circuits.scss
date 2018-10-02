@@ -61,90 +61,64 @@ body {
   }
 }
 
-.toolbar {
-  display: flex;
-  flex-flow: row nowrap;
-  flex-grow: 1;
-  height: rem(45px);
-  overflow-x: auto;
-  overflow-y: hidden;
+.item {
+  box-sizing: border-box;
+  border-right: 1px solid #eeeeee;
+  width: rem(60px);
 
-  .tool {
-    position: relative;
+  &__content {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: rem(45px);
-    height: rem(35px);
-    font-size: rem(16px);
-    padding: rem(5px) rem(10px);
-    cursor: pointer;
-    border-left: 1px solid #eeeeee;
-
-    &::before {
-      padding: 2px;
-      border-bottom: 2px solid transparent;
-    }
-
-    &.selected {
-      background-color: #eeeeee;
-      color: #4080FF;
-
-      &::before {
-        border-color: currentColor;
-      }
-    }
-  }
-}
-
-.infobar {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  justify-content: flex-start;
-  height: rem(45px);
-  max-height: rem(45px);
-  border-top: 1px solid #eeeeee;
-  overflow-x: auto;
-  overflow-y: hidden;
-
-  .circuit {
+    height: 100%;
+    box-sizing: border-box;
     font-size: rem(15px);
     line-height: 1;
-    padding: rem(15px);
-    padding-bottom: rem(13px);
     cursor: pointer;
-    border-right: 1px solid #eeeeee;
     border-bottom: rem(2px) solid transparent;
-
-    &:hover {
-      background-color: #f8f8f8;
-    }
+    padding: rem(5px);
 
     &.selected {
-      color: #4080FF;
       background-color: #eeeeee;
+      color: #4080FF;
       border-bottom-color: currentColor;
     }
   }
 }
 
-.content {
+.toolbar {
   display: flex;
   flex-flow: row nowrap;
+  align-items: stretch;
+  justify-content: flex-start;
   flex-grow: 1;
+  height: rem(45px);
+  border-left: 1px solid #eeeeee;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
 
-  .canvas {
-    flex-grow: 1;
-    position: relative;
-    overflow: hidden;
+.infobar {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: stretch;
+  justify-content: flex-start;
+  height: rem(45px);
+  border-top: 1px solid #eeeeee;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
 
-    canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      right: 0;
-    }
+.canvas {
+  flex-grow: 1;
+  position: relative;
+  overflow: hidden;
+
+  canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
   }
 }

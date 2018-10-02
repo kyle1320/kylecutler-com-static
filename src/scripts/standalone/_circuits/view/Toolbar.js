@@ -41,14 +41,14 @@ export default class Toolbar extends EventEmitter {
   updateHTML() {
     this.tools.forEach(tool => {
       var element = makeElement({
-          className: `tool ${tool.icon}`,
+          className: `item__content ${tool.icon}`,
           id: `tool-${tool.name}`,
           title: tool.label
         }, '', {
           click: () => this.selectTool(tool.name)
       });
       this.toolMap[tool.name].element = element;
-      this.element.appendChild(element);
+      this.element.appendChild(makeElement({ className: 'item' }, [element]));
     });
   }
 }

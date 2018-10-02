@@ -62,12 +62,12 @@ export default class Infobar extends EventEmitter {
       let name = cName;
       if (!c.element) {
         c.element = makeElement(
-          { className: "circuit" },
+          { className: "item__content circuit" },
           name,
           { click: () => this.selectCircuit(name) }
         );
       }
-      this.element.appendChild(c.element);
+      this.element.appendChild(makeElement({ className: 'item' }, [c.element]));
     }
   }
 
