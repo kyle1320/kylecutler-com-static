@@ -82,6 +82,14 @@ export default class Controller {
     }
   }
 
+  createNew() {
+    if (this.create_creator) {
+      this.create_previewCircuit = this.create_creator();
+      this.create_previewCircuit.setAttribute('hidden', true);
+      this.canvas.setPreviewChild(this.create_previewCircuit);
+    }
+  }
+
   handleMouseEvent(e) {
     this.hover(e.root);
 
@@ -166,7 +174,7 @@ export default class Controller {
           this.create_previewCircuit = null;
 
           if (this.selectedTool === 'create') {
-            this.toolbar.selectTool('point');
+            this.createNew();
           }
         } else if (this.selectedTool === 'point') {
           this.select(this.hoverTree && this.hoverTree.view);
@@ -233,9 +241,8 @@ export default class Controller {
 
   selectCircuit(creator) {
     if (this.selectedTool === 'create') {
-      this.create_previewCircuit = creator();
-      this.create_previewCircuit.setAttribute('hidden', true);
-      this.canvas.setPreviewChild(this.create_previewCircuit);
+      this.create_creator = creator;
+      this.createNew();
     }
   }
 }
