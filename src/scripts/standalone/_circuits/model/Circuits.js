@@ -1,6 +1,5 @@
 module.exports = {
   "And": {
-    "name": "And",
     "size": { "width": 2, "height": 2 },
     "pins": [
       { "x": 0, "y": 0.3, "ignoreInput": false },
@@ -15,7 +14,6 @@ module.exports = {
     }
   },
   "Or": {
-    "name": "Or",
     "size": { "width": 2, "height": 2 },
     "pins": [
       { "x": 0.2, "y": 0.3, "ignoreInput": false },
@@ -30,7 +28,6 @@ module.exports = {
     }
   },
   "Not": {
-    "name": "Not",
     "size": { "width": 1.2, "height": 0 },
     "pins": [
       { "x": 0,   "y": 0, "ignoreInput": false },
@@ -44,7 +41,6 @@ module.exports = {
     }
   },
   "Diode": {
-    "name": "Diode",
     "size": { "width": 1, "height": 0 },
     "pins": [
       { "x": 0, "y": 0, "ignoreInput": false },
@@ -58,7 +54,6 @@ module.exports = {
     }
   },
   "Xor": {
-    "name": "Xor",
     "size": { "width": 2, "height": 2 },
     "pins": [
       { "x": 0.2, "y": 0.3, "ignoreInput": false },
@@ -73,7 +68,6 @@ module.exports = {
     }
   },
   "RGB": {
-    "name": "RGB",
     "size": { "width": 2, "height": 2 },
     "pins": [
       { "x": 0, "y": 0.3, "ignoreInput": false },

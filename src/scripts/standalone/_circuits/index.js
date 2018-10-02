@@ -75,7 +75,6 @@ function addCanvasListeners(canvasView, controller) {
   canvas.addEventListener('mousemove',  positionalAction('move'));
   canvas.addEventListener('mouseenter', positionalAction('enter'));
   canvas.addEventListener('mouseleave', positionalAction('leave'));
-  // canvas.addEventListener('click',     positionalAction('click'));
 
   canvas.oncontextmenu = () => false;
 }
@@ -100,9 +99,9 @@ function addConnection(canvasView, nodeA, nodeB) {
 }
 
 function addDefaultItems(canvasView) {
-  var input1 = new Node("input A");
-  var input2 = new Node("input B");
-  var output = new Node("output");
+  var input1 = new Node();
+  var input2 = new Node();
+  var output = new Node();
 
   var and1 = new Circuit(circuits.And);
   var and2 = new Circuit(circuits.And);
@@ -130,17 +129,12 @@ function addDefaultItems(canvasView) {
   addConnection(canvasView, and1.pins[2], or.pins[0]);
   addConnection(canvasView, and2.pins[2], or.pins[1]);
   addConnection(canvasView, or.pins[2], output);
-
-  // setInterval(() => input1.set(!input1.isSource), 2000);
-  // setTimeout(() => {
-  //   setInterval(() => input2.set(!input2.isSource), 2000);
-  // }, 1000);
 }
 
 function stressTest(canvasView) {
   var ccts = Object.values(circuits);
   const randomCircuit = () => new Circuit(ccts[Math.floor(Math.random() * ccts.length)]);
-  const randomObject = () => Math.random() < (1 / (ccts.length + 1)) ? new Node("") : randomCircuit();
+  const randomObject = () => Math.random() < (1 / (ccts.length + 1)) ? new Node() : randomCircuit();
   const numObjects = 3000;
   const numConnections = 3000;
   const span = 150;

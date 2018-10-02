@@ -143,12 +143,11 @@ export default class CanvasView extends View {
     var viewport = new BoundingBox(offsetX, offsetY, width, height);
     this.children
       .find(viewport)
+      .filter(view => !view.attributes.hidden)
       .sort((a, b) => a.getRenderOrder() - b.getRenderOrder())
-      .forEach(function (item) {
-      item.draw(context);
-    });
+      .forEach(item => item.draw(context));
 
-    if (this.previewChild) {
+    if (this.previewChild && !this.previewChild.attributes.hidden) {
       context.globalAlpha = 0.5;
       this.previewChild.draw(context);
     }

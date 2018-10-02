@@ -12,18 +12,13 @@ export default class Circuit extends EventEmitter {
     this.update = this.update.bind(this);
     this.doUpdate = getUpdateFunc(def.rules);
 
-    this.pins = def.pins.map((options, i) => {
-      var node = new Node(def.name + ":" + i);
+    this.pins = def.pins.map(() => new Node());
+    this.internalPins = def.pins.map((options, i) => {
+      var node = new Node();
 
       if (!options.ignoreInput) {
         node.on('update', () => bufferEvent('circuit-update', this.update));
       }
-
-      return node;
-    });
-
-    this.internalPins = def.pins.map((_, i) => {
-      var node = new Node(def.name + ":internal:" + i);
 
       node.connect(this.pins[i]);
 
@@ -38,12 +33,12 @@ export default class Circuit extends EventEmitter {
   }
 
   _get(index) {
-    return this.pins[index].get();
+    return this.internalPins[index].get();
   }
 
   update() {
-    this.emit('update');
     this.doUpdate();
+    this.emit('update');
   }
 
   disconnect() {

@@ -22,6 +22,12 @@ export default class CircuitView extends View {
     });
   }
 
+  move(x, y) {
+    super.move(x, y);
+
+    this.children.forEach(child => child.emit('move'));
+  }
+
   remove() {
     super.remove();
 
@@ -57,8 +63,6 @@ export default class CircuitView extends View {
     var style = this.style.general.gate;
 
     var {x, y} = this.getDimensions();
-
-    if (this.attributes.hidden) return;
 
     context.save();
 

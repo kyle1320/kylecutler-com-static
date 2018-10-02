@@ -1,20 +1,13 @@
 const EventEmitter = require('events');
 
-// use a static variable so that each node will have a unique, orderable id.
-// this is useful when drawing in order to draw each connection only once.
-var globalId = 0;
-
 export default class Node extends EventEmitter {
-  constructor (name) {
+  constructor () {
     super();
     this.connections = new Set();
 
     // keep track of "high voltage" sources
     this.sources = new Set();
     this.isSource = false;
-
-    this.name = name;
-    this._id = globalId++;
   }
 
   get () {
@@ -25,7 +18,6 @@ export default class Node extends EventEmitter {
     if (state === this.isSource) return;
 
     this.isSource = state;
-    // console.log(`Toggle source "${this.name}" ${this.isSource ? "on" : "off"}`);
     this.update(this, this);
     this.emit('update');
   }
@@ -34,8 +26,6 @@ export default class Node extends EventEmitter {
     if (source === undefined) {
       throw new TypeError("source must be provided");
     }
-
-    // console.log(`Update "${this.name}", source "${source.name}" is ${source.isSource ? "on" : "off"}`);
 
     if (source.isSource) {
       if (this.sources.has(source)) {
@@ -57,8 +47,6 @@ export default class Node extends EventEmitter {
       }
     }
 
-    // console.log(`"${this.name}" is ${this.get() ? (this.isSource ? "*on*" : "on") : "off"} (${this.sources.size} sources)`);
-
     // update connected nodes
     this.connections.forEach(node => node !== caller && node.update(source, this));
   }
@@ -70,7 +58,7 @@ export default class Node extends EventEmitter {
       this.connections.add(node);
 
       for (var source of this.sources) {
-        node.update(source);
+        node.update(source, this);
       }
 
       node.connect(this);

@@ -114,6 +114,8 @@ class ConsumableStream {
   forward(cond, takeLast = false) {
     var res = [];
     while (cond(this.peek())) {
+      if (this.index >= this.arr.length)
+        throw new Error('Reached end of input unexpectedly');
       res.push(this.next());
     }
     if (takeLast) {

@@ -42,9 +42,11 @@ export default class Controller {
     this.hoverTree = tree;
   }
 
-  move(el, dx, dy) {
+  move(el, dx, dy, shouldSnap) {
     el.setAttribute('zIndex', this.zIndex) && this.zIndex++;
-    el.move(dx, dy);
+
+    if (shouldSnap) el.move(Math.round(dx), Math.round(dy));
+    else            el.move(dx, dy);
   }
 
   handleMouseEvent(e) {
@@ -58,10 +60,10 @@ export default class Controller {
       case 'down':
         var drag = getMoveableTarget(e.root);
         if (drag) {
-          this.drag_target = drag.view
+          this.drag_target = drag.view;
           var {x, y} = this.drag_target.getDimensions();
-          this.drag_intermediateX = x;
-          this.drag_intermediateY = y;
+          this.drag_offsetX = drag.x;
+          this.drag_offsetY = drag.y;
         }
 
         if (this.selectedTool === 'create' || (e.event.buttons & 2)) {
@@ -75,29 +77,17 @@ export default class Controller {
           }
         }
 
-        this.drag_previousX = e.x;
-        this.drag_previousY = e.y;
-
         break;
       case 'move':
         var grid = e.root.view;
 
         if (this.selectedTool === 'drag' && (e.event.buttons & 1)) {
-          this.drag_intermediateX += (e.x - this.drag_previousX) / grid.attributes.scale;
-          this.drag_intermediateY += (e.y - this.drag_previousY) / grid.attributes.scale;
-
-          // TODO: if shift held, round these numbers to "snap" item
-          if (e.event.shiftKey) {
-            this.move(this.drag_target,
-              Math.round(this.drag_intermediateX),
-              Math.round(this.drag_intermediateY)
-            );
-          } else {
-            this.move(this.drag_target, this.drag_intermediateX, this.drag_intermediateY);
-          }
-
-          this.drag_previousX = e.x;
-          this.drag_previousY = e.y;
+          this.move(
+            this.drag_target,
+            e.root.x - this.drag_offsetX,
+            e.root.y - this.drag_offsetY,
+            e.event.shiftKey
+          );
         } else if (this.create_dragStart) {
           var endNode = findNodeView(e.root);
 
@@ -105,34 +95,15 @@ export default class Controller {
             var pos = View.getRelativePosition(endNode, this.canvas);
             this.move(this.create_dragEnd, pos.x, pos.y);
           } else {
-            if (e.event.shiftKey) {
-              this.move(this.create_dragEnd, Math.round(e.root.x), Math.round(e.root.y));
-            } else {
-              this.move(this.create_dragEnd, e.root.x, e.root.y);
-            }
+            this.move(this.create_dragEnd, e.root.x, e.root.y, e.event.shiftKey);
           }
         } else if (this.create_previewCircuit) {
           this.create_previewCircuit.setAttribute('hidden', false);
-          if (e.event.shiftKey) {
-            this.move(this.create_previewCircuit, Math.round(e.root.x), Math.round(e.root.y));
-          } else {
-            this.move(this.create_previewCircuit, e.root.x, e.root.y);
-          }
+          this.move(this.create_previewCircuit, e.root.x, e.root.y, e.event.shiftKey);
         }
-
-        // TODO: highlight hovered element
 
         break;
       case 'up':
-        if (this.selectedTool === 'point') {
-          var nodeView = findNodeView(e.root);
-
-          if (nodeView) {
-            var node = nodeView.data;
-            node.set(!node.isSource);
-          }
-        }
-
         if (this.create_previewCircuit) {
           if (this.create_dragStart) {
             var endNode = findNodeView(e.root);
@@ -151,13 +122,19 @@ export default class Controller {
             this.canvas.addPreviewChild();
           }
 
-          this.create_previewCircuit = null;
-
           if (this.selectedTool === 'create') {
-            this.selectTool('point');
+            this.toolbar.selectTool('point');
+          }
+        } else if (this.selectedTool === 'point') {
+          var nodeView = findNodeView(e.root);
+
+          if (nodeView) {
+            var node = nodeView.data;
+            node.set(!node.isSource);
           }
         }
 
+        this.create_previewCircuit = null;
         this.create_dragStart = null;
         this.create_dragEnd = null;
 
@@ -189,7 +166,7 @@ export default class Controller {
   }
 
   selectTool(tool) {
-    if (tool === this.selectedTool) return;
+    if (tool.name === this.selectedTool) return;
 
     this.selectedTool = tool.name;
 

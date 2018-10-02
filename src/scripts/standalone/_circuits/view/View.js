@@ -24,7 +24,8 @@ export default class View extends EventEmitter {
     this.style = style;
     this.parent = null;
 
-    this.update = () => this.emit('update', this);
+    this.update = this.update.bind(this);
+    this.remove = this.remove.bind(this);
 
     if (data instanceof Array) {
       data.forEach(data => data.on('update', this.update));
@@ -54,6 +55,10 @@ export default class View extends EventEmitter {
 
   remove() {
     this.emit('remove', this);
+  }
+
+  update() {
+    this.emit('update', this);
   }
 
   getDimensions() {

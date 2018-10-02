@@ -2,10 +2,7 @@ import View from "./View";
 
 export default class ConnectionView extends View {
   constructor (nodeA, nodeB, parent, style) {
-    super([], getDimensions(nodeA, nodeB, parent), {
-      start: View.getRelativePosition(nodeA, parent),
-      end: View.getRelativePosition(nodeB, parent)
-    }, style);
+    super([], getDimensions(nodeA, nodeB, parent), {}, style);
 
     this.parent = parent;
 
@@ -15,9 +12,12 @@ export default class ConnectionView extends View {
   }
 
   setEndpoint(index, node) {
-    node.on('move', () => this.update());
-    node.on('remove', () => this.remove());
-    node.on('update', this.update);
+    if (this.data[index]) {
+      this.data[index].removeListener('move', this.update);
+      this.data[index].removeListener('remove', this.remove);
+    }
+    node.on('move', this.update);
+    node.on('remove', this.remove);
     this.data[index] = node;
   }
 
@@ -28,17 +28,19 @@ export default class ConnectionView extends View {
   }
 
   update() {
-    var start = this.attributes.start = View.getRelativePosition(this.data[0], parent);
-    var end = this.attributes.end = View.getRelativePosition(this.data[1], parent);
+    this.start = View.getRelativePosition(this.data[0], this.parent);
+    this.end   = View.getRelativePosition(this.data[1], this.parent);
 
     this.dimensions = {
-      x: Math.min(start.x, end.x),
-      y: Math.min(start.y, end.y),
-      width: Math.abs(start.x - end.x),
-      height: Math.abs(start.y - end.y),
+      x: Math.min(this.start.x, this.end.x),
+      y: Math.min(this.start.y, this.end.y),
+      width: Math.abs(this.start.x - this.end.x),
+      height: Math.abs(this.start.y - this.end.y),
     };
 
     // TODO: update path here
+
+    this.emit('update');
   }
 
   getRenderOrder() {
@@ -46,8 +48,8 @@ export default class ConnectionView extends View {
   }
 
   intersects(x, y, grow = 0) {
-    var { x: ax, y: ay } = this.attributes.start;
-    var { x: bx, y: by } = this.attributes.end;
+    var { x: ax, y: ay } = this.start;
+    var { x: bx, y: by } = this.end;
 
     var dx =  x - ax, dy =  y - ay;
     var lx = bx - ax, ly = by - ay;
@@ -76,7 +78,6 @@ export default class ConnectionView extends View {
     var color = (this.data[0].data.get() || this.data[1].data.get())
                   ? style.colorOn
                   : style.colorOff;
-    var { start, end } = this.attributes;
 
     if (this.attributes.hover) {
       context.save();
@@ -84,8 +85,8 @@ export default class ConnectionView extends View {
       context.lineWidth = 0.5;
       context.lineJoin = 'round';
       context.beginPath();
-        context.moveTo(start.x, start.y);
-        context.lineTo(end.x, end.y);
+        context.moveTo(this.start.x, this.start.y);
+        context.lineTo(this.end.x, this.end.y);
       context.closePath();
       context.stroke();
       context.restore();
@@ -94,8 +95,8 @@ export default class ConnectionView extends View {
     context.strokeStyle = color;
 
     context.beginPath();
-      context.moveTo(start.x, start.y);
-      context.lineTo(end.x, end.y);
+      context.moveTo(this.start.x, this.start.y);
+      context.lineTo(this.end.x, this.end.y);
     context.closePath();
 
     context.stroke();
