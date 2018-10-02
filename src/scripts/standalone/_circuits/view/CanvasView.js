@@ -92,7 +92,7 @@ export default class CanvasView extends View {
   }
 
   drawBuffered() {
-    bufferEvent('redraw-' + this._id, this.draw);
+    bufferEvent('redraw-' + this._id, this.draw, true);
   }
 
   draw() {
