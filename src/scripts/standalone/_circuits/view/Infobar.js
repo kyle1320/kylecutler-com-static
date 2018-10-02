@@ -34,6 +34,7 @@ export default class Infobar extends EventEmitter {
       let data = circuits[c];
       this.circuitsMap[c] = {
         creator: () => new CircuitView(new Circuit(data), 0, 0),
+        view: null,
         element: null
       };
     }
@@ -69,11 +70,14 @@ export default class Infobar extends EventEmitter {
       var c = this.circuitsMap[cName];
       let name = cName;
       if (!c.element) {
+        var canvas = makeElement({tag: 'canvas', width: '40', height: '40'});
+        c.view = c.creator();
         c.element = makeElement(
-          { className: "item__content circuit" },
-          name,
+          { className: "item__content item__content--canvas circuit" },
+          [canvas, makeElement({ className: "label" }, name)],
           { click: () => this.selectCircuit(name) }
         );
+        drawViewOnPreviewCanvas(canvas, c.view);
       }
       this.element.appendChild(makeElement({ className: 'item' }, [c.element]));
     }
@@ -97,4 +101,29 @@ export default class Infobar extends EventEmitter {
   showEmpty() {
     this.element.innerHTML = "";
   }
+}
+
+function drawViewOnPreviewCanvas(canvas, view) {
+  var size = 30 * (window.devicePixelRatio || 1);
+
+  canvas.style.width = '30px';
+  canvas.style.height = '30px';
+  canvas.width = size;
+  canvas.height = size;
+
+  var dim = view.getDimensions();
+  var context = canvas.getContext('2d');
+  var scale = Math.min(size*.5, size*.8 / Math.max(dim.width, dim.height));
+  var drawWidth = scale * dim.width;
+  var drawHeight = scale * dim.height;
+  var drawX = (size - drawWidth) / 2;
+  var drawY = (size - drawHeight) / 2;
+
+  context.lineWidth = 0.1;
+
+  context.transform(
+    scale, 0, 0, scale, drawX, drawY
+  );
+
+  view.draw(context);
 }
