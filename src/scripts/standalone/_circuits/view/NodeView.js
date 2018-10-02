@@ -15,6 +15,13 @@ export default class NodeView extends View {
     return Infinity;
   }
 
+  intersects(x, y, grow = 0) {
+    var dx = x - this.dimensions.x;
+    var dy = y - this.dimensions.y;
+
+    return (dx * dx + dy * dy) <= (grow * grow);
+  }
+
   draw(context) {
     var style = this.style.node;
 

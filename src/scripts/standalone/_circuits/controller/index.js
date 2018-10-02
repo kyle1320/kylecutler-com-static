@@ -21,7 +21,7 @@ export default class Controller {
 
     switch (this.selectedTool) {
       case 'point':
-        tree = findNode(tree);
+        tree = findNode(tree) || findCircuit(tree) || findConnection(tree);
         break;
       case 'create':
         tree = null;
@@ -274,4 +274,12 @@ function findNode(tree) {
 function findNodeView(tree) {
   var node = findNode(tree);
   return node && node.view;
+}
+
+function findCircuit(tree) {
+  return findFirst(tree, x => x.view instanceof CircuitView);
+}
+
+function findConnection(tree) {
+  return findFirst(tree, x => x.view instanceof ConnectionView);
 }

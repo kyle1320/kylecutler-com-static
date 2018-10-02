@@ -2,12 +2,16 @@ import View from "./View";
 
 export default class ConnectionView extends View {
   constructor (nodeA, nodeB, parent, style) {
-    super([], getDimensions(nodeA, nodeB, parent), {}, style);
+    super([], getDimensions(nodeA, nodeB, parent), {
+      start: View.getRelativePosition(nodeA, parent),
+      end: View.getRelativePosition(nodeB, parent)
+    }, style);
 
     this.parent = parent;
 
     this.setEndpoint(0, nodeA);
     this.setEndpoint(1, nodeB);
+    this.update();
   }
 
   setEndpoint(index, node) {
@@ -24,13 +28,44 @@ export default class ConnectionView extends View {
   }
 
   update() {
-    this.dimensions = getDimensions(this.data[0], this.data[1], this.parent);
+    var start = this.attributes.start = View.getRelativePosition(this.data[0], parent);
+    var end = this.attributes.end = View.getRelativePosition(this.data[1], parent);
+
+    this.dimensions = {
+      x: Math.min(start.x, end.x),
+      y: Math.min(start.y, end.y),
+      width: Math.abs(start.x - end.x),
+      height: Math.abs(start.y - end.y),
+    };
 
     // TODO: update path here
   }
 
   getRenderOrder() {
     return -1;
+  }
+
+  intersects(x, y, grow = 0) {
+    var { x: ax, y: ay } = this.attributes.start;
+    var { x: bx, y: by } = this.attributes.end;
+
+    var dx =  x - ax, dy =  y - ay;
+    var lx = bx - ax, ly = by - ay;
+
+    var lineSq = lx * lx + ly * ly;
+    var diagSq = dx * dx + dy * dy;
+
+    var tmp = lx * dx + ly * dy;
+    if (tmp < 0) return diagSq <= grow * grow;
+    var parallelSq = (tmp * tmp) / lineSq;
+    if (parallelSq > lineSq) {
+      var tx = x - bx, ty = y - by;
+      return tx * tx + ty * ty <= grow * grow;
+    }
+
+    var perpSq = diagSq - parallelSq;
+
+    return perpSq <= grow * grow;
   }
 
   draw(context) {
@@ -41,8 +76,7 @@ export default class ConnectionView extends View {
     var color = (this.data[0].data.get() || this.data[1].data.get())
                   ? style.colorOn
                   : style.colorOff;
-    var start = View.getRelativePosition(this.data[0], this.parent);
-    var end = View.getRelativePosition(this.data[1], this.parent);
+    var { start, end } = this.attributes;
 
     if (this.attributes.hover) {
       context.save();
@@ -79,5 +113,5 @@ function getDimensions(nodeA, nodeB, parent) {
     y: Math.min(start.y, end.y),
     width: Math.abs(start.x - end.x),
     height: Math.abs(start.y - end.y),
-  }
+  };
 }
