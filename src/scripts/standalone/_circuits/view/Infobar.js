@@ -1,12 +1,12 @@
-import NodeView from "../view/NodeView";
-import CircuitView from "../view/CircuitView";
+import NodeView from "./NodeView";
+import CircuitView from "./CircuitView";
 import Node from "../model/Node";
 import Circuit from "../model/Circuit";
 
 import { EventEmitter } from "events";
 import { makeElement } from "../../../utils";
 
-export default class Sidebar extends EventEmitter {
+export default class Infobar extends EventEmitter {
   constructor (element, circuits) {
     super();
 

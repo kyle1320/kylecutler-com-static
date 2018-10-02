@@ -8,7 +8,7 @@ import CanvasView from "./view/CanvasView";
 import CircuitView from "./view/CircuitView";
 import NodeView from "./view/NodeView";
 import Toolbar from './view/Toolbar';
-import Sidebar from './view/Sidebar';
+import Infobar from './view/Infobar';
 import Controller from "./controller";
 import ConnectionView from './view/ConnectionView';
 import View from './view/View';
@@ -16,13 +16,13 @@ import View from './view/View';
 window.addEventListener('load', function () {
   var canvasView = getCanvasView(document.getElementById('canvas'));
   var toolbar = new Toolbar(document.getElementById('toolbar'), tools);
-  var sidebar = new Sidebar(document.getElementById('sidebar'), circuits);
+  var infobar = new Infobar(document.getElementById('infobar'), circuits);
 
-  var controller = new Controller(canvasView, toolbar, sidebar);
+  var controller = new Controller(canvasView, toolbar, infobar);
 
   addCanvasListeners(canvasView, controller);
   toolbar.on('change', tool => controller.selectTool(tool));
-  sidebar.on('select-circuit', c => controller.selectCircuit(c));
+  infobar.on('select-circuit', c => controller.selectCircuit(c));
 
   window.addEventListener('keydown', e => controller.handleKeyEvent(e));
 

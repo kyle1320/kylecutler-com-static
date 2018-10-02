@@ -6,10 +6,10 @@ import Node from "../model/Node";
 import View from "../view/View";
 
 export default class Controller {
-  constructor (canvas, toolbar, sidebar) {
+  constructor (canvas, toolbar, infobar) {
     this.canvas = canvas;
     this.toolbar = toolbar;
-    this.sidebar = sidebar;
+    this.infobar = infobar;
 
     this.selectedTool = 'move';
     this.hoverTree = null;
@@ -78,7 +78,7 @@ export default class Controller {
     this.select_selectedView = view;
 
     if (this.selectedTool === 'point') {
-      this.sidebar.editView(view);
+      this.infobar.editView(view);
     }
   }
 
@@ -222,12 +222,12 @@ export default class Controller {
     this.select(null);
 
     if (tool.name === 'create') {
-      this.sidebar.showCircuitsList();
-      this.sidebar.selectCircuit('Node');
+      this.infobar.showCircuitsList();
+      this.infobar.selectCircuit('Node');
     } else if (tool.name === 'point') {
 
     } else {
-      this.sidebar.showEmpty();
+      this.infobar.showEmpty();
     }
   }
 
