@@ -49,6 +49,26 @@ export default class Controller {
     else            el.move(dx, dy);
   }
 
+  select(view) {
+    if (view === this.canvas) view = null;
+    else if (view instanceof NodeView) {
+      var node = view.data;
+      node.set(!node.isSource);
+      return;
+    }
+
+    if (this.select_selectedView) {
+      this.select_selectedView.setAttribute('active', false);
+    }
+
+    view && view.setAttribute('active', true);
+    this.select_selectedView = view;
+
+    if (this.selectedTool === 'point') {
+      this.sidebar.editView(view);
+    }
+  }
+
   handleMouseEvent(e) {
     this.hover(e.root);
 
@@ -58,15 +78,14 @@ export default class Controller {
 
     switch (e.type) {
       case 'down':
-        var drag = getMoveableTarget(e.root);
-        if (drag) {
-          this.drag_target = drag.view;
-          var {x, y} = this.drag_target.getDimensions();
-          this.drag_offsetX = drag.x;
-          this.drag_offsetY = drag.y;
-        }
-
-        if (this.selectedTool === 'create' || (e.event.buttons & 2)) {
+        if (this.selectedTool === 'drag' && (e.event.buttons & 1)) {
+          var drag = getMoveableTarget(e.root);
+          if (drag) {
+            this.drag_target = drag.view;
+            this.drag_offsetX = drag.x;
+            this.drag_offsetY = drag.y;
+          }
+        } else if (this.selectedTool === 'create' || (e.event.buttons & 2)) {
           this.create_dragStart = findNodeView(e.root);
           if (this.create_dragStart) {
             this.create_dragEnd = new NodeView(new Node(), e.root.x, e.root.y);
@@ -81,7 +100,7 @@ export default class Controller {
       case 'move':
         var grid = e.root.view;
 
-        if (this.selectedTool === 'drag' && (e.event.buttons & 1)) {
+        if (this.drag_target) {
           this.move(
             this.drag_target,
             e.root.x - this.drag_offsetX,
@@ -90,6 +109,8 @@ export default class Controller {
           );
         } else if (this.create_dragStart) {
           var endNode = findNodeView(e.root);
+
+          this.create_previewCircuit && this.create_previewCircuit.setAttribute('hidden', false);
 
           if (endNode) {
             var pos = View.getRelativePosition(endNode, this.canvas);
@@ -122,21 +143,19 @@ export default class Controller {
             this.canvas.addPreviewChild();
           }
 
+          this.create_previewCircuit = null;
+
           if (this.selectedTool === 'create') {
             this.toolbar.selectTool('point');
           }
         } else if (this.selectedTool === 'point') {
-          var nodeView = findNodeView(e.root);
-
-          if (nodeView) {
-            var node = nodeView.data;
-            node.set(!node.isSource);
-          }
+          this.select(this.hoverTree && this.hoverTree.view);
         }
 
-        this.create_previewCircuit = null;
         this.create_dragStart = null;
         this.create_dragEnd = null;
+
+        this.drag_target = null;
 
         break;
       case 'enter':
@@ -177,9 +196,13 @@ export default class Controller {
       this.create_previewCircuit = null;
     }
 
+    this.select(null);
+
     if (tool.name === 'create') {
       this.sidebar.showCircuitsList();
       this.sidebar.selectCircuit('Node');
+    } else if (tool.name === 'point') {
+
     } else {
       this.sidebar.showEmpty();
     }

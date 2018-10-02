@@ -56,7 +56,7 @@ export default class Sidebar extends EventEmitter {
   }
 
   showCircuitsList() {
-    this.element.innerHTML = "";
+    this.showEmpty();
     for (var cName in this.circuitsMap) {
       var c = this.circuitsMap[cName];
       let name = cName;
@@ -69,6 +69,15 @@ export default class Sidebar extends EventEmitter {
       }
       this.element.appendChild(c.element);
     }
+  }
+
+  editView(view) {
+    this.showEmpty();
+    if (!view) {
+      this.element.innerHTML = "Select an element to edit";
+      return;
+    }
+    this.element.innerHTML = `Editing ${view.constructor.name} ${view._id}`;
   }
 
   showEmpty() {

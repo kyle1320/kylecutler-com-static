@@ -79,9 +79,11 @@ export default class ConnectionView extends View {
                   ? style.colorOn
                   : style.colorOff;
 
-    if (this.attributes.hover) {
+    if (this.attributes.hover || this.attributes.active) {
       context.save();
-      context.strokeStyle = this.style.general.highlightColor;
+      context.strokeStyle = this.attributes.active
+                              ? this.style.general.selectedColor
+                              : this.style.general.highlightColor;
       context.lineWidth = 0.5;
       context.lineJoin = 'round';
       context.beginPath();

@@ -3,6 +3,7 @@ export const defaultStyle = {
     lineWidth: 0.1,
     gridColor: "#eeeeee",
     highlightColor: "rgba(0, 0, 0, 0.15)",
+    selectedColor: "rgba(0, 100, 200, 0.3)",
     gate: {
       strokeColor: "#333333",
       fillColor: "#FFFFFF"
