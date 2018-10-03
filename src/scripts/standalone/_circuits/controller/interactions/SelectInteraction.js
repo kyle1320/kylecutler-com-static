@@ -10,11 +10,9 @@ export default class SelectInteraction extends Interaction {
     this.hovering = null;
   }
 
-  meetsConditions() {
-    return this.controller.selectedTool === 'point';
-  }
-
   handleMouseEvent(e) {
+    if (this.controller.selectedTool !== 'point') return;
+
     var canvas = this.controller.canvas;
 
     var hoverTarget = findNode(e.root) || findCircuit(e.root) || findConnection(e.root);
@@ -48,6 +46,17 @@ export default class SelectInteraction extends Interaction {
         canvas.clearSelection();
 
         break;
+    }
+  }
+
+  handleKeyEvent(e) {
+    if (e.ctrlKey) {
+      switch (e.key) {
+        case 'a':
+          e.preventDefault();
+          this.select(this.controller.canvas.getAll());
+          break;
+      }
     }
   }
 

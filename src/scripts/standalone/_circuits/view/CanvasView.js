@@ -141,6 +141,13 @@ export default class CanvasView extends View {
     };
   }
 
+  getAll() {
+    return {
+      view: this,
+      children: this.children.all().map(view => ({ view }))
+    };
+  }
+
   drawBuffered() {
     bufferEvent('redraw-' + this._id, this.draw, true);
   }
