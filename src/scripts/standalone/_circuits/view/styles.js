@@ -4,6 +4,8 @@ export const defaultStyle = {
     gridColor: "#eeeeee",
     highlightColor: "rgba(0, 0, 0, 0.15)",
     selectedColor: "rgba(0, 100, 200, 0.3)",
+    selectionStrokeColor: "rgba(0, 100, 200, 0.7)",
+    selectionFillColor: "rgba(0, 100, 200, 0.15)",
     gate: {
       strokeColor: "#333333",
       fillColor: "#FFFFFF"

@@ -1,6 +1,5 @@
 import NodeView from "../view/NodeView";
 import CircuitView from "../view/CircuitView";
-import Circuit from "../model/Circuit";
 import ConnectionView from "../view/ConnectionView";
 import Node from "../model/Node";
 import View from "../view/View";
@@ -16,22 +15,24 @@ export default class Controller {
     this.zIndex = 0;
   }
 
-  hover(tree) {
+  hover(tree, takeAll) {
     if (this.hoverTree === tree) return;
 
-    switch (this.selectedTool) {
-      case 'point':
-        tree = findNode(tree) || findCircuit(tree) || findConnection(tree);
-        break;
-      case 'drag':
-        tree = getMoveableTarget(tree);
-        tree.children = null;
-        break;
-      case 'debug':
-        break;
-      default:
-        tree = null;
-        break;
+    if (!takeAll) {
+      switch (this.selectedTool) {
+        case 'point':
+          tree = findNode(tree) || findCircuit(tree) || findConnection(tree);
+          break;
+        case 'drag':
+          tree = getMoveableTarget(tree);
+          tree.children = null;
+          break;
+        case 'debug':
+          break;
+        default:
+          tree = null;
+          break;
+      }
     }
 
     diff(
@@ -62,24 +63,31 @@ export default class Controller {
     this.canvas.setAttribute('scale', newScale);
   }
 
-  select(view) {
-    if (view === this.canvas) view = null;
-    else if (view instanceof NodeView) {
-      var node = view.data;
-      node.set(!node.isSource);
-      return;
+  select(views) {
+    if (this.select_selectedViews === views) return;
+
+    if (views && !(views instanceof Array)) views = [views];
+    if (views && views.length === 0) views = null;
+
+    if (views && views.length === 1) {
+      if (views[0] === this.canvas) views = null;
+      else if (views[0] instanceof NodeView) {
+        var node = views[0].data;
+        node.set(!node.isSource);
+        return;
+      }
     }
 
-    if (this.select_selectedView) {
-      this.select_selectedView.setAttribute('active', false);
+    if (this.select_selectedViews) {
+      this.select_selectedViews.forEach(v => v.setAttribute('active', false));
     }
 
-    view && view.setAttribute('active', true);
-    this.select_selectedView = view;
+    views && views.forEach(v => v.setAttribute('active', true));
+    this.select_selectedViews = views;
 
     if (this.selectedTool === 'point') {
-      if (view) {
-        this.infobar.showPointerInfo(view);
+      if (views && views.length === 1) {
+        this.infobar.showPointerInfo(views[0]);
       } else {
         this.infobar.showInfo('point');
       }
@@ -107,7 +115,7 @@ export default class Controller {
           this.zoom(5, e.root.x, e.root.y);
         } else if (this.selectedTool === 'zoomout') {
           this.zoom(-5, e.root.x, e.root.y);
-        } else if (this.selectedTool === 'drag' && (e.event.buttons & 1)) {
+        } else if (this.selectedTool === 'drag') {
           var drag = getMoveableTarget(e.root);
           if (drag) {
             this.drag_target = drag.view;
@@ -123,6 +131,8 @@ export default class Controller {
             this.create_previewCircuit.setAttribute('hidden', true);
             this.canvas.setPreviewChild(this.create_previewCircuit);
           }
+        } else if (this.selectedTool === 'point') {
+          this.canvas.startSelection(e.root.x, e.root.y);
         }
 
         break;
@@ -158,6 +168,13 @@ export default class Controller {
             e.root.y - this.create_previewCircuit.dimensions.height / 2,
             e.event.shiftKey
           );
+        } else if (this.canvas.selectionArea) {
+          this.canvas.endSelection(e.root.x, e.root.y);
+          var tree = {
+            view: this.canvas,
+            children: this.canvas.getSelected().map(view => ({ view }))
+          };
+          this.hover(tree, true);
         }
 
         break;
@@ -186,7 +203,13 @@ export default class Controller {
             this.createNew();
           }
         } else if (this.selectedTool === 'point') {
-          this.select(this.hoverTree && this.hoverTree.view);
+          if (this.hoverTree && this.hoverTree.view instanceof NodeView) {
+            this.select(this.hoverTree && this.hoverTree.view);
+          } else if (this.canvas.selectionArea) {
+            this.select(this.canvas.getSelected());
+          }
+
+          this.canvas.clearSelection();
         }
 
         this.create_dragStart = null;
@@ -219,7 +242,13 @@ export default class Controller {
       case 8:
       case 46:
         e.preventDefault();
-        traverse(this.hoverTree, x => x.remove());
+        if (this.select_selectedViews) {
+          this.select_selectedViews.forEach(v => v.remove());
+          this.select(null);
+        } else {
+          traverse(this.hoverTree, x => x.remove());
+          this.hover(null);
+        }
         break;
     }
   }

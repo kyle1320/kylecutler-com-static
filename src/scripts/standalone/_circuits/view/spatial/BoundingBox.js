@@ -10,6 +10,11 @@ export default class BoundingBox {
            (this.min[1] < other.max[1] && this.max[1] > other.min[1]);
   }
 
+  contains(other) {
+    return (this.min[0] < other.min[0] && this.max[0] > other.max[0]) &&
+           (this.min[1] < other.min[1] && this.max[1] > other.max[1]);
+  }
+
   grow(amount) {
     return new BoundingBox({
       x: this.min[0] - amount,

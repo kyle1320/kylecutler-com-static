@@ -2,6 +2,7 @@ import View from "./View";
 import KDTree from "./spatial/KDTree";
 import BoundingBox from "./spatial/BoundingBox";
 import bufferEvent from '../utils/eventBuffer';
+import ConnectionView from "./ConnectionView";
 
 export default class CanvasView extends View {
   constructor (canvasEl, style) {
@@ -14,6 +15,9 @@ export default class CanvasView extends View {
 
     this.canvas = canvasEl;
     this.children = new KDTree();
+
+    this.previewChild = null;
+    this.selectionArea = null;
 
     this.update      = view => this.emit('update');
     this.removeChild = view => {
@@ -91,6 +95,46 @@ export default class CanvasView extends View {
     this.update();
   }
 
+  startSelection(x, y) {
+    this.selectionArea = {
+      startX: x,
+      startY: y,
+      endX: x,
+      endY: y
+    };
+    this.update();
+  }
+
+  endSelection(x, y) {
+    this.selectionArea.endX = x;
+    this.selectionArea.endY = y;
+    this.update();
+  }
+
+  clearSelection() {
+    this.selectionArea = null;
+    this.update();
+  }
+
+  getSelected() {
+    if (!this.selectionArea) return null;
+
+    var boundingBox = new BoundingBox(0, 0, 0, 0);
+    boundingBox.min = [
+      Math.min(this.selectionArea.startX, this.selectionArea.endX) - 0.4,
+      Math.min(this.selectionArea.startY, this.selectionArea.endY) - 0.4
+    ];
+    boundingBox.max = [
+      Math.max(this.selectionArea.startX, this.selectionArea.endX) + 0.4,
+      Math.max(this.selectionArea.startY, this.selectionArea.endY) + 0.4
+    ];
+
+    // connections must be fully enclosed in order to be selected
+    return this.children
+      .find(boundingBox)
+      .filter(v => !(v instanceof ConnectionView) || boundingBox.contains(new BoundingBox(v.getDimensions())));
+  }
+
   drawBuffered() {
     bufferEvent('redraw-' + this._id, this.draw, true);
   }
@@ -153,6 +197,23 @@ export default class CanvasView extends View {
     }
 
     this.children.draw(context, viewport);
+
+    if (this.selectionArea) {
+      context.strokeStyle = style.general.selectionStrokeColor;
+      context.fillStyle = style.general.selectionFillColor;
+
+      context.beginPath();
+        context.rect(
+          this.selectionArea.startX,
+          this.selectionArea.startY,
+          this.selectionArea.endX - this.selectionArea.startX,
+          this.selectionArea.endY - this.selectionArea.startY,
+        );
+      context.closePath();
+
+      context.fill();
+      context.stroke();
+    }
 
     context.restore();
   }
