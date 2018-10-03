@@ -1,5 +1,6 @@
 module.exports = {
   "And": {
+    "key": "And",
     "size": { "width": 2, "height": 2 },
     "pins": [
       { "x": 0, "y": 0.3, "ignoreInput": false },
@@ -14,6 +15,7 @@ module.exports = {
     }
   },
   "Or": {
+    "key": "Or",
     "size": { "width": 2, "height": 2 },
     "pins": [
       { "x": 0.2, "y": 0.3, "ignoreInput": false },
@@ -28,6 +30,7 @@ module.exports = {
     }
   },
   "Not": {
+    "key": "Not",
     "size": { "width": 1.2, "height": 0 },
     "pins": [
       { "x": 0,   "y": 0, "ignoreInput": false },
@@ -41,6 +44,7 @@ module.exports = {
     }
   },
   "Diode": {
+    "key": "Diode",
     "size": { "width": 1, "height": 0 },
     "pins": [
       { "x": 0, "y": 0, "ignoreInput": false },
@@ -54,6 +58,7 @@ module.exports = {
     }
   },
   "Xor": {
+    "key": "Xor",
     "size": { "width": 2, "height": 2 },
     "pins": [
       { "x": 0.2, "y": 0.3, "ignoreInput": false },
@@ -68,6 +73,7 @@ module.exports = {
     }
   },
   "RGB": {
+    "key": "RGB",
     "size": { "width": 2, "height": 2 },
     "pins": [
       { "x": 0, "y": 0.3, "ignoreInput": false },
@@ -81,6 +87,7 @@ module.exports = {
     }
   },
   "3-Input And": {
+    "key": "3-Input And",
     "size": { "width": 2, "height": 2 },
     "pins": [
       { "x": 0, "y": 0.3, "ignoreInput": false },
@@ -96,6 +103,7 @@ module.exports = {
     }
   },
   "3-Input Or": {
+    "key": "3-Input Or",
     "size": { "width": 2, "height": 2 },
     "pins": [
       { "x": 0.2, "y": 0.3, "ignoreInput": false },
@@ -111,6 +119,7 @@ module.exports = {
     }
   },
   "3-Input Xor": {
+    "key": "3-Input Xor",
     "size": { "width": 2, "height": 2 },
     "pins": [
       { "x": 0.2, "y": 0.3, "ignoreInput": false },

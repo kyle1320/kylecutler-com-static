@@ -12,6 +12,7 @@ import Infobar from './view/Infobar';
 import Controller from "./controller";
 import ConnectionView from './view/ConnectionView';
 import View from './view/View';
+import { deserialize, serialize } from './model/serialize';
 
 window.addEventListener('load', function () {
   var canvasView = getCanvasView(document.getElementById('canvas'));
@@ -29,6 +30,9 @@ window.addEventListener('load', function () {
   addDefaultItems(canvasView);
   // stressTest(canvasView);
   toolbar.selectTool(tools[0].name);
+
+  // window.serialize = () => serialize(canvasView.children.all());
+  // window.deserialize = s => deserialize(s).forEach(v => canvasView.addChild(v));
 
   canvasView.drawBuffered();
 });
@@ -80,56 +84,9 @@ function addCanvasListeners(canvasView, controller) {
   canvas.oncontextmenu = () => false;
 }
 
-function addItem(canvasView, item, x, y) {
-  var view = (item instanceof Node)
-              ? new NodeView(item, x, y)
-              : new CircuitView(item, x, y);
-
-  canvasView.addChild(view);
-}
-
-function addConnection(canvasView, nodeA, nodeB) {
-  var nodeViewA = View.getViewFromDatasource(nodeA);
-  var nodeViewB = View.getViewFromDatasource(nodeB);
-
-  nodeA.connect(nodeB);
-
-  var connectionView = new ConnectionView(nodeViewA, nodeViewB, canvasView);
-
-  canvasView.addChild(connectionView);
-}
-
 function addDefaultItems(canvasView) {
-  var input1 = new Node();
-  var input2 = new Node();
-  var output = new Node();
-
-  var and1 = new Circuit(circuits.And);
-  var and2 = new Circuit(circuits.And);
-
-  var or = new Circuit(circuits.Or);
-
-  var not1 = new Circuit(circuits.Not);
-  var not2 = new Circuit(circuits.Not);
-
-  addItem(canvasView, input1, 1, 1);
-  addItem(canvasView, input2, 1, 7);
-  addItem(canvasView, not1, 3, 3);
-  addItem(canvasView, not2, 3, 5);
-  addItem(canvasView, and1, 6, 1);
-  addItem(canvasView, and2, 6, 5);
-  addItem(canvasView, or, 10, 3);
-  addItem(canvasView, output, 14, 4);
-
-  addConnection(canvasView, input1, and1.pins[0]);
-  addConnection(canvasView, input2, not1.pins[0]);
-  addConnection(canvasView, input1, not2.pins[0]);
-  addConnection(canvasView, input2, and2.pins[1]);
-  addConnection(canvasView, not1.pins[1], and1.pins[1]);
-  addConnection(canvasView, not2.pins[1], and2.pins[0]);
-  addConnection(canvasView, and1.pins[2], or.pins[0]);
-  addConnection(canvasView, and2.pins[2], or.pins[1]);
-  addConnection(canvasView, or.pins[2], output);
+  const serialized = `{"o":[["n",1,1],["n",1,7],["c",3,3,0,"Not"],["c",3,5,0,"Not"],["c",6,1,0,"And"],["c",6,5,0,"And"],["c",10,3,0,"Or"],["n",14,4]],"c":[[[0],[4,0]],[[1],[2,0]],[[0],[3,0]],[[1],[5,1]],[[2,1],[4,1]],[[3,1],[5,0]],[[4,2],[6,0]],[[5,2],[6,1]],[[6,2],[7]]]}`;
+  deserialize(serialized).forEach(view => canvasView.addChild(view));
 }
 
 function stressTest(canvasView) {
