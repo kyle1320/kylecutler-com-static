@@ -5,6 +5,7 @@ import DragInteraction from "./interactions/DragInteraction";
 import SelectInteraction from "./interactions/SelectInteraction";
 import ZoomInteraction from "./interactions/ZoomInteraction";
 import { diff } from "./treeUtils";
+import ClipboardInteraction from "./interactions/ClipboardInteraction";
 
 export default class Controller {
   constructor (canvas, toolbar, infobar) {
@@ -25,7 +26,8 @@ export default class Controller {
       new SelectInteraction(this),
       new CreateInteraction(this),
       new DragInteraction(this),
-      new ZoomInteraction(this)
+      new ZoomInteraction(this),
+      new ClipboardInteraction(this)
     ];
   }
 

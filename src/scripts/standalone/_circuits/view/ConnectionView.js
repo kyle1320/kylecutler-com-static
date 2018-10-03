@@ -21,6 +21,10 @@ export default class ConnectionView extends View {
     this.data[index] = node;
   }
 
+  move(x, y) {
+
+  }
+
   remove() {
     super.remove();
 
