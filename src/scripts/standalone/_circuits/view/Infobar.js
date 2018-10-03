@@ -83,19 +83,34 @@ export default class Infobar extends EventEmitter {
     }
   }
 
-  showPointerInfo(view) {
+  showPointerInfo(views) {
     this.showEmpty();
-    if (view instanceof CircuitView) {
+    if (views.length > 1) {
+      this.showInfoText(`${views.length} elements selected`);
+    } else if (views[0] instanceof CircuitView) {
       this.element.appendChild(makeElement("button", "Rotate 90", {
-        click: () => view.rotate(1)
+        click: () => views[0].rotate(1)
       }))
     } else {
-      this.element.textContent = `Editing ${view.constructor.name} ${view._id}`;
+      this.showInfoText(`Editing ${views[0].constructor.name} ${views[0]._id}`);
     }
   }
 
-  showInfo(toolName) {
-    this.element.innerHTML = `<div class="info">${toolText[toolName]}</div>`;
+  showInfo(toolName, data) {
+    switch(toolName) {
+      case 'point':
+        if (data && data.length) return this.showPointerInfo(data);
+        break;
+      case 'create':
+        return this.showCircuitsInfo();
+    }
+
+    // default content
+    this.showInfoText(toolText[toolName]);
+  }
+
+  showInfoText(text) {
+    this.element.innerHTML = `<div class="info">${text}</div>`
   }
 
   showEmpty() {

@@ -52,9 +52,11 @@ export default class NodeView extends View {
     context.fill();
     context.stroke();
 
-    if (this.attributes.hover) {
+    if (this.attributes.hover || this.attributes.active) {
       context.save();
-      context.fillStyle = this.style.general.highlightColor;
+      context.fillStyle = this.attributes.active
+                            ? this.style.general.selectedColor
+                            : this.style.general.highlightColor;
       context.beginPath();
         context.arc(x, y, .5, 0, 2 * Math.PI);
       context.closePath();
