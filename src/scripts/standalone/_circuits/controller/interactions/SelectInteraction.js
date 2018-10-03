@@ -61,7 +61,7 @@ export default class SelectInteraction extends Interaction {
   }
 
   select(tree) {
-    this.controller.infobar.showInfo('point', tree.children.map(x => x.view));
+    this.controller.infobar.showInfo('point', tree && tree.children.map(x => x.view));
 
     this.controller.select(tree);
   }
