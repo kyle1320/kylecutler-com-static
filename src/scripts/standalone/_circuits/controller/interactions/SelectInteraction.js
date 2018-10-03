@@ -37,10 +37,10 @@ export default class SelectInteraction extends Interaction {
             var node = hoverTarget.view.data;
             node.set(!node.isSource);
           } else {
-            this.select(hoverTarget);
+            this.controller.select(hoverTarget);
           }
         } else if (canvas.selectionArea) {
-          this.select(canvas.getSelected());
+          this.controller.select(canvas.getSelected());
         }
 
         canvas.clearSelection();
@@ -54,7 +54,7 @@ export default class SelectInteraction extends Interaction {
       case 65: // A
         if (e.ctrlKey) {
           e.preventDefault();
-          this.select(this.controller.canvas.getAll());
+          this.controller.select(this.controller.canvas.getAll());
         }
         break;
       case 27: // ESC
@@ -63,12 +63,6 @@ export default class SelectInteraction extends Interaction {
         this.controller.select(null);
         break;
     }
-  }
-
-  select(tree) {
-    this.controller.infobar.showInfo('point', tree && tree.children.map(x => x.view));
-
-    this.controller.select(tree);
   }
 }
 

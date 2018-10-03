@@ -28,6 +28,16 @@ export function mapTree(tree, mapFunc, level = 0) {
   return tree;
 }
 
+export function flatten(tree) {
+  if (!tree) return tree;
+
+  if (!tree.children) return [tree.view];
+
+  return tree.children.reduce((arr, node) => {
+    return arr.concat(flatten(node));
+  }, [tree.view]);
+}
+
 export function traverse(tree, cb) {
   if (!tree) return;
 

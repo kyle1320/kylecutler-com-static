@@ -4,7 +4,7 @@ import DeleteInteraction from "./interactions/DeleteInteraction";
 import DragInteraction from "./interactions/DragInteraction";
 import SelectInteraction from "./interactions/SelectInteraction";
 import ZoomInteraction from "./interactions/ZoomInteraction";
-import { diff } from "./treeUtils";
+import { diff, flatten } from "./treeUtils";
 import ClipboardInteraction from "./interactions/ClipboardInteraction";
 
 export default class Controller {
@@ -58,6 +58,9 @@ export default class Controller {
     );
 
     this.selectedTree = tree;
+
+    var views = flatten(tree);
+    this.infobar.showInfo('point', views && views.filter(x => x !== this.canvas));
   }
 
   move(el, dx, dy, shouldSnap) {
