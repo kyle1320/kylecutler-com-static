@@ -14,10 +14,24 @@ export function diff(before, after, onChange) {
   }
 }
 
+export function mapTree(tree, mapFunc, level = 0) {
+  if (!tree) return tree;
+
+  tree = mapFunc(tree, level);
+
+  if (!tree.children) return tree;
+
+  tree.children = tree.children
+    .map(x => mapTree(x, mapFunc, level + 1))
+    .filter(x => !!x);
+
+  return tree;
+}
+
 export function traverse(tree, cb) {
   if (!tree) return;
 
-  cb && cb(tree.view);
+  cb && cb(tree.view, tree);
 
   if (!tree.children) return;
 

@@ -1,6 +1,7 @@
 import Interaction from "../Interaction";
-import { findFirst } from "../treeUtils";
+import { findFirst, traverse, mapTree } from "../treeUtils";
 import ConnectionView from "../../view/ConnectionView";
+import View from "../../view/View";
 
 export default class DragInteraction extends Interaction {
   reset() {
@@ -14,33 +15,55 @@ export default class DragInteraction extends Interaction {
   }
 
   handleMouseEvent(e) {
-    this.controller.hover(getMoveableTarget(e.root));
+    var canvas = this.controller.canvas;
+    var selectedHover = findFirst(e.root, x => x.view != canvas && x.view.attributes.active);
+    var target = null;
+
+    if (!selectedHover) {
+      target = getMoveableTarget(e.root);
+    }
+
+    this.controller.hover(target);
 
     switch (e.type) {
       case 'down':
-        var drag = getMoveableTarget(e.root);
-        if (drag) {
-          this.target = drag.view;
-          this.offsetX = drag.x;
-          this.offsetY = drag.y;
+        if (selectedHover) {
+          this.target = mapTree(this.controller.selectedTree, n => {
+            if (n instanceof ConnectionView) return null;
+            var { x, y } = View.getRelativePosition(n.view, canvas);
+            return {
+              view: n.view,
+              x: e.root.x - x,
+              y: e.root.y - y,
+              children: n.children
+            };
+          });
+        } else {
+          this.target = target;
         }
 
         break;
       case 'move':
-        if (this.target) {
-          if (this.target === this.controller.canvas) {
-            var {x, y} = this.controller.canvas.dimensions;
-            e.root.x += x;
-            e.root.y += y;
+        traverse(this.target, (view, data) => {
+          if (view === this.controller.canvas) {
+
+            // don't drag the canvas if there are children
+            if (data.children) return;
+
+            var {x, y} = view.dimensions;
+            data = {
+              x: data.x - x,
+              y: data.y - y
+            };
           }
 
           this.controller.move(
-            this.target,
-            e.root.x - this.offsetX,
-            e.root.y - this.offsetY,
+            view,
+            e.root.x - data.x,
+            e.root.y - data.y,
             e.event.shiftKey
           );
-        }
+        });
 
         break;
       case 'up':

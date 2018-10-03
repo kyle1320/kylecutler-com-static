@@ -83,7 +83,7 @@ export default class Controller {
     this.infobar.showInfo(tool.name);
 
     this.hover(null);
-    this.select(null);
+    // this.select(null);
 
     this.callInteractions(x => x.handleSelectTool(tool));
   }

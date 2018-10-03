@@ -50,13 +50,18 @@ export default class SelectInteraction extends Interaction {
   }
 
   handleKeyEvent(e) {
-    if (e.ctrlKey) {
-      switch (e.key) {
-        case 'a':
+    switch (e.keyCode) {
+      case 65: // A
+        if (e.ctrlKey) {
           e.preventDefault();
           this.select(this.controller.canvas.getAll());
-          break;
-      }
+        }
+        break;
+      case 27: // ESC
+      case 13: // Enter
+        e.preventDefault();
+        this.controller.select(null);
+        break;
     }
   }
 

@@ -107,12 +107,12 @@ export default class View extends EventEmitter {
   static getRelativePosition(view, ancestor) {
     var pos = { x: 0, y: 0 };
 
-    do {
+    while (view != ancestor) {
       pos = view.getRelativePosition(pos.x, pos.y);
 
       view = view.parent;
       if (!view && view != ancestor) throw new Error("Did not find ancestor view");
-    } while (view != ancestor);
+    }
 
     return pos;
   }
