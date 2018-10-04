@@ -7,7 +7,7 @@ import ConnectionView from "../../view/ConnectionView";
 export default class SelectInteraction extends Interaction {
   reset() {
     this.isClickCandidate = true;
-    this.hovering = null;
+    this.lastHoverTarget = null;
   }
 
   handleMouseEvent(e) {
@@ -15,29 +15,38 @@ export default class SelectInteraction extends Interaction {
 
     var canvas = this.controller.canvas;
 
-    var hoverTarget = findNode(e.root) || findCircuit(e.root) || findConnection(e.root);
-    this.controller.hover(hoverTarget, () => this.isClickCandidate = false);
+    var hoverTree = findNode(e.root) || findCircuit(e.root) || findConnection(e.root);
+
+    var hoverTarget = hoverTree && hoverTree.view;
+    if (hoverTarget !== this.lastHoverTarget) {
+      this.isClickCandidate = false;
+    }
+    this.lastHoverTarget = hoverTarget;
 
     switch (e.type) {
       case 'down':
-        this.isClickCandidate = true;
-        canvas.startSelection(e.root.x, e.root.y);
+        if (!canvas.selectionArea) {
+          this.isClickCandidate = true;
+          canvas.startSelection(e.root.x, e.root.y);
+        }
 
         break;
       case 'move':
         if (canvas.selectionArea) {
           canvas.endSelection(e.root.x, e.root.y);
           this.controller.hover(canvas.getSelected());
+        } else {
+          this.controller.hover(hoverTree);
         }
 
         break;
       case 'up':
-        if (this.isClickCandidate) {
-          if (hoverTarget && hoverTarget.view instanceof NodeView) {
-            var node = hoverTarget.view.data;
+        if (this.isClickCandidate && hoverTree) {
+          if (hoverTree.view instanceof NodeView) {
+            var node = hoverTree.view.data;
             node.set(!node.isSource);
           } else {
-            this.controller.select(hoverTarget);
+            this.controller.select(hoverTree);
           }
         } else if (canvas.selectionArea) {
           this.controller.select(canvas.getSelected());
