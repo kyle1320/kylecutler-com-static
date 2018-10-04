@@ -1,9 +1,8 @@
 import Interaction from "../Interaction";
-import { traverse } from "../treeUtils";
 
 export default class DeleteInteraction extends Interaction {
   meetsConditions() {
-    return this.controller.hoveringTree || this.controller.selectedTree;
+    return this.controller.hovering || this.controller.selected;
   }
 
   handleKeyEvent(e) {
@@ -11,12 +10,10 @@ export default class DeleteInteraction extends Interaction {
       case 8:
       case 46:
         e.preventDefault();
-        if (this.controller.selectedTree) {
-          traverse(this.controller.selectedTree, v => v.remove());
-          this.controller.select(null);
+        if (this.controller.selected) {
+          this.controller.select(null, v => v.remove());
         } else {
-          traverse(this.controller.hoveringTree, v => v.remove());
-          this.controller.hover(null);
+          this.controller.hover(null, v => v.remove());
         }
         break;
     }

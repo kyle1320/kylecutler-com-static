@@ -11,10 +11,8 @@ export default class ClipboardInteraction extends Interaction {
     if (e.ctrlKey) {
       switch (e.key) {
         case 'c':
-          if (this.controller.selectedTree) {
-            this.copiedData = serialize(
-              this.controller.selectedTree.children.map(x => x.view)
-            );
+          if (this.controller.selected) {
+            this.copiedData = serialize(this.controller.selected);
             this.offset = 1;
           }
           break;

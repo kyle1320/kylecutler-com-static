@@ -1,5 +1,5 @@
 import Interaction from "../Interaction";
-import { findFirst, diff } from "../treeUtils";
+import { findFirst } from "../treeUtils";
 import NodeView from "../../view/NodeView";
 import CircuitView from "../../view/CircuitView";
 import ConnectionView from "../../view/ConnectionView";
@@ -63,6 +63,12 @@ export default class SelectInteraction extends Interaction {
         this.controller.select(null);
         break;
     }
+  }
+
+  handleSelectTool(tool) {
+    if (tool.name !== 'point') return;
+
+    this.controller.infobar.showInfo('point', this.controller.selected);
   }
 }
 

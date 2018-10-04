@@ -15,8 +15,8 @@ export default class Controller {
 
     this.selectedTool = 'move';
 
-    this.selectedTree = null;
-    this.hoveringTree = null;
+    this.selected = null;
+    this.hovering = null;
 
     this.topZIndex = 0;
 
@@ -33,34 +33,41 @@ export default class Controller {
 
   // TODO: combine these two methods
   hover(tree, onChange) {
-    if (this.hoveringTree === tree) return;
+    var views = flatten(tree);
+    views = views && views.filter(x => x !== this.canvas);
+    if (views && !views.length) views = null;
 
-    diff(
-      this.hoveringTree,
-      tree,
+    if (this.hovering === views) return;
+
+    setDiff(
+      this.hovering,
+      views,
       (x, adding) => {
-        onChange && onChange(adding), x.setAttribute('hover', adding)
+        onChange && onChange(x, adding), x.setAttribute('hover', adding)
       }
     );
 
-    this.hoveringTree = tree;
+    this.hovering = views;
   }
 
   select(tree, onChange) {
-    if (this.selectedTree === tree) return;
+    var views = flatten(tree);
+    views = views && views.filter(x => x !== this.canvas);
+    if (views && !views.length) views = null;
 
-    diff(
-      this.selectedTree,
-      tree,
+    if (this.selected === views) return;
+
+    setDiff(
+      this.selected,
+      views,
       (x, adding) => {
-        onChange && onChange(adding), x.setAttribute('active', adding)
+        onChange && onChange(x, adding), x.setAttribute('active', adding)
       }
     );
 
-    this.selectedTree = tree;
+    this.selected = views;
 
-    var views = flatten(tree);
-    this.infobar.showInfo('point', views && views.filter(x => x !== this.canvas));
+    this.infobar.showInfo('point', views);
   }
 
   move(el, dx, dy, shouldSnap) {
@@ -102,6 +109,21 @@ export default class Controller {
       if (!interaction.meetsConditions()) continue;
 
       if (handler(interaction) === false) break;
+    }
+  }
+}
+
+function setDiff(before, after, onChange) {
+  var beforeSet = new Set(before);
+  var afterSet = new Set(after);
+  var all = new Set([].concat(before || [], after || []));
+
+  for (var item of all) {
+    var isOld = beforeSet.has(item);
+    var isNew = afterSet.has(item);
+
+    if (isOld !== isNew) {
+      onChange(item, isNew);
     }
   }
 }
