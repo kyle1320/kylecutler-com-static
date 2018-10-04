@@ -12,14 +12,16 @@ import Infobar from './view/Infobar';
 import Controller from "./controller";
 import ConnectionView from './view/ConnectionView';
 import View from './view/View';
-import { deserialize, serialize } from './model/serialize';
+import { deserialize } from './model/serialize';
+import Modal from './view/Modal';
 
 window.addEventListener('load', function () {
   var canvasView = getCanvasView(document.getElementById('canvas'));
   var toolbar = new Toolbar(document.getElementById('toolbar'), tools);
   var infobar = new Infobar(document.getElementById('infobar'), circuits);
+  var modal = new Modal(this.document.getElementById('modal'));
 
-  var controller = new Controller(canvasView, toolbar, infobar);
+  var controller = new Controller(canvasView, toolbar, infobar, modal);
 
   addCanvasListeners(canvasView, controller);
   toolbar.on('change', tool => controller.selectTool(tool));

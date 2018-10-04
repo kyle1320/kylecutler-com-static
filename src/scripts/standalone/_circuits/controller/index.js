@@ -8,10 +8,11 @@ import { diff, flatten } from "./treeUtils";
 import ClipboardInteraction from "./interactions/ClipboardInteraction";
 
 export default class Controller {
-  constructor (canvas, toolbar, infobar) {
+  constructor (canvas, toolbar, infobar, modal) {
     this.canvas = canvas;
     this.toolbar = toolbar;
     this.infobar = infobar;
+    this.modal = modal;
 
     this.selectedTool = 'move';
 

@@ -44,6 +44,7 @@
 @include fa-folder-open;
 @include fa-search-plus;
 @include fa-search-minus;
+@include fa-times;
 
 html, body {
   margin: 0;
@@ -157,5 +158,93 @@ body {
     left: 0;
     bottom: 0;
     right: 0;
+  }
+}
+
+.modal {
+  width: rem(600px);
+  margin: rem(10px);
+  background-color: white;
+  border-radius: rem(10px);
+  box-shadow: 0 0 rem(4px) rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+
+  &-container {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+
+    &.show {
+      display: flex;
+    }
+  }
+
+  &__header {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #eeeeee;
+    padding: rem(5px) rem(10px);
+
+    &__title {
+      font-size: rem(24px);
+    }
+
+    &__close-btn {
+      cursor: pointer;
+      font-size: rem(20px);
+      color: #F04020;
+      padding: rem(2px) rem(5px) 0;
+    }
+  }
+
+  &__content {
+    padding: rem(10px);
+  }
+
+  &__footer {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    border-top: 1px solid #eeeeee;
+    padding: rem(5px) rem(10px);
+
+    &__button {
+      padding: rem(5px) rem(15px);
+      cursor: pointer;
+      margin-right: rem(30px);
+      background-color: white;
+      border-radius: rem(5px);
+      border: 1px solid #CCC;
+      min-width: rem(60px);
+      text-align: center;
+
+      &--confirm {
+        background-color: #40B060;
+        color: white;
+      }
+
+      &--error {
+        background-color: #D04020;
+        color: white;
+      }
+
+      &--info {
+        background-color: #2040C0;
+        color: white;
+      }
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
   }
 }
