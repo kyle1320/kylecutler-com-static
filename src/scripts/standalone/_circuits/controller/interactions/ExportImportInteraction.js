@@ -14,7 +14,7 @@ export default class ExportImportInteraction extends Interaction {
     } else if (tool.name === 'import') {
       this.controller.modal.showTextboxInputDialog(
         "Import Data",
-        "Paste your previously exported data snippet below and click 'Import' to add it to the current grid.",
+        "Paste your previously exported data snippet here and click 'Import' to add it to the current grid.",
         "Import",
         text => this.controller.import(text)
       );
