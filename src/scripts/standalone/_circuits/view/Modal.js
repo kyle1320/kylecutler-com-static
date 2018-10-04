@@ -12,6 +12,7 @@ export default class Modal {
     };
 
     this.elements.container.className = "modal-container";
+    this.elements.container.addEventListener('click', () => this.hideDialog());
     this.elements.container.appendChild(
       this.elements.modal = makeElement({ className: "modal" }, [
         this.elements.header = makeElement({ className: "modal__header" }, [
@@ -22,8 +23,32 @@ export default class Modal {
         ]),
         this.elements.content = makeElement({ className: "modal__content" }),
         this.elements.footer = makeElement({ className: "modal__footer" })
-      ])
+      ], { click: e => e.stopPropagation(), keydown: e => e.stopPropagation() })
     );
+  }
+
+  showTextboxDialog(title, info, content) {
+    this.setTitle(title);
+    this.setContent([
+      makeElement("p", info),
+      makeElement("textarea", content, { focus: e => e.target.select() })
+    ]);
+    this.clearButtons();
+    this.addButton("OK", "confirm", () => this.hideDialog());
+    this.showDialog();
+  }
+
+  showTextboxInputDialog(title, placeholder, okLabel, onSubmit) {
+    var text = makeElement({ tag: "textarea", placeholder });
+    this.setTitle(title);
+    this.setContent(text);
+    this.clearButtons();
+    this.addButton("Cancel", "confirm", () => this.hideDialog());
+    this.addButton(okLabel, "confirm", () => {
+      onSubmit(text.value);
+      this.hideDialog();
+    });
+    this.showDialog();
   }
 
   setTitle(title) {
@@ -37,7 +62,7 @@ export default class Modal {
     } else if (content instanceof Array) {
       content.forEach(el => this.elements.content.appendChild(el))
     } else {
-      this.elements.content.appendChild(el);
+      this.elements.content.appendChild(content);
     }
   }
 
@@ -51,16 +76,6 @@ export default class Modal {
       name,
       { click: onclick }
     ));
-  }
-
-  setButtons(content) {
-    if (typeof content === 'string') {
-      this.elements.content.innerHTML = content;
-    } else if (content instanceof Array) {
-      content.forEach(el => this.elements.content.appendChild(el))
-    } else {
-      this.elements.content.appendChild(el);
-    }
   }
 
   showDialog() {

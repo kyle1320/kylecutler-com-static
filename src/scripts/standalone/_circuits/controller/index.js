@@ -4,8 +4,10 @@ import DeleteInteraction from "./interactions/DeleteInteraction";
 import DragInteraction from "./interactions/DragInteraction";
 import SelectInteraction from "./interactions/SelectInteraction";
 import ZoomInteraction from "./interactions/ZoomInteraction";
-import { diff, flatten } from "./treeUtils";
+import { flatten } from "./treeUtils";
 import ClipboardInteraction from "./interactions/ClipboardInteraction";
+import ExportInteraction from "./interactions/ExportImportInteraction";
+import { serialize, deserialize } from "../model/serialize";
 
 export default class Controller {
   constructor (canvas, toolbar, infobar, modal) {
@@ -28,7 +30,8 @@ export default class Controller {
       new CreateInteraction(this),
       new DragInteraction(this),
       new ZoomInteraction(this),
-      new ClipboardInteraction(this)
+      new ClipboardInteraction(this),
+      new ExportInteraction(this)
     ];
   }
 
@@ -54,6 +57,10 @@ export default class Controller {
   select(tree, onChange) {
     var views = flatten(tree);
     views = views && views.filter(x => x !== this.canvas);
+    this.selectRaw(views, onChange);
+  }
+
+  selectRaw(views, onChange) {
     if (views && !views.length) views = null;
 
     if (this.selected === views) return;
@@ -78,6 +85,17 @@ export default class Controller {
     else            el.move(dx, dy);
   }
 
+  export() {
+    var data = this.selected || this.canvas.getAll().children.map(x => x.view);
+    return serialize(data);
+  }
+
+  import(text) {
+    var data = deserialize(text);
+    data.forEach(view => this.canvas.addChild(view));
+    this.selectRaw(data);
+  }
+
   handleMouseEvent(e) {
     this.callInteractions(x => x.handleMouseEvent(e));
   }
@@ -89,12 +107,15 @@ export default class Controller {
   selectTool(tool) {
     if (tool.name === this.selectedTool) return;
 
-    this.selectedTool = tool.name;
-    this.canvas.canvas.style.cursor = tool.cursor;
-    this.infobar.showInfo(tool.name);
+    if (!tool.isAction) {
+      this.selectedTool = tool.name;
+      this.canvas.canvas.style.cursor = tool.cursor;
 
-    this.hover(null);
-    // this.select(null);
+      this.infobar.showInfo(tool.name);
+
+      this.hover(null);
+      // this.select(null);
+    }
 
     this.callInteractions(x => x.handleSelectTool(tool));
   }

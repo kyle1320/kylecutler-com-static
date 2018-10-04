@@ -25,17 +25,21 @@ export default class Toolbar extends EventEmitter {
   }
 
   selectTool(name) {
-    this.tools.forEach(tool => {
-      var element = this.toolMap[tool.name].element;
+    var tool = this.toolMap[name].tool;
 
-      element.className = element.className.replace(/\s*selected/g, '');
+    if (!tool.isAction) {
+      this.tools.forEach(tool => {
+        var element = this.toolMap[tool.name].element;
 
-      if (tool.name === name) {
-        element.className += ' selected';
-      }
-    });
+        element.className = element.className.replace(/\s*selected/g, '');
 
-    this.emit('change', this.toolMap[name].tool);
+        if (tool.name === name) {
+          element.className += ' selected';
+        }
+      });
+    }
+
+    this.emit('change', tool);
   }
 
   updateHTML() {

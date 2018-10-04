@@ -45,6 +45,8 @@
 @include fa-search-plus;
 @include fa-search-minus;
 @include fa-times;
+@include fa-download;
+@include fa-file-import;
 
 html, body {
   margin: 0;
@@ -192,7 +194,7 @@ body {
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid #eeeeee;
-    padding: rem(5px) rem(10px);
+    padding: rem(10px) rem(15px);
 
     &__title {
       font-size: rem(24px);
@@ -207,7 +209,14 @@ body {
   }
 
   &__content {
-    padding: rem(10px);
+    margin: rem(10px);
+
+    textarea {
+      box-sizing: border-box;
+      width: 100%;
+      min-height: rem(100px);
+      resize: none;
+    }
   }
 
   &__footer {
@@ -215,7 +224,7 @@ body {
     flex-flow: row nowrap;
     justify-content: center;
     border-top: 1px solid #eeeeee;
-    padding: rem(5px) rem(10px);
+    padding: rem(10px);
 
     &__button {
       padding: rem(5px) rem(15px);
