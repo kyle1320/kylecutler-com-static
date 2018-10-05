@@ -8,6 +8,7 @@ import { flatten } from "./treeUtils";
 import ClipboardInteraction from "./interactions/ClipboardInteraction";
 import ExportInteraction from "./interactions/ExportImportInteraction";
 import { serialize, deserialize } from "../model/serialize";
+import TouchInteraction from "./interactions/TouchInteraction";
 
 export default class Controller {
   constructor (canvas, toolbar, infobar, modal) {
@@ -31,7 +32,8 @@ export default class Controller {
       new DragInteraction(this),
       new ZoomInteraction(this),
       new ClipboardInteraction(this),
-      new ExportInteraction(this)
+      new ExportInteraction(this),
+      new TouchInteraction(this)
     ];
   }
 

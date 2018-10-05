@@ -76,12 +76,30 @@ function addCanvasListeners(canvasView, controller) {
     controller.handleMouseEvent({ type, x, y, root, event });
   };
 
+  const touchAction = type => event => {
+    event.preventDefault();
+
+    var touch = event.changedTouches[0];
+    var bounds = touch.target.getBoundingClientRect();
+
+    var x = touch.clientX - bounds.x, y = touch.clientY - bounds.y;
+    var root = canvasView.findAll(x, y);
+
+    controller.handleMouseEvent({ type, x, y, root, event });
+  };
+
   canvas.addEventListener('mousedown',  positionalAction('down'));
   canvas.addEventListener('mouseup',    positionalAction('up'));
   canvas.addEventListener('mousemove',  positionalAction('move'));
   canvas.addEventListener('mouseenter', positionalAction('enter'));
   canvas.addEventListener('mouseleave', positionalAction('leave'));
   canvas.addEventListener('wheel',      positionalAction('scroll'));
+
+  canvas.addEventListener('touchstart', touchAction('enter'));
+  canvas.addEventListener('touchstart', touchAction('down'));
+  canvas.addEventListener('touchend',   touchAction('up'));
+  canvas.addEventListener('touchend',   touchAction('leave'));
+  canvas.addEventListener('touchmove',  touchAction('move'));
 
   canvas.oncontextmenu = () => false;
 }
