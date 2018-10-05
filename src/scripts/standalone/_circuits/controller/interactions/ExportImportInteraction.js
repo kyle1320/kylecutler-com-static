@@ -16,7 +16,17 @@ export default class ExportImportInteraction extends Interaction {
         "Import Data",
         "Paste your previously exported data snippet here and click 'Import' to add it to the current grid.",
         "Import",
-        text => this.controller.import(text)
+        text => {
+          try {
+            this.controller.import(text)
+          } catch (e) {
+            this.controller.modal.showErrorDialog(
+              "An Error Occured",
+              "Sorry, something went wrong while importing your data."
+            );
+            return false;
+          }
+        }
       );
     }
   }

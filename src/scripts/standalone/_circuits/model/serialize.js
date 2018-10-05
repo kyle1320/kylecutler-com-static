@@ -46,8 +46,10 @@ export function serialize(views) {
     var a = nodesMap.get(conn.data[0].data);
     var b = nodesMap.get(conn.data[1].data);
 
-    if (!a || !b)
-      throw new Error("Unable to find node while serializing connection");
+    if (!a || !b) {
+      console.warn("Unable to find node while serializing connection");
+      return;
+    }
 
     data.connections.push([a, b]);
   });

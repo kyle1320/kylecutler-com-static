@@ -45,9 +45,18 @@ export default class Modal {
     this.clearButtons();
     this.addButton("Cancel", "error", () => this.hideDialog());
     this.addButton(okLabel, "confirm", () => {
-      onSubmit(text.value);
-      this.hideDialog();
+      if (onSubmit(text.value) !== false) {
+        this.hideDialog();
+      }
     });
+    this.showDialog();
+  }
+
+  showErrorDialog(title, content) {
+    this.setTitle(title);
+    this.setContent([makeElement("p", content)]);
+    this.clearButtons();
+    this.addButton("OK", "", () => this.hideDialog());
     this.showDialog();
   }
 
