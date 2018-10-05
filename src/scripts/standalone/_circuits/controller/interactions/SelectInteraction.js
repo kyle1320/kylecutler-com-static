@@ -133,6 +133,10 @@ export default class SelectInteraction extends Interaction {
       views.forEach(v => v.remove());
       this.select(null);
     }));
+
+    infobar.addItem(Itembar.makeItem("Cancel", null, () => {
+      this.select(null);
+    }));
   }
 }
 
