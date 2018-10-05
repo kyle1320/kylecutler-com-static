@@ -75,10 +75,8 @@ function addCanvasListeners(canvasView, controller) {
 
     if (!mouseShouldBeDown && event.buttons && type !== 'down') {
       controller.handleMouseEvent({ type: 'down', x, y, root, event });
-      console.log("Injected down event");
     } else if (mouseShouldBeDown && !event.buttons && type !== 'up') {
       controller.handleMouseEvent({ type: 'up', x, y, root, event });
-      console.log("Injected up event");
     }
 
     mouseShouldBeDown = !!event.buttons;
