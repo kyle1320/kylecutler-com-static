@@ -78,38 +78,12 @@ export default class SelectInteraction extends Interaction {
   handleSelectTool(tool) {
     if (tool.name !== 'point') return;
 
-    this.showInfo();
+    this.handleSelectViews(this.controller.selected);
   }
 
-  selectSingle(view, adding) {
-    var selected = this.controller.selected;
+  handleSelectViews(views) {
+    if (this.controller.selectedTool !== 'point') return;
 
-    if (selected && adding) {
-      selected = selected.filter(v => v !== view);
-
-      if (selected.length === this.controller.selected.length) {
-        selected.push(view);
-      }
-
-      this.select(selected);
-    } else if (selected && selected.length === 1 && selected[0] === view) {
-      this.select(null);
-    } else {
-      this.select([view]);
-    }
-  }
-
-  select(views, adding) {
-    if (adding) {
-      this.controller.addToSelection(views);
-    } else {
-      this.controller.select(views);
-    }
-    this.showInfo();
-  }
-
-  showInfo() {
-    var views = this.controller.selected;
     var infobar = this.controller.infobar;
 
     infobar.clear();
@@ -137,6 +111,32 @@ export default class SelectInteraction extends Interaction {
     infobar.addItem(Itembar.makeItem("Cancel", null, () => {
       this.select(null);
     }));
+  }
+
+  selectSingle(view, adding) {
+    var selected = this.controller.selected;
+
+    if (selected && adding) {
+      selected = selected.filter(v => v !== view);
+
+      if (selected.length === this.controller.selected.length) {
+        selected.push(view);
+      }
+
+      this.select(selected);
+    } else if (selected && selected.length === 1 && selected[0] === view) {
+      this.select(null);
+    } else {
+      this.select([view]);
+    }
+  }
+
+  select(views, adding) {
+    if (adding) {
+      this.controller.addToSelection(views);
+    } else {
+      this.controller.select(views);
+    }
   }
 }
 

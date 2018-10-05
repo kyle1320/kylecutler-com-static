@@ -21,6 +21,10 @@ export default class Interaction {
     this.reset();
   }
 
+  handleSelectViews(views) {
+
+  }
+
   reset() {
 
   }

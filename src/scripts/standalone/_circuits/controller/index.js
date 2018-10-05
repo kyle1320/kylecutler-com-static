@@ -75,6 +75,8 @@ export default class Controller {
     );
 
     this.selected = views;
+
+    this.callInteractions(x => x.handleSelectViews(views));
   }
 
   move(el, dx, dy, shouldSnap) {
