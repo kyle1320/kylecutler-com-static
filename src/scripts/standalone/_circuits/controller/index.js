@@ -10,6 +10,7 @@ import ZoomInteraction from "./interactions/ZoomInteraction";
 import ClipboardInteraction from "./interactions/ClipboardInteraction";
 import ExportInteraction from "./interactions/ExportImportInteraction";
 import TouchInteraction from "./interactions/TouchInteraction";
+import AutoSlideInteraction from "./interactions/AutoSlideInteraction";
 
 export default class Controller {
   constructor (canvas, toolbar, infobar, modal) {
@@ -34,7 +35,8 @@ export default class Controller {
       new ZoomInteraction(this),
       new ClipboardInteraction(this),
       new ExportInteraction(this),
-      new TouchInteraction(this)
+      new TouchInteraction(this),
+      new AutoSlideInteraction(this)
     ];
   }
 
