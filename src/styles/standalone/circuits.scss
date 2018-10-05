@@ -101,13 +101,14 @@ body {
     text-align: center;
     height: 100%;
     box-sizing: border-box;
-    font-size: rem(15px);
+    font-size: rem(12px);
     line-height: 1;
     cursor: pointer;
     border-bottom: rem(2px) solid transparent;
     padding: 0 rem(5px);
     flex-grow: 1;
     overflow: hidden;
+    font-weight: bold;
 
     &:not(.disabled, .selected):hover {
       border-color: #CCCCCC;
