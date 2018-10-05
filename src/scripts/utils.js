@@ -60,3 +60,15 @@ export function makeElement(keys, content, events = {}) {
 
   return el;
 }
+
+export function toggleClass(el, className, enabled) {
+  var regexp = new RegExp('\\s*' + className, 'g');
+
+  if (enabled) {
+    if (!regexp.test(el.className)) {
+      el.className += ' ' + className;
+    }
+  } else {
+    el.className = el.className.replace(regexp, '');
+  }
+}

@@ -1,5 +1,5 @@
 import { EventEmitter } from "events";
-import { makeElement } from "../../../utils";
+import { makeElement, toggleClass } from "../../../utils";
 
 export default class Toolbar extends EventEmitter {
   constructor (element, tools) {
@@ -17,8 +17,9 @@ export default class Toolbar extends EventEmitter {
     tools.forEach(tool => {
       this.toolMap[tool.name] = {
         tool: tool,
-        element: null
-      }
+        element: null,
+        enabled: true
+      };
     });
 
     this.updateHTML();
@@ -27,15 +28,13 @@ export default class Toolbar extends EventEmitter {
   selectTool(name) {
     var tool = this.toolMap[name].tool;
 
+    if (!this.toolMap[name].enabled) return;
+
     if (!tool.isAction) {
       this.tools.forEach(tool => {
         var element = this.toolMap[tool.name].element;
 
-        element.className = element.className.replace(/\s*selected/g, '');
-
-        if (tool.name === name) {
-          element.className += ' selected';
-        }
+        toggleClass(element, 'selected', tool.name === name);
       });
     }
 
@@ -54,5 +53,10 @@ export default class Toolbar extends EventEmitter {
       this.toolMap[tool.name].element = element;
       this.element.appendChild(makeElement({ className: 'item' }, [element]));
     });
+  }
+
+  setEnabled(toolName, enabled) {
+    this.toolMap[toolName].enabled = enabled;
+    toggleClass(this.toolMap[toolName].element, 'disabled', !enabled);
   }
 }
