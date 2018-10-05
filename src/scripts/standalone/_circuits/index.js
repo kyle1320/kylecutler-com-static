@@ -109,6 +109,7 @@ function addDefaultItems(canvasView) {
 }
 
 function stressTest(canvasView) {
+  const circuits = require('./model/circuits');
   var ccts = Object.values(circuits);
   const randomCircuit = () => new Circuit(ccts[Math.floor(Math.random() * ccts.length)]);
   const randomObject = () => Math.random() < (1 / (ccts.length + 1)) ? new Node() : randomCircuit();
