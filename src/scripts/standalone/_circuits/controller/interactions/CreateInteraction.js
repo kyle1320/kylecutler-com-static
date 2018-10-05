@@ -88,7 +88,11 @@ export default class CreateInteraction extends Interaction {
         break;
       case 'enter':
         if (this.previewCircuit) {
-          this.controller.move(this.previewCircuit, e.root.x, e.root.y);
+          this.controller.move(
+            this.previewCircuit,
+            e.root.x - this.previewCircuit.dimensions.width / 2,
+            e.root.y - this.previewCircuit.dimensions.height / 2
+          );
           this.previewCircuit.setAttribute('hidden', false);
         }
 

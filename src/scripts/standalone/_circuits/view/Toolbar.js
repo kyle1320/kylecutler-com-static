@@ -45,7 +45,7 @@ export default class Toolbar extends EventEmitter {
   updateHTML() {
     this.tools.forEach(tool => {
       var element = makeElement({
-          className: `item__content ${tool.icon}`,
+          className: `item__content item__content--icon ${tool.icon}`,
           id: `tool-${tool.name}`,
           title: tool.label
         }, '', {

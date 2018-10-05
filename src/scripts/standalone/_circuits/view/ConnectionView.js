@@ -45,6 +45,7 @@ export default class ConnectionView extends View {
     // TODO: update path here
 
     this.emit('update');
+    this.emit('move', this);
   }
 
   getRenderOrder() {

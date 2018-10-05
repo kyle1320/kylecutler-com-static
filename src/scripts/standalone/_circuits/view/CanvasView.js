@@ -197,7 +197,7 @@ export default class CanvasView extends View {
       context.stroke();
     }
 
-    var viewport = new BoundingBox(offsetX, offsetY, width, height);
+    var viewport = new BoundingBox(offsetX - .5, offsetY - .5, width + 1, height + 1);
     this.children
       .find(viewport)
       .filter(view => !view.attributes.hidden)

@@ -75,7 +75,8 @@ body {
   .logo {
     font-size: rem(20px);
     margin: auto 0;
-    padding: 0 rem(40px);
+    padding: 0 rem(20px);
+    white-space: nowrap;
     box-sizing: border-box;
   }
 }
@@ -99,12 +100,17 @@ body {
     cursor: pointer;
     border-bottom: rem(2px) solid transparent;
     padding: rem(5px);
+    flex-grow: 1;
     overflow: hidden;
 
     &.selected {
       background-color: #eeeeee;
       color: #4080FF;
       border-bottom-color: currentColor;
+    }
+
+    &--icon {
+      min-width: rem(40px);
     }
 
     &--canvas {

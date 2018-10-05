@@ -43,7 +43,7 @@ export default class Modal {
     this.setTitle(title);
     this.setContent(text);
     this.clearButtons();
-    this.addButton("Cancel", "confirm", () => this.hideDialog());
+    this.addButton("Cancel", "error", () => this.hideDialog());
     this.addButton(okLabel, "confirm", () => {
       onSubmit(text.value);
       this.hideDialog();
