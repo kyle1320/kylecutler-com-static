@@ -84,9 +84,13 @@ body {
 
 .item {
   box-sizing: border-box;
-  border-right: 1px solid #eeeeee;
+  border-left: 1px solid #eeeeee;
   flex-basis: rem(60px);
   background-color: white;
+
+  &:last-child {
+    border-right: 1px solid #eeeeee;
+  }
 
   &__content {
     position: relative;
@@ -104,6 +108,10 @@ body {
     padding: rem(5px);
     flex-grow: 1;
     overflow: hidden;
+
+    &:not(.disabled, .selected):hover {
+      border-color: #CCCCCC;
+    }
 
     &.selected {
       color: #4080FF;
@@ -142,7 +150,6 @@ body {
   justify-content: flex-start;
   flex-grow: 1;
   height: rem(45px);
-  border-left: 1px solid #eeeeee;
   overflow-x: auto;
   overflow-y: hidden;
 }
