@@ -90,6 +90,9 @@ export default class SelectInteraction extends Interaction {
 
     if (!views) {
       infobar.showGenericInfo('point');
+      infobar.addItem(Itembar.makeItem(
+        "Select All", null, () => this.select(this.controller.canvas.getAll())
+      ));
       return;
     }
 
