@@ -1,13 +1,14 @@
+import { flatten } from "./treeUtils";
+import { serialize, deserialize } from "../model/serialize";
+
 import DebugInteraction from "./interactions/DebugInteraction";
 import CreateInteraction from "./interactions/CreateInteraction";
 import DeleteInteraction from "./interactions/DeleteInteraction";
 import DragInteraction from "./interactions/DragInteraction";
 import SelectInteraction from "./interactions/SelectInteraction";
 import ZoomInteraction from "./interactions/ZoomInteraction";
-import { flatten } from "./treeUtils";
 import ClipboardInteraction from "./interactions/ClipboardInteraction";
 import ExportInteraction from "./interactions/ExportImportInteraction";
-import { serialize, deserialize } from "../model/serialize";
 import TouchInteraction from "./interactions/TouchInteraction";
 
 export default class Controller {
@@ -76,8 +77,6 @@ export default class Controller {
     );
 
     this.selected = views;
-
-    this.infobar.showInfo('point', views);
   }
 
   move(el, dx, dy, shouldSnap) {
@@ -113,17 +112,13 @@ export default class Controller {
       this.selectedTool = tool.name;
       this.canvas.canvas.style.cursor = tool.cursor;
 
-      this.infobar.showInfo(tool.name);
+      this.infobar.showGenericInfo(tool.name);
 
       this.hover(null);
       // this.select(null);
     }
 
     this.callInteractions(x => x.handleSelectTool(tool));
-  }
-
-  selectCircuit(creator) {
-    this.callInteractions(x => x.handleSelectCircuit(creator));
   }
 
   callInteractions(handler) {

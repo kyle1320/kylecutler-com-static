@@ -1,7 +1,7 @@
-import { EventEmitter } from "events";
-import { makeElement, toggleClass } from "../../../utils";
+import { toggleClass } from "../../../utils";
+import Itembar from "./Itembar";
 
-export default class Toolbar extends EventEmitter {
+export default class Toolbar extends Itembar {
   constructor (element, tools) {
     super();
 
@@ -15,48 +15,33 @@ export default class Toolbar extends EventEmitter {
     this.toolMap = {};
 
     tools.forEach(tool => {
-      this.toolMap[tool.name] = {
-        tool: tool,
-        element: null,
-        enabled: true
-      };
+      var item = Itembar.makeIconItem(
+        tool.icon,
+        { id: `tool-${tool.name}`, title: tool.label },
+        () => this.selectTool(tool.name)
+      );
+
+      this.toolMap[tool.name] = { tool, item, enabled: true };
     });
 
-    this.updateHTML();
+    this.clear();
+    this.tools.forEach(tool => this.addItem(this.toolMap[tool.name].item));
   }
 
   selectTool(name) {
-    var tool = this.toolMap[name].tool;
+    var data = this.toolMap[name];
 
-    if (!this.toolMap[name].enabled) return;
+    if (!data.enabled) return;
 
-    if (!tool.isAction) {
-      this.tools.forEach(tool => {
-        var element = this.toolMap[tool.name].element;
-
-        toggleClass(element, 'selected', tool.name === name);
-      });
+    if (!data.tool.isAction) {
+      this.selectItem(data.item);
     }
 
-    this.emit('change', tool);
-  }
-
-  updateHTML() {
-    this.tools.forEach(tool => {
-      var element = makeElement({
-          className: `item__content item__content--icon ${tool.icon}`,
-          id: `tool-${tool.name}`,
-          title: tool.label
-        }, '', {
-          click: () => this.selectTool(tool.name)
-      });
-      this.toolMap[tool.name].element = element;
-      this.element.appendChild(makeElement({ className: 'item' }, [element]));
-    });
+    this.emit('change', data.tool);
   }
 
   setEnabled(toolName, enabled) {
     this.toolMap[toolName].enabled = enabled;
-    toggleClass(this.toolMap[toolName].element, 'disabled', !enabled);
+    toggleClass(this.toolMap[toolName].item, 'disabled', !enabled);
   }
 }

@@ -149,7 +149,7 @@ body {
   align-items: stretch;
   justify-content: flex-start;
   flex-grow: 1;
-  height: rem(45px);
+  min-height: rem(45px);
   overflow-x: auto;
   overflow-y: hidden;
 }
@@ -159,7 +159,7 @@ body {
   flex-flow: row nowrap;
   align-items: stretch;
   justify-content: flex-start;
-  height: rem(45px);
+  min-height: rem(45px);
   border-top: 1px solid #eeeeee;
   overflow-x: auto;
   overflow-y: hidden;

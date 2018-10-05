@@ -1,8 +1,10 @@
 import Interaction from "../Interaction";
 import { findFirst } from "../treeUtils";
+
 import NodeView from "../../view/NodeView";
 import CircuitView from "../../view/CircuitView";
 import ConnectionView from "../../view/ConnectionView";
+import Itembar from "../../view/Itembar";
 
 export default class SelectInteraction extends Interaction {
   reset() {
@@ -46,10 +48,10 @@ export default class SelectInteraction extends Interaction {
             var node = hoverTree.view.data;
             node.set(!node.isSource);
           } else {
-            this.controller.select(hoverTree);
+            this.select(hoverTree);
           }
         } else if (canvas.selectionArea) {
-          this.controller.select(canvas.getSelected());
+          this.select(canvas.getSelected());
         }
 
         canvas.clearSelection();
@@ -63,13 +65,13 @@ export default class SelectInteraction extends Interaction {
       case 65: // A
         if (e.ctrlKey) {
           e.preventDefault();
-          this.controller.select(this.controller.canvas.getAll());
+          this.select(this.controller.canvas.getAll());
         }
         break;
       case 27: // ESC
       case 13: // Enter
         e.preventDefault();
-        this.controller.select(null);
+        this.select(null);
         break;
     }
   }
@@ -77,7 +79,39 @@ export default class SelectInteraction extends Interaction {
   handleSelectTool(tool) {
     if (tool.name !== 'point') return;
 
-    this.controller.infobar.showInfo('point', this.controller.selected);
+    this.showInfo();
+  }
+
+  select(tree) {
+    this.controller.select(tree);
+    this.showInfo();
+  }
+
+  showInfo() {
+    var views = this.controller.selected;
+    var infobar = this.controller.infobar;
+
+    infobar.clear();
+
+    if (!views) {
+      infobar.showGenericInfo('point');
+      return;
+    }
+
+    infobar.addInfoText(`${views.length} element${views.length === 1 ? '' : 's'} selected`);
+
+    if (views.length === 1) {
+      if (views[0] instanceof CircuitView) {
+        infobar.addItem(
+          Itembar.makeItem("Rotate 90°", () => views[0].rotate(1))
+        );
+      }
+    }
+
+    infobar.addItem(Itembar.makeItem("Delete", () => {
+      views.forEach(v => v.remove());
+      this.select(null);
+    }));
   }
 }
 

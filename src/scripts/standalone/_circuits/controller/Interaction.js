@@ -21,10 +21,6 @@ export default class Interaction {
     this.reset();
   }
 
-  handleSelectCircuit(creator) {
-
-  }
-
   reset() {
 
   }

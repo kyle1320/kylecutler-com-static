@@ -1,31 +1,30 @@
 import Circuit from './model/Circuit';
 import Node from './model/Node';
+import { deserialize } from './model/serialize';
 
-const circuits = require('./model/circuits');
 const tools = require('./model/tools');
 
+import View from './view/View';
+import NodeView from "./view/NodeView";
 import CanvasView from "./view/CanvasView";
 import CircuitView from "./view/CircuitView";
-import NodeView from "./view/NodeView";
+import ConnectionView from './view/ConnectionView';
 import Toolbar from './view/Toolbar';
 import Infobar from './view/Infobar';
-import Controller from "./controller";
-import ConnectionView from './view/ConnectionView';
-import View from './view/View';
-import { deserialize } from './model/serialize';
 import Modal from './view/Modal';
+
+import Controller from "./controller";
 
 window.addEventListener('load', function () {
   var canvasView = getCanvasView(document.getElementById('canvas'));
   var toolbar = new Toolbar(document.getElementById('toolbar'), tools);
-  var infobar = new Infobar(document.getElementById('infobar'), circuits);
+  var infobar = new Infobar(document.getElementById('infobar'));
   var modal = new Modal(this.document.getElementById('modal'));
 
   var controller = new Controller(canvasView, toolbar, infobar, modal);
 
   addCanvasListeners(canvasView, controller);
   toolbar.on('change', tool => controller.selectTool(tool));
-  infobar.on('select-circuit', c => controller.selectCircuit(c));
 
   window.addEventListener('keydown', e => controller.handleKeyEvent(e));
 

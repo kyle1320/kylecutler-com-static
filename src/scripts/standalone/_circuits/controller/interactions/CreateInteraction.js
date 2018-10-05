@@ -1,11 +1,46 @@
 import Interaction from "../Interaction";
+
 import { findFirst } from "../treeUtils";
+
 import Node from "../../model/Node";
-import NodeView from "../../view/NodeView";
-import ConnectionView from "../../view/ConnectionView";
+import Circuit from "../../model/Circuit";
+
 import View from "../../view/View";
+import NodeView from "../../view/NodeView";
+import CircuitView from "../../view/CircuitView";
+import ConnectionView from "../../view/ConnectionView";
+import Itembar from "../../view/Itembar";
 
 export default class CreateInteraction extends Interaction {
+  constructor(controller) {
+    super(controller);
+
+    this.circuits = [];
+    this.circuitsMap = {};
+    this.selectedCircuit = null;
+
+    const addCircuit = (name, creator) => {
+      var view = creator();
+      var item = Itembar.makeCanvasItem(
+        canvas => drawViewOnPreviewCanvas(canvas, view),
+        name,
+        () => this.selectCircuit(name),
+        true
+      );
+
+      this.circuits.push(name);
+      this.circuitsMap[name] = { item, view, creator };
+    }
+
+    addCircuit('Node', () => new NodeView(new Node(), 0, 0));
+
+    const circuits = require('../../model/circuits');
+    for (let name in circuits) {
+      let def = circuits[name];
+      addCircuit(name, () => new CircuitView(new Circuit(def), 0, 0));
+    }
+  }
+
   reset() {
     this.dragStart = null;
     this.dragEnd = null;
@@ -122,15 +157,47 @@ export default class CreateInteraction extends Interaction {
       this.previewCircuit = null;
     }
 
-    this.controller.infobar.selectCircuit('Node');
+    var infobar = this.controller.infobar;
+
+    infobar.clear();
+
+    this.circuits.forEach(name => infobar.addItem(this.circuitsMap[name].item));
+
+    this.selectCircuit('Node');
   }
 
-  handleSelectCircuit(creator) {
-    this.creator = creator;
+  selectCircuit(name) {
+    this.creator = this.circuitsMap[name].creator;
+    this.controller.infobar.selectItem(this.circuitsMap[name].item);
     this.createNew();
   }
 }
 
 function findNode(tree) {
   return findFirst(tree, x => x.view instanceof NodeView);
+}
+
+function drawViewOnPreviewCanvas(canvas, view) {
+  var size = 30 * (window.devicePixelRatio || 1);
+
+  canvas.style.width = '30px';
+  canvas.style.height = '30px';
+  canvas.width = size;
+  canvas.height = size;
+
+  var dim = view.getDimensions();
+  var context = canvas.getContext('2d');
+  var scale = Math.min(size*.5, size*.8 / Math.max(dim.width, dim.height));
+  var drawWidth = scale * dim.width;
+  var drawHeight = scale * dim.height;
+  var drawX = (size - drawWidth) / 2;
+  var drawY = (size - drawHeight) / 2;
+
+  context.lineWidth = 0.1;
+
+  context.transform(
+    scale, 0, 0, scale, drawX, drawY
+  );
+
+  view.draw(context);
 }
