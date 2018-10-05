@@ -21,7 +21,6 @@ export default class Itembar extends EventEmitter {
   }
 
   selectItem(item) {
-    console.log(this.items);
     this.items.forEach(i => toggleClass(i, 'selected', item === i));
   }
 
