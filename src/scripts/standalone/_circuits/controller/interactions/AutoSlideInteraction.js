@@ -7,11 +7,21 @@ export default class AutoSlideInteraction extends Interaction {
     this.dx = 0;
     this.dy = 0;
 
+    this.interval = null;
     this.lastEvent = null;
+    this.mousePressed = false;
   }
 
   handleMouseEvent(e) {
-    if (e.event instanceof TouchEvent ? e.type === 'leave' : !e.event.buttons) {
+    if (e.type === 'down') {
+      this.mousePressed = true;
+    } else if (e.type === 'up') {
+      this.mousePressed = false;
+    }
+
+    if ((window.TouchEvent && e.event instanceof TouchEvent)
+        ? e.type === 'leave'
+        : !this.mousePressed) {
       this.stop();
       return;
     }
@@ -20,21 +30,23 @@ export default class AutoSlideInteraction extends Interaction {
 
     e = e.event;
 
-    this.lastEvent = e;
-
     var target, bounds, offsetX, offsetY;
 
-    if (e instanceof TouchEvent) {
+    if (window.TouchEvent && e instanceof TouchEvent) {
       var touch = e.changedTouches[0];
       target = touch.target;
       bounds = target.parentElement.getBoundingClientRect();
       offsetX = touch.clientX - bounds.x;
       offsetY = touch.clientY - bounds.y;
+
+      this.setLastEvent(touch.screenX, touch.screenY, touch.clientX, touch.clientY);
     } else {
       target = e.target;
       bounds = target.parentElement.getBoundingClientRect();
       offsetX = e.offsetX;
       offsetY = e.offsetY;
+
+      this.setLastEvent(e.screenX, e.screenY, e.clientX, e.clientY);
     }
 
     var distXMin = offsetX - 50;
@@ -79,11 +91,28 @@ export default class AutoSlideInteraction extends Interaction {
     }
 
     this.interval = null;
+    this.lastEvent = null;
+  }
+
+  setLastEvent(screenX, screenY, clientX, clientY) {
+    this.lastEvent = { screenX, screenY, clientX, clientY, buttons: 1 };
   }
 
   refireMouseEvent() {
     if (!this.lastEvent) return;
 
-    this.controller.canvas.canvas.dispatchEvent(this.lastEvent);
+    var event;
+
+    if (MouseEvent.initMouseEvent) {
+      event = document.createEvent("MouseEvents");
+      event.initMouseEvent('mousemove', false, true, window, 0,
+        this.lastEvent.screenX, this.lastEvent.screenY,
+        this.lastEvent.clientX, this.lastEvent.clientY,
+        false, false, false, false, 1, null);
+    } else {
+      event = new MouseEvent('mousemove', this.lastEvent);
+    }
+
+    this.controller.canvas.canvas.dispatchEvent(event);
   }
 }
