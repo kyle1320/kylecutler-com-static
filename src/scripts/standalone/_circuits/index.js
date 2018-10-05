@@ -73,13 +73,13 @@ function addCanvasListeners(canvasView, controller) {
     var x = event.offsetX, y = event.offsetY;
     var root = canvasView.findAll(x, y);
 
-    if (!mouseShouldBeDown && event.buttons && type !== 'down') {
-      controller.handleMouseEvent({ type: 'down', x, y, root, event });
-    } else if (mouseShouldBeDown && !event.buttons && type !== 'up') {
-      controller.handleMouseEvent({ type: 'up', x, y, root, event });
-    }
+    // if (!mouseShouldBeDown && event.buttons && type !== 'down') {
+    //   controller.handleMouseEvent({ type: 'down', x, y, root, event });
+    // } else if (mouseShouldBeDown && !event.buttons && type !== 'up') {
+    //   controller.handleMouseEvent({ type: 'up', x, y, root, event });
+    // }
 
-    mouseShouldBeDown = !!event.buttons;
+    // mouseShouldBeDown = !!event.buttons;
 
     controller.handleMouseEvent({ type, x, y, root, event });
   };
