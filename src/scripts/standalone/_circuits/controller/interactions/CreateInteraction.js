@@ -105,8 +105,11 @@ export default class CreateInteraction extends Interaction {
 
             if (this.dragStart !== targetNode) {
               this.previewCircuit.setEndpoint(1, targetNode);
-              this.dragStart.data.connect(targetNode.data);
-              this.controller.canvas.addPreviewChild();
+              if (this.dragStart.data.connect(targetNode.data)) {
+                this.controller.canvas.addPreviewChild();
+              } else {
+                this.controller.canvas.setPreviewChild(null);
+              }
             }
           } else {
             this.controller.canvas.addPreviewChild();

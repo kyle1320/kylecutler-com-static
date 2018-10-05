@@ -52,7 +52,7 @@ export default class Node extends EventEmitter {
   }
 
   connect (node) {
-    if (node === this) return;
+    if (node === this) return false;
 
     if (!this.connections.has(node)) {
       this.connections.add(node);
@@ -64,7 +64,11 @@ export default class Node extends EventEmitter {
       node.connect(this);
 
       this.emit('update');
+
+      return true;
     }
+
+    return false;
   }
 
   disconnect(node) {
