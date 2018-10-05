@@ -68,7 +68,7 @@ export default class CreateInteraction extends Interaction {
 
         break;
       case 'move':
-        this.controller.hover(targetNode);
+        this.controller.hoverTree(targetNode);
 
         if (this.dragStart) {
           if (targetNode) {

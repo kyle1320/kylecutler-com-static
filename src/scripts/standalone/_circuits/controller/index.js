@@ -38,10 +38,14 @@ export default class Controller {
     ];
   }
 
-  // TODO: combine these two methods
-  hover(tree, onChange) {
+  hoverTree(tree, onChange) {
     var views = flatten(tree);
     views = views && views.filter(x => x !== this.canvas);
+    this.hover(views, onChange);
+  }
+
+  // TODO: combine these two methods
+  hover(views, onChange) {
     if (views && !views.length) views = null;
 
     if (this.hovering === views) return;
@@ -57,13 +61,7 @@ export default class Controller {
     this.hovering = views;
   }
 
-  select(tree, onChange) {
-    var views = flatten(tree);
-    views = views && views.filter(x => x !== this.canvas);
-    this.selectRaw(views, onChange);
-  }
-
-  selectRaw(views, onChange) {
+  select(views, onChange) {
     if (views && !views.length) views = null;
 
     if (this.selected === views) return;
@@ -130,6 +128,14 @@ export default class Controller {
       if (handler(interaction) === false) break;
     }
   }
+
+  addToSelection(views, onChange) {
+    this.select(setUnion(this.selected, views), onChange);
+  }
+}
+
+function setUnion(a, b) {
+  return Array.from(new Set([].concat(a, b)));
 }
 
 function setDiff(before, after, onChange) {

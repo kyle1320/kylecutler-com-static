@@ -18,7 +18,6 @@ export default class SelectInteraction extends Interaction {
     var canvas = this.controller.canvas;
 
     var hoverTree = findNode(e.root) || findCircuit(e.root) || findConnection(e.root);
-
     var hoverTarget = hoverTree && hoverTree.view;
     if (hoverTarget !== this.lastHoverTarget) {
       this.isClickCandidate = false;
@@ -38,20 +37,20 @@ export default class SelectInteraction extends Interaction {
           canvas.endSelection(e.root.x, e.root.y);
           this.controller.hover(canvas.getSelected());
         } else {
-          this.controller.hover(hoverTree);
+          this.controller.hover(hoverTarget && [hoverTarget]);
         }
 
         break;
       case 'up':
-        if (this.isClickCandidate && hoverTree) {
-          if (hoverTree.view instanceof NodeView) {
-            var node = hoverTree.view.data;
+        if (this.isClickCandidate && hoverTarget) {
+          if (hoverTarget instanceof NodeView) {
+            var node = hoverTarget.data;
             node.set(!node.isSource);
           } else {
-            this.select(hoverTree);
+            this.selectSingle(hoverTarget, e.event.ctrlKey);
           }
         } else if (canvas.selectionArea) {
-          this.select(canvas.getSelected());
+          this.select(canvas.getSelected(), e.event.ctrlKey);
         }
 
         canvas.clearSelection();
@@ -82,8 +81,30 @@ export default class SelectInteraction extends Interaction {
     this.showInfo();
   }
 
-  select(tree) {
-    this.controller.select(tree);
+  selectSingle(view, adding) {
+    var selected = this.controller.selected;
+
+    if (selected && adding) {
+      selected = selected.filter(v => v !== view);
+
+      if (selected.length === this.controller.selected.length) {
+        selected.push(view);
+      }
+
+      this.select(selected);
+    } else if (selected && selected.length === 1 && selected[0] === view) {
+      this.select(null);
+    } else {
+      this.select([view]);
+    }
+  }
+
+  select(views, adding) {
+    if (adding) {
+      this.controller.addToSelection(views);
+    } else {
+      this.controller.select(views);
+    }
     this.showInfo();
   }
 

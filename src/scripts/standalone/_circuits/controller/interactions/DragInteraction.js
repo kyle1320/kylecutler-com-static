@@ -23,7 +23,7 @@ export default class DragInteraction extends Interaction {
       target = getMoveableTarget(e.root);
     }
 
-    this.controller.hover(target);
+    this.controller.hoverTree(target);
 
     switch (e.type) {
       case 'down':

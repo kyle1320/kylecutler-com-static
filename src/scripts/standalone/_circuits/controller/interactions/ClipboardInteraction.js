@@ -19,10 +19,6 @@ export default class ClipboardInteraction extends Interaction {
         case 'v':
           if (this.copiedData) {
             var views = deserialize(this.copiedData);
-            var tree = {
-              view: this.controller.canvas,
-              children: views.map(view => ({ view }))
-            };
 
             views.forEach(v => {
               var { x, y } = v.getDimensions();
@@ -30,7 +26,7 @@ export default class ClipboardInteraction extends Interaction {
               this.controller.canvas.addChild(v);
             });
 
-            this.controller.select(tree);
+            this.controller.select(views);
             this.offset++;
           }
           break;

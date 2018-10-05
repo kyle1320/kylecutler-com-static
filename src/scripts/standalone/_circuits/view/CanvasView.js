@@ -129,23 +129,16 @@ export default class CanvasView extends View {
       Math.max(this.selectionArea.startY, this.selectionArea.endY) + 0.4
     ];
 
-    return {
-      view: this,
-      children: this.children
+    return this.children
         .find(boundingBox)
 
         // connections must be fully enclosed in order to be selected
         .filter(v => !(v instanceof ConnectionView) ||
-                    boundingBox.contains(new BoundingBox(v.getDimensions())))
-        .map(view => ({ view }))
-    };
+                    boundingBox.contains(new BoundingBox(v.getDimensions())));
   }
 
   getAll() {
-    return {
-      view: this,
-      children: this.children.all().map(view => ({ view }))
-    };
+    return this.children.all();
   }
 
   drawBuffered() {

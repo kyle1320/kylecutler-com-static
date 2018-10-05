@@ -6,7 +6,7 @@ export default class DebugInteraction extends Interaction {
   }
 
   handleMouseEvent(e) {
-    this.controller.hover(e.root);
+    this.controller.hoverTree(e.root);
     console.log("Mouse Event", e);
   }
 
