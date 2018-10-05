@@ -153,6 +153,8 @@ export default class CreateInteraction extends Interaction {
   }
 
   handleSelectTool(tool) {
+    if (tool.name !== 'create') return;
+
     this.reset();
 
     if (this.previewCircuit) {

@@ -80,6 +80,8 @@ export default class DragInteraction extends Interaction {
   }
 
   handleSelectTool(tool) {
+    if (tool.name !== 'drag') return;
+
     var item = Itembar.makeItem("Snap To Grid", null, () => {
       this.forceSnapping = !this.forceSnapping;
       toggleClass(item, 'selected', this.forceSnapping);
