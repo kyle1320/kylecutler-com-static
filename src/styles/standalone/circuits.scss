@@ -76,7 +76,7 @@ body {
   .logo {
     font-size: rem(20px);
     margin: auto 0;
-    padding: 0 rem(20px);
+    padding: 0 rem(10px);
     white-space: nowrap;
     box-sizing: border-box;
   }
@@ -105,7 +105,7 @@ body {
     line-height: 1;
     cursor: pointer;
     border-bottom: rem(2px) solid transparent;
-    padding: rem(5px);
+    padding: 0 rem(5px);
     flex-grow: 1;
     overflow: hidden;
 
@@ -121,10 +121,6 @@ body {
 
     &--icon {
       min-width: rem(40px);
-    }
-
-    &--canvas {
-      padding: rem(2px) rem(5px);
     }
 
     .label {
