@@ -85,14 +85,14 @@ export default class Controller {
   }
 
   export() {
-    var data = this.selected || this.canvas.getAll().children.map(x => x.view);
+    var data = this.selected || this.canvas.getAll();
     return serialize(data);
   }
 
   import(text) {
     var data = deserialize(text);
     data.forEach(view => this.canvas.addChild(view));
-    this.selectRaw(data);
+    this.select(data);
   }
 
   handleMouseEvent(e) {
