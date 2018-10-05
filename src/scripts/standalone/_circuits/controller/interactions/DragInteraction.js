@@ -2,12 +2,15 @@ import Interaction from "../Interaction";
 import { findFirst } from "../treeUtils";
 import ConnectionView from "../../view/ConnectionView";
 import View from "../../view/View";
+import Itembar from "../../view/Itembar";
+import { toggleClass } from "../../../../utils";
 
 export default class DragInteraction extends Interaction {
   reset() {
     this.target = null;
     this.offsetX = null;
     this.offsetY = null;
+    this.forceSnapping = false;
   }
 
   meetsConditions() {
@@ -62,7 +65,8 @@ export default class DragInteraction extends Interaction {
               data.view,
               e.root.x - data.x,
               e.root.y - data.y,
-              e.event.shiftKey
+              data.view !== this.controller.canvas
+                && (e.event.shiftKey || this.forceSnapping)
             );
           });
         }
@@ -73,6 +77,14 @@ export default class DragInteraction extends Interaction {
 
         break;
     }
+  }
+
+  handleSelectTool(tool) {
+    var item = Itembar.makeItem("Snap To Grid", null, () => {
+      this.forceSnapping = !this.forceSnapping;
+      toggleClass(item, 'selected', this.forceSnapping);
+    });
+    this.controller.infobar.addItem(item, this.forceSnapping);
   }
 }
 
