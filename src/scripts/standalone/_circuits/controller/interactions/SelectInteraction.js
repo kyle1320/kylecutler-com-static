@@ -103,12 +103,12 @@ export default class SelectInteraction extends Interaction {
     if (views.length === 1) {
       if (views[0] instanceof CircuitView) {
         infobar.addItem(
-          Itembar.makeItem("Rotate 90°", () => views[0].rotate(1))
+          Itembar.makeItem("Rotate 90°", null, () => views[0].rotate(1))
         );
       }
     }
 
-    infobar.addItem(Itembar.makeItem("Delete", () => {
+    infobar.addItem(Itembar.makeItem("Delete", null, () => {
       views.forEach(v => v.remove());
       this.select(null);
     }));
