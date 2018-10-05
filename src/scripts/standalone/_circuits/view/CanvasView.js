@@ -42,9 +42,9 @@ export default class CanvasView extends View {
   }
 
   addChild(view) {
-    this.children.insert(view, new BoundingBox(view.getDimensions()));
+    view.setParent(this);
 
-    view.parent = this;
+    this.children.insert(view, new BoundingBox(view.getDimensions()));
 
     view.on('update', this.update);
     view.on('remove', this.removeChild);

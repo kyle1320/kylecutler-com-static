@@ -61,6 +61,10 @@ export default class View extends EventEmitter {
     this.emit('update', this);
   }
 
+  setParent(parent) {
+    this.parent = parent;
+  }
+
   getDimensions() {
     return this.dimensions;
   }

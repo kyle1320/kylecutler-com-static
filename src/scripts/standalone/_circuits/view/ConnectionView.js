@@ -31,6 +31,12 @@ export default class ConnectionView extends View {
     this.data[0].data.disconnect(this.data[1].data);
   }
 
+  setParent(parent) {
+    this.parent = parent;
+
+    this.update();
+  }
+
   update() {
     this.start = View.getRelativePosition(this.data[0], this.parent);
     this.end   = View.getRelativePosition(this.data[1], this.parent);
