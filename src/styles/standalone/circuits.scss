@@ -74,11 +74,26 @@ body {
   }
 
   .logo {
-    font-size: rem(20px);
-    margin: auto 0;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
     padding: 0 rem(10px);
     white-space: nowrap;
     box-sizing: border-box;
+    background-color: white;
+    border-right: 1px solid #cccccc;
+
+    svg {
+      height: rem(24px);
+    }
+
+    small {
+      font-size: rem(6px);
+      line-height: 1;
+      padding-top: rem(3px);
+      color: $gray;
+    }
   }
 }
 
