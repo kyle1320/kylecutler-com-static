@@ -27,7 +27,7 @@ export default class Controller {
     this.topZIndex = 0;
 
     this.interactions = [
-      new DebugInteraction(this),
+      // new DebugInteraction(this),
       new DeleteInteraction(this),
       new SelectInteraction(this),
       new CreateInteraction(this),

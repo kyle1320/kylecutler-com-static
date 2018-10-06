@@ -175,8 +175,8 @@ gulp.task('assets', function () {
         .pipe(gulp.dest(target()));
 });
 
-gulp.task('hidden-items:prod', function () {
-    return del(['public/circuits']);
+gulp.task('hidden-items:prod', function (done) {
+    done(); // return del(['public/circuits']);
 });
 
 gulp.task('watch:content', function () {
