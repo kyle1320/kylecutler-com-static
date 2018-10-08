@@ -95,6 +95,29 @@ export default class CanvasView extends View {
     this.update();
   }
 
+  zoomRel(scale, cx, cy) {
+    this.zoomAbs((scale - 1) * this.attributes.scale, cx, cy);
+  }
+
+  zoomAbs(delta, cx, cy) {
+    var { x, y } = this.getDimensions();
+    var curScale = this.attributes.scale;
+    var newScale = Math.min(70, Math.max(5, curScale + delta));
+    var factor = curScale / newScale;
+    var offsetX = (cx + x) * (1 - factor);
+    var offsetY = (cy + y) * (1 - factor);
+
+    this.move(x - offsetX, y - offsetY);
+    this.setAttribute('scale', newScale);
+  }
+
+  getCoord(clientX, clientY) {
+    return {
+      x: (clientX / this.attributes.scale) - this.dimensions.x,
+      y: (clientY / this.attributes.scale) - this.dimensions.y
+    }
+  }
+
   startSelection(x, y) {
     this.selectionArea = {
       startX: x,

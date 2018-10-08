@@ -27,6 +27,7 @@ export default class Controller {
     this.topZIndex = 0;
 
     this.interactions = [
+      new TouchInteraction(this),
       new DeleteInteraction(this),
       new SelectInteraction(this),
       new CreateInteraction(this),
@@ -34,7 +35,6 @@ export default class Controller {
       new ZoomInteraction(this),
       new ClipboardInteraction(this),
       new ExportInteraction(this),
-      new TouchInteraction(this),
       new AutoSlideInteraction(this)
     ];
 
