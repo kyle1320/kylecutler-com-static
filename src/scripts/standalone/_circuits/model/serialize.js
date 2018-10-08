@@ -22,7 +22,8 @@ export function serialize(views) {
       data.objects.push([
         'n',
         view.dimensions.x,
-        view.dimensions.y
+        view.dimensions.y,
+        view.data.isSource ? 1 : 0
       ]);
     } else if (view instanceof CircuitView) {
       for (var i = view.data.pins.length - 1; i >= 0; i--) {
@@ -62,8 +63,8 @@ export function deserialize(str) {
 
   var objects = data.o.map(obj => {
     switch (obj[0]) {
-      case 'n': // Node ['n', x, y]
-        return new NodeView(new Node(), obj[1], obj[2]);
+      case 'n': // Node ['n', x, y, isSource]
+        return new NodeView(new Node(!!obj[3]), obj[1], obj[2]);
       case 'c': // Circuit ['c', x, y, rotation, definition]
 
         // TODO: allow for user-defined circuits

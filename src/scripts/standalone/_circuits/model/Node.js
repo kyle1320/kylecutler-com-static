@@ -1,13 +1,13 @@
 const EventEmitter = require('events');
 
 export default class Node extends EventEmitter {
-  constructor () {
+  constructor (isSource = false) {
     super();
     this.connections = new Set();
 
     // keep track of "high voltage" sources
     this.sources = new Set();
-    this.isSource = false;
+    this.isSource = isSource;
   }
 
   get () {
