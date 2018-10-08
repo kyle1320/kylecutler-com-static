@@ -1,13 +1,12 @@
 import Interaction from "../Interaction";
 
 export default class DebugInteraction extends Interaction {
-  meetsConditions() {
-    return this.controller.selectedTool === 'debug';
-  }
-
   handleMouseEvent(e) {
-    this.controller.hoverTree(e.root);
     console.log("Mouse Event", e);
+
+    if (this.controller.selectedTool === 'debug') {
+      this.controller.hoverTree(e.root);
+    }
   }
 
   handleKeyEvent(e) {
@@ -18,7 +17,7 @@ export default class DebugInteraction extends Interaction {
     console.log("Select Tool", tool);
   }
 
-  handleSelectCircuit(creator) {
-    console.log("Select Circuit", creator);
+  handleSelectViews(views) {
+    console.log("Select Views", views);
   }
 }
