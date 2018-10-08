@@ -21,8 +21,8 @@ export function serialize(views) {
       nodesMap.set(view.data, [index]);
       data.objects.push([
         'n',
-        view.dimensions.x,
-        view.dimensions.y,
+        +view.dimensions.x.toFixed(3),
+        +view.dimensions.y.toFixed(3),
         view.data.isSource ? 1 : 0
       ]);
     } else if (view instanceof CircuitView) {
@@ -31,8 +31,8 @@ export function serialize(views) {
       }
       data.objects.push([
         'c',
-        view.dimensions.x,
-        view.dimensions.y,
+        +view.dimensions.x.toFixed(3),
+        +view.dimensions.y.toFixed(3),
         view.rotation,
         view.data.definition.key
       ]);
