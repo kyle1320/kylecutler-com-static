@@ -17,7 +17,6 @@ export default class CreateInteraction extends Interaction {
 
     this.circuits = [];
     this.circuitsMap = {};
-    this.selectedCircuit = null;
 
     const addCircuit = (name, creator) => {
       var view = creator();
@@ -45,7 +44,7 @@ export default class CreateInteraction extends Interaction {
     this.dragStart = null;
     this.dragEnd = null;
     this.previewCircuit = null;
-    this.creator = null;
+    this.selectedCircuit = null;
   }
 
   meetsConditions() {
@@ -54,17 +53,21 @@ export default class CreateInteraction extends Interaction {
 
   handleMouseEvent(e) {
     var targetNode = findNode(e.root);
+    var targetView = targetNode && targetNode.view;
+    let targetPos = targetNode && View.getRelativePosition(
+      targetView,
+      this.controller.canvas
+    );
 
     switch (e.type) {
     case 'down':
       if (targetNode) {
         this.dragStart = targetNode.view;
-        this.dragEnd = new NodeView(new Node(), e.root.x, e.root.y);
+        this.dragEnd = new NodeView(new Node(), targetPos.x, targetPos.y);
         this.dragEnd.parent = this.controller.canvas;
         this.previewCircuit = new ConnectionView(
           this.dragStart, this.dragEnd, this.controller.canvas
         );
-        this.previewCircuit.setAttribute('hidden', true);
         this.controller.canvas.setPreviewChild(this.previewCircuit);
       }
 
@@ -72,64 +75,52 @@ export default class CreateInteraction extends Interaction {
     case 'move':
       this.controller.hoverTree(targetNode);
 
+      if (this.previewCircuit) {
+        this.previewCircuit.setAttribute('hidden', false);
+      }
+
       if (this.dragStart) {
         if (targetNode) {
-          var pos = View.getRelativePosition(
-            targetNode.view,
-            this.controller.canvas
-          );
-          this.controller.move(this.dragEnd, pos.x, pos.y);
+          this.controller.move(this.dragEnd, targetPos.x, targetPos.y);
         } else {
-          this.previewCircuit
-            && this.previewCircuit.setAttribute('hidden', false);
           this.controller.move(
             this.dragEnd, e.root.x, e.root.y, e.event.shiftKey
           );
         }
-      } else {
-        if (targetNode) {
-          this.previewCircuit.setAttribute('hidden', true);
-        } else if (this.previewCircuit) {
-          this.previewCircuit.setAttribute('hidden', false);
-          this.controller.move(
-            this.previewCircuit,
-            e.root.x - this.previewCircuit.dimensions.width / 2,
-            e.root.y - this.previewCircuit.dimensions.height / 2,
-            e.event.shiftKey
-          );
-        }
+      } else if (this.previewCircuit) {
+        this.controller.move(
+          this.previewCircuit,
+          e.root.x - this.previewCircuit.dimensions.width / 2,
+          e.root.y - this.previewCircuit.dimensions.height / 2,
+          e.event.shiftKey
+        );
       }
 
       break;
     case 'up':
-      if (this.previewCircuit) {
-        if (this.dragStart) {
-          if (targetNode) {
-            targetNode = targetNode.view;
-          } else {
-            this.controller.canvas.addChild(this.dragEnd);
-            targetNode = this.dragEnd;
-          }
-
-          if (this.dragStart !== targetNode) {
-            this.previewCircuit.setEndpoint(1, targetNode);
-            if (this.dragStart.data.connect(targetNode.data)) {
-              this.controller.canvas.addPreviewChild();
-            } else {
-              this.controller.canvas.setPreviewChild(null);
-            }
-          }
+      if (this.previewCircuit && this.dragStart) {
+        if (targetView) {
+          this.previewCircuit.setEndpoint(1, targetView);
+          this.dragEnd = targetView;
         } else {
-          this.controller.canvas.addPreviewChild();
+          this.controller.canvas.addChild(this.dragEnd);
         }
 
-        this.previewCircuit = null;
+        if (!this.dragStart.data.connect(this.dragEnd.data)) {
+          this.controller.canvas.setPreviewChild(null);
+          this.previewCircuit = null;
+        }
+      }
 
-        this.createNew();
+      if (this.previewCircuit) {
+        this.controller.canvas.addPreviewChild();
       }
 
       this.dragStart = null;
       this.dragEnd = null;
+      this.previewCircuit = null;
+
+      this.createNew();
 
       break;
     case 'enter':
@@ -153,8 +144,8 @@ export default class CreateInteraction extends Interaction {
   }
 
   createNew() {
-    if (this.creator) {
-      this.previewCircuit = this.creator();
+    if (this.selectedCircuit) {
+      this.previewCircuit = this.circuitsMap[this.selectedCircuit].creator();
       this.previewCircuit.setAttribute('hidden', true);
       this.controller.canvas.setPreviewChild(this.previewCircuit);
     }
@@ -180,7 +171,7 @@ export default class CreateInteraction extends Interaction {
   }
 
   selectCircuit(name) {
-    this.creator = this.circuitsMap[name].creator;
+    this.selectedCircuit = name;
     this.controller.infobar.selectItem(this.circuitsMap[name].item);
     this.createNew();
   }
