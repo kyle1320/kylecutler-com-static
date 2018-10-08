@@ -24,7 +24,7 @@ export default class Node extends EventEmitter {
 
   update (source, caller) {
     if (source === undefined) {
-      throw new TypeError("source must be provided");
+      throw new TypeError('source must be provided');
     }
 
     if (source.isSource) {
@@ -48,7 +48,9 @@ export default class Node extends EventEmitter {
     }
 
     // update connected nodes
-    this.connections.forEach(node => node !== caller && node.update(source, this));
+    this.connections.forEach(
+      node => node !== caller && node.update(source, this)
+    );
   }
 
   connect (node) {
@@ -86,8 +88,8 @@ export default class Node extends EventEmitter {
       // Due to this, connections must be bi-directional.
       updateSourcesAfterDisconnect(this, node);
     } else {
-      for (var node of this.connections) {
-        this.disconnect(node);
+      for (var connectedNode of this.connections) {
+        this.disconnect(connectedNode);
       }
     }
   }
@@ -124,7 +126,7 @@ function findAllDFS(start) {
     found.add(node);
     front = front.concat(
       Array.from(node.connections.values())
-           .filter(nb => !found.has(nb))
+        .filter(nb => !found.has(nb))
     );
   }
 

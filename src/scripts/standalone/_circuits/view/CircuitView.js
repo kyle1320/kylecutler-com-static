@@ -1,5 +1,5 @@
-import View from "./View";
-import NodeView from "./NodeView";
+import View from './View';
+import NodeView from './NodeView';
 import parse from '../model/parse';
 
 require('path2d-polyfill');
@@ -74,8 +74,8 @@ export default class CircuitView extends View {
       view: this,
       x: relX, y: relY,
       children: this.children
-                  .filter(view => view.intersects(relX, relY, 0.5))
-                  .map(view => view.findAll(relX, relY))
+        .filter(view => view.intersects(relX, relY, 0.5))
+        .map(view => view.findAll(relX, relY))
     };
   }
 
@@ -84,8 +84,10 @@ export default class CircuitView extends View {
   }
 
   getRelativePosition(x, y) {
-    var {x, y} = getRotatedPosition({x, y}, this.dimensions, this.rotation);
-    return super.getRelativePosition(x, y);
+    var { x: rx, y: ry } = getRotatedPosition(
+      {x, y}, this.dimensions, this.rotation
+    );
+    return super.getRelativePosition(rx, ry);
   }
 
   eval(stmt) {
@@ -104,15 +106,17 @@ export default class CircuitView extends View {
     var path = new Path2D(this.data.definition.style.path);
 
     context.translate(x, y);
-    var trans = getRotatedPosition({x: 0, y: 0}, this.dimensions, this.rotation);
+    var trans = getRotatedPosition(
+      {x: 0, y: 0}, this.dimensions, this.rotation
+    );
     context.translate(trans.x, trans.y);
     context.rotate(this.rotation * Math.PI / 2);
 
     if (this.attributes.hover || this.attributes.active) {
       context.save();
       context.strokeStyle = this.attributes.active
-                              ? this.style.general.selectedColor
-                              : this.style.general.highlightColor;
+        ? this.style.general.selectedColor
+        : this.style.general.highlightColor;
       context.lineWidth = 1;
       context.lineJoin = 'round';
       context.stroke(path);
@@ -120,14 +124,14 @@ export default class CircuitView extends View {
     }
 
     context.fillStyle = this.data.definition.style.fillColor
-                        ? this.eval(this.data.definition.style.fillColor)
-                        : style.fillColor;
+      ? this.eval(this.data.definition.style.fillColor)
+      : style.fillColor;
     context.strokeStyle = style.strokeColor;
 
     context.fill(path);
     context.stroke(path);
 
-    this.children.forEach(view => view.draw(context))
+    this.children.forEach(view => view.draw(context));
 
     context.restore();
   }
@@ -135,18 +139,18 @@ export default class CircuitView extends View {
 
 function getRotatedPosition(pos, dim, rotation) {
   switch (rotation) {
-    case 0: return { x: pos.x, y: pos.y };
-    case 1: return { x: dim.height - pos.y, y: pos.x };
-    case 2: return { x: dim.width - pos.x, y: dim.height - pos.y };
-    case 3: return { x: pos.y, y: dim.width - pos.x };
+  case 0: return { x: pos.x, y: pos.y };
+  case 1: return { x: dim.height - pos.y, y: pos.x };
+  case 2: return { x: dim.width - pos.x, y: dim.height - pos.y };
+  case 3: return { x: pos.y, y: dim.width - pos.x };
   }
 }
 
 function getUnrotatedPosition(pos, dim, rotation) {
   switch (rotation) {
-    case 0: return { x: pos.x, y: pos.y };
-    case 1: return { x: pos.y, y: dim.height - pos.x };
-    case 2: return { x: dim.width - pos.x, y: dim.height - pos.y };
-    case 3: return { x: dim.width - pos.y, y: pos.x };
+  case 0: return { x: pos.x, y: pos.y };
+  case 1: return { x: pos.y, y: dim.height - pos.x };
+  case 2: return { x: dim.width - pos.x, y: dim.height - pos.y };
+  case 3: return { x: dim.width - pos.y, y: pos.x };
   }
 }

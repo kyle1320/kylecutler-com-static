@@ -50,10 +50,9 @@ export default class Circuit extends EventEmitter {
 function getUpdateFunc(rules) {
   var funcs = rules.map(rule => {
     switch (rule.type) {
-      case "output":
-        var expr = parse(rule.value);
-        return function (scope) { this._set(rule.target, expr(scope)); }
-        break;
+    case 'output':
+      var expr = parse(rule.value);
+      return function (scope) { this._set(rule.target, expr(scope)); };
     }
   });
 
@@ -61,5 +60,5 @@ function getUpdateFunc(rules) {
     var scope = this.pins.map(pin => pin.get());
 
     funcs.forEach(f => f.call(this, scope));
-  }
+  };
 }

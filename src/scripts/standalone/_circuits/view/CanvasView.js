@@ -1,8 +1,8 @@
-import View from "./View";
-import KDTree from "./spatial/KDTree";
-import BoundingBox from "./spatial/BoundingBox";
+import View from './View';
+import KDTree from './spatial/KDTree';
+import BoundingBox from './spatial/BoundingBox';
 import bufferEvent from '../utils/eventBuffer';
-import ConnectionView from "./ConnectionView";
+import ConnectionView from './ConnectionView';
 
 export default class CanvasView extends View {
   constructor (canvasEl, style) {
@@ -23,7 +23,7 @@ export default class CanvasView extends View {
     this.removeChild = view => {
       this.children.remove(view);
       this.update();
-    }
+    };
     this.moveChild   = view => {
       // TODO: check for collisions (somewhere)
 
@@ -32,7 +32,7 @@ export default class CanvasView extends View {
       this.children.insert(view, new BoundingBox(view.getDimensions()));
 
       this.update();
-    }
+    };
 
     this.draw = this.draw.bind(this);
   }
@@ -84,9 +84,9 @@ export default class CanvasView extends View {
       view: this,
       x: gridX, y: gridY,
       children: this.children
-                  .find(new BoundingBox(gridX - 0.5, gridY - 0.5, 1, 1))
-                  .filter(view => view.intersects(gridX, gridY, 0.5))
-                  .map(view => view.findAll(gridX, gridY))
+        .find(new BoundingBox(gridX - 0.5, gridY - 0.5, 1, 1))
+        .filter(view => view.intersects(gridX, gridY, 0.5))
+        .map(view => view.findAll(gridX, gridY))
     };
   }
 
@@ -115,7 +115,7 @@ export default class CanvasView extends View {
     return {
       x: (clientX / this.attributes.scale) - this.dimensions.x,
       y: (clientY / this.attributes.scale) - this.dimensions.y
-    }
+    };
   }
 
   startSelection(x, y) {
@@ -153,10 +153,10 @@ export default class CanvasView extends View {
     ];
 
     return this.children
-        .find(boundingBox)
+      .find(boundingBox)
 
-        // connections must be fully enclosed in order to be selected
-        .filter(v => !(v instanceof ConnectionView) ||
+    // connections must be fully enclosed in order to be selected
+      .filter(v => !(v instanceof ConnectionView) ||
                     boundingBox.contains(new BoundingBox(v.getDimensions())));
   }
 
@@ -169,7 +169,7 @@ export default class CanvasView extends View {
   }
 
   draw() {
-    var context = this.canvas.getContext("2d");
+    var context = this.canvas.getContext('2d');
 
     var scale = this.attributes.scale * (window.devicePixelRatio || 1);
     var style = this.style;
@@ -213,7 +213,9 @@ export default class CanvasView extends View {
       context.stroke();
     }
 
-    var viewport = new BoundingBox(offsetX - .5, offsetY - .5, width + 1, height + 1);
+    var viewport = new BoundingBox(
+      offsetX - .5, offsetY - .5, width + 1, height + 1
+    );
     this.children
       .find(viewport)
       .filter(view => !view.attributes.hidden)
@@ -234,12 +236,12 @@ export default class CanvasView extends View {
       context.fillStyle = style.general.selectionFillColor;
 
       context.beginPath();
-        context.rect(
-          this.selectionArea.startX,
-          this.selectionArea.startY,
-          this.selectionArea.endX - this.selectionArea.startX,
-          this.selectionArea.endY - this.selectionArea.startY,
-        );
+      context.rect(
+        this.selectionArea.startX,
+        this.selectionArea.startY,
+        this.selectionArea.endX - this.selectionArea.startX,
+        this.selectionArea.endY - this.selectionArea.startY
+      );
       context.closePath();
 
       context.fill();

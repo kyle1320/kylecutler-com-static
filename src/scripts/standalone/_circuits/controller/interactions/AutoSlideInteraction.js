@@ -1,4 +1,4 @@
-import Interaction from "../Interaction";
+import Interaction from '../Interaction';
 
 export default class AutoSlideInteraction extends Interaction {
   reset() {
@@ -20,8 +20,8 @@ export default class AutoSlideInteraction extends Interaction {
     }
 
     if ((window.TouchEvent && e.event instanceof TouchEvent)
-        ? e.type === 'leave'
-        : !this.mousePressed) {
+      ? e.type === 'leave'
+      : !this.mousePressed) {
       this.stop();
       return;
     }
@@ -39,7 +39,9 @@ export default class AutoSlideInteraction extends Interaction {
       offsetX = touch.clientX - bounds.x;
       offsetY = touch.clientY - bounds.y;
 
-      this.setLastEvent(touch.screenX, touch.screenY, touch.clientX, touch.clientY);
+      this.setLastEvent(
+        touch.screenX, touch.screenY, touch.clientX, touch.clientY
+      );
     } else {
       target = e.target;
       bounds = target.parentElement.getBoundingClientRect();
@@ -104,7 +106,7 @@ export default class AutoSlideInteraction extends Interaction {
     var event;
 
     if (MouseEvent.initMouseEvent) {
-      event = document.createEvent("MouseEvents");
+      event = document.createEvent('MouseEvents');
       event.initMouseEvent('mousemove', false, true, window, 0,
         this.lastEvent.screenX, this.lastEvent.screenY,
         this.lastEvent.clientX, this.lastEvent.clientY,

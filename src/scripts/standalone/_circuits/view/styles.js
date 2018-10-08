@@ -1,25 +1,25 @@
 export const defaultStyle = {
   general: {
     lineWidth: 0.1,
-    gridColor: "#eeeeee",
-    highlightColor: "rgba(0, 0, 0, 0.15)",
-    selectedColor: "rgba(0, 100, 200, 0.3)",
-    selectionStrokeColor: "rgba(0, 100, 200, 0.7)",
-    selectionFillColor: "rgba(0, 100, 200, 0.15)",
+    gridColor: '#eeeeee',
+    highlightColor: 'rgba(0, 0, 0, 0.15)',
+    selectedColor: 'rgba(0, 100, 200, 0.3)',
+    selectionStrokeColor: 'rgba(0, 100, 200, 0.7)',
+    selectionFillColor: 'rgba(0, 100, 200, 0.15)',
     gate: {
-      strokeColor: "#333333",
-      fillColor: "#FFFFFF"
+      strokeColor: '#333333',
+      fillColor: '#FFFFFF'
     }
   },
   node: {
-    strokeColorOn: "#00FF00",
-    strokeColorOff: "#A08080",
-    fillColorOn: "#00FF00",
-    fillColorOff: "#FFFFFF",
+    strokeColorOn: '#00FF00',
+    strokeColorOff: '#A08080',
+    fillColorOn: '#00FF00',
+    fillColorOff: '#FFFFFF',
   },
   connection: {
-    colorOn: "#00FF00",
-    colorOff: "#A08080"
+    colorOn: '#00FF00',
+    colorOff: '#A08080'
   }
 };
 

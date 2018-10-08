@@ -16,4 +16,4 @@ export default function bufferEvent(name, callback, animation) {
   }
 
   bufferMap[name].add(callback);
-};
+}

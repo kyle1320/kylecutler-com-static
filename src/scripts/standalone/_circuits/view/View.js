@@ -2,7 +2,7 @@ import { defaultStyle } from './styles';
 
 const EventEmitter = require('events');
 
-const viewKey = Symbol("View");
+const viewKey = Symbol('View');
 
 var uniqueViewId = 0;
 
@@ -13,7 +13,7 @@ export default class View extends EventEmitter {
     this._id = uniqueViewId++;
 
     if (data && data[viewKey]) {
-      throw new Error("Cannot bind datasource to two views!");
+      throw new Error('Cannot bind datasource to two views!');
     }
 
     this.data = data;
@@ -101,7 +101,7 @@ export default class View extends EventEmitter {
   }
 
   draw(context) {
-    throw new Error("View subclass must override method draw()");
+    throw new Error('View subclass must override method draw()');
   }
 
   static getViewFromDatasource(data) {
@@ -111,15 +111,15 @@ export default class View extends EventEmitter {
   static getRelativePosition(view, ancestor) {
     var pos = view.getDimensions();
 
-    while (true) {
-      view = view.parent;
-      if (view == ancestor) break;
-
+    view = view.parent;
+    while (view != ancestor) {
       if (view) {
         pos = view.getRelativePosition(pos.x, pos.y);
       } else {
-        throw new Error("Did not find ancestor view");
+        throw new Error('Did not find ancestor view');
       }
+
+      view = view.parent;
     }
 
     return pos;

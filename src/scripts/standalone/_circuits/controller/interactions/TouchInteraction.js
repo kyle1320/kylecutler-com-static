@@ -1,4 +1,4 @@
-import Interaction from "../Interaction";
+import Interaction from '../Interaction';
 
 export default class TouchInteraction extends Interaction {
   reset() {
@@ -18,52 +18,56 @@ export default class TouchInteraction extends Interaction {
       var touch = touches[i];
 
       switch (e.type) {
-        case 'down':
-          if (!this.touchA) {
-            this.touchA = touch;
-          } else if (!this.touchB && touch.identifier !== this.touchA.identifier) {
-            this.touchB = touch;
-            this.update();
+      case 'down':
+        if (!this.touchA) {
+          this.touchA = touch;
+        } else if (
+          !this.touchB
+          && touch.identifier !== this.touchA.identifier
+        ) {
 
-            // fake out the other interactions so they will cancel their behavior
-            e.type = 'leave';
-          }
+          this.touchB = touch;
+          this.update();
 
-          break;
-        case 'move':
-          if (touch.identifier === this.touchA.identifier) {
-            this.touchA = touch;
-          } else if (touch.identifier === this.touchB.identifier) {
-            this.touchB = touch;
-          }
+          // fake out the other interactions so they will cancel their behavior
+          e.type = 'leave';
+        }
 
-          if (this.touchA && this.touchB) {
-            var oldCenter = this.center;
-            var oldDistance = this.distance;
-            var canvas = this.controller.canvas;
+        break;
+      case 'move':
+        if (touch.identifier === this.touchA.identifier) {
+          this.touchA = touch;
+        } else if (touch.identifier === this.touchB.identifier) {
+          this.touchB = touch;
+        }
 
-            this.update();
+        if (this.touchA && this.touchB) {
+          var oldCenter = this.center;
+          var oldDistance = this.distance;
+          var canvas = this.controller.canvas;
 
-            var { x, y } = canvas.getDimensions();
-            canvas.move(
-              x + (this.center.x - oldCenter.x) / canvas.attributes.scale,
-              y + (this.center.y - oldCenter.y) / canvas.attributes.scale
-            );
-            var { x: cx, y: cy } = canvas.getCoord(this.center.x, this.center.y);
-            canvas.zoomRel( this.distance / oldDistance, cx, cy );
+          this.update();
 
-            // prevent other interactions from handling this event
-            ret = false;
-          }
-          break;
-        case 'up':
-          if (touch.identifier === this.touchA.identifier)  {
-            this.touchA = this.touchB;
-            this.touchB = null;
-          } else if (touch.identifier === this.touchB.identifier) {
-            this.touchB = null;
-          }
-          break;
+          var { x, y } = canvas.getDimensions();
+          canvas.move(
+            x + (this.center.x - oldCenter.x) / canvas.attributes.scale,
+            y + (this.center.y - oldCenter.y) / canvas.attributes.scale
+          );
+          var { x: cx, y: cy } = canvas.getCoord(this.center.x, this.center.y);
+          canvas.zoomRel( this.distance / oldDistance, cx, cy );
+
+          // prevent other interactions from handling this event
+          ret = false;
+        }
+        break;
+      case 'up':
+        if (touch.identifier === this.touchA.identifier)  {
+          this.touchA = this.touchB;
+          this.touchB = null;
+        } else if (touch.identifier === this.touchB.identifier) {
+          this.touchB = null;
+        }
+        break;
       }
     }
 

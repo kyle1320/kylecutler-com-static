@@ -40,25 +40,25 @@ function parseExpr(tokens, stack) {
   if (next.startsWith('$')) {
     return evalVar.bind(null, next.substring(1));
 
-  // string literals
+    // string literals
   } else if (next.match(/^'.*'$/)) {
     return evalLiteral.bind(null, next.substring(1, next.length - 1));
 
-  // boolean literals
+    // boolean literals
   } else if (next === 'true') {
     return evalLiteral.bind(null, true);
   } else if (next === 'false') {
     return evalLiteral.bind(null, false);
 
-  // if statements
+    // if statements
   } else if (next === 'if') {
     return evalIf.bind(null, stack.pop(), stack.pop(), stack.pop());
 
-  // binary operators
+    // binary operators
   } else if (next === '|' || next === '&' || next === '^' || next === '+') {
     return evalBinaryOp.bind(null, next, stack.pop(), stack.pop());
 
-  // unary operators
+    // unary operators
   } else if (next === '!') {
     return evalUnaryOp.bind(null, next, stack.pop());
   }
@@ -68,16 +68,16 @@ function parseExpr(tokens, stack) {
 
 function evalBinaryOp(op, rhs, lhs, scope) {
   switch (op) {
-    case '&': return lhs(scope) && rhs(scope);
-    case '|': return lhs(scope) || rhs(scope);
-    case '^': return lhs(scope) ^  rhs(scope);
-    case '+': return lhs(scope) +  rhs(scope);
+  case '&': return lhs(scope) && rhs(scope);
+  case '|': return lhs(scope) || rhs(scope);
+  case '^': return lhs(scope) ^  rhs(scope);
+  case '+': return lhs(scope) +  rhs(scope);
   }
 }
 
 function evalUnaryOp(op, val, scope) {
   switch (op) {
-    case '!': return !val(scope);
+  case '!': return !val(scope);
   }
 }
 

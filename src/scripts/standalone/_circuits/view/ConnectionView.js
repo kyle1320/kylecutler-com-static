@@ -1,4 +1,4 @@
-import View from "./View";
+import View from './View';
 
 export default class ConnectionView extends View {
   constructor (nodeA, nodeB, parent, style) {
@@ -87,19 +87,19 @@ export default class ConnectionView extends View {
     context.save();
 
     var color = (this.data[0].data.get() || this.data[1].data.get())
-                  ? style.colorOn
-                  : style.colorOff;
+      ? style.colorOn
+      : style.colorOff;
 
     if (this.attributes.hover || this.attributes.active) {
       context.save();
       context.strokeStyle = this.attributes.active
-                              ? this.style.general.selectedColor
-                              : this.style.general.highlightColor;
+        ? this.style.general.selectedColor
+        : this.style.general.highlightColor;
       context.lineWidth = 0.5;
       context.lineJoin = 'round';
       context.beginPath();
-        context.moveTo(this.start.x, this.start.y);
-        context.lineTo(this.end.x, this.end.y);
+      context.moveTo(this.start.x, this.start.y);
+      context.lineTo(this.end.x, this.end.y);
       context.closePath();
       context.stroke();
       context.restore();
@@ -108,8 +108,8 @@ export default class ConnectionView extends View {
     context.strokeStyle = color;
 
     context.beginPath();
-      context.moveTo(this.start.x, this.start.y);
-      context.lineTo(this.end.x, this.end.y);
+    context.moveTo(this.start.x, this.start.y);
+    context.lineTo(this.end.x, this.end.y);
     context.closePath();
 
     context.stroke();

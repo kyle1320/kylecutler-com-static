@@ -1,6 +1,9 @@
 window.onload = function() {
   var scene = new THREE.Scene();
-  var renderer = new THREE.WebGLRenderer({antialias: true, preserveDrawingBuffer: true});
+  var renderer = new THREE.WebGLRenderer({
+    antialias: true,
+    preserveDrawingBuffer: true
+  });
 
   var options = {
     sphere1Radius: 1.2,
@@ -94,21 +97,33 @@ window.onload = function() {
   linkInputToNumber(inputs.targetOpacity, options, 'targetOpacity', render);
 
   function render() {
-    var camera = new THREE.PerspectiveCamera(options.cameraFOV, 15 / 9, 0.1, 100);
+    var camera = new THREE.PerspectiveCamera(
+      options.cameraFOV, 15 / 9, 0.1, 100
+    );
 
     var sphere1Geo = new THREE.SphereGeometry(options.sphere1Radius, 32, 32);
     var sphere2Geo = new THREE.SphereGeometry(options.sphere2Radius, 32, 32);
-    var floorGeo = new THREE.PlaneGeometry(options.floorWidth, options.floorLength, 1, 1);
+    var floorGeo = new THREE.PlaneGeometry(
+      options.floorWidth, options.floorLength, 1, 1
+    );
 
     var sphere1Mesh = new THREE.Mesh(sphere1Geo, sphere1Mat);
     var sphere2Mesh = new THREE.Mesh(sphere2Geo, sphere2Mat);
     var floorMesh = new THREE.Mesh(floorGeo, floorMat);
 
-    camera.position.set(options.cameraPosX, options.cameraPosY, options.cameraPosZ);
-    camera.lookAt(options.cameraLookX, options.cameraLookY, options.cameraLookZ);
+    camera.position.set(
+      options.cameraPosX, options.cameraPosY, options.cameraPosZ
+    );
+    camera.lookAt(
+      options.cameraLookX, options.cameraLookY, options.cameraLookZ
+    );
 
-    sphere1Mesh.position.set(options.sphere1PosX, options.sphere1PosY, options.sphere1PosZ);
-    sphere2Mesh.position.set(options.sphere2PosX, options.sphere2PosY, options.sphere2PosZ);
+    sphere1Mesh.position.set(
+      options.sphere1PosX, options.sphere1PosY, options.sphere1PosZ
+    );
+    sphere2Mesh.position.set(
+      options.sphere2PosX, options.sphere2PosY, options.sphere2PosZ
+    );
     floorMesh.position.set(0, 0, 0);
     floorMesh.rotation.x = -Math.PI / 2;
     light.position.set(options.lightPosX, options.lightPosY, options.lightPosZ);

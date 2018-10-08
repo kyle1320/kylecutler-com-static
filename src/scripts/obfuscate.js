@@ -21,7 +21,7 @@ window.addEventListener('load', function () {
         }
       }
     } catch (e) {
-
+      // ignore
     }
 
     this.removeAttribute('data-obf');

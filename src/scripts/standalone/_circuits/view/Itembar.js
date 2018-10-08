@@ -1,5 +1,5 @@
-import { EventEmitter } from "events";
-import { toggleClass, makeElement } from "../../../utils";
+import { EventEmitter } from 'events';
+import { toggleClass, makeElement } from '../../../utils';
 
 export default class Itembar extends EventEmitter {
   constructor(element) {
@@ -16,7 +16,7 @@ export default class Itembar extends EventEmitter {
   }
 
   addInfoText(text) {
-    var el = makeElement({ className: "info" }, text);
+    var el = makeElement({ className: 'info' }, text);
     this.element.appendChild(el);
   }
 
@@ -26,7 +26,7 @@ export default class Itembar extends EventEmitter {
 
   clear() {
     this.items = [];
-    this.element.innerHTML = "";
+    this.element.innerHTML = '';
   }
 
   static makeCanvasItem(drawFunc, label, onClick) {
@@ -35,8 +35,8 @@ export default class Itembar extends EventEmitter {
     drawFunc(canvas);
 
     return Itembar.makeItem(
-      [canvas, makeElement({ className: "label" }, label)],
-      { className: "item__content--canvas" },
+      [canvas, makeElement({ className: 'label' }, label)],
+      { className: 'item__content--canvas' },
       onClick
     );
   }

@@ -1,10 +1,10 @@
-import Interaction from "../Interaction";
-import { findFirst } from "../treeUtils";
+import Interaction from '../Interaction';
+import { findFirst } from '../treeUtils';
 
-import NodeView from "../../view/NodeView";
-import CircuitView from "../../view/CircuitView";
-import ConnectionView from "../../view/ConnectionView";
-import Itembar from "../../view/Itembar";
+import NodeView from '../../view/NodeView';
+import CircuitView from '../../view/CircuitView';
+import ConnectionView from '../../view/ConnectionView';
+import Itembar from '../../view/Itembar';
 
 export default class SelectInteraction extends Interaction {
   reset() {
@@ -17,7 +17,9 @@ export default class SelectInteraction extends Interaction {
 
     var canvas = this.controller.canvas;
 
-    var hoverTree = findNode(e.root) || findCircuit(e.root) || findConnection(e.root);
+    var hoverTree =  findNode(e.root)
+                  || findCircuit(e.root)
+                  || findConnection(e.root);
     var hoverTarget = hoverTree && hoverTree.view;
     if (hoverTarget !== this.lastHoverTarget) {
       this.isClickCandidate = false;
@@ -25,53 +27,53 @@ export default class SelectInteraction extends Interaction {
     this.lastHoverTarget = hoverTarget;
 
     switch (e.type) {
-      case 'down':
-        if (!canvas.selectionArea) {
-          this.isClickCandidate = true;
-          canvas.startSelection(e.root.x, e.root.y);
-        }
+    case 'down':
+      if (!canvas.selectionArea) {
+        this.isClickCandidate = true;
+        canvas.startSelection(e.root.x, e.root.y);
+      }
 
-        break;
-      case 'move':
-        if (canvas.selectionArea) {
-          canvas.endSelection(e.root.x, e.root.y);
-          this.controller.hover(canvas.getSelected());
+      break;
+    case 'move':
+      if (canvas.selectionArea) {
+        canvas.endSelection(e.root.x, e.root.y);
+        this.controller.hover(canvas.getSelected());
+      } else {
+        this.controller.hover(hoverTarget && [hoverTarget]);
+      }
+
+      break;
+    case 'up':
+      if (this.isClickCandidate && hoverTarget) {
+        if (hoverTarget instanceof NodeView) {
+          var node = hoverTarget.data;
+          node.set(!node.isSource);
         } else {
-          this.controller.hover(hoverTarget && [hoverTarget]);
+          this.selectSingle(hoverTarget, e.event.ctrlKey);
         }
+      } else if (canvas.selectionArea) {
+        this.select(canvas.getSelected(), e.event.ctrlKey);
+      }
 
-        break;
-      case 'up':
-        if (this.isClickCandidate && hoverTarget) {
-          if (hoverTarget instanceof NodeView) {
-            var node = hoverTarget.data;
-            node.set(!node.isSource);
-          } else {
-            this.selectSingle(hoverTarget, e.event.ctrlKey);
-          }
-        } else if (canvas.selectionArea) {
-          this.select(canvas.getSelected(), e.event.ctrlKey);
-        }
+      canvas.clearSelection();
 
-        canvas.clearSelection();
-
-        break;
+      break;
     }
   }
 
   handleKeyEvent(e) {
     switch (e.keyCode) {
-      case 65: // A
-        if (e.ctrlKey) {
-          e.preventDefault();
-          this.select(this.controller.canvas.getAll());
-        }
-        break;
-      case 27: // ESC
-      case 13: // Enter
+    case 65: // A
+      if (e.ctrlKey) {
         e.preventDefault();
-        this.select(null);
-        break;
+        this.select(this.controller.canvas.getAll());
+      }
+      break;
+    case 27: // ESC
+    case 13: // Enter
+      e.preventDefault();
+      this.select(null);
+      break;
     }
   }
 
@@ -91,27 +93,29 @@ export default class SelectInteraction extends Interaction {
     if (!views) {
       infobar.showGenericInfo('point');
       infobar.addItem(Itembar.makeItem(
-        "Select All", null, () => this.select(this.controller.canvas.getAll())
+        'Select All', null, () => this.select(this.controller.canvas.getAll())
       ));
       return;
     }
 
-    infobar.addInfoText(`${views.length} element${views.length === 1 ? '' : 's'} selected`);
+    infobar.addInfoText(
+      `${views.length} element${views.length === 1 ? '' : 's'} selected`
+    );
 
     if (views.length === 1) {
       if (views[0] instanceof CircuitView) {
         infobar.addItem(
-          Itembar.makeItem("Rotate 90°", null, () => views[0].rotate(1))
+          Itembar.makeItem('Rotate 90°', null, () => views[0].rotate(1))
         );
       }
     }
 
-    infobar.addItem(Itembar.makeItem("Delete", null, () => {
+    infobar.addItem(Itembar.makeItem('Delete', null, () => {
       views.forEach(v => v.remove());
       this.select(null);
     }));
 
-    infobar.addItem(Itembar.makeItem("Cancel", null, () => {
+    infobar.addItem(Itembar.makeItem('Cancel', null, () => {
       this.select(null);
     }));
   }

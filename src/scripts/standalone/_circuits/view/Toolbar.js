@@ -1,5 +1,5 @@
-import { toggleClass } from "../../../utils";
-import Itembar from "./Itembar";
+import { toggleClass } from '../../../utils';
+import Itembar from './Itembar';
 
 export default class Toolbar extends Itembar {
   constructor (element, tools) {

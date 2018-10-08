@@ -1,4 +1,4 @@
-import BoundingBox from "./BoundingBox";
+import BoundingBox from './BoundingBox';
 
 const wrapperKey = Symbol('KD Tree Item Wrapper');
 const splitThreshold = 200;
@@ -47,7 +47,7 @@ export default class KDTree {
 if (process.env.NODE_ENV === 'development') {
   KDTree.prototype.draw = function (context, boundingBox) {
     drawNode(context, this.rootNode, boundingBox);
-  }
+  };
 }
 
 class InternalItem {
@@ -228,7 +228,7 @@ function drawNode(context, node, bb) {
   if (node.coord < bb.min[node.axis]) {
     drawNode(context, node.upper, bb);
   } else if (node.coord > bb.max[node.axis]) {
-    drawNode(context, node.lower, bb)
+    drawNode(context, node.lower, bb);
   } else {
     context.save();
 
@@ -240,11 +240,11 @@ function drawNode(context, node, bb) {
       end.reverse();
     }
 
-    context.strokeStyle = "rgba(0, 0, 255, 0.1)";
+    context.strokeStyle = 'rgba(0, 0, 255, 0.1)';
 
     context.beginPath();
-      context.moveTo(start[0], start[1]);
-      context.lineTo(end[0], end[1])
+    context.moveTo(start[0], start[1]);
+    context.lineTo(end[0], end[1]);
     context.closePath();
 
     context.stroke();

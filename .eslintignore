@@ -1,0 +1,5 @@
+# Gulp target folder
+public/
+
+# static assets
+src/assets

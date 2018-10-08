@@ -3,15 +3,15 @@ export function importStylesheet(href) {
   // avoid duplicates
   for (var i = 0; i < document.styleSheets.length; i++) {
     if (document.styleSheets[i].href === href) {
-        return Promise.resolve();
+      return Promise.resolve();
     }
   }
 
   return new Promise((resolve, reject) => {
-    var link = document.createElement("link");
+    var link = document.createElement('link');
 
-    link.type = "text/css";
-    link.rel = "stylesheet";
+    link.type = 'text/css';
+    link.rel = 'stylesheet';
     link.href = href;
     link.onload = resolve;
     link.onerror = reject;
@@ -22,7 +22,7 @@ export function importStylesheet(href) {
 
 export function delay(ms) {
   return new Promise(resolve => {
-    setTimeout(resolve, ms)
+    setTimeout(resolve, ms);
   });
 }
 

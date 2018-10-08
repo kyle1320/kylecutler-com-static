@@ -1,4 +1,6 @@
 export function pushEvent(event, attributes) {
   attributes.event = event;
-  dataLayer.push(attributes);
+
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push(attributes);
 }

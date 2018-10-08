@@ -1,16 +1,16 @@
-import { flatten } from "./treeUtils";
-import { serialize, deserialize } from "../model/serialize";
+import { flatten } from './treeUtils';
+import { serialize, deserialize } from '../model/serialize';
 
-import DebugInteraction from "./interactions/DebugInteraction";
-import CreateInteraction from "./interactions/CreateInteraction";
-import DeleteInteraction from "./interactions/DeleteInteraction";
-import DragInteraction from "./interactions/DragInteraction";
-import SelectInteraction from "./interactions/SelectInteraction";
-import ZoomInteraction from "./interactions/ZoomInteraction";
-import ClipboardInteraction from "./interactions/ClipboardInteraction";
-import ExportInteraction from "./interactions/ExportImportInteraction";
-import TouchInteraction from "./interactions/TouchInteraction";
-import AutoSlideInteraction from "./interactions/AutoSlideInteraction";
+import DebugInteraction from './interactions/DebugInteraction';
+import CreateInteraction from './interactions/CreateInteraction';
+import DeleteInteraction from './interactions/DeleteInteraction';
+import DragInteraction from './interactions/DragInteraction';
+import SelectInteraction from './interactions/SelectInteraction';
+import ZoomInteraction from './interactions/ZoomInteraction';
+import ClipboardInteraction from './interactions/ClipboardInteraction';
+import ExportInteraction from './interactions/ExportImportInteraction';
+import TouchInteraction from './interactions/TouchInteraction';
+import AutoSlideInteraction from './interactions/AutoSlideInteraction';
 
 export default class Controller {
   constructor (canvas, toolbar, infobar, modal) {
@@ -59,7 +59,7 @@ export default class Controller {
       this.hovering,
       views,
       (x, adding) => {
-        onChange && onChange(x, adding), x.setAttribute('hover', adding)
+        onChange && onChange(x, adding), x.setAttribute('hover', adding);
       }
     );
 
@@ -75,7 +75,7 @@ export default class Controller {
       this.selected,
       views,
       (x, adding) => {
-        onChange && onChange(x, adding), x.setAttribute('active', adding)
+        onChange && onChange(x, adding), x.setAttribute('active', adding);
       }
     );
 
