@@ -86,6 +86,7 @@ export default class CanvasView extends View {
       children: this.children
         .find(new BoundingBox(gridX - 0.5, gridY - 0.5, 1, 1))
         .filter(view => view.intersects(gridX, gridY, 0.5))
+        .sort((a, b) => b.getRenderOrder() - a.getRenderOrder())
         .map(view => view.findAll(gridX, gridY))
     };
   }
