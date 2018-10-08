@@ -30,9 +30,10 @@ window.addEventListener('load', function () {
 
 function getCanvasView(canvasEl) {
   const canvasView = new CanvasView(canvasEl);
-  const scale = window.devicePixelRatio || 1;
 
   function resizeCanvas() {
+    const scale = window.devicePixelRatio || 1;
+
     var rawWidth = canvasEl.parentElement.clientWidth;
     var rawHeight = canvasEl.parentElement.clientHeight;
 
