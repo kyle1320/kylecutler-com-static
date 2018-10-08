@@ -42,8 +42,10 @@ export default class KDTree {
     this.items = this.items.filter(i => i.isValid);
     this.rootNode = buildNode(this, this.items);
   }
+}
 
-  draw(context, boundingBox) {
+if (process.env.NODE_ENV === 'development') {
+  KDTree.prototype.draw = function (context, boundingBox) {
     drawNode(context, this.rootNode, boundingBox);
   }
 }

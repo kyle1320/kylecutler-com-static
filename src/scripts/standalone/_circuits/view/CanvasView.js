@@ -202,7 +202,9 @@ export default class CanvasView extends View {
       this.previewChild.draw(context);
     }
 
-    this.children.draw(context, viewport);
+    if (process.env.NODE_ENV === 'development') {
+      this.children.draw(context, viewport);
+    }
 
     if (this.selectionArea) {
       context.strokeStyle = style.general.selectionStrokeColor;

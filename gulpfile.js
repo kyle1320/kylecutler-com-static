@@ -19,6 +19,7 @@ const uglify = require('gulp-uglify');
 
 const babelify = require('babelify');
 const browserify = require('browserify');
+const envify = require('envify');
 const tinyify = require('tinyify');
 const watchify = require('watchify');
 
@@ -72,7 +73,8 @@ gulp.task('site-scripts', function (done) {
         var tasks = files.map(function (entry) {
             var args = Object.assign({}, watchify.args, { debug: true });
             var bundler = watchify(browserify(entry, args))
-                .transform(babelify, babelConfig_withTransform);
+                .transform(babelify, babelConfig_withTransform)
+                .transform(envify, { _: "purge", NODE_ENV: "development" });
             var relPath = path.relative('src/scripts', entry);
 
             bundler.on('update', function () {
@@ -124,6 +126,7 @@ gulp.task('site-scripts:prod', function (done) {
 
             return browserify(entry)
                 .transform(babelify, babelConfig_withTransform)
+                .transform(envify, { _: "purge", NODE_ENV: "production" })
                 .plugin(tinyify)
                 .bundle()
                 .on('error', notify.onError(function (error) {

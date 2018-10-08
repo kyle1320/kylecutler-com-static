@@ -27,7 +27,6 @@ export default class Controller {
     this.topZIndex = 0;
 
     this.interactions = [
-      // new DebugInteraction(this),
       new DeleteInteraction(this),
       new SelectInteraction(this),
       new CreateInteraction(this),
@@ -38,6 +37,10 @@ export default class Controller {
       new TouchInteraction(this),
       new AutoSlideInteraction(this)
     ];
+
+    if (process.env.NODE_ENV === 'development') {
+      this.interactions.push(new DebugInteraction(this));
+    }
   }
 
   hoverTree(tree, onChange) {
