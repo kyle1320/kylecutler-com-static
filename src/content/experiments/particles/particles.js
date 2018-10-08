@@ -83,7 +83,9 @@ window.onload = function() {
     inputs.pauseBtn.addEventListener('click', function() {setPaused(!paused);});
     inputs.clearBtn.addEventListener('click', clear);
     inputs.clearTraceBtn.addEventListener('click', clearTrace);
-    inputs.saveBtn.addEventListener('click', function() {inputs.saveImg.src = traceCanvas.toDataURL();});
+    inputs.saveBtn.addEventListener('click', function() {
+      inputs.saveImg.src = traceCanvas.toDataURL();
+    });
 
     drawCanvas.addEventListener('mousedown', mouseDown);
     drawCanvas.addEventListener('mousemove', mouseMove);
@@ -321,7 +323,9 @@ window.onload = function() {
       newgroup = newGroup(mousepos.x, mousepos.y);
       groupvel = {ox: mousepos.x, oy: mousepos.y, x: 0, y: 0};
     } else {
-      mouseparticle = new Particle(mousepos.x, mousepos.y, 1, options.mouseDensity, '#FFFF00', false, false);
+      mouseparticle = new Particle(
+        mousepos.x, mousepos.y, 1, options.mouseDensity, '#FFFF00', false, false
+      );
     }
 
     draw();
@@ -366,7 +370,9 @@ window.onload = function() {
 
       draw();
     } else {
-      mouseparticle = new Particle(mousepos.x, mousepos.y, 1, options.mouseDensity, '#FFFF00', false, false);
+      mouseparticle = new Particle(
+        mousepos.x, mousepos.y, 1, options.mouseDensity, '#FFFF00', false, false
+      );
       doubletap = true;
       setTimeout(function() {doubletap = false;}, 400);
     }

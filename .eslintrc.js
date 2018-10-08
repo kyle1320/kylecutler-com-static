@@ -38,7 +38,6 @@ module.exports = {
             devWarn,
             {
                 "code": 80,
-                "ignoreStrings": true,
                 "ignoreComments": true
             }
         ]

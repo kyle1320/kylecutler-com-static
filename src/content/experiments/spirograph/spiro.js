@@ -74,9 +74,15 @@ window.onload = function() {
     linkCheckboxToBoolean(inputs.spcheck, options, 'showPen', draw);
     linkCheckboxToBoolean(inputs.uccheck, options, 'useColor');
 
-    inputs.pauseBtn.addEventListener('click', function() {setPaused(!paused);});
-    inputs.resetBtn.addEventListener('click', function() {reset();});
-    inputs.saveBtn.addEventListener('click', function() {inputs.saveImg.src = spiroCanvas.toDataURL();});
+    inputs.pauseBtn.addEventListener('click', function() {
+      setPaused(!paused);
+    });
+    inputs.resetBtn.addEventListener('click', function() {
+      reset();
+    });
+    inputs.saveBtn.addEventListener('click', function() {
+      inputs.saveImg.src = spiroCanvas.toDataURL();
+    });
 
     window.addEventListener('keydown', function(evt) {
       //console.log(evt.keyCode);
@@ -220,7 +226,9 @@ window.onload = function() {
         circles.forEach(update);
         eachCircle(null, calculate); // calculate the new center point
 
-        spiroCtx.strokeStyle = options.useColor ? getSaturatedColor(angle / (2 * Math.PI)) : '#000000';
+        spiroCtx.strokeStyle = options.useColor
+          ? getSaturatedColor(angle / (2 * Math.PI))
+          : '#000000';
         spiroCtx.beginPath();
         spiroCtx.moveTo(oldx, oldy);
         spiroCtx.lineTo(newx, newy);

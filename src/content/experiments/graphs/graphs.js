@@ -173,6 +173,8 @@ window.onload = function() {
     createdEdge = null;
     mouse = {x: 0, y: 0, inside: false};
 
+    /* eslint-disable max-len */
+
     linkInputToNumber(inputs.orderinput, options, 'order', redrawBackground);
     linkInputToNumber(inputs.rangeinput, options, 'range', redrawBackground);
 
@@ -183,6 +185,8 @@ window.onload = function() {
     linkCheckboxToBoolean(inputs.hlcheck, options, 'highlight', redrawBackground);
     linkCheckboxToBoolean(inputs.mocheck, options, 'modulo', redrawBackground);
     linkCheckboxToBoolean(inputs.upcheck, options, 'constantUpdates');
+
+    /* eslint-enable max-len */
 
     drawCanvas.addEventListener('mousedown',  mousedown);
     drawCanvas.addEventListener('mouseup',    mouseup);

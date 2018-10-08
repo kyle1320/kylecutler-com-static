@@ -2,7 +2,8 @@ function getGL(canvas, attributes) {
   var gl = null;
 
   try {
-    gl = canvas.getContext('webgl', attributes) || canvas.getContext('experimental-webgl', attributes);
+    gl =  canvas.getContext('webgl', attributes)
+       || canvas.getContext('experimental-webgl', attributes);
   } catch (e) {
     // not supported; return null
   }
@@ -27,11 +28,13 @@ function getGLProgram(gl, vertSource, fragSource) {
     gl.compileShader(fragShader);
 
     if (!gl.getShaderParameter(vertShader, gl.COMPILE_STATUS)) {
-      throw 'Could not compile vertex shader:\n\n' + gl.getShaderInfoLog(vertShader);
+      throw 'Could not compile vertex shader:\n\n'
+        + gl.getShaderInfoLog(vertShader);
     }
 
     if (!gl.getShaderParameter(fragShader, gl.COMPILE_STATUS)) {
-      throw 'Could not compile fragment shader:\n\n' + gl.getShaderInfoLog(fragShader);
+      throw 'Could not compile fragment shader:\n\n'
+        + gl.getShaderInfoLog(fragShader);
     }
 
     program = gl.createProgram();

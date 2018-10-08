@@ -117,8 +117,13 @@ window.onload = function() {
     // setup button events
     inputs.pauseBtn.addEventListener('click', function() {setPaused(!paused);});
     inputs.resetBtn.addEventListener('click', reset);
-    inputs.saveBtn.addEventListener('click', function() {inputs.saveImg.src = drawCanvas.toDataURL();});
-    inputs.neighborsZoomInBtn.addEventListener('click', function() {neighborData.scale++; drawNeighbors();});
+    inputs.saveBtn.addEventListener('click', function() {
+      inputs.saveImg.src = drawCanvas.toDataURL();
+    });
+    inputs.neighborsZoomInBtn.addEventListener('click', function() {
+      neighborData.scale++;
+      drawNeighbors();
+    });
     inputs.neighborsZoomOutBtn.addEventListener('click', function() {
       if (neighborData.scale > 1) {
         neighborData.scale--;

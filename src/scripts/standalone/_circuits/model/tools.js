@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+
 module.exports = [
   { name: 'point',   icon: 'fa fa-mouse-pointer', cursor: null,       label: 'Interact with objects' },
   { name: 'drag',    icon: 'fa fa-hand-rock',     cursor: 'grab',     label: 'Move the canvas or objects' },

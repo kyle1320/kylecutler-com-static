@@ -43,7 +43,8 @@ export default class Itembar extends EventEmitter {
 
   static makeIconItem(iconClass, props, onClick) {
     props = props || {};
-    props.className = `item__content--icon ${iconClass} ${props.className || ''}`;
+    props.className =
+      `item__content--icon ${iconClass} ${props.className || ''}`;
 
     return Itembar.makeItem('', props, onClick);
   }

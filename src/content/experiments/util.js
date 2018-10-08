@@ -1,5 +1,7 @@
 var $ = function(e) { return document.getElementById(e); };
-var isNaN = Number.isNaN || window.isNaN || function(n) {return typeof n === 'number' && n !== n;};
+var isNaN =  Number.isNaN
+          || window.isNaN
+          || function(n) { return typeof n === 'number' && n !== n; };
 
 /****************
  *    CANVAS    *
@@ -86,7 +88,9 @@ function fitElement(el, preferredWidth, preferredHeight, onresize) {
  ****************/
 
 function randomColor() {
-  return '#'+('00000'+(Math.floor(Math.random()*16777216)).toString(16)).slice(-6);
+  return '#' + (
+    '00000' + (Math.floor(Math.random()*16777216)).toString(16)
+  ).slice(-6);
 }
 
 function getSaturatedColor(v) {
@@ -147,7 +151,10 @@ function linkCheckboxToBoolean(checkbox, object, attr, func) {
   func = func || function() {};
 
   checkbox.checked = object[attr];
-  checkbox.addEventListener('click', function() {object[attr] = checkbox.checked; func();});
+  checkbox.addEventListener('click', function() {
+    object[attr] = checkbox.checked;
+    func();
+  });
 }
 
 function linkInputToNumber(input, object, attr, func, instant) {
@@ -155,10 +162,15 @@ function linkInputToNumber(input, object, attr, func, instant) {
   if (instant === undefined) instant = true;
 
   input.value = String(object[attr]);
-  if (instant) input.addEventListener('input', function() {if (!isNaN(input.valueAsNumber)) object[attr] = input.valueAsNumber; func();});
-  else input.addEventListener('change', function() {if (!isNaN(input.valueAsNumber)) object[attr] = input.valueAsNumber; func();});
+  input.addEventListener(instant ? 'input' : 'change', function() {
+    if (!isNaN(input.valueAsNumber))
+      object[attr] = input.valueAsNumber;
+    func();
+  });
 
-  input.addEventListener('blur', function() {input.value = String(object[attr]);});
+  input.addEventListener('blur', function() {
+    input.value = String(object[attr]);
+  });
 }
 
 function linkColorChooserToValues(color, object, attr, func) {
@@ -187,7 +199,10 @@ function linkSelectToString(select, object, attr, func) {
   func = func || function() {};
 
   select.value = object[attr];
-  select.addEventListener('change', function() {object[attr] = select.value; func();});
+  select.addEventListener('change', function() {
+    object[attr] = select.value;
+    func();
+  });
 }
 
 /****************

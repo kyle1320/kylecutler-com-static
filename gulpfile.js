@@ -72,6 +72,8 @@ gulp.task('content-scripts', function () {
 });
 
 gulp.task('site-scripts', function (done) {
+
+  // eslint-disable-next-line max-len
   glob('{src/scripts/site.js,src/scripts/standalone/*.js}', function (err, files) {
     if (err) done(err);
 
@@ -127,6 +129,8 @@ gulp.task('content-scripts:prod', function () {
 });
 
 gulp.task('site-scripts:prod', function (done) {
+
+  // eslint-disable-next-line max-len
   glob('{src/scripts/site.js,src/scripts/standalone/*.js}', function (err, files) {
     if (err) done(err);
 
@@ -184,8 +188,12 @@ gulp.task('content', function () {
 });
 
 gulp.task('assets', function () {
-  return gulp.src(['src/assets/**/*', 'src/content/**/*', '!src/content/**/*.js', '!src/content/**/*.pug'])
-    .pipe(gulp.dest(target()));
+  return gulp.src([
+    'src/assets/**/*',
+    'src/content/**/*',
+    '!src/content/**/*.js',
+    '!src/content/**/*.pug'
+  ]).pipe(gulp.dest(target()));
 });
 
 gulp.task('hidden-items:prod', function (done) {

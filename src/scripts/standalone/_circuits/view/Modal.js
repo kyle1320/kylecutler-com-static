@@ -14,16 +14,27 @@ export default class Modal {
     this.elements.container.className = 'modal-container';
     this.elements.container.addEventListener('click', () => this.hideDialog());
     this.elements.container.appendChild(
-      this.elements.modal = makeElement({ className: 'modal' }, [
-        this.elements.header = makeElement({ className: 'modal__header' }, [
-          this.elements.title = makeElement({ className: 'modal__header__title' }),
-          makeElement({ className: 'modal__header__close-btn fa fa-times' }, '', {
-            click: () => this.hideDialog()
-          })
-        ]),
-        this.elements.content = makeElement({ className: 'modal__content' }),
-        this.elements.footer = makeElement({ className: 'modal__footer' })
-      ], { click: e => e.stopPropagation(), keydown: e => e.stopPropagation() })
+      this.elements.modal = makeElement(
+        { className: 'modal' },
+        [
+          this.elements.header = makeElement(
+            { className: 'modal__header' },
+            [
+              this.elements.title = makeElement(
+                { className: 'modal__header__title' }
+              ),
+              makeElement(
+                { className: 'modal__header__close-btn fa fa-times' },
+                '',
+                { click: () => this.hideDialog() }
+              )
+            ]
+          ),
+          this.elements.content = makeElement({ className: 'modal__content' }),
+          this.elements.footer = makeElement({ className: 'modal__footer' })
+        ],
+        { click: e => e.stopPropagation(), keydown: e => e.stopPropagation() }
+      )
     );
   }
 
@@ -81,7 +92,9 @@ export default class Modal {
 
   addButton(name, style, onclick) {
     this.elements.footer.appendChild(makeElement(
-      { className: `modal__footer__button${style ? ' modal__footer__button--' + style : ''}` },
+      { className: 'modal__footer__button' +
+        (style ? ' modal__footer__button--' + style : '')
+      },
       name,
       { click: onclick }
     ));
