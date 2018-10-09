@@ -30,13 +30,13 @@ const source = require('vinyl-source-stream');
 
 const babelConfig_noTransform = {
   'presets': [
-    '@babel/preset-env'
+    '@babel/preset-env', '@babel/preset-typescript'
   ]
 };
 
 const babelConfig_withTransform = {
   'presets': [
-    '@babel/preset-env'
+    '@babel/preset-env', '@babel/preset-typescript'
   ],
   'plugins': [
     ['@babel/plugin-transform-runtime', {
@@ -60,7 +60,7 @@ gulp.task('styles', function () {
 });
 
 gulp.task('content-scripts', function () {
-  return gulp.src('src/content/**/*.js')
+  return gulp.src('src/content/**/*.{js,ts}')
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError())
@@ -78,10 +78,16 @@ gulp.task('site-scripts', function (done) {
     if (err) done(err);
 
     var tasks = files.map(function (entry) {
-      var args = Object.assign({}, watchify.args, { debug: true });
+      var args = Object.assign({}, watchify.args, {
+        debug: true,
+        extensions: ['.js', '.ts']
+      });
       var bundler = watchify(browserify(entry, args))
         .transform(eslintify)
-        .transform(babelify, babelConfig_withTransform)
+        .transform(babelify, Object.assign({},
+          babelConfig_withTransform,
+          { extensions: ['.js', '.ts'] }
+        ))
         .transform(envify, { _: 'purge' });
       var relPath = path.relative('src/scripts', entry);
 
@@ -116,7 +122,7 @@ gulp.task('styles:prod', function () {
 });
 
 gulp.task('content-scripts:prod', function () {
-  return gulp.src('src/content/**/*.js')
+  return gulp.src('src/content/**/*.{js,ts}')
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError())
@@ -137,9 +143,12 @@ gulp.task('site-scripts:prod', function (done) {
     var tasks = files.map(function (entry) {
       var relPath = path.relative('src/scripts', entry);
 
-      return browserify(entry)
+      return browserify(entry, { extensions: ['.js', '.ts'] })
         .transform(eslintify)
-        .transform(babelify, babelConfig_withTransform)
+        .transform(babelify, Object.assign({},
+          babelConfig_withTransform,
+          { extensions: ['.js', '.ts'] }
+        ))
         .transform(envify, { _: 'purge' })
         .plugin(tinyify)
         .bundle()
@@ -191,7 +200,7 @@ gulp.task('assets', function () {
   return gulp.src([
     'src/assets/**/*',
     'src/content/**/*',
-    '!src/content/**/*.js',
+    '!src/content/**/*.{js,ts}',
     '!src/content/**/*.pug'
   ]).pipe(gulp.dest(target()));
 });
@@ -208,7 +217,7 @@ gulp.task('watch:content', function () {
 
 gulp.task('watch:content-scripts', function () {
   gulp.watch([
-    'src/content/**/*.js'
+    'src/content/**/*.{js,ts}'
   ], gulp.series('content-scripts'));
 });
 
@@ -222,7 +231,7 @@ gulp.task('watch:assets', function () {
   gulp.watch([
     'src/assets/**/*',
     'src/content/**/*',
-    '!src/content/**/*.js',
+    '!src/content/**/*.{js,ts}',
     '!src/content/**/*.pug'
   ], gulp.series('assets'));
 });

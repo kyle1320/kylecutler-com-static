@@ -41,5 +41,16 @@ module.exports = {
                 "ignoreComments": true
             }
         ]
-    }
+    },
+    "overrides": [
+        {
+            "files": ['**/*.ts'],
+            "parser": 'typescript-eslint-parser',
+            "plugins": ["typescript"],
+            "rules": {
+                "no-undef": "off",
+                "typescript/no-unused-vars": devWarn
+            }
+        }
+    ]
 };
