@@ -90,7 +90,7 @@ export default class View extends EventEmitter {
   }
 
   getRenderOrder() {
-    return 0;
+    return this.attributes.zIndex || 0;
   }
 
   getRelativePosition(x, y) {

@@ -5,6 +5,7 @@ export default class ConnectionView extends View {
     super([], getDimensions(nodeA, nodeB, parent), {}, style);
 
     this.parent = parent;
+    this.renderOrder = 0;
 
     this.setEndpoint(0, nodeA);
     this.setEndpoint(1, nodeB);
@@ -41,6 +42,11 @@ export default class ConnectionView extends View {
     this.start = View.getRelativePosition(this.data[0], this.parent);
     this.end   = View.getRelativePosition(this.data[1], this.parent);
 
+    this.attributes.zIndex = Math.min(
+      this.data[0].getRenderOrder(),
+      this.data[1].getRenderOrder()
+    ) - 0.001;
+
     this.dimensions = {
       x: Math.min(this.start.x, this.end.x),
       y: Math.min(this.start.y, this.end.y),
@@ -52,10 +58,6 @@ export default class ConnectionView extends View {
 
     this.emit('update');
     this.emit('move', this);
-  }
-
-  getRenderOrder() {
-    return -1;
   }
 
   intersects(x, y, grow = 0) {

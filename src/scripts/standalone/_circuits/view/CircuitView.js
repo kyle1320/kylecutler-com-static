@@ -79,10 +79,6 @@ export default class CircuitView extends View {
     };
   }
 
-  getRenderOrder() {
-    return this.attributes.zIndex || 0;
-  }
-
   getRelativePosition(x, y) {
     var { x: rx, y: ry } = getRotatedPosition(
       {x, y}, this.dimensions, this.rotation

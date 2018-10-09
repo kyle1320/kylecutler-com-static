@@ -24,7 +24,7 @@ export default class Controller {
     this.selected = null;
     this.hovering = null;
 
-    this.topZIndex = 0;
+    this.topZIndex = 1;
 
     this.interactions = [
       new TouchInteraction(this),
@@ -85,7 +85,10 @@ export default class Controller {
   }
 
   move(el, dx, dy, shouldSnap) {
-    el.setAttribute('zIndex', this.topZIndex) && this.topZIndex++;
+    if (el.attributes.zIndex !== this.topZIndex) {
+      this.topZIndex++;
+      el.setAttribute('zIndex', this.topZIndex);
+    }
 
     if (shouldSnap) el.move(Math.round(dx), Math.round(dy));
     else            el.move(dx, dy);
