@@ -79,9 +79,10 @@ export default class TouchInteraction extends Interaction {
   }
 
   update() {
+    var bounds = this.touchA.target.getBoundingClientRect();
     this.center = {
-      x: (this.touchA.clientX + this.touchB.clientX) / 2,
-      y: (this.touchA.clientY + this.touchB.clientY) / 2
+      x: (this.touchA.clientX + this.touchB.clientX) / 2 - bounds.x,
+      y: (this.touchA.clientY + this.touchB.clientY) / 2 - bounds.y
     };
 
     var dx = this.touchA.clientX - this.touchB.clientX;
