@@ -43,6 +43,7 @@ export default class CreateInteraction extends Interaction {
   reset() {
     this.dragStart = null;
     this.dragEnd = null;
+    this.dragging = false;
     this.previewCircuit = null;
     this.selectedCircuit = null;
   }
@@ -71,15 +72,15 @@ export default class CreateInteraction extends Interaction {
         this.controller.canvas.setPreviewChild(this.previewCircuit);
       }
 
+      this.dragging = true;
+
       break;
     case 'move':
       this.controller.hoverTree(targetNode);
 
-      if (this.previewCircuit) {
-        this.previewCircuit.setAttribute('hidden', false);
-      }
-
       if (this.dragStart) {
+        this.previewCircuit.setAttribute('hidden', false);
+
         if (targetNode) {
           this.controller.move(this.dragEnd, targetPos.x, targetPos.y);
         } else {
@@ -88,6 +89,9 @@ export default class CreateInteraction extends Interaction {
           );
         }
       } else if (this.previewCircuit) {
+        this.previewCircuit.setAttribute(
+          'hidden', !this.dragging && !!targetNode
+        );
         this.controller.move(
           this.previewCircuit,
           e.root.x - this.previewCircuit.dimensions.width / 2,
@@ -113,9 +117,11 @@ export default class CreateInteraction extends Interaction {
       }
 
       if (this.previewCircuit) {
+        this.previewCircuit.setAttribute('hidden', false);
         this.controller.canvas.addPreviewChild();
       }
 
+      this.dragging = false;
       this.dragStart = null;
       this.dragEnd = null;
       this.previewCircuit = null;
