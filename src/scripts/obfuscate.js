@@ -20,9 +20,12 @@ window.addEventListener('load', function () {
           this.setAttribute(key, atob(attrs[key]));
         }
       }
+
+    /* eslint-disable no-empty */
     } catch (e) {
-      // ignore
+      // just ignore this element.
     }
+    /* eslint-enable no-empty */
 
     this.removeAttribute('data-obf');
 
