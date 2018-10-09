@@ -3,7 +3,16 @@ import BoundingBox from './BoundingBox';
 const wrapperKey = Symbol('KD Tree Item Wrapper');
 const splitThreshold = 200;
 
-export default class KDTree {
+declare type Node<T> = LeafNode<T> | InternalNode<T>;
+declare type NodeParent<T> = KDTree<T> | Node<T>;
+declare type Item<T> = T & {
+  [wrapperKey]: InternalItem<T>
+};
+
+export default class KDTree<T> {
+  items: InternalItem<T>[];
+  rootNode: Node<T>;
+
   constructor () {
     this.items = [];
     this.rootNode = new LeafNode(this);
@@ -15,22 +24,22 @@ export default class KDTree {
       .map(i => i.innerItem);
   }
 
-  find(boundingBox) {
+  find(boundingBox: BoundingBox): T[] {
     return Array.from(
       new Set(this.rootNode.find(boundingBox))
     ).map(i => i.innerItem);
   }
 
-  insert(item, boundingBox) {
+  insert(item: T, boundingBox: BoundingBox) {
     var internalItem = new InternalItem(item, boundingBox);
     this.items.push(internalItem);
     this.items = this.items.filter(i => i.isValid);
     this.rootNode = this.rootNode.insert(internalItem);
   }
 
-  remove(item) {
-    if (item[wrapperKey]) {
-      item[wrapperKey].remove();
+  remove(item: T) {
+    if ((item as Item<T>)[wrapperKey]) {
+      (item as Item<T>)[wrapperKey].remove();
     }
   }
 
@@ -44,20 +53,25 @@ export default class KDTree {
   }
 }
 
-if (process.env.NODE_ENV === 'development') {
-  KDTree.prototype.draw = function (context, boundingBox) {
-    drawNode(context, this.rootNode, boundingBox);
-  };
-}
+// if (process.env.NODE_ENV === 'development') {
+//   KDTree.prototype.draw = function (context, boundingBox) {
+//     drawNode(context, this.rootNode, boundingBox);
+//   };
+// }
 
-class InternalItem {
-  constructor (item, boundingBox) {
-    this.innerItem = item;
+class InternalItem<T> {
+  innerItem: Item<T>;
+  boundingBox: BoundingBox;
+  isValid: boolean;
+  containerNode: Node<T>;
+
+  constructor (item: T, boundingBox: BoundingBox) {
+    this.innerItem = item as Item<T>;
     this.boundingBox = boundingBox;
     this.isValid = true;
     this.containerNode = null;
 
-    item[wrapperKey] = this;
+    (item as Item<T>)[wrapperKey] = this;
   }
 
   remove() {
@@ -71,8 +85,15 @@ class InternalItem {
   }
 }
 
-class InternalNode {
-  constructor (axis, coord, parent) {
+class InternalNode<T> {
+  axis: number;
+  coord: number;
+  items: InternalItem<T>[];
+  upper: Node<T>;
+  lower: Node<T>;
+  parent: NodeParent<T>;
+
+  constructor (axis: number, coord: number, parent: NodeParent<T>) {
     this.axis = axis;
     this.coord = coord;
     this.items = [];
@@ -81,8 +102,8 @@ class InternalNode {
     this.parent = parent;
   }
 
-  find(boundingBox) {
-    var items = [];
+  find(boundingBox: BoundingBox): InternalItem<T>[] {
+    var items: InternalItem<T>[] = [];
 
     if (boundingBox.min[this.axis] <= this.coord) {
       items = items.concat(this.lower.find(boundingBox));
@@ -94,7 +115,7 @@ class InternalNode {
     return items;
   }
 
-  insert(item) {
+  insert(item: InternalItem<T>): Node<T> {
     this.items.push(item);
 
     this.items = this.items.filter(i => i.isValid);
@@ -124,7 +145,7 @@ class InternalNode {
     }
   }
 
-  rebuild() {
+  rebuild(): Node<T> {
     if (this.items.length < splitThreshold) {
       return new LeafNode(this.parent, this.items);
     }
@@ -132,20 +153,23 @@ class InternalNode {
   }
 }
 
-class LeafNode {
-  constructor (parent, items = []) {
+class LeafNode<T> {
+  items: InternalItem<T>[];
+  parent: NodeParent<T>;
+
+  constructor (parent: NodeParent<T>, items: InternalItem<T>[] = []) {
     this.items = items;
     this.items.forEach(i => i.containerNode = this);
     this.parent = parent;
   }
 
-  find(boundingBox) {
+  find(boundingBox: BoundingBox) {
     return this.items.filter(
       item => item.isValid && item.boundingBox.intersects(boundingBox)
     );
   }
 
-  insert(item) {
+  insert(item: InternalItem<T>): Node<T> {
     item.containerNode = this;
 
     this.items.push(item);
@@ -167,12 +191,15 @@ class LeafNode {
     }
   }
 
-  rebuild() {
+  rebuild(): Node<T> {
     return this;
   }
 }
 
-function buildNode(parent, items) {
+function buildNode<T>(
+  parent: NodeParent<T>,
+  items: InternalItem<T>[]
+): Node<T> {
   if (items.length < splitThreshold) {
     return new LeafNode(parent, items);
   }
@@ -220,53 +247,4 @@ function buildNode(parent, items) {
   node.lower = buildNode(node, bestBelow);
 
   return node;
-}
-
-function drawNode(context, node, bb) {
-  if (node instanceof LeafNode) return;
-
-  if (node.coord < bb.min[node.axis]) {
-    drawNode(context, node.upper, bb);
-  } else if (node.coord > bb.max[node.axis]) {
-    drawNode(context, node.lower, bb);
-  } else {
-    context.save();
-
-    var start = [node.coord, bb.min[1 - node.axis]];
-    var end = [node.coord, bb.max[1 - node.axis]];
-
-    if (node.axis === 1) {
-      start.reverse();
-      end.reverse();
-    }
-
-    context.strokeStyle = 'rgba(0, 0, 255, 0.1)';
-
-    context.beginPath();
-    context.moveTo(start[0], start[1]);
-    context.lineTo(end[0], end[1]);
-    context.closePath();
-
-    context.stroke();
-
-    drawNode(context, node.lower, bbFromBounds(
-      bb.min[0],
-      bb.min[1],
-      Math.min(bb.max[0], end[0]),
-      Math.min(bb.max[1], end[1])
-    ));
-
-    drawNode(context, node.upper, bbFromBounds(
-      Math.max(bb.min[0], start[0]),
-      Math.max(bb.min[1], start[1]),
-      bb.max[0],
-      bb.max[1]
-    ));
-
-    context.restore();
-  }
-}
-
-function bbFromBounds(minx, miny, maxx, maxy) {
-  return new BoundingBox(minx, miny, maxx - minx, maxy - miny);
 }

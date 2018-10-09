@@ -1,9 +1,12 @@
 import View from './View';
 import CircuitView from './CircuitView';
+import Node from '../model/Node';
 
 export default class NodeView extends View {
-  constructor (data, x, y, style) {
-    super(data, { x, y, width: 0, height: 0 }, {}, style);
+  data: Node;
+
+  constructor (data: Node, x: number, y: number) {
+    super(data, { x, y, width: 0, height: 0 }, {});
   }
 
   remove() {
@@ -18,14 +21,14 @@ export default class NodeView extends View {
       : super.getRenderOrder();
   }
 
-  intersects(x, y, grow = 0) {
+  intersects(x: number, y: number, grow: number = 0) {
     var dx = x - this.dimensions.x;
     var dy = y - this.dimensions.y;
 
     return (dx * dx + dy * dy) <= (grow * grow);
   }
 
-  draw(context) {
+  draw(context: CanvasRenderingContext2D) {
     var style = this.style.node;
 
     context.save();

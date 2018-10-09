@@ -1,5 +1,7 @@
 /* eslint-disable max-len */
 
+import { Tool } from './types';
+
 module.exports = [
   { name: 'point',   icon: 'fa fa-mouse-pointer', cursor: null,       label: 'Interact with objects' },
   { name: 'drag',    icon: 'fa fa-hand-rock',     cursor: 'grab',     label: 'Move the canvas or objects' },
@@ -8,7 +10,7 @@ module.exports = [
   { name: 'zoomout', icon: 'fa fa-search-minus',  cursor: 'zoom-out', label: 'Zoom out on the grid'},
   { name: 'export',  icon: 'fa fa-save',          cursor: null,       label: 'Export data', isAction: true},
   { name: 'import',  icon: 'fa fa-folder-open',   cursor: null,       label: 'Import data', isAction: true}
-];
+] as Tool[];
 
 if (process.env.NODE_ENV === 'development') {
   module.exports.splice(3, 0,

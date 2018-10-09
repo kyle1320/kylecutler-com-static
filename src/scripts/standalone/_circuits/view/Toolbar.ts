@@ -1,16 +1,22 @@
 import { toggleClass } from '../../../utils';
 import Itembar from './Itembar';
+import { Tool } from '../model/types';
 
 export default class Toolbar extends Itembar {
-  constructor (element, tools) {
-    super();
+  tools: Tool[];
+  toolMap: {[name: string]: {
+    tool: Tool,
+    item: HTMLElement,
+    enabled: boolean
+  }};
 
-    this.element = element;
+  constructor (element: HTMLElement, tools: Tool[]) {
+    super(element);
 
     this.setTools(tools);
   }
 
-  setTools(tools) {
+  setTools(tools: Tool[]) {
     this.tools = tools;
     this.toolMap = {};
 
@@ -28,7 +34,7 @@ export default class Toolbar extends Itembar {
     this.tools.forEach(tool => this.addItem(this.toolMap[tool.name].item));
   }
 
-  selectTool(name) {
+  selectTool(name: string) {
     var data = this.toolMap[name];
 
     if (!data.enabled) return;
@@ -40,7 +46,7 @@ export default class Toolbar extends Itembar {
     this.emit('change', data.tool);
   }
 
-  setEnabled(toolName, enabled) {
+  setEnabled(toolName: string, enabled: boolean) {
     this.toolMap[toolName].enabled = enabled;
     toggleClass(this.toolMap[toolName].item, 'disabled', !enabled);
   }

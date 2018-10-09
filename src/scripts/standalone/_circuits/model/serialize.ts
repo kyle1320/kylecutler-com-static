@@ -7,13 +7,31 @@ import Node from './Node';
 
 const circuits = require('./circuits');
 
-export function serialize(views) {
+declare type SerializedObject
+  = NodeSerializedObject
+  | CircuitSerializedObject;
+declare type NodeSerializedObject = [
+  string, number, number, number
+];
+declare type CircuitSerializedObject = [
+  string, number, number, number, string
+];
+
+declare type NodeIndex = [number, number] | [number];
+declare type SerializedConnection = [NodeIndex, NodeIndex];
+
+declare interface SerializedData {
+  o: SerializedObject[];
+  c: SerializedConnection[];
+}
+
+export function serialize(views: View[]): string {
   var data = {
-    objects: [],
-    connections: []
+    objects: [] as SerializedObject[],
+    connections: [] as SerializedConnection[]
   };
-  var nodesMap = new Map();
-  var allConnections = [];
+  var nodesMap = new Map<Node, NodeIndex>();
+  var allConnections: ConnectionView[] = [];
 
   views.forEach(view => {
     var index = data.objects.length;
@@ -24,7 +42,7 @@ export function serialize(views) {
         +view.dimensions.x.toFixed(3),
         +view.dimensions.y.toFixed(3),
         view.data.isSource ? 1 : 0
-      ]);
+      ] as NodeSerializedObject);
     } else if (view instanceof CircuitView) {
       for (var i = view.data.pins.length - 1; i >= 0; i--) {
         nodesMap.set(view.data.pins[i], [index, i]);
@@ -35,7 +53,7 @@ export function serialize(views) {
         +view.dimensions.y.toFixed(3),
         view.rotation,
         view.data.definition.key
-      ]);
+      ] as CircuitSerializedObject);
     } else if (view instanceof ConnectionView) {
       // delay until the end, so we can be sure that all nodes have entries in
       // the nodesMap before we start trying to take values out of it.
@@ -55,13 +73,16 @@ export function serialize(views) {
     data.connections.push([a, b]);
   });
 
-  return JSON.stringify({ o: data.objects, c: data.connections });
+  return JSON.stringify({
+    o: data.objects,
+    c: data.connections
+  } as SerializedData);
 }
 
-export function deserialize(str) {
-  var data = JSON.parse(str);
+export function deserialize(str: string): View[] {
+  var data = JSON.parse(str) as SerializedData;
 
-  var objects = data.o.map(obj => {
+  var objects: View[] = data.o.map((obj: SerializedObject) => {
     switch (obj[0]) {
     case 'n': // Node ['n', x, y, isSource]
       return new NodeView(new Node(!!obj[3]), obj[1], obj[2]);
@@ -78,7 +99,7 @@ export function deserialize(str) {
     }
   });
 
-  var connections = data.c.map(conn => {
+  var connections = data.c.map((conn: SerializedConnection) => {
     var nodeA = conn[0].length === 1
       ? objects[conn[0][0]]
       : View.getViewFromDatasource(objects[conn[0][0]].data.pins[conn[0][1]]);

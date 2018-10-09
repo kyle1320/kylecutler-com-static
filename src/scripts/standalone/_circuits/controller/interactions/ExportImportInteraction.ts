@@ -1,7 +1,8 @@
 import Interaction from '../Interaction';
+import { Tool } from '../../model/types';
 
 export default class ExportImportInteraction extends Interaction {
-  handleSelectTool(tool) {
+  handleSelectTool(tool: Tool) {
 
     // TODO: error handling
 
@@ -18,7 +19,7 @@ export default class ExportImportInteraction extends Interaction {
         'Paste your previously exported data snippet here ' +
           'and click \'Import\' to add it to the current grid.',
         'Import',
-        text => {
+        (text: string): boolean | void => {
           try {
             this.controller.import(text);
           } catch (e) {

@@ -1,7 +1,11 @@
 import { makeElement } from '../../../utils';
 
+declare type Content = string | Node[] | Node;
+
 export default class Modal {
-  constructor(container) {
+  elements: {[name: string]: HTMLElement};
+
+  constructor(container: HTMLElement) {
     this.elements = {
       container: container,
       modal: null,
@@ -33,23 +37,37 @@ export default class Modal {
           this.elements.content = makeElement({ className: 'modal__content' }),
           this.elements.footer = makeElement({ className: 'modal__footer' })
         ],
-        { click: e => e.stopPropagation(), keydown: e => e.stopPropagation() }
+        {
+          click: (e: Event) => e.stopPropagation(),
+          keydown: (e: Event) => e.stopPropagation()
+        }
       )
     );
   }
 
-  showTextboxDialog(title, info, content) {
+  showTextboxDialog(
+    title: string,
+    info: string,
+    content: Content
+  ) {
     this.setTitle(title);
     this.setContent([
       makeElement('p', info),
-      makeElement('textarea', content, { focus: e => e.target.select() })
+      makeElement('textarea', content, {
+        focus: (e: MouseEvent) => (e.target as HTMLTextAreaElement).select()
+      })
     ]);
     this.clearButtons();
     this.addButton('OK', 'confirm', () => this.hideDialog());
     this.showDialog();
   }
 
-  showTextboxInputDialog(title, placeholder, okLabel, onSubmit) {
+  showTextboxInputDialog(
+    title: string,
+    placeholder: string,
+    okLabel: string,
+    onSubmit: (text: string) => boolean | void
+  ) {
     var text = makeElement({ tag: 'textarea', placeholder });
     this.setTitle(title);
     this.setContent(text);
@@ -63,7 +81,7 @@ export default class Modal {
     this.showDialog();
   }
 
-  showErrorDialog(title, content) {
+  showErrorDialog(title: string, content: Content) {
     this.setTitle(title);
     this.setContent([makeElement('p', content)]);
     this.clearButtons();
@@ -71,11 +89,11 @@ export default class Modal {
     this.showDialog();
   }
 
-  setTitle(title) {
+  setTitle(title: string) {
     this.elements.title.textContent = title;
   }
 
-  setContent(content) {
+  setContent(content: Content) {
     this.elements.content.innerHTML = '';
     if (typeof content === 'string') {
       this.elements.content.innerHTML = content;
@@ -90,7 +108,7 @@ export default class Modal {
     this.elements.footer.innerHTML = '';
   }
 
-  addButton(name, style, onclick) {
+  addButton(name: string, style: string, onclick: (event?: MouseEvent) => any) {
     this.elements.footer.appendChild(makeElement(
       { className: 'modal__footer__button' +
         (style ? ' modal__footer__button--' + style : '')

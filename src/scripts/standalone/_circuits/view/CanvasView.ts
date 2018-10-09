@@ -4,13 +4,23 @@ import BoundingBox from './spatial/BoundingBox';
 import bufferEvent from '../utils/eventBuffer';
 import ConnectionView from './ConnectionView';
 
+import { Position, PositionalTree } from '../model/types';
+
 export default class CanvasView extends View {
-  constructor (canvasEl, style) {
+  canvas: HTMLCanvasElement;
+  children: KDTree<View>;
+  previewChild: View;
+  selectionArea: {
+    startX: number, startY: number, endX: number, endY: number
+  };
+  removeChild: (view: View) => void;
+  moveChild: (view: View) => void;
+
+  constructor (canvasEl: HTMLCanvasElement) {
     super(
       null,
       { x: 0, y: 0, width: Infinity, height: Infinity },
-      { scale: 20 },
-      style
+      { scale: 20 }
     );
 
     this.canvas = canvasEl;
@@ -19,12 +29,12 @@ export default class CanvasView extends View {
     this.previewChild = null;
     this.selectionArea = null;
 
-    this.update      = view => this.emit('update');
-    this.removeChild = view => {
+    this.update = this.update.bind(this);
+    this.removeChild = (view: View) => {
       this.children.remove(view);
       this.update();
     };
-    this.moveChild   = view => {
+    this.moveChild   = (view: View) => {
       // TODO: check for collisions (somewhere)
 
       this.children.remove(view);
@@ -41,7 +51,7 @@ export default class CanvasView extends View {
 
   }
 
-  addChild(view) {
+  addChild(view: View) {
     view.setParent(this);
 
     this.children.insert(view, new BoundingBox(view.getDimensions()));
@@ -50,10 +60,10 @@ export default class CanvasView extends View {
     view.on('remove', this.removeChild);
     view.on('move', this.moveChild);
 
-    this.update(view);
+    this.update();
   }
 
-  setPreviewChild(view) {
+  setPreviewChild(view: View) {
     this.previewChild = view;
 
     if (view) {
@@ -72,16 +82,16 @@ export default class CanvasView extends View {
     }
   }
 
-  findChild(x, y, grow) {
+  findChild(x: number, y: number, grow: number): View[] {
     return this.children.find(new BoundingBox(x-grow, y-grow, grow*2, grow*2));
   }
 
-  findAll(x, y) {
+  findAll(x: number, y: number): PositionalTree {
     var gridX = (x / this.attributes.scale) - this.dimensions.x;
     var gridY = (y / this.attributes.scale) - this.dimensions.y;
 
     return {
-      view: this,
+      data: this,
       x: gridX, y: gridY,
       children: this.children
         .find(new BoundingBox(gridX - 0.5, gridY - 0.5, 1, 1))
@@ -91,16 +101,16 @@ export default class CanvasView extends View {
     };
   }
 
-  move(x, y) {
+  move(x: number, y: number) {
     super.move(x, y);
     this.update();
   }
 
-  zoomRel(scale, cx, cy) {
+  zoomRel(scale: number, cx: number, cy: number) {
     this.zoomAbs((scale - 1) * this.attributes.scale, cx, cy);
   }
 
-  zoomAbs(delta, cx, cy) {
+  zoomAbs(delta: number, cx: number, cy: number) {
     var { x, y } = this.getDimensions();
     var curScale = this.attributes.scale;
     var newScale = Math.min(70, Math.max(5, curScale + delta));
@@ -112,14 +122,14 @@ export default class CanvasView extends View {
     this.setAttribute('scale', newScale);
   }
 
-  getCoord(clientX, clientY) {
+  getCoord(clientX: number, clientY: number): Position {
     return {
       x: (clientX / this.attributes.scale) - this.dimensions.x,
       y: (clientY / this.attributes.scale) - this.dimensions.y
     };
   }
 
-  startSelection(x, y) {
+  startSelection(x: number, y: number) {
     this.selectionArea = {
       startX: x,
       startY: y,
@@ -129,7 +139,7 @@ export default class CanvasView extends View {
     this.update();
   }
 
-  endSelection(x, y) {
+  endSelection(x: number, y: number) {
     this.selectionArea.endX = x;
     this.selectionArea.endY = y;
     this.update();
@@ -140,7 +150,7 @@ export default class CanvasView extends View {
     this.update();
   }
 
-  getSelected() {
+  getSelected(): View[] {
     if (!this.selectionArea) return null;
 
     var boundingBox = new BoundingBox(0, 0, 0, 0);
@@ -161,7 +171,7 @@ export default class CanvasView extends View {
                     boundingBox.contains(new BoundingBox(v.getDimensions())));
   }
 
-  getAll() {
+  getAll(): View[] {
     return this.children.all();
   }
 
@@ -228,9 +238,9 @@ export default class CanvasView extends View {
       this.previewChild.draw(context);
     }
 
-    if (process.env.NODE_ENV === 'development') {
-      this.children.draw(context, viewport);
-    }
+    // if (process.env.NODE_ENV === 'development') {
+    //   this.children.draw(context, viewport);
+    // }
 
     if (this.selectionArea) {
       context.strokeStyle = style.general.selectionStrokeColor;

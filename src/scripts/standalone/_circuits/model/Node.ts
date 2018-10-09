@@ -1,6 +1,10 @@
 const EventEmitter = require('events');
 
 export default class Node extends EventEmitter {
+  connections: Set<Node>;
+  sources: Set<Node>;
+  isSource: boolean;
+
   constructor (isSource = false) {
     super();
     this.connections = new Set();
@@ -14,7 +18,7 @@ export default class Node extends EventEmitter {
     return this.isSource || this.sources.size > 0;
   }
 
-  set (state) {
+  set (state: boolean) {
     if (state === this.isSource) return;
 
     this.isSource = state;
@@ -22,7 +26,7 @@ export default class Node extends EventEmitter {
     this.emit('update');
   }
 
-  update (source, caller) {
+  update (source: Node, caller?: Node) {
     if (source === undefined) {
       throw new TypeError('source must be provided');
     }
@@ -53,7 +57,7 @@ export default class Node extends EventEmitter {
     );
   }
 
-  connect (node) {
+  connect (node: Node): boolean {
     if (node === this) return false;
 
     if (!this.connections.has(node)) {
@@ -73,7 +77,7 @@ export default class Node extends EventEmitter {
     return false;
   }
 
-  disconnect(node) {
+  disconnect(node?: Node) {
     if (node === this) {
       this.sources.delete(this);
       return;
@@ -95,7 +99,7 @@ export default class Node extends EventEmitter {
   }
 }
 
-function updateSourcesAfterDisconnect(nodeA, nodeB) {
+function updateSourcesAfterDisconnect(nodeA: Node, nodeB: Node) {
   var foundA = findAllDFS(nodeA);
 
   if (foundA.has(nodeB)) {
@@ -109,7 +113,7 @@ function updateSourcesAfterDisconnect(nodeA, nodeB) {
   updateSources(foundB);
 }
 
-function updateSources(nodes) {
+function updateSources(nodes: Set<Node>) {
   var sources = Array.from(nodes.values()).filter(x => x.isSource);
   for (var node of nodes) {
     node.sources = new Set(sources);
@@ -117,7 +121,7 @@ function updateSources(nodes) {
   }
 }
 
-function findAllDFS(start) {
+function findAllDFS(start: Node): Set<Node> {
   var found = new Set();
   var front = [start];
 

@@ -4,8 +4,20 @@ import ConnectionView from '../../view/ConnectionView';
 import View from '../../view/View';
 import Itembar from '../../view/Itembar';
 import { toggleClass } from '../../../../utils';
+import { PositionalEvent, Tool, PositionalTree } from '../../model/types';
+
+declare type MoveData = {
+  view: View,
+  x: number,
+  y: number
+};
 
 export default class DragInteraction extends Interaction {
+  target: MoveData[];
+  offsetX: number;
+  offsetY: number;
+  forceSnapping: boolean;
+
   reset() {
     this.target = null;
     this.offsetX = null;
@@ -17,11 +29,11 @@ export default class DragInteraction extends Interaction {
     return this.controller.selectedTool === 'drag';
   }
 
-  handleMouseEvent(e) {
+  handleMouseEvent(e: PositionalEvent) {
     var canvas = this.controller.canvas;
     var selectedHover = findFirst(
       e.root,
-      x => x.view != canvas && x.view.attributes.active
+      x => x.data != canvas && x.data.attributes.active
     );
     var target = null;
 
@@ -44,7 +56,11 @@ export default class DragInteraction extends Interaction {
           };
         }).filter(x => !!x);
       } else {
-        this.target = [target];
+        this.target = [{
+          view: target.data,
+          x: target.x,
+          y: target.y
+        }];
       }
 
       break;
@@ -82,7 +98,7 @@ export default class DragInteraction extends Interaction {
     }
   }
 
-  handleSelectTool(tool) {
+  handleSelectTool(tool: Tool) {
     if (tool.name !== 'drag') return;
 
     var item = Itembar.makeItem('Snap To Grid', null, () => {
@@ -93,11 +109,11 @@ export default class DragInteraction extends Interaction {
   }
 }
 
-function getMoveableTarget(tree) {
-  tree = findFirst(
+function getMoveableTarget(tree: PositionalTree): PositionalTree {
+  var found = findFirst(
     tree,
-    (x, l) => l === 1 && !(x.view instanceof ConnectionView)
+    (x, l) => l === 1 && !(x.data instanceof ConnectionView)
   ) || tree;
-  if (tree) tree.children = null;
-  return tree;
+  if (found) found.children = null;
+  return found;
 }

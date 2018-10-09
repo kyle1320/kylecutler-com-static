@@ -1,7 +1,8 @@
 import Interaction from '../Interaction';
+import { PositionalEvent } from '../../model/types';
 
 export default class ZoomInteraction extends Interaction {
-  handleMouseEvent(e) {
+  handleMouseEvent(e: PositionalEvent) {
     switch (e.type) {
     case 'down':
       if (this.controller.selectedTool === 'zoomin') {
@@ -12,7 +13,13 @@ export default class ZoomInteraction extends Interaction {
 
       break;
     case 'scroll':
-      this.controller.canvas.zoomAbs(-e.event.deltaY / 20, e.root.x, e.root.y);
+      if (e.event instanceof WheelEvent) {
+        this.controller.canvas.zoomAbs(
+          -e.event.deltaY / 20,
+          e.root.x,
+          e.root.y
+        );
+      }
       break;
     }
   }

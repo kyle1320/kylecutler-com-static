@@ -10,21 +10,36 @@ import NodeView from '../../view/NodeView';
 import CircuitView from '../../view/CircuitView';
 import ConnectionView from '../../view/ConnectionView';
 import Itembar from '../../view/Itembar';
+import Controller from '../index';
+import { Tool, PositionalTree, PositionalEvent } from '../../model/types';
 
 export default class CreateInteraction extends Interaction {
-  constructor(controller) {
+  circuits: string[];
+  circuitsMap: {[name: string]: {
+    item: HTMLElement,
+    view: View,
+    creator: () => View
+  }};
+  selectedCircuit: string;
+
+  dragStart: NodeView;
+  dragEnd: NodeView;
+  dragging: boolean;
+  previewCircuit: View;
+  creator: () => View;
+
+  constructor(controller: Controller) {
     super(controller);
 
     this.circuits = [];
     this.circuitsMap = {};
 
-    const addCircuit = (name, creator) => {
+    const addCircuit = (name: string, creator: () => View) => {
       var view = creator();
       var item = Itembar.makeCanvasItem(
-        canvas => drawViewOnPreviewCanvas(canvas, view),
+        (canvas: HTMLCanvasElement) => drawViewOnPreviewCanvas(canvas, view),
         name,
-        () => this.selectCircuit(name),
-        true
+        () => this.selectCircuit(name)
       );
 
       this.circuits.push(name);
@@ -52,7 +67,7 @@ export default class CreateInteraction extends Interaction {
     return this.controller.selectedTool === 'create';
   }
 
-  handleMouseEvent(e) {
+  handleMouseEvent(e: PositionalEvent) {
     var targetNode = findNode(e.root);
     var targetView = targetNode && targetNode.view;
     let targetPos = targetNode && View.getRelativePosition(
@@ -76,7 +91,7 @@ export default class CreateInteraction extends Interaction {
 
       break;
     case 'move':
-      this.controller.hoverTree(targetNode);
+      this.controller.hover(targetView && [targetView]);
 
       if (this.dragStart) {
         this.previewCircuit.setAttribute('hidden', false);
@@ -157,7 +172,7 @@ export default class CreateInteraction extends Interaction {
     }
   }
 
-  handleSelectTool(tool) {
+  handleSelectTool(tool: Tool) {
     if (tool.name !== 'create') return;
 
     this.reset();
@@ -176,18 +191,19 @@ export default class CreateInteraction extends Interaction {
     this.selectCircuit('Node');
   }
 
-  selectCircuit(name) {
+  selectCircuit(name: string) {
     this.selectedCircuit = name;
     this.controller.infobar.selectItem(this.circuitsMap[name].item);
     this.createNew();
   }
 }
 
-function findNode(tree) {
-  return findFirst(tree, x => x.view instanceof NodeView);
+function findNode(tree: PositionalTree): NodeView {
+  var node = findFirst(tree, x => x.data instanceof NodeView);
+  return node && (node.data as NodeView);
 }
 
-function drawViewOnPreviewCanvas(canvas, view) {
+function drawViewOnPreviewCanvas(canvas: HTMLCanvasElement, view: View) {
   var size = 30 * (window.devicePixelRatio || 1);
 
   canvas.style.width = '30px';

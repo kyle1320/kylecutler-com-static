@@ -1,8 +1,11 @@
 import View from './View';
+import NodeView from './NodeView';
 
 export default class ConnectionView extends View {
-  constructor (nodeA, nodeB, parent, style) {
-    super([], getDimensions(nodeA, nodeB, parent), {}, style);
+  data: [NodeView, NodeView];
+
+  constructor (nodeA: NodeView, nodeB: NodeView, parent?: View) {
+    super([], getDimensions(nodeA, nodeB, parent), {});
 
     this.parent = parent;
     this.renderOrder = 0;
@@ -12,7 +15,7 @@ export default class ConnectionView extends View {
     this.update();
   }
 
-  setEndpoint(index, node) {
+  setEndpoint(index: 0 | 1, node: NodeView) {
     if (this.data[index]) {
       this.data[index].removeListener('move', this.update);
       this.data[index].removeListener('remove', this.remove);
@@ -22,7 +25,7 @@ export default class ConnectionView extends View {
     this.data[index] = node;
   }
 
-  move(x, y) {
+  move(x: number, y: number) {
 
   }
 
@@ -32,7 +35,7 @@ export default class ConnectionView extends View {
     this.data[0].data.disconnect(this.data[1].data);
   }
 
-  setParent(parent) {
+  setParent(parent: View) {
     this.parent = parent;
 
     this.update();
@@ -60,7 +63,7 @@ export default class ConnectionView extends View {
     this.emit('move', this);
   }
 
-  intersects(x, y, grow = 0) {
+  intersects(x: number, y: number, grow: number = 0) {
     var { x: ax, y: ay } = this.start;
     var { x: bx, y: by } = this.end;
 
@@ -83,7 +86,7 @@ export default class ConnectionView extends View {
     return perpSq <= grow * grow;
   }
 
-  draw(context) {
+  draw(context: CanvasRenderingContext2D) {
     var style = this.style.connection;
 
     context.save();
@@ -120,7 +123,7 @@ export default class ConnectionView extends View {
   }
 }
 
-function getDimensions(nodeA, nodeB, parent) {
+function getDimensions(nodeA: NodeView, nodeB: NodeView, parent: View) {
   var start = View.getRelativePosition(nodeA, parent);
   var end = View.getRelativePosition(nodeB, parent);
 

@@ -1,13 +1,17 @@
 import Interaction from '../Interaction';
 import { serialize, deserialize } from '../../model/serialize';
+import { Tool } from '../../model/types';
 
 export default class ClipboardInteraction extends Interaction {
+  copiedData: string;
+  offset: number;
+
   reset() {
     this.copiedData = null;
     this.offset = 1;
   }
 
-  handleKeyEvent(e) {
+  handleKeyEvent(e: KeyboardEvent) {
     if (e.ctrlKey) {
       switch (e.key) {
       case 'c':
@@ -34,7 +38,7 @@ export default class ClipboardInteraction extends Interaction {
     }
   }
 
-  handleSelectTool(tool) {
+  handleSelectTool(tool: Tool) {
     // don't reset
   }
 }

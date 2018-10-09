@@ -2,25 +2,28 @@ import { EventEmitter } from 'events';
 import { toggleClass, makeElement } from '../../../utils';
 
 export default class Itembar extends EventEmitter {
-  constructor(element) {
+  element: HTMLElement;
+  items: HTMLElement[];
+
+  constructor(element: HTMLElement) {
     super();
 
     this.element = element;
     this.items = [];
   }
 
-  addItem(item, selected) {
+  addItem(item: HTMLElement, selected?: boolean) {
     this.items.push(item);
     if (selected) toggleClass(item, 'selected', true);
     this.element.appendChild(makeElement({ className: 'item' }, [item]));
   }
 
-  addInfoText(text) {
+  addInfoText(text: string) {
     var el = makeElement({ className: 'info' }, text);
     this.element.appendChild(el);
   }
 
-  selectItem(item) {
+  selectItem(item: HTMLElement) {
     this.items.forEach(i => toggleClass(i, 'selected', item === i));
   }
 
@@ -29,7 +32,11 @@ export default class Itembar extends EventEmitter {
     this.element.innerHTML = '';
   }
 
-  static makeCanvasItem(drawFunc, label, onClick) {
+  static makeCanvasItem(
+    drawFunc: (canvas: HTMLCanvasElement) => void,
+    label: string,
+    onClick: (e: MouseEvent) => any
+  ): HTMLElement {
     var canvas = makeElement({ tag: 'canvas', width: '40', height: '40' });
 
     drawFunc(canvas);
@@ -41,7 +48,11 @@ export default class Itembar extends EventEmitter {
     );
   }
 
-  static makeIconItem(iconClass, props, onClick) {
+  static makeIconItem(
+    iconClass: string,
+    props: { className?: string, [key: string]: any },
+    onClick: (e: MouseEvent) => any
+  ): HTMLElement {
     props = props || {};
     props.className =
       `item__content--icon ${iconClass} ${props.className || ''}`;
@@ -49,11 +60,15 @@ export default class Itembar extends EventEmitter {
     return Itembar.makeItem('', props, onClick);
   }
 
-  static makeItem(content, props, onClick) {
+  static makeItem(
+    content: any,
+    props: { className?: string, [key: string]: any },
+    onClick: (e: MouseEvent) => any
+  ): HTMLElement {
     props = props || {};
     props.className = 'item__content ' + (props.className || '');
 
-    return makeElement(props, content, { click: e => {
+    return makeElement(props, content, { click: (e: MouseEvent) => {
       e.preventDefault();
       onClick(e);
     }});

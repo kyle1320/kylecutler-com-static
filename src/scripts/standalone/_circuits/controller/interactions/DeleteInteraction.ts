@@ -2,10 +2,10 @@ import Interaction from '../Interaction';
 
 export default class DeleteInteraction extends Interaction {
   meetsConditions() {
-    return this.controller.hovering || this.controller.selected;
+    return !!(this.controller.hovering || this.controller.selected);
   }
 
-  handleKeyEvent(e) {
+  handleKeyEvent(e: KeyboardEvent) {
     switch (e.keyCode) {
     case 8:
     case 46:

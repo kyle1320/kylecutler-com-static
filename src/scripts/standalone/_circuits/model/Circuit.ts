@@ -1,11 +1,16 @@
 import Node from './Node';
 import bufferEvent from '../utils/eventBuffer';
 import parse from './parse';
+import { CircuitDefinition, CircuitRule } from './types';
 
 const EventEmitter = require('events');
 
 export default class Circuit extends EventEmitter {
-  constructor (def) {
+  definition: CircuitDefinition;
+  pins: Node[];
+  internalPins: Node[];
+
+  constructor (def: CircuitDefinition) {
     super();
 
     this.definition = def;
@@ -28,11 +33,11 @@ export default class Circuit extends EventEmitter {
     this.update();
   }
 
-  _set(index, state) {
+  _set(index: number, state: boolean) {
     this.internalPins[index].set(state);
   }
 
-  _get(index) {
+  _get(index: number) {
     return this.internalPins[index].get();
   }
 
@@ -47,16 +52,19 @@ export default class Circuit extends EventEmitter {
   }
 }
 
-function getUpdateFunc(rules) {
+function getUpdateFunc(rules: CircuitRule[]) {
   var funcs = rules.map(rule => {
     switch (rule.type) {
     case 'output':
       var expr = parse(rule.value);
-      return function (scope) { this._set(rule.target, expr(scope)); };
+      return function (this: Circuit, scope: {}) {
+        this._set(rule.target, expr(scope));
+      };
     }
+    return null;
   });
 
-  return function () {
+  return function (this: Circuit) {
     var scope = this.pins.map(pin => pin.get());
 
     funcs.forEach(f => f.call(this, scope));

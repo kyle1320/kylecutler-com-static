@@ -1,4 +1,5 @@
 import { defaultStyle } from './styles';
+import { Dimensions, Position, PositionalTree } from '../model/types';
 
 const EventEmitter = require('events');
 
@@ -7,7 +8,22 @@ const viewKey = Symbol('View');
 var uniqueViewId = 0;
 
 export default class View extends EventEmitter {
-  constructor (data, dimensions, attributes = {}, style = defaultStyle) {
+  dimensions: Dimensions;
+  attributes: {
+    hidden?: boolean,
+    hover?: boolean,
+    active?: boolean,
+    [key: string]: any
+  };
+  style: any;
+  parent: View;
+
+  constructor (
+    data: any,
+    dimensions: Dimensions,
+    attributes = {},
+    style = defaultStyle
+  ) {
     super();
 
     this._id = uniqueViewId++;
@@ -34,7 +50,7 @@ export default class View extends EventEmitter {
     }
   }
 
-  setAttribute(name, value) {
+  setAttribute(name: string, value: any): boolean {
     if (this.attributes[name] !== value) {
       this.attributes[name] = value;
       this.emit('update', this);
@@ -43,7 +59,7 @@ export default class View extends EventEmitter {
     return false;
   }
 
-  move(x, y) {
+  move(x: number, y: number) {
     if (this.dimensions.x === x && this.dimensions.y === y)
       return;
 
@@ -61,15 +77,15 @@ export default class View extends EventEmitter {
     this.emit('update', this);
   }
 
-  setParent(parent) {
+  setParent(parent: View) {
     this.parent = parent;
   }
 
-  getDimensions() {
+  getDimensions(): Dimensions {
     return this.dimensions;
   }
 
-  intersects(x, y, grow = 0) {
+  intersects(x: number, y: number, grow: number = 0): boolean {
     var dim = this.getDimensions();
 
     return (dim.x <= x + grow) &&
@@ -78,12 +94,12 @@ export default class View extends EventEmitter {
            (dim.y + dim.height >= y - grow);
   }
 
-  findAll(x, y) {
+  findAll(x: number, y: number): PositionalTree {
     var relX = x - this.dimensions.x;
     var relY = y - this.dimensions.y;
 
     return {
-      view: this,
+      data: this,
       x: relX, y: relY,
       children: []
     };
@@ -93,23 +109,24 @@ export default class View extends EventEmitter {
     return this.attributes.zIndex || 0;
   }
 
-  getRelativePosition(x, y) {
+  getRelativePosition(x: number, y: number): Position {
     return {
       x: x + this.dimensions.x,
       y: y + this.dimensions.y
     };
   }
 
-  draw(context) {
+  draw(context: CanvasRenderingContext2D) {
     throw new Error('View subclass must override method draw()');
   }
 
-  static getViewFromDatasource(data) {
+  static getViewFromDatasource(data: any) {
     return data[viewKey];
   }
 
-  static getRelativePosition(view, ancestor) {
-    var pos = view.getDimensions();
+  static getRelativePosition(view: View, ancestor?: View): Position {
+    var { x, y } = view.getDimensions();
+    var pos = { x, y } as Position;
 
     view = view.parent;
     while (view != ancestor) {

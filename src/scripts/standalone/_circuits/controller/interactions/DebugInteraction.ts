@@ -1,7 +1,9 @@
 import Interaction from '../Interaction';
+import { PositionalEvent, Tool } from '../../model/types';
+import View from '../../view/View';
 
 export default class DebugInteraction extends Interaction {
-  handleMouseEvent(e) {
+  handleMouseEvent(e: PositionalEvent) {
     console.log('Mouse Event', e);
 
     if (this.controller.selectedTool === 'debug') {
@@ -9,15 +11,15 @@ export default class DebugInteraction extends Interaction {
     }
   }
 
-  handleKeyEvent(e) {
+  handleKeyEvent(e: KeyboardEvent) {
     console.log('Key Event', e);
   }
 
-  handleSelectTool(tool) {
+  handleSelectTool(tool: Tool) {
     console.log('Select Tool', tool);
   }
 
-  handleSelectViews(views) {
+  handleSelectViews(views: View[]) {
     console.log('Select Views', views);
   }
 }

@@ -1,6 +1,22 @@
 import Interaction from '../Interaction';
+import { PositionalEvent } from '../../model/types';
+
+declare type SavedEvent = {
+  screenX: number,
+  screenY: number,
+  clientX: number,
+  clientY: number,
+  buttons: 1
+};
 
 export default class AutoSlideInteraction extends Interaction {
+  dx: number;
+  dy: number;
+
+  interval: NodeJS.Timer;
+  lastEvent: SavedEvent;
+  mousePressed: boolean;
+
   reset() {
     this.stop();
 
@@ -12,14 +28,14 @@ export default class AutoSlideInteraction extends Interaction {
     this.mousePressed = false;
   }
 
-  handleMouseEvent(e) {
+  handleMouseEvent(e: PositionalEvent) {
     if (e.type === 'down') {
       this.mousePressed = true;
     } else if (e.type === 'up') {
       this.mousePressed = false;
     }
 
-    if ((window.TouchEvent && e.event instanceof TouchEvent)
+    if (('TouchEvent' in window && e.event instanceof TouchEvent)
       ? e.type === 'leave'
       : !this.mousePressed) {
       this.stop();
@@ -28,14 +44,15 @@ export default class AutoSlideInteraction extends Interaction {
 
     if (e.type !== 'move') return;
 
-    e = e.event;
+    var ev = e.event;
 
     var target, bounds, offsetX, offsetY;
 
-    if (window.TouchEvent && e instanceof TouchEvent) {
-      var touch = e.changedTouches[0];
+    if (ev instanceof TouchEvent) {
+      var touch = ev.changedTouches[0];
       target = touch.target;
-      bounds = target.parentElement.getBoundingClientRect();
+      bounds = (target as HTMLElement)
+        .parentElement.getBoundingClientRect() as DOMRect;
       offsetX = touch.clientX - bounds.x;
       offsetY = touch.clientY - bounds.y;
 
@@ -43,12 +60,13 @@ export default class AutoSlideInteraction extends Interaction {
         touch.screenX, touch.screenY, touch.clientX, touch.clientY
       );
     } else {
-      target = e.target;
-      bounds = target.parentElement.getBoundingClientRect();
-      offsetX = e.offsetX;
-      offsetY = e.offsetY;
+      target = ev.target;
+      bounds = (target as HTMLElement)
+        .parentElement.getBoundingClientRect() as DOMRect;
+      offsetX = ev.offsetX;
+      offsetY = ev.offsetY;
 
-      this.setLastEvent(e.screenX, e.screenY, e.clientX, e.clientY);
+      this.setLastEvent(ev.screenX, ev.screenY, ev.clientX, ev.clientY);
     }
 
     var distXMin = offsetX - 50;
@@ -67,7 +85,7 @@ export default class AutoSlideInteraction extends Interaction {
     this.start(distX, distY);
   }
 
-  start(dx, dy) {
+  start(dx: number, dy: number) {
     this.dx = dx / this.controller.canvas.attributes.scale / 3;
     this.dy = dy / this.controller.canvas.attributes.scale / 3;
 
@@ -96,7 +114,12 @@ export default class AutoSlideInteraction extends Interaction {
     this.lastEvent = null;
   }
 
-  setLastEvent(screenX, screenY, clientX, clientY) {
+  setLastEvent(
+    screenX: number,
+    screenY: number,
+    clientX: number,
+    clientY: number
+  ) {
     this.lastEvent = { screenX, screenY, clientX, clientY, buttons: 1 };
   }
 
@@ -105,7 +128,7 @@ export default class AutoSlideInteraction extends Interaction {
 
     var event;
 
-    if (MouseEvent.initMouseEvent) {
+    if ('initMouseEvent' in MouseEvent) {
       event = document.createEvent('MouseEvents');
       event.initMouseEvent('mousemove', false, true, window, 0,
         this.lastEvent.screenX, this.lastEvent.screenY,

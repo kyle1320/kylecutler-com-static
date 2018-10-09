@@ -5,14 +5,19 @@ import NodeView from '../../view/NodeView';
 import CircuitView from '../../view/CircuitView';
 import ConnectionView from '../../view/ConnectionView';
 import Itembar from '../../view/Itembar';
+import { PositionalEvent, PositionalTree, Tool } from '../../model/types';
+import View from '../../view/View';
 
 export default class SelectInteraction extends Interaction {
+  isClickCandidate: boolean;
+  lastHoverTarget: View;
+
   reset() {
     this.isClickCandidate = true;
     this.lastHoverTarget = null;
   }
 
-  handleMouseEvent(e) {
+  handleMouseEvent(e: PositionalEvent) {
     if (this.controller.selectedTool !== 'point') return;
 
     var canvas = this.controller.canvas;
@@ -20,7 +25,7 @@ export default class SelectInteraction extends Interaction {
     var hoverTree =  findNode(e.root)
                   || findCircuit(e.root)
                   || findConnection(e.root);
-    var hoverTarget = hoverTree && hoverTree.view;
+    var hoverTarget = hoverTree && hoverTree.data;
     if (hoverTarget !== this.lastHoverTarget) {
       this.isClickCandidate = false;
     }
@@ -61,7 +66,7 @@ export default class SelectInteraction extends Interaction {
     }
   }
 
-  handleKeyEvent(e) {
+  handleKeyEvent(e: KeyboardEvent) {
     switch (e.keyCode) {
     case 65: // A
       if (e.ctrlKey) {
@@ -77,13 +82,13 @@ export default class SelectInteraction extends Interaction {
     }
   }
 
-  handleSelectTool(tool) {
+  handleSelectTool(tool: Tool) {
     if (tool.name !== 'point') return;
 
     this.handleSelectViews(this.controller.selected);
   }
 
-  handleSelectViews(views) {
+  handleSelectViews(views: View[]) {
     if (this.controller.selectedTool !== 'point') return;
 
     var infobar = this.controller.infobar;
@@ -103,9 +108,10 @@ export default class SelectInteraction extends Interaction {
     );
 
     if (views.length === 1) {
-      if (views[0] instanceof CircuitView) {
+      var view = views[0];
+      if (view instanceof CircuitView) {
         infobar.addItem(
-          Itembar.makeItem('Rotate 90°', null, () => views[0].rotate(1))
+          Itembar.makeItem('Rotate 90°', null, () => view.rotate(1))
         );
       }
     }
@@ -120,7 +126,7 @@ export default class SelectInteraction extends Interaction {
     }));
   }
 
-  selectSingle(view, adding) {
+  selectSingle(view: View, adding?: boolean) {
     var selected = this.controller.selected;
 
     if (selected && adding) {
@@ -138,7 +144,7 @@ export default class SelectInteraction extends Interaction {
     }
   }
 
-  select(views, adding) {
+  select(views: View[], adding?: boolean) {
     if (adding) {
       this.controller.addToSelection(views);
     } else {
@@ -147,14 +153,14 @@ export default class SelectInteraction extends Interaction {
   }
 }
 
-function findNode(tree) {
-  return findFirst(tree, x => x.view instanceof NodeView);
+function findNode(tree: PositionalTree): PositionalTree {
+  return findFirst(tree, x => x.data instanceof NodeView);
 }
 
-function findCircuit(tree) {
-  return findFirst(tree, x => x.view instanceof CircuitView);
+function findCircuit(tree: PositionalTree): PositionalTree {
+  return findFirst(tree, x => x.data instanceof CircuitView);
 }
 
-function findConnection(tree) {
-  return findFirst(tree, x => x.view instanceof ConnectionView);
+function findConnection(tree: PositionalTree): PositionalTree {
+  return findFirst(tree, x => x.data instanceof ConnectionView);
 }

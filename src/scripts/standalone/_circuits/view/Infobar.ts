@@ -1,6 +1,6 @@
 import Itembar from './Itembar';
 
-const toolText = {
+const toolText: {[name: string]: string} = {
   point: 'Select an element to edit',
   drag: 'Drag an object or the grid to move it',
   debug: 'Move the cursor around to print information for debugging',
@@ -9,7 +9,7 @@ const toolText = {
 };
 
 export default class Infobar extends Itembar {
-  showGenericInfo(toolName) {
+  showGenericInfo(toolName: string) {
     this.clear();
     this.addInfoText(toolText[toolName]);
   }

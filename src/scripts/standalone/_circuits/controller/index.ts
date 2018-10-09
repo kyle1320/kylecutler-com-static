@@ -1,6 +1,15 @@
 import { flatten } from './treeUtils';
 import { serialize, deserialize } from '../model/serialize';
 
+import View from '../view/View';
+import CanvasView from '../view/CanvasView';
+import Toolbar from '../view/Toolbar';
+import Infobar from '../view/Infobar';
+import Modal from '../view/Modal';
+
+import { Tool, PositionalEvent, BasicTree } from '../model/types';
+
+import Interaction from './Interaction';
 import DebugInteraction from './interactions/DebugInteraction';
 import CreateInteraction from './interactions/CreateInteraction';
 import DeleteInteraction from './interactions/DeleteInteraction';
@@ -13,7 +22,26 @@ import TouchInteraction from './interactions/TouchInteraction';
 import AutoSlideInteraction from './interactions/AutoSlideInteraction';
 
 export default class Controller {
-  constructor (canvas, toolbar, infobar, modal) {
+  canvas: CanvasView;
+  toolbar: Toolbar;
+  infobar: Infobar;
+  modal: Modal;
+
+  selectedTool: string;
+
+  selected: View[];
+  hovering: View[];
+
+  topZIndex: number;
+
+  interactions: Interaction[];
+
+  constructor (
+    canvas: CanvasView,
+    toolbar: Toolbar,
+    infobar: Infobar,
+    modal: Modal
+  ) {
     this.canvas = canvas;
     this.toolbar = toolbar;
     this.infobar = infobar;
@@ -43,14 +71,17 @@ export default class Controller {
     }
   }
 
-  hoverTree(tree, onChange) {
+  hoverTree(
+    tree: BasicTree<View>,
+    onChange?: (data: View, added: boolean) => void
+  ) {
     var views = flatten(tree);
     views = views && views.filter(x => x !== this.canvas);
     this.hover(views, onChange);
   }
 
   // TODO: combine these two methods
-  hover(views, onChange) {
+  hover(views: View[], onChange?: (data: View, added: boolean) => void) {
     if (views && !views.length) views = null;
 
     if (this.hovering === views) return;
@@ -66,7 +97,7 @@ export default class Controller {
     this.hovering = views;
   }
 
-  select(views, onChange) {
+  select(views?: View[], onChange?: (data: View, added: boolean) => void) {
     if (views && !views.length) views = null;
 
     if (this.selected === views) return;
@@ -84,7 +115,7 @@ export default class Controller {
     this.callInteractions(x => x.handleSelectViews(views));
   }
 
-  move(el, dx, dy, shouldSnap) {
+  move(el: View, dx: number, dy: number, shouldSnap?: boolean) {
     if (el.attributes.zIndex !== this.topZIndex) {
       this.topZIndex++;
       el.setAttribute('zIndex', this.topZIndex);
@@ -99,21 +130,21 @@ export default class Controller {
     return serialize(data);
   }
 
-  import(text) {
+  import(text: string) {
     var data = deserialize(text);
     data.forEach(view => this.canvas.addChild(view));
     this.select(data);
   }
 
-  handleMouseEvent(e) {
+  handleMouseEvent(e: PositionalEvent) {
     this.callInteractions(x => x.handleMouseEvent(e));
   }
 
-  handleKeyEvent(e) {
+  handleKeyEvent(e: KeyboardEvent) {
     this.callInteractions(x => x.handleKeyEvent(e));
   }
 
-  selectTool(tool) {
+  selectTool(tool: Tool) {
     if (tool.name === this.selectedTool) return;
 
     if (!tool.isAction) {
@@ -129,7 +160,7 @@ export default class Controller {
     this.callInteractions(x => x.handleSelectTool(tool));
   }
 
-  callInteractions(handler) {
+  callInteractions(handler: (x: Interaction) => boolean | void) {
     for (var i = 0; i < this.interactions.length; i++) {
       var interaction = this.interactions[i];
 
@@ -139,19 +170,26 @@ export default class Controller {
     }
   }
 
-  addToSelection(views, onChange) {
+  addToSelection(
+    views: View[],
+    onChange?: (data: View, added: boolean) => void
+  ) {
     this.select(setUnion(this.selected, views), onChange);
   }
 }
 
-function setUnion(a, b) {
+function setUnion<T>(a: T[], b: T[]): T[] {
   return Array.from(new Set([].concat(a, b)));
 }
 
-function setDiff(before, after, onChange) {
+function setDiff<T>(
+  before: T[],
+  after: T[],
+  onChange: (data: T, added: boolean) => void
+) {
   var beforeSet = new Set(before);
   var afterSet = new Set(after);
-  var all = new Set([].concat(before || [], after || []));
+  var all = new Set(([] as T[]).concat(before || [], after || []));
 
   for (var item of all) {
     var isOld = beforeSet.has(item);
