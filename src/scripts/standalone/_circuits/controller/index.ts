@@ -5,6 +5,7 @@ import CanvasView from '../view/CanvasView';
 import Toolbar from '../view/Toolbar';
 import Infobar from '../view/Infobar';
 import Modal from '../view/Modal';
+import Serialize from '../view/serialize';
 
 import { Tool, PositionalEvent, BasicTree } from '../model/types';
 
@@ -16,11 +17,11 @@ import DragInteraction from './interactions/DragInteraction';
 import SelectInteraction from './interactions/SelectInteraction';
 import ZoomInteraction from './interactions/ZoomInteraction';
 import ClipboardInteraction from './interactions/ClipboardInteraction';
-import ExportInteraction from './interactions/ExportImportInteraction';
+import ExportImportInteraction from './interactions/ExportImportInteraction';
 import TouchInteraction from './interactions/MultiTouchInteraction';
 import AutoSlideInteraction from './interactions/AutoSlideInteraction';
-import Serialize from '../view/serialize';
 import NoHoverInteraction from './interactions/NoHoverInteraction';
+import HelpInteraction from './interactions/HelpInteraction';
 
 export default class Controller {
   public canvas: CanvasView;
@@ -62,7 +63,8 @@ export default class Controller {
       new DragInteraction(this),
       new ZoomInteraction(this),
       new ClipboardInteraction(this),
-      new ExportInteraction(this),
+      new ExportImportInteraction(this),
+      new HelpInteraction(this),
       new AutoSlideInteraction(this),
       new NoHoverInteraction(this)
     ];

@@ -47,6 +47,7 @@
 @include fa-times;
 @include fa-save;
 @include fa-folder-open;
+@include fa-question-circle;
 
 html, body {
   margin: 0;
@@ -200,12 +201,15 @@ body {
 }
 
 .modal {
+  position: relative;
   width: rem(600px);
-  margin: rem(10px);
+  max-height: rem(600px);
+  max-width: 100%;
   background-color: white;
   border-radius: rem(10px);
   box-shadow: 0 0 rem(4px) rgba(0, 0, 0, 0.2);
-  overflow: hidden;
+  display: flex;
+  flex-flow: column nowrap;
 
   &-container {
     position: fixed;
@@ -213,11 +217,14 @@ body {
     bottom: 0;
     left: 0;
     right: 0;
+    padding: rem(10px);
     display: none;
+    flex-flow: column nowrap;
     align-items: center;
     justify-content: center;
     background-color: rgba(0, 0, 0, 0.1);
     z-index: 1000;
+    overflow: hidden;
 
     &.show {
       display: flex;
@@ -231,6 +238,7 @@ body {
     justify-content: space-between;
     border-bottom: 1px solid #eeeeee;
     padding: rem(10px) rem(15px);
+    flex-shrink: 0;
 
     &__title {
       font-size: rem(24px);
@@ -245,7 +253,21 @@ body {
   }
 
   &__content {
-    margin: rem(10px);
+    padding: rem(10px) rem(20px);
+    overflow-y: auto;
+    flex-shrink: 1;
+
+    p {
+      margin: rem(15px) 0;
+
+      &:first-child {
+        margin-top: rem(5px);
+      }
+
+      &:last-child {
+        margin-bottom: rem(5px);
+      }
+    }
 
     textarea {
       box-sizing: border-box;
@@ -263,6 +285,7 @@ body {
     justify-content: center;
     border-top: 1px solid #eeeeee;
     padding: rem(10px);
+    flex-shrink: 0;
 
     &__button {
       padding: rem(5px) rem(15px);

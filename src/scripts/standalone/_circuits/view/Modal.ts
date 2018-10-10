@@ -89,6 +89,14 @@ export default class Modal {
     this.showDialog();
   }
 
+  public showInfoDialog(title: string, content: string) {
+    this.setTitle(title);
+    this.setContent(content);
+    this.clearButtons();
+    this.addButton('OK', 'info', () => this.hideDialog());
+    this.showDialog();
+  }
+
   public setTitle(title: string) {
     this.elements.title.textContent = title;
   }
