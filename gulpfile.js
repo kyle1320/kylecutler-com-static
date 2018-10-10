@@ -21,7 +21,6 @@ const uglify = require('gulp-uglify');
 const babelify = require('babelify');
 const browserify = require('browserify');
 const envify = require('envify');
-const eslintify = require('eslintify');
 const tinyify = require('tinyify');
 const watchify = require('watchify');
 
@@ -61,9 +60,6 @@ gulp.task('styles', function () {
 
 gulp.task('content-scripts', function () {
   return gulp.src('src/content/**/*.{js,ts}')
-    .pipe(eslint())
-    .pipe(eslint.format())
-    .pipe(eslint.failAfterError())
     .pipe(babel(babelConfig_noTransform))
     .on('error', notify.onError(function (error) {
       return 'An error occured compiling a js source file: ' + error;
@@ -83,7 +79,6 @@ gulp.task('site-scripts', function (done) {
         extensions: ['.js', '.ts']
       });
       var bundler = watchify(browserify(entry, args))
-        .transform(eslintify)
         .transform(babelify, Object.assign({},
           babelConfig_withTransform,
           { extensions: ['.js', '.ts'] }
@@ -123,9 +118,6 @@ gulp.task('styles:prod', function () {
 
 gulp.task('content-scripts:prod', function () {
   return gulp.src('src/content/**/*.{js,ts}')
-    .pipe(eslint())
-    .pipe(eslint.format())
-    .pipe(eslint.failAfterError())
     .pipe(babel(babelConfig_noTransform))
     .pipe(uglify())
     .on('error', notify.onError(function (error) {
@@ -144,7 +136,6 @@ gulp.task('site-scripts:prod', function (done) {
       var relPath = path.relative('src/scripts', entry);
 
       return browserify(entry, { extensions: ['.js', '.ts'] })
-        .transform(eslintify)
         .transform(babelify, Object.assign({},
           babelConfig_withTransform,
           { extensions: ['.js', '.ts'] }
@@ -209,6 +200,19 @@ gulp.task('hidden-items:prod', function (done) {
   done(); // return del(['public/circuits']);
 });
 
+gulp.task('lint', function () {
+  return gulp.src('src/**/*.{js,ts}')
+    .pipe(eslint({ extensions: ['.js','.ts'] }))
+    .pipe(eslint.format());
+});
+
+gulp.task('lint:prod', function () {
+  return gulp.src('src/**/*.{js,ts}')
+    .pipe(eslint({ extensions: ['.js','.ts'] }))
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
+});
+
 gulp.task('watch:content', function () {
   gulp.watch([
     'src/**/*.pug'
@@ -236,11 +240,19 @@ gulp.task('watch:assets', function () {
   ], gulp.series('assets'));
 });
 
+gulp.task('watch:lint', function () {
+  gulp.watch([
+    'src/**/*.{js,ts}',
+    '!src/assets/**/*'
+  ], gulp.series('lint'));
+});
+
 gulp.task('watch', gulp.parallel(
   'watch:content',
   'watch:content-scripts',
   'watch:styles',
-  'watch:assets'
+  'watch:assets',
+  'watch:lint'
 ));
 
 gulp.task('browser-sync', function (done) {
@@ -261,6 +273,7 @@ gulp.task('build', gulp.series(
     done();
   },
   'clean',
+  'lint',
   gulp.parallel(
     'styles',
     'content-scripts',
@@ -276,6 +289,7 @@ gulp.task('build:prod', gulp.series(
     done();
   },
   'clean',
+  'lint:prod',
   gulp.parallel(
     'styles:prod',
     'content-scripts:prod',
