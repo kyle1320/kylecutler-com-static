@@ -108,7 +108,7 @@ export default class SelectInteraction extends Interaction {
     );
 
     if (views.length === 1) {
-      var view = views[0];
+      const view = views[0];
       if (view instanceof CircuitView) {
         infobar.addItem(
           Itembar.makeItem('Rotate 90°', null, () => view.rotate(1))

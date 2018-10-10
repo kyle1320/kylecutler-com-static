@@ -9,7 +9,7 @@
     "@babel/preset-typescript": "^7.1.0",
     "@babel/runtime": "^7.0.0",
     "@babel/runtime-corejs2": "^7.0.0",
-    "@types/node": "^10.11.4",
+    "@types/node": "^10.11.6",
     "babelify": "^10.0.0",
     "browser-sync": "^2.24.7",
     "browserify": "^16.2.2",
@@ -41,7 +41,8 @@
   "browserslist": "> 0.25%, not dead",
   "scripts": {
     "gulp": "node ./node_modules/gulp/bin/gulp.js",
-    "build": "node ./node_modules/typescript/lib/tsc.js && node ./node_modules/gulp/bin/gulp.js build:prod"
+    "typecheck": "node ./node_modules/typescript/lib/tsc.js",
+    "build": "npm run typecheck && npm run gulp build:prod"
   },
   "engines": {}
 }

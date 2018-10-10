@@ -1,8 +1,13 @@
 import View from './View';
 import NodeView from './NodeView';
 
+import { Position } from '../model/types';
+
 export default class ConnectionView extends View {
   data: [NodeView, NodeView];
+  renderOrder: number;
+  start: Position;
+  end: Position;
 
   constructor (nodeA: NodeView, nodeB: NodeView, parent?: View) {
     super([], getDimensions(nodeA, nodeB, parent), {});

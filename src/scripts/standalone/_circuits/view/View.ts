@@ -1,7 +1,7 @@
 import { defaultStyle } from './styles';
 import { Dimensions, Position, PositionalTree } from '../model/types';
 
-const EventEmitter = require('events');
+import { EventEmitter } from 'events';
 
 const viewKey = Symbol('View');
 
@@ -17,6 +17,8 @@ export default class View extends EventEmitter {
   };
   style: any;
   parent: View;
+  data: any;
+  _id: number;
 
   constructor (
     data: any,

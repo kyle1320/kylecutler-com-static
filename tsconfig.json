@@ -1,12 +1,14 @@
 {
   "compilerOptions": {
     "allowJs": true,
+    "alwaysStrict": true,
     "downlevelIteration": true,
     "noEmit": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "sourceMap": true,
+    "strictFunctionTypes": true,
     "lib": [ "dom", "esnext" ]
   },
   "include": [

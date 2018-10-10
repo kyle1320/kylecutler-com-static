@@ -68,17 +68,16 @@ export default class CreateInteraction extends Interaction {
   }
 
   handleMouseEvent(e: PositionalEvent) {
-    var targetNode = findNode(e.root);
-    var targetView = targetNode && targetNode.view;
-    let targetPos = targetNode && View.getRelativePosition(
+    var targetView = findNode(e.root);
+    let targetPos = targetView && View.getRelativePosition(
       targetView,
       this.controller.canvas
     );
 
     switch (e.type) {
     case 'down':
-      if (targetNode) {
-        this.dragStart = targetNode.view;
+      if (targetView) {
+        this.dragStart = targetView;
         this.dragEnd = new NodeView(new Node(), targetPos.x, targetPos.y);
         this.dragEnd.parent = this.controller.canvas;
         this.previewCircuit = new ConnectionView(
@@ -96,7 +95,7 @@ export default class CreateInteraction extends Interaction {
       if (this.dragStart) {
         this.previewCircuit.setAttribute('hidden', false);
 
-        if (targetNode) {
+        if (targetView) {
           this.controller.move(this.dragEnd, targetPos.x, targetPos.y);
         } else {
           this.controller.move(
@@ -105,7 +104,7 @@ export default class CreateInteraction extends Interaction {
         }
       } else if (this.previewCircuit) {
         this.previewCircuit.setAttribute(
-          'hidden', !this.dragging && !!targetNode
+          'hidden', !this.dragging && !!targetView
         );
         this.controller.move(
           this.previewCircuit,
@@ -119,7 +118,7 @@ export default class CreateInteraction extends Interaction {
     case 'up':
       if (this.previewCircuit && this.dragStart) {
         if (targetView) {
-          this.previewCircuit.setEndpoint(1, targetView);
+          (this.previewCircuit as ConnectionView).setEndpoint(1, targetView);
           this.dragEnd = targetView;
         } else {
           this.controller.canvas.addChild(this.dragEnd);
