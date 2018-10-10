@@ -25,9 +25,15 @@ export default class KDTree<T> {
   }
 
   public find(boundingBox: BoundingBox): T[] {
-    return Array.from(
-      new Set(this.rootNode.find(boundingBox))
-    ).map(i => i.innerItem);
+    var items = this.rootNode
+      .find(boundingBox)
+      .map(i => i.innerItem)
+
+    if (this.rootNode instanceof InternalNode) {
+      return Array.from(new Set(items));
+    } else {
+      return items;
+    }
   }
 
   public insert(item: T, boundingBox: BoundingBox) {
