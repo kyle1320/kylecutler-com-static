@@ -92,11 +92,14 @@ export default class ConnectionView extends View {
   public draw(context: CanvasRenderingContext2D) {
     var style = this.style.connection;
 
-    context.save();
-
     var color = (this.data[0].data.get() || this.data[1].data.get())
       ? style.colorOn
       : style.colorOff;
+
+    context.beginPath();
+    context.moveTo(this.start.x, this.start.y);
+    context.lineTo(this.end.x, this.end.y);
+    context.closePath();
 
     if (this.attributes.hover || this.attributes.active) {
       context.save();
@@ -105,24 +108,13 @@ export default class ConnectionView extends View {
         : this.style.general.highlightColor;
       context.lineWidth = 0.5;
       context.lineJoin = 'round';
-      context.beginPath();
-      context.moveTo(this.start.x, this.start.y);
-      context.lineTo(this.end.x, this.end.y);
-      context.closePath();
       context.stroke();
       context.restore();
     }
 
     context.strokeStyle = color;
 
-    context.beginPath();
-    context.moveTo(this.start.x, this.start.y);
-    context.lineTo(this.end.x, this.end.y);
-    context.closePath();
-
     context.stroke();
-
-    context.restore();
   }
 }
 

@@ -15,6 +15,7 @@ export default class CanvasView extends View {
   };
   private removeChild: (view: View) => void;
   private moveChild: (view: View) => void;
+  private boundDraw: () => void;
 
   constructor (canvasEl: HTMLCanvasElement) {
     super(
@@ -44,7 +45,10 @@ export default class CanvasView extends View {
       this.update();
     };
 
-    this.draw = this.draw.bind(this);
+    this.boundDraw = this.draw.bind(
+      this,
+      this.canvas.getContext('2d', { alpha: false })
+    );
   }
 
   public remove() {
@@ -180,12 +184,10 @@ export default class CanvasView extends View {
   }
 
   public drawBuffered() {
-    bufferEvent('redraw-' + this._id, this.draw, true);
+    bufferEvent('redraw-' + this._id, this.boundDraw, true);
   }
 
-  public draw() {
-    var context = this.canvas.getContext('2d');
-
+  public draw(context: CanvasRenderingContext2D) {
     var scale = this.attributes.scale * (window.devicePixelRatio || 1);
     var style = this.style;
     var offsetX = -this.dimensions.x;
@@ -193,10 +195,11 @@ export default class CanvasView extends View {
 
     context.save();
 
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+    context.fillStyle = 'white';
+    context.fillRect(0, 0, context.canvas.width, context.canvas.height);
 
     // transform the context so that children can simply use grid coordinates
-    context.transform(
+    context.setTransform(
       scale,
       0,
       0,
@@ -209,24 +212,20 @@ export default class CanvasView extends View {
     var height = context.canvas.height / scale;
 
     context.lineWidth = style.general.lineWidth;
+    context.strokeStyle = style.general.gridColor;
 
+    context.beginPath();
     for (var x = Math.ceil(offsetX); x < offsetX + width; x++) {
-      context.strokeStyle = style.general.gridColor;
-      context.beginPath();
       context.moveTo(x, offsetY);
       context.lineTo(x, offsetY + height);
-      context.closePath();
-      context.stroke();
     }
 
     for (var y = Math.ceil(offsetY); y < offsetY + height; y++) {
-      context.strokeStyle = style.general.gridColor;
-      context.beginPath();
       context.moveTo(offsetX, y);
       context.lineTo(offsetX + width, y);
-      context.closePath();
-      context.stroke();
     }
+    context.closePath();
+    context.stroke();
 
     var viewport = new BoundingBox(
       offsetX - .5, offsetY - .5, width + 1, height + 1
@@ -236,15 +235,6 @@ export default class CanvasView extends View {
       .filter(view => !view.attributes.hidden)
       .sort((a, b) => a.getRenderOrder() - b.getRenderOrder())
       .forEach(item => item.draw(context));
-
-    if (this.previewChild && !this.previewChild.attributes.hidden) {
-      context.globalAlpha = 0.5;
-      this.previewChild.draw(context);
-    }
-
-    // if (process.env.NODE_ENV === 'development') {
-    //   this.children.draw(context, viewport);
-    // }
 
     if (this.selectionArea) {
       context.strokeStyle = style.general.selectionStrokeColor;
@@ -261,6 +251,11 @@ export default class CanvasView extends View {
 
       context.fill();
       context.stroke();
+    }
+
+    if (this.previewChild && !this.previewChild.attributes.hidden) {
+      context.globalAlpha = 0.5;
+      this.previewChild.draw(context);
     }
 
     context.restore();

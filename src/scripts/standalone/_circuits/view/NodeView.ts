@@ -31,8 +31,6 @@ export default class NodeView extends View {
   public draw(context: CanvasRenderingContext2D) {
     var style = this.style.node;
 
-    context.save();
-
     var strokeColor = this.data.get()
       ? style.strokeColorOn
       : style.strokeColorOff;
@@ -63,7 +61,6 @@ export default class NodeView extends View {
     context.stroke();
 
     if (this.attributes.hover || this.attributes.active) {
-      context.save();
       context.fillStyle = this.attributes.active
         ? this.style.general.selectedColor
         : this.style.general.highlightColor;
@@ -71,9 +68,6 @@ export default class NodeView extends View {
       context.arc(x, y, .5, 0, 2 * Math.PI);
       context.closePath();
       context.fill();
-      context.restore();
     }
-
-    context.restore();
   }
 }

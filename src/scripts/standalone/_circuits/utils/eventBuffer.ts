@@ -1,21 +1,19 @@
-const bufferMap = new Map<string, Set<() => any>>();
+const bufferMap: {[name:string]: (() => any)[]} = {};
 
 export default function bufferEvent(
   name: string,
   callback: () => any,
   animation?: boolean
 ) {
-  if (!bufferMap.get(name)) {
-    bufferMap.set(name, new Set());
+  if (!bufferMap[name]) {
+    bufferMap[name] = [];
   }
 
-  var events = bufferMap.get(name);
+  var events = bufferMap[name];
 
-  if (events.size === 0) {
+  if (events.length === 0) {
     const cb = function () {
-      var callbacks = Array.from(events.values());
-      events.clear();
-      callbacks.forEach(cb => cb());
+      events.splice(0, events.length).forEach(cb => cb());
     };
 
     if (animation) {
@@ -25,5 +23,5 @@ export default function bufferEvent(
      }
   }
 
-  events.add(callback);
+  if (events.indexOf(callback) < 0) events.push(callback);
 }

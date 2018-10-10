@@ -10,6 +10,7 @@ export default class CircuitView extends View {
   public data: Circuit;
   public rotation: number;
   private children: NodeView[];
+  private path: Path2D;
 
   constructor (data: Circuit, x: number, y: number) {
     super(data, {
@@ -30,6 +31,7 @@ export default class CircuitView extends View {
 
       return node;
     });
+    this.path = new Path2D(this.data.definition.style.path);
   }
 
   public move(x: number, y: number) {
@@ -105,8 +107,6 @@ export default class CircuitView extends View {
 
     context.save();
 
-    var path = new Path2D(this.data.definition.style.path);
-
     context.translate(x, y);
     var trans = getRotatedPosition(
       {x: 0, y: 0}, this.dimensions, this.rotation
@@ -121,7 +121,7 @@ export default class CircuitView extends View {
         : this.style.general.highlightColor;
       context.lineWidth = 1;
       context.lineJoin = 'round';
-      context.stroke(path);
+      context.stroke(this.path);
       context.restore();
     }
 
@@ -130,8 +130,8 @@ export default class CircuitView extends View {
       : style.fillColor;
     context.strokeStyle = style.strokeColor;
 
-    context.fill(path);
-    context.stroke(path);
+    context.fill(this.path);
+    context.stroke(this.path);
 
     this.children.forEach(view => view.draw(context));
 
