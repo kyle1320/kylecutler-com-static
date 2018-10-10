@@ -70,10 +70,18 @@ export default class AutoSlideInteraction extends Interaction {
 
     if (e.type !== 'move' || !this.mousePressed) return;
 
-    var distXMin = Math.max(offsetX - this.dragOrigin.x, offsetX - 50);
-    var distXMax = Math.max(this.dragOrigin.x - offsetX, bounds.width - offsetX - 50);
-    var distYMin = Math.max(offsetY - this.dragOrigin.y, offsetY - 50);
-    var distYMax = Math.max(this.dragOrigin.y - offsetY, bounds.height - offsetY - 50);
+    var distXMin = Math.max(
+      offsetX - this.dragOrigin.x, offsetX - 50
+    );
+    var distXMax = Math.max(
+      this.dragOrigin.x - offsetX, bounds.width - offsetX - 50
+    );
+    var distYMin = Math.max(
+      offsetY - this.dragOrigin.y, offsetY - 50
+    );
+    var distYMax = Math.max(
+      this.dragOrigin.y - offsetY, bounds.height - offsetY - 50
+    );
 
     var distX = distXMin < 0 ? -distXMin : distXMax < 0 ? distXMax : 0;
     var distY = distYMin < 0 ? -distYMin : distYMax < 0 ? distYMax : 0;

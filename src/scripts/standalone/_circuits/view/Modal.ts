@@ -116,7 +116,11 @@ export default class Modal {
     this.elements.footer.innerHTML = '';
   }
 
-  public addButton(name: string, style: string, onclick: (event?: MouseEvent) => any) {
+  public addButton(
+    name: string,
+    style: string,
+    onclick: (event?: MouseEvent) => any
+  ) {
     this.elements.footer.appendChild(makeElement(
       { className: 'modal__footer__button' +
         (style ? ' modal__footer__button--' + style : '')

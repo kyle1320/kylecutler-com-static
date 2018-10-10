@@ -1,9 +1,9 @@
-import View from "./View";
-import ConnectionView from "./ConnectionView";
-import NodeView from "./NodeView";
-import CircuitView from "./CircuitView";
-import Node from "../model/Node";
-import Circuit from "../model/Circuit";
+import View from './View';
+import ConnectionView from './ConnectionView';
+import NodeView from './NodeView';
+import CircuitView from './CircuitView';
+import Node from '../model/Node';
+import Circuit from '../model/Circuit';
 
 const circuits = require('../model/circuits');
 

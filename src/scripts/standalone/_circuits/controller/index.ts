@@ -100,7 +100,10 @@ export default class Controller {
     this.hovering = views;
   }
 
-  public select(views?: View[], onChange?: (data: View, added: boolean) => void) {
+  public select(
+    views?: View[],
+    onChange?: (data: View, added: boolean) => void
+  ) {
     if (views && !views.length) views = null;
 
     if (this.selected === views) return;

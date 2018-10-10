@@ -18,9 +18,9 @@ export default function bufferEvent(
 
     if (animation) {
       requestAnimationFrame(cb);
-     } else {
+    } else {
       setTimeout(cb, 0);
-     }
+    }
   }
 
   if (events.indexOf(callback) < 0) events.push(callback);

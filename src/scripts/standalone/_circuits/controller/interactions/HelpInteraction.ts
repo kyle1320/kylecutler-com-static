@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+
 import Interaction from '../Interaction';
 import { Tool } from '../../model/types';
 
