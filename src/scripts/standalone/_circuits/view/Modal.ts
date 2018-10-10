@@ -1,6 +1,6 @@
 import { makeElement } from '../../../utils';
 
-declare type Content = string | Node[] | Node;
+type Content = string | Node[] | Node;
 
 export default class Modal {
   private elements: {[name: string]: HTMLElement};

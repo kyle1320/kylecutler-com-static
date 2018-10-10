@@ -7,7 +7,7 @@ const viewKey = Symbol('View');
 
 var uniqueViewId = 0;
 
-export default class View extends EventEmitter {
+export default abstract class View extends EventEmitter {
   public attributes: {
     hidden?: boolean,
     hover?: boolean,
@@ -21,6 +21,8 @@ export default class View extends EventEmitter {
   protected style: any;
   protected parent: View;
   protected _id: number;
+
+  public abstract draw(context: CanvasRenderingContext2D): void;
 
   constructor (
     data: any,
@@ -118,10 +120,6 @@ export default class View extends EventEmitter {
       x: x + this.dimensions.x,
       y: y + this.dimensions.y
     };
-  }
-
-  public draw(context: CanvasRenderingContext2D) {
-    throw new Error('View subclass must override method draw()');
   }
 
   public static getViewFromDatasource(data: any) {

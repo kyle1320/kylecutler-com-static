@@ -1,7 +1,7 @@
 import Interaction from '../Interaction';
 import { PositionalEvent, Position } from '../../model/types';
 
-declare type SavedEvent = {
+type SavedEvent = {
   screenX: number,
   screenY: number,
   clientX: number,

@@ -3,9 +3,9 @@ import BoundingBox from './BoundingBox';
 const wrapperKey = Symbol('KD Tree Item Wrapper');
 const splitThreshold = 200;
 
-declare type Node<T> = LeafNode<T> | InternalNode<T>;
-declare type NodeParent<T> = KDTree<T> | Node<T>;
-declare type Item<T> = T & {
+type Node<T> = LeafNode<T> | InternalNode<T>;
+type NodeParent<T> = KDTree<T> | Node<T>;
+type Item<T> = T & {
   [wrapperKey]: InternalItem<T>
 };
 

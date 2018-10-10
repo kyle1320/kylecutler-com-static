@@ -6,7 +6,7 @@ import Itembar from '../../view/Itembar';
 import { toggleClass } from '../../../../utils';
 import { PositionalEvent, Tool, PositionalTree } from '../../model/types';
 
-declare type MoveData = {
+type MoveData = {
   view: View,
   x: number,
   y: number

@@ -7,25 +7,25 @@ import Circuit from '../model/Circuit';
 
 const circuits = require('../model/circuits');
 
-declare type SerializedObject
+type SerializedObject
   = NodeSerializedObject
   | CircuitSerializedObject;
-declare type NodeSerializedObject = [
+type NodeSerializedObject = [
   string, number, number, number
 ];
-declare type CircuitSerializedObject = [
+type CircuitSerializedObject = [
   string, number, number, number, string
 ];
 
-declare type NodeIndex = [number, number] | [number];
-declare type SerializedConnection = [NodeIndex, NodeIndex];
+type NodeIndex = [number, number] | [number];
+type SerializedConnection = [NodeIndex, NodeIndex];
 
-declare interface SerializedData {
+interface SerializedData {
   o: SerializedObject[];
   c: SerializedConnection[];
 }
 
-export default class Serialize extends View {
+export default class Serialize {
   public static serialize(views: View[]): string {
     var data = {
       objects: [] as SerializedObject[],
