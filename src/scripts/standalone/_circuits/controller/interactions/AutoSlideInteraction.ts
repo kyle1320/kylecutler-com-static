@@ -129,7 +129,7 @@ export default class AutoSlideInteraction extends Interaction {
 
     var event;
 
-    if ('initMouseEvent' in MouseEvent) {
+    if ('initMouseEvent' in MouseEvent.prototype) {
       event = document.createEvent('MouseEvents');
       event.initMouseEvent('mousemove', false, true, window, 0,
         this.lastEvent.screenX, this.lastEvent.screenY,

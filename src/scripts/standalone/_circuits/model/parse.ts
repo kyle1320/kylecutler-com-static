@@ -46,7 +46,7 @@ function parseExpr(
   var next = tokens.next();
 
   // variables
-  if (next.startsWith('$')) {
+  if (next[0] === '$') {
     return evalVar.bind(null, next.substring(1));
 
     // string literals

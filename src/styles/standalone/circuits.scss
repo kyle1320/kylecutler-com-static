@@ -87,6 +87,7 @@ body {
 
     svg {
       height: rem(24px);
+      width: rem(78px); // IE fix
     }
 
     small {
@@ -112,7 +113,6 @@ body {
     position: relative;
     display: flex;
     flex-flow: column nowrap;
-    align-items: center;
     justify-content: center;
     text-align: center;
     height: 100%;
@@ -140,6 +140,10 @@ body {
       min-width: rem(40px);
       font-size: rem(14px);
       padding: rem(5px);
+    }
+
+    &--canvas {
+      align-items: center;
     }
 
     .label {

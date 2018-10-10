@@ -37,7 +37,7 @@ export default class Itembar extends EventEmitter {
     label: string,
     onClick: (e: MouseEvent) => any
   ): HTMLElement {
-    var canvas = makeElement({ tag: 'canvas', width: '40', height: '40' });
+    var canvas = makeElement({ tag: 'canvas', width: '30', height: '30' });
 
     drawFunc(canvas);
 
