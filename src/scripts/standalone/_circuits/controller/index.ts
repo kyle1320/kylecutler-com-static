@@ -17,9 +17,10 @@ import SelectInteraction from './interactions/SelectInteraction';
 import ZoomInteraction from './interactions/ZoomInteraction';
 import ClipboardInteraction from './interactions/ClipboardInteraction';
 import ExportInteraction from './interactions/ExportImportInteraction';
-import TouchInteraction from './interactions/TouchInteraction';
+import TouchInteraction from './interactions/MultiTouchInteraction';
 import AutoSlideInteraction from './interactions/AutoSlideInteraction';
 import Serialize from '../view/serialize';
+import NoHoverInteraction from './interactions/NoHoverInteraction';
 
 export default class Controller {
   public canvas: CanvasView;
@@ -62,7 +63,8 @@ export default class Controller {
       new ZoomInteraction(this),
       new ClipboardInteraction(this),
       new ExportInteraction(this),
-      new AutoSlideInteraction(this)
+      new AutoSlideInteraction(this),
+      new NoHoverInteraction(this)
     ];
 
     if (process.env.NODE_ENV === 'development') {

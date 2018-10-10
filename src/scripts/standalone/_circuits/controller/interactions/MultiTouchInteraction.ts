@@ -78,10 +78,6 @@ export default class TouchInteraction extends Interaction {
       }
     }
 
-    if (e.type === 'leave') {
-      this.controller.hover(null);
-    }
-
     return ret;
   }
 
