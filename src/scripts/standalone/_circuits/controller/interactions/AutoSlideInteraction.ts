@@ -35,9 +35,7 @@ export default class AutoSlideInteraction extends Interaction {
       this.mousePressed = false;
     }
 
-    if (('TouchEvent' in window && e.event instanceof TouchEvent)
-      ? e.type === 'leave'
-      : !this.mousePressed) {
+    if (isTouchEvent(e.event) ? e.type === 'leave' : !this.mousePressed) {
       this.stop();
       return;
     }
@@ -48,7 +46,7 @@ export default class AutoSlideInteraction extends Interaction {
 
     var target, bounds, offsetX, offsetY;
 
-    if (ev instanceof TouchEvent) {
+    if (isTouchEvent(ev)) {
       var touch = ev.changedTouches[0];
       target = touch.target;
       bounds = (target as HTMLElement)
@@ -140,4 +138,8 @@ export default class AutoSlideInteraction extends Interaction {
 
     this.controller.canvas.canvas.dispatchEvent(event);
   }
+}
+
+function isTouchEvent(e: Event): e is TouchEvent {
+  return 'TouchEvent' in window && e instanceof TouchEvent;
 }
