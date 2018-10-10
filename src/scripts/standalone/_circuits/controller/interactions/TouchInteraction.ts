@@ -2,13 +2,13 @@ import Interaction from '../Interaction';
 import { PositionalEvent } from '../../model/types';
 
 export default class TouchInteraction extends Interaction {
-  touchA: Touch;
-  touchB: Touch;
+  private touchA: Touch;
+  private touchB: Touch;
 
-  center: { x: number, y: number };
-  distance: number;
+  private center: { x: number, y: number };
+  private distance: number;
 
-  reset() {
+  protected reset() {
     this.touchA = null;
     this.touchB = null;
 
@@ -16,7 +16,7 @@ export default class TouchInteraction extends Interaction {
     this.distance = 0;
   }
 
-  handleMouseEvent(e: PositionalEvent): boolean | void {
+  public handleMouseEvent(e: PositionalEvent): boolean | void {
     if (!('TouchEvent' in window) || !(e.event instanceof TouchEvent)) return;
     var touches = e.event.changedTouches;
     var ret;
@@ -85,7 +85,7 @@ export default class TouchInteraction extends Interaction {
     return ret;
   }
 
-  update() {
+  private update() {
     this.center = {
       x: (this.touchA.clientX + this.touchB.clientX) / 2,
       y: (this.touchA.clientY + this.touchB.clientY) / 2

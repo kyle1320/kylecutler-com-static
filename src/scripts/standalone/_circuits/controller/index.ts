@@ -1,5 +1,4 @@
 import { flatten } from './treeUtils';
-import { serialize, deserialize } from '../model/serialize';
 
 import View from '../view/View';
 import CanvasView from '../view/CanvasView';
@@ -20,21 +19,21 @@ import ClipboardInteraction from './interactions/ClipboardInteraction';
 import ExportInteraction from './interactions/ExportImportInteraction';
 import TouchInteraction from './interactions/TouchInteraction';
 import AutoSlideInteraction from './interactions/AutoSlideInteraction';
+import Serialize from '../view/serialize';
 
 export default class Controller {
-  canvas: CanvasView;
-  toolbar: Toolbar;
-  infobar: Infobar;
-  modal: Modal;
+  public canvas: CanvasView;
+  public toolbar: Toolbar;
+  public infobar: Infobar;
+  public modal: Modal;
 
-  selectedTool: string;
+  public selectedTool: string;
 
-  selected: View[];
-  hovering: View[];
+  public selected: View[];
+  public hovering: View[];
 
-  topZIndex: number;
-
-  interactions: Interaction[];
+  private topZIndex: number;
+  private interactions: Interaction[];
 
   constructor (
     canvas: CanvasView,
@@ -71,7 +70,7 @@ export default class Controller {
     }
   }
 
-  hoverTree(
+  public hoverTree(
     tree: BasicTree<View>,
     onChange?: (data: View, added: boolean) => void
   ) {
@@ -81,7 +80,7 @@ export default class Controller {
   }
 
   // TODO: combine these two methods
-  hover(views: View[], onChange?: (data: View, added: boolean) => void) {
+  public hover(views: View[], onChange?: (data: View, added: boolean) => void) {
     if (views && !views.length) views = null;
 
     if (this.hovering === views) return;
@@ -97,7 +96,7 @@ export default class Controller {
     this.hovering = views;
   }
 
-  select(views?: View[], onChange?: (data: View, added: boolean) => void) {
+  public select(views?: View[], onChange?: (data: View, added: boolean) => void) {
     if (views && !views.length) views = null;
 
     if (this.selected === views) return;
@@ -115,7 +114,14 @@ export default class Controller {
     this.callInteractions(x => x.handleSelectViews(views));
   }
 
-  move(el: View, dx: number, dy: number, shouldSnap?: boolean) {
+  public addToSelection(
+    views: View[],
+    onChange?: (data: View, added: boolean) => void
+  ) {
+    this.select(setUnion(this.selected, views), onChange);
+  }
+
+  public move(el: View, dx: number, dy: number, shouldSnap?: boolean) {
     if (el.attributes.zIndex !== this.topZIndex) {
       this.topZIndex++;
       el.setAttribute('zIndex', this.topZIndex);
@@ -125,26 +131,26 @@ export default class Controller {
     else            el.move(dx, dy);
   }
 
-  export() {
+  public export() {
     var data = this.selected || this.canvas.getAll();
-    return serialize(data);
+    return Serialize.serialize(data);
   }
 
-  import(text: string) {
-    var data = deserialize(text);
+  public import(text: string) {
+    var data = Serialize.deserialize(text);
     data.forEach(view => this.canvas.addChild(view));
     this.select(data);
   }
 
-  handleMouseEvent(e: PositionalEvent) {
+  public handleMouseEvent(e: PositionalEvent) {
     this.callInteractions(x => x.handleMouseEvent(e));
   }
 
-  handleKeyEvent(e: KeyboardEvent) {
+  public handleKeyEvent(e: KeyboardEvent) {
     this.callInteractions(x => x.handleKeyEvent(e));
   }
 
-  selectTool(tool: Tool) {
+  public selectTool(tool: Tool) {
     if (tool.name === this.selectedTool) return;
 
     if (!tool.isAction) {
@@ -160,7 +166,7 @@ export default class Controller {
     this.callInteractions(x => x.handleSelectTool(tool));
   }
 
-  callInteractions(handler: (x: Interaction) => boolean | void) {
+  private callInteractions(handler: (x: Interaction) => boolean | void) {
     for (var i = 0; i < this.interactions.length; i++) {
       var interaction = this.interactions[i];
 
@@ -168,13 +174,6 @@ export default class Controller {
 
       if (handler(interaction) === false) break;
     }
-  }
-
-  addToSelection(
-    views: View[],
-    onChange?: (data: View, added: boolean) => void
-  ) {
-    this.select(setUnion(this.selected, views), onChange);
   }
 }
 

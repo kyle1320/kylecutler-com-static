@@ -2,7 +2,7 @@ import Interaction from '../Interaction';
 import { PositionalEvent } from '../../model/types';
 
 export default class ZoomInteraction extends Interaction {
-  handleMouseEvent(e: PositionalEvent) {
+  public handleMouseEvent(e: PositionalEvent) {
     switch (e.type) {
     case 'down':
       if (this.controller.selectedTool === 'zoomin') {

@@ -14,19 +14,18 @@ import Controller from '../index';
 import { Tool, PositionalTree, PositionalEvent } from '../../model/types';
 
 export default class CreateInteraction extends Interaction {
-  circuits: string[];
-  circuitsMap: {[name: string]: {
+  private circuits: string[];
+  private circuitsMap: {[name: string]: {
     item: HTMLElement,
     view: View,
     creator: () => View
   }};
-  selectedCircuit: string;
+  private selectedCircuit: string;
 
-  dragStart: NodeView;
-  dragEnd: NodeView;
-  dragging: boolean;
-  previewCircuit: View;
-  creator: () => View;
+  private dragStart: NodeView;
+  private dragEnd: NodeView;
+  private dragging: boolean;
+  private previewCircuit: View;
 
   constructor(controller: Controller) {
     super(controller);
@@ -55,7 +54,7 @@ export default class CreateInteraction extends Interaction {
     }
   }
 
-  reset() {
+  protected reset() {
     this.dragStart = null;
     this.dragEnd = null;
     this.dragging = false;
@@ -63,11 +62,11 @@ export default class CreateInteraction extends Interaction {
     this.selectedCircuit = null;
   }
 
-  meetsConditions() {
+  public meetsConditions() {
     return this.controller.selectedTool === 'create';
   }
 
-  handleMouseEvent(e: PositionalEvent) {
+  public handleMouseEvent(e: PositionalEvent) {
     var targetView = findNode(e.root);
     let targetPos = targetView && View.getRelativePosition(
       targetView,
@@ -79,7 +78,7 @@ export default class CreateInteraction extends Interaction {
       if (targetView) {
         this.dragStart = targetView;
         this.dragEnd = new NodeView(new Node(), targetPos.x, targetPos.y);
-        this.dragEnd.parent = this.controller.canvas;
+        this.dragEnd.setParent(this.controller.canvas);
         this.previewCircuit = new ConnectionView(
           this.dragStart, this.dragEnd, this.controller.canvas
         );
@@ -108,8 +107,8 @@ export default class CreateInteraction extends Interaction {
         );
         this.controller.move(
           this.previewCircuit,
-          e.root.x - this.previewCircuit.dimensions.width / 2,
-          e.root.y - this.previewCircuit.dimensions.height / 2,
+          e.root.x - this.previewCircuit.getDimensions().width / 2,
+          e.root.y - this.previewCircuit.getDimensions().height / 2,
           e.event.shiftKey
         );
       }
@@ -147,8 +146,8 @@ export default class CreateInteraction extends Interaction {
       if (this.previewCircuit) {
         this.controller.move(
           this.previewCircuit,
-          e.root.x - this.previewCircuit.dimensions.width / 2,
-          e.root.y - this.previewCircuit.dimensions.height / 2
+          e.root.x - this.previewCircuit.getDimensions().width / 2,
+          e.root.y - this.previewCircuit.getDimensions().height / 2
         );
         this.previewCircuit.setAttribute('hidden', false);
       }
@@ -163,15 +162,7 @@ export default class CreateInteraction extends Interaction {
     }
   }
 
-  createNew() {
-    if (this.selectedCircuit) {
-      this.previewCircuit = this.circuitsMap[this.selectedCircuit].creator();
-      this.previewCircuit.setAttribute('hidden', true);
-      this.controller.canvas.setPreviewChild(this.previewCircuit);
-    }
-  }
-
-  handleSelectTool(tool: Tool) {
+  public handleSelectTool(tool: Tool) {
     if (tool.name !== 'create') return;
 
     this.reset();
@@ -190,10 +181,18 @@ export default class CreateInteraction extends Interaction {
     this.selectCircuit('Node');
   }
 
-  selectCircuit(name: string) {
+  private selectCircuit(name: string) {
     this.selectedCircuit = name;
     this.controller.infobar.selectItem(this.circuitsMap[name].item);
     this.createNew();
+  }
+
+  private createNew() {
+    if (this.selectedCircuit) {
+      this.previewCircuit = this.circuitsMap[this.selectedCircuit].creator();
+      this.previewCircuit.setAttribute('hidden', true);
+      this.controller.canvas.setPreviewChild(this.previewCircuit);
+    }
   }
 }
 

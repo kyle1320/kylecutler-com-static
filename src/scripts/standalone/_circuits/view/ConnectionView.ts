@@ -4,23 +4,21 @@ import NodeView from './NodeView';
 import { Position } from '../model/types';
 
 export default class ConnectionView extends View {
-  data: [NodeView, NodeView];
-  renderOrder: number;
-  start: Position;
-  end: Position;
+  public data: [NodeView, NodeView];
+  private start: Position;
+  private end: Position;
 
   constructor (nodeA: NodeView, nodeB: NodeView, parent?: View) {
     super([], getDimensions(nodeA, nodeB, parent), {});
 
     this.parent = parent;
-    this.renderOrder = 0;
 
     this.setEndpoint(0, nodeA);
     this.setEndpoint(1, nodeB);
     this.update();
   }
 
-  setEndpoint(index: 0 | 1, node: NodeView) {
+  public setEndpoint(index: 0 | 1, node: NodeView) {
     if (this.data[index]) {
       this.data[index].removeListener('move', this.update);
       this.data[index].removeListener('remove', this.remove);
@@ -30,23 +28,23 @@ export default class ConnectionView extends View {
     this.data[index] = node;
   }
 
-  move(x: number, y: number) {
+  public move(x: number, y: number) {
 
   }
 
-  remove() {
+  public remove() {
     super.remove();
 
     this.data[0].data.disconnect(this.data[1].data);
   }
 
-  setParent(parent: View) {
+  public setParent(parent: View) {
     this.parent = parent;
 
     this.update();
   }
 
-  update() {
+  public update() {
     this.start = View.getRelativePosition(this.data[0], this.parent);
     this.end   = View.getRelativePosition(this.data[1], this.parent);
 
@@ -68,7 +66,7 @@ export default class ConnectionView extends View {
     this.emit('move', this);
   }
 
-  intersects(x: number, y: number, grow: number = 0) {
+  public intersects(x: number, y: number, grow: number = 0) {
     var { x: ax, y: ay } = this.start;
     var { x: bx, y: by } = this.end;
 
@@ -91,7 +89,7 @@ export default class ConnectionView extends View {
     return perpSq <= grow * grow;
   }
 
-  draw(context: CanvasRenderingContext2D) {
+  public draw(context: CanvasRenderingContext2D) {
     var style = this.style.connection;
 
     context.save();

@@ -3,8 +3,8 @@ import Itembar from './Itembar';
 import { Tool } from '../model/types';
 
 export default class Toolbar extends Itembar {
-  tools: Tool[];
-  toolMap: {[name: string]: {
+  private tools: Tool[];
+  private toolMap: {[name: string]: {
     tool: Tool,
     item: HTMLElement,
     enabled: boolean
@@ -16,7 +16,7 @@ export default class Toolbar extends Itembar {
     this.setTools(tools);
   }
 
-  setTools(tools: Tool[]) {
+  private setTools(tools: Tool[]) {
     this.tools = tools;
     this.toolMap = {};
 
@@ -34,7 +34,7 @@ export default class Toolbar extends Itembar {
     this.tools.forEach(tool => this.addItem(this.toolMap[tool.name].item));
   }
 
-  selectTool(name: string) {
+  public selectTool(name: string) {
     var data = this.toolMap[name];
 
     if (!data.enabled) return;
@@ -46,7 +46,7 @@ export default class Toolbar extends Itembar {
     this.emit('change', data.tool);
   }
 
-  setEnabled(toolName: string, enabled: boolean) {
+  public setEnabled(toolName: string, enabled: boolean) {
     this.toolMap[toolName].enabled = enabled;
     toggleClass(this.toolMap[toolName].item, 'disabled', !enabled);
   }

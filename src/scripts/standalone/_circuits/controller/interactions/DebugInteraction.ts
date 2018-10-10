@@ -3,7 +3,7 @@ import { PositionalEvent, Tool } from '../../model/types';
 import View from '../../view/View';
 
 export default class DebugInteraction extends Interaction {
-  handleMouseEvent(e: PositionalEvent) {
+  public handleMouseEvent(e: PositionalEvent) {
     console.log('Mouse Event', e);
 
     if (this.controller.selectedTool === 'debug') {
@@ -11,15 +11,15 @@ export default class DebugInteraction extends Interaction {
     }
   }
 
-  handleKeyEvent(e: KeyboardEvent) {
+  public handleKeyEvent(e: KeyboardEvent) {
     console.log('Key Event', e);
   }
 
-  handleSelectTool(tool: Tool) {
+  public handleSelectTool(tool: Tool) {
     console.log('Select Tool', tool);
   }
 
-  handleSelectViews(views: View[]) {
+  public handleSelectViews(views: View[]) {
     console.log('Select Views', views);
   }
 }

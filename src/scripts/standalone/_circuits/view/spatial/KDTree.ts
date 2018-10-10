@@ -10,44 +10,44 @@ declare type Item<T> = T & {
 };
 
 export default class KDTree<T> {
-  items: InternalItem<T>[];
-  rootNode: Node<T>;
+  private items: InternalItem<T>[];
+  private rootNode: Node<T>;
 
   constructor () {
     this.items = [];
     this.rootNode = new LeafNode(this);
   }
 
-  all() {
+  public all() {
     return this.items
       .filter(i => i.isValid)
       .map(i => i.innerItem);
   }
 
-  find(boundingBox: BoundingBox): T[] {
+  public find(boundingBox: BoundingBox): T[] {
     return Array.from(
       new Set(this.rootNode.find(boundingBox))
     ).map(i => i.innerItem);
   }
 
-  insert(item: T, boundingBox: BoundingBox) {
+  public insert(item: T, boundingBox: BoundingBox) {
     var internalItem = new InternalItem(item, boundingBox);
     this.items.push(internalItem);
     this.items = this.items.filter(i => i.isValid);
     this.rootNode = this.rootNode.insert(internalItem);
   }
 
-  remove(item: T) {
+  public remove(item: T) {
     if ((item as Item<T>)[wrapperKey]) {
       (item as Item<T>)[wrapperKey].remove();
     }
   }
 
-  refresh() {
+  public refresh() {
     this.rootNode = this.rootNode.rebuild();
   }
 
-  cleanup() {
+  public cleanup() {
     this.items = this.items.filter(i => i.isValid);
     this.rootNode = buildNode(this, this.items);
   }
@@ -60,10 +60,10 @@ export default class KDTree<T> {
 // }
 
 class InternalItem<T> {
-  innerItem: Item<T>;
-  boundingBox: BoundingBox;
-  isValid: boolean;
-  containerNode: Node<T>;
+  public innerItem: Item<T>;
+  public boundingBox: BoundingBox;
+  public isValid: boolean;
+  public containerNode: Node<T>;
 
   constructor (item: T, boundingBox: BoundingBox) {
     this.innerItem = item as Item<T>;
@@ -74,7 +74,7 @@ class InternalItem<T> {
     (item as Item<T>)[wrapperKey] = this;
   }
 
-  remove() {
+  public remove() {
     if (!this.isValid) return;
 
     this.isValid = false;
@@ -86,12 +86,12 @@ class InternalItem<T> {
 }
 
 class InternalNode<T> {
-  axis: number;
-  coord: number;
-  items: InternalItem<T>[];
-  upper: Node<T>;
-  lower: Node<T>;
-  parent: NodeParent<T>;
+  private axis: number;
+  private coord: number;
+  private items: InternalItem<T>[];
+  private upper: Node<T>;
+  private lower: Node<T>;
+  private parent: NodeParent<T>;
 
   constructor (axis: number, coord: number, parent: NodeParent<T>) {
     this.axis = axis;
@@ -102,7 +102,7 @@ class InternalNode<T> {
     this.parent = parent;
   }
 
-  find(boundingBox: BoundingBox): InternalItem<T>[] {
+  public find(boundingBox: BoundingBox): InternalItem<T>[] {
     var items: InternalItem<T>[] = [];
 
     if (boundingBox.min[this.axis] <= this.coord) {
@@ -115,7 +115,7 @@ class InternalNode<T> {
     return items;
   }
 
-  insert(item: InternalItem<T>): Node<T> {
+  public insert(item: InternalItem<T>): Node<T> {
     this.items.push(item);
 
     this.items = this.items.filter(i => i.isValid);
@@ -134,7 +134,7 @@ class InternalNode<T> {
     return this;
   }
 
-  refresh() {
+  public refresh() {
     this.items = this.items.filter(i => i.isValid);
 
     if (this.items.length < splitThreshold) {
@@ -145,17 +145,23 @@ class InternalNode<T> {
     }
   }
 
-  rebuild(): Node<T> {
+  public rebuild(): Node<T> {
     if (this.items.length < splitThreshold) {
       return new LeafNode(this.parent, this.items);
     }
     return this;
   }
+
+  public set(items: InternalItem<T>[], lower: Node<T>, upper: Node<T>) {
+    this.items = items;
+    this.lower = lower;
+    this.upper = upper;
+  }
 }
 
 class LeafNode<T> {
-  items: InternalItem<T>[];
-  parent: NodeParent<T>;
+  private items: InternalItem<T>[];
+  private parent: NodeParent<T>;
 
   constructor (parent: NodeParent<T>, items: InternalItem<T>[] = []) {
     this.items = items;
@@ -163,13 +169,13 @@ class LeafNode<T> {
     this.parent = parent;
   }
 
-  find(boundingBox: BoundingBox) {
+  public find(boundingBox: BoundingBox) {
     return this.items.filter(
       item => item.isValid && item.boundingBox.intersects(boundingBox)
     );
   }
 
-  insert(item: InternalItem<T>): Node<T> {
+  public insert(item: InternalItem<T>): Node<T> {
     item.containerNode = this;
 
     this.items.push(item);
@@ -183,7 +189,7 @@ class LeafNode<T> {
     return this;
   }
 
-  refresh() {
+  public refresh() {
     this.items = this.items.filter(i => i.isValid);
 
     if (this.items.length < splitThreshold) {
@@ -191,7 +197,7 @@ class LeafNode<T> {
     }
   }
 
-  rebuild(): Node<T> {
+  public rebuild(): Node<T> {
     return this;
   }
 }
@@ -242,9 +248,11 @@ function buildNode<T>(
   }
 
   var node = new InternalNode(bestAxis, bestCoord, parent);
-  node.items = items;
-  node.upper = buildNode(node, bestAbove);
-  node.lower = buildNode(node, bestBelow);
+  node.set(
+    items,
+    buildNode(node, bestBelow),
+    buildNode(node, bestAbove)
+  );
 
   return node;
 }

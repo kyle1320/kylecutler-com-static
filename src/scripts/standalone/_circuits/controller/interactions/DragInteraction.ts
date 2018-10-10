@@ -13,23 +13,19 @@ declare type MoveData = {
 };
 
 export default class DragInteraction extends Interaction {
-  target: MoveData[];
-  offsetX: number;
-  offsetY: number;
-  forceSnapping: boolean;
+  private target: MoveData[];
+  private forceSnapping: boolean;
 
-  reset() {
+  protected reset() {
     this.target = null;
-    this.offsetX = null;
-    this.offsetY = null;
     this.forceSnapping = false;
   }
 
-  meetsConditions() {
+  public meetsConditions() {
     return this.controller.selectedTool === 'drag';
   }
 
-  handleMouseEvent(e: PositionalEvent) {
+  public handleMouseEvent(e: PositionalEvent) {
     var canvas = this.controller.canvas;
     var selectedHover = findFirst(
       e.root,
@@ -72,7 +68,7 @@ export default class DragInteraction extends Interaction {
             // don't drag the canvas if there are other targets
             if (this.target.length > 1) return;
 
-            var {x, y} = data.view.dimensions;
+            var {x, y} = data.view.getDimensions();
             data = {
               view: data.view,
               x: data.x - x,
@@ -98,7 +94,7 @@ export default class DragInteraction extends Interaction {
     }
   }
 
-  handleSelectTool(tool: Tool) {
+  public handleSelectTool(tool: Tool) {
     if (tool.name !== 'drag') return;
 
     var item = Itembar.makeItem('Snap To Grid', null, () => {

@@ -9,7 +9,7 @@ const toolText: {[name: string]: string} = {
 };
 
 export default class Infobar extends Itembar {
-  showGenericInfo(toolName: string) {
+  public showGenericInfo(toolName: string) {
     this.clear();
     this.addInfoText(toolText[toolName]);
   }

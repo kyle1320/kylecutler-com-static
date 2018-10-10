@@ -9,15 +9,15 @@ import { PositionalEvent, PositionalTree, Tool } from '../../model/types';
 import View from '../../view/View';
 
 export default class SelectInteraction extends Interaction {
-  isClickCandidate: boolean;
-  lastHoverTarget: View;
+  private isClickCandidate: boolean;
+  private lastHoverTarget: View;
 
-  reset() {
+  protected reset() {
     this.isClickCandidate = true;
     this.lastHoverTarget = null;
   }
 
-  handleMouseEvent(e: PositionalEvent) {
+  public handleMouseEvent(e: PositionalEvent) {
     if (this.controller.selectedTool !== 'point') return;
 
     var canvas = this.controller.canvas;
@@ -33,14 +33,14 @@ export default class SelectInteraction extends Interaction {
 
     switch (e.type) {
     case 'down':
-      if (!canvas.selectionArea) {
+      if (!canvas.hasSelection()) {
         this.isClickCandidate = true;
         canvas.startSelection(e.root.x, e.root.y);
       }
 
       break;
     case 'move':
-      if (canvas.selectionArea) {
+      if (canvas.hasSelection()) {
         canvas.endSelection(e.root.x, e.root.y);
         this.controller.hover(canvas.getSelected());
       } else {
@@ -56,7 +56,7 @@ export default class SelectInteraction extends Interaction {
         } else {
           this.selectSingle(hoverTarget, e.event.ctrlKey);
         }
-      } else if (canvas.selectionArea) {
+      } else if (canvas.hasSelection()) {
         this.select(canvas.getSelected(), e.event.ctrlKey);
       }
 
@@ -66,7 +66,7 @@ export default class SelectInteraction extends Interaction {
     }
   }
 
-  handleKeyEvent(e: KeyboardEvent) {
+  public handleKeyEvent(e: KeyboardEvent) {
     switch (e.keyCode) {
     case 65: // A
       if (e.ctrlKey) {
@@ -82,13 +82,13 @@ export default class SelectInteraction extends Interaction {
     }
   }
 
-  handleSelectTool(tool: Tool) {
+  public handleSelectTool(tool: Tool) {
     if (tool.name !== 'point') return;
 
     this.handleSelectViews(this.controller.selected);
   }
 
-  handleSelectViews(views: View[]) {
+  public handleSelectViews(views: View[]) {
     if (this.controller.selectedTool !== 'point') return;
 
     var infobar = this.controller.infobar;
@@ -126,7 +126,7 @@ export default class SelectInteraction extends Interaction {
     }));
   }
 
-  selectSingle(view: View, adding?: boolean) {
+  private selectSingle(view: View, adding?: boolean) {
     var selected = this.controller.selected;
 
     if (selected && adding) {
@@ -144,7 +144,7 @@ export default class SelectInteraction extends Interaction {
     }
   }
 
-  select(views: View[], adding?: boolean) {
+  private select(views: View[], adding?: boolean) {
     if (adding) {
       this.controller.addToSelection(views);
     } else {

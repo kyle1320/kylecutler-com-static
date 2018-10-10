@@ -8,17 +8,19 @@ const viewKey = Symbol('View');
 var uniqueViewId = 0;
 
 export default class View extends EventEmitter {
-  dimensions: Dimensions;
-  attributes: {
+  public attributes: {
     hidden?: boolean,
     hover?: boolean,
     active?: boolean,
     [key: string]: any
   };
-  style: any;
-  parent: View;
-  data: any;
-  _id: number;
+  public data: any;
+
+  // TODO: make this protected
+  public dimensions: Dimensions;
+  protected style: any;
+  protected parent: View;
+  protected _id: number;
 
   constructor (
     data: any,
@@ -52,7 +54,7 @@ export default class View extends EventEmitter {
     }
   }
 
-  setAttribute(name: string, value: any): boolean {
+  public setAttribute(name: string, value: any): boolean {
     if (this.attributes[name] !== value) {
       this.attributes[name] = value;
       this.emit('update', this);
@@ -61,7 +63,7 @@ export default class View extends EventEmitter {
     return false;
   }
 
-  move(x: number, y: number) {
+  public move(x: number, y: number) {
     if (this.dimensions.x === x && this.dimensions.y === y)
       return;
 
@@ -71,23 +73,23 @@ export default class View extends EventEmitter {
     this.emit('move', this);
   }
 
-  remove() {
+  public remove() {
     this.emit('remove', this);
   }
 
-  update() {
+  public update() {
     this.emit('update', this);
   }
 
-  setParent(parent: View) {
+  public setParent(parent: View) {
     this.parent = parent;
   }
 
-  getDimensions(): Dimensions {
+  public getDimensions(): Dimensions {
     return this.dimensions;
   }
 
-  intersects(x: number, y: number, grow: number = 0): boolean {
+  public intersects(x: number, y: number, grow: number = 0): boolean {
     var dim = this.getDimensions();
 
     return (dim.x <= x + grow) &&
@@ -96,7 +98,7 @@ export default class View extends EventEmitter {
            (dim.y + dim.height >= y - grow);
   }
 
-  findAll(x: number, y: number): PositionalTree {
+  public findAll(x: number, y: number): PositionalTree {
     var relX = x - this.dimensions.x;
     var relY = y - this.dimensions.y;
 
@@ -107,26 +109,26 @@ export default class View extends EventEmitter {
     };
   }
 
-  getRenderOrder() {
+  public getRenderOrder() {
     return this.attributes.zIndex || 0;
   }
 
-  getRelativePosition(x: number, y: number): Position {
+  public getRelativePosition(x: number, y: number): Position {
     return {
       x: x + this.dimensions.x,
       y: y + this.dimensions.y
     };
   }
 
-  draw(context: CanvasRenderingContext2D) {
+  public draw(context: CanvasRenderingContext2D) {
     throw new Error('View subclass must override method draw()');
   }
 
-  static getViewFromDatasource(data: any) {
+  public static getViewFromDatasource(data: any) {
     return data[viewKey];
   }
 
-  static getRelativePosition(view: View, ancestor?: View): Position {
+  public static getRelativePosition(view: View, ancestor?: View): Position {
     var { x, y } = view.getDimensions();
     var pos = { x, y } as Position;
 

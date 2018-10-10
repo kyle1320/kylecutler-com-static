@@ -2,8 +2,8 @@ import { EventEmitter } from 'events';
 import { toggleClass, makeElement } from '../../../utils';
 
 export default class Itembar extends EventEmitter {
-  element: HTMLElement;
-  items: HTMLElement[];
+  private element: HTMLElement;
+  private items: HTMLElement[];
 
   constructor(element: HTMLElement) {
     super();
@@ -12,27 +12,27 @@ export default class Itembar extends EventEmitter {
     this.items = [];
   }
 
-  addItem(item: HTMLElement, selected?: boolean) {
+  public addItem(item: HTMLElement, selected?: boolean) {
     this.items.push(item);
     if (selected) toggleClass(item, 'selected', true);
     this.element.appendChild(makeElement({ className: 'item' }, [item]));
   }
 
-  addInfoText(text: string) {
+  public addInfoText(text: string) {
     var el = makeElement({ className: 'info' }, text);
     this.element.appendChild(el);
   }
 
-  selectItem(item: HTMLElement) {
+  public selectItem(item: HTMLElement) {
     this.items.forEach(i => toggleClass(i, 'selected', item === i));
   }
 
-  clear() {
+  public clear() {
     this.items = [];
     this.element.innerHTML = '';
   }
 
-  static makeCanvasItem(
+  public static makeCanvasItem(
     drawFunc: (canvas: HTMLCanvasElement) => void,
     label: string,
     onClick: (e: MouseEvent) => any
@@ -48,7 +48,7 @@ export default class Itembar extends EventEmitter {
     );
   }
 
-  static makeIconItem(
+  public static makeIconItem(
     iconClass: string,
     props: { className?: string, [key: string]: any },
     onClick: (e: MouseEvent) => any
@@ -60,7 +60,7 @@ export default class Itembar extends EventEmitter {
     return Itembar.makeItem('', props, onClick);
   }
 
-  static makeItem(
+  public static makeItem(
     content: any,
     props: { className?: string, [key: string]: any },
     onClick: (e: MouseEvent) => any

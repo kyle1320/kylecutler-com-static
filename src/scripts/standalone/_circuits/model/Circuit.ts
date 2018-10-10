@@ -6,16 +6,16 @@ import { CircuitDefinition, CircuitRule } from './types';
 const EventEmitter = require('events');
 
 export default class Circuit extends EventEmitter {
-  definition: CircuitDefinition;
-  pins: Node[];
-  internalPins: Node[];
+  public definition: CircuitDefinition;
+  public pins: Node[];
+  private internalPins: Node[];
 
   constructor (def: CircuitDefinition) {
     super();
 
     this.definition = def;
     this.update = this.update.bind(this);
-    this.doUpdate = getUpdateFunc(def.rules);
+    this.doUpdate = Circuit.getUpdateFunc(def.rules);
 
     this.pins = def.pins.map(() => new Node());
     this.internalPins = def.pins.map((options, i) => {
@@ -33,40 +33,40 @@ export default class Circuit extends EventEmitter {
     this.update();
   }
 
-  _set(index: number, state: boolean) {
+  private _set(index: number, state: boolean) {
     this.internalPins[index].set(state);
   }
 
-  _get(index: number) {
+  private _get(index: number) {
     return this.internalPins[index].get();
   }
 
-  update() {
+  public update() {
     this.doUpdate();
     this.emit('update');
   }
 
-  disconnect() {
+  public disconnect() {
     this.pins.forEach(pin => pin.disconnect());
     this.emit('update');
   }
-}
 
-function getUpdateFunc(rules: CircuitRule[]) {
-  var funcs = rules.map(rule => {
-    switch (rule.type) {
-    case 'output':
-      var expr = parse(rule.value);
-      return function (this: Circuit, scope: {}) {
-        this._set(rule.target, expr(scope));
-      };
-    }
-    return null;
-  });
+  private static getUpdateFunc(rules: CircuitRule[]) {
+    var funcs = rules.map(rule => {
+      switch (rule.type) {
+      case 'output':
+        var expr = parse(rule.value);
+        return function (this: Circuit, scope: {}) {
+          this._set(rule.target, expr(scope));
+        };
+      }
+      return null;
+    });
 
-  return function (this: Circuit) {
-    var scope = this.pins.map(pin => pin.get());
+    return function (this: Circuit) {
+      var scope = this.pins.map(pin => pin.get());
 
-    funcs.forEach(f => f.call(this, scope));
-  };
+      funcs.forEach(f => f.call(this, scope));
+    };
+  }
 }

@@ -1,28 +1,30 @@
 import Interaction from '../Interaction';
-import { serialize, deserialize } from '../../model/serialize';
-import { Tool } from '../../model/types';
+import Controller from '..';
+import Serialize from '../../view/serialize';
 
 export default class ClipboardInteraction extends Interaction {
-  copiedData: string;
-  offset: number;
+  private copiedData: string;
+  private offset: number;
 
-  reset() {
+  constructor(controller: Controller) {
+    super(controller);
+
     this.copiedData = null;
     this.offset = 1;
   }
 
-  handleKeyEvent(e: KeyboardEvent) {
+  public handleKeyEvent(e: KeyboardEvent) {
     if (e.ctrlKey) {
       switch (e.key) {
       case 'c':
         if (this.controller.selected) {
-          this.copiedData = serialize(this.controller.selected);
+          this.copiedData = Serialize.serialize(this.controller.selected);
           this.offset = 1;
         }
         break;
       case 'v':
         if (this.copiedData) {
-          var views = deserialize(this.copiedData);
+          var views = Serialize.deserialize(this.copiedData);
 
           views.forEach(v => {
             var { x, y } = v.getDimensions();
@@ -36,9 +38,5 @@ export default class ClipboardInteraction extends Interaction {
         break;
       }
     }
-  }
-
-  handleSelectTool(tool: Tool) {
-    // don't reset
   }
 }

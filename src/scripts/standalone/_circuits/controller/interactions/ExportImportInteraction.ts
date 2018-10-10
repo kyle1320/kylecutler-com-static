@@ -2,10 +2,7 @@ import Interaction from '../Interaction';
 import { Tool } from '../../model/types';
 
 export default class ExportImportInteraction extends Interaction {
-  handleSelectTool(tool: Tool) {
-
-    // TODO: error handling
-
+  public handleSelectTool(tool: Tool) {
     if (tool.name === 'export') {
       this.controller.modal.showTextboxDialog(
         'Export Data',

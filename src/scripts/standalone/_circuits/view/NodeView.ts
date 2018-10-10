@@ -3,32 +3,32 @@ import CircuitView from './CircuitView';
 import Node from '../model/Node';
 
 export default class NodeView extends View {
-  data: Node;
+  public data: Node;
 
   constructor (data: Node, x: number, y: number) {
     super(data, { x, y, width: 0, height: 0 }, {});
   }
 
-  remove() {
+  public remove() {
     super.remove();
 
     this.data.disconnect();
   }
 
-  getRenderOrder() {
+  public getRenderOrder() {
     return (this.parent instanceof CircuitView)
       ? this.parent.getRenderOrder()
       : super.getRenderOrder();
   }
 
-  intersects(x: number, y: number, grow: number = 0) {
+  public intersects(x: number, y: number, grow: number = 0) {
     var dx = x - this.dimensions.x;
     var dy = y - this.dimensions.y;
 
     return (dx * dx + dy * dy) <= (grow * grow);
   }
 
-  draw(context: CanvasRenderingContext2D) {
+  public draw(context: CanvasRenderingContext2D) {
     var style = this.style.node;
 
     context.save();

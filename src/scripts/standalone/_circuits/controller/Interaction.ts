@@ -4,7 +4,7 @@ import View from '../view/View';
 import Controller from './index';
 
 export default class Interaction {
-  controller: Controller
+  protected controller: Controller
 
   constructor (controller: Controller) {
     this.controller = controller;
@@ -12,27 +12,27 @@ export default class Interaction {
     this.reset();
   }
 
-  meetsConditions(): boolean {
+  public meetsConditions(): boolean {
     return true;
   }
 
-  handleMouseEvent(e: PositionalEvent): boolean | void {
+  public handleMouseEvent(e: PositionalEvent): boolean | void {
 
   }
 
-  handleKeyEvent(e: KeyboardEvent): boolean | void {
+  public handleKeyEvent(e: KeyboardEvent): boolean | void {
 
   }
 
-  handleSelectTool(tool: Tool): boolean | void {
+  public handleSelectTool(tool: Tool): boolean | void {
     this.reset();
   }
 
-  handleSelectViews(views: View[]): boolean | void {
+  public handleSelectViews(views: View[]): boolean | void {
 
   }
 
-  reset() {
+  protected reset() {
 
   }
 }

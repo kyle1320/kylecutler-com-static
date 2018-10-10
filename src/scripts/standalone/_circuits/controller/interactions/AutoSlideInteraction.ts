@@ -10,14 +10,14 @@ declare type SavedEvent = {
 };
 
 export default class AutoSlideInteraction extends Interaction {
-  dx: number;
-  dy: number;
+  private dx: number;
+  private dy: number;
 
-  interval: NodeJS.Timer;
-  lastEvent: SavedEvent;
-  mousePressed: boolean;
+  private interval: NodeJS.Timer;
+  private lastEvent: SavedEvent;
+  private mousePressed: boolean;
 
-  reset() {
+  protected reset() {
     this.stop();
 
     this.dx = 0;

@@ -14,11 +14,11 @@ export default class Node extends EventEmitter {
     this.isSource = isSource;
   }
 
-  get () {
+  public get() {
     return this.isSource || this.sources.size > 0;
   }
 
-  set (state: boolean) {
+  public set(state: boolean) {
     if (state === this.isSource) return;
 
     this.isSource = state;
@@ -26,7 +26,7 @@ export default class Node extends EventEmitter {
     this.emit('update');
   }
 
-  update (source: Node, caller?: Node) {
+  private update(source: Node, caller?: Node) {
     if (source === undefined) {
       throw new TypeError('source must be provided');
     }
@@ -57,7 +57,7 @@ export default class Node extends EventEmitter {
     );
   }
 
-  connect (node: Node): boolean {
+  public connect(node: Node): boolean {
     if (node === this) return false;
 
     if (!this.connections.has(node)) {
@@ -77,7 +77,7 @@ export default class Node extends EventEmitter {
     return false;
   }
 
-  disconnect(node?: Node) {
+  public disconnect(node?: Node) {
     if (node === this) {
       this.sources.delete(this);
       return;

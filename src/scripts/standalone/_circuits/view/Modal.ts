@@ -3,7 +3,7 @@ import { makeElement } from '../../../utils';
 declare type Content = string | Node[] | Node;
 
 export default class Modal {
-  elements: {[name: string]: HTMLElement};
+  private elements: {[name: string]: HTMLElement};
 
   constructor(container: HTMLElement) {
     this.elements = {
@@ -45,7 +45,7 @@ export default class Modal {
     );
   }
 
-  showTextboxDialog(
+  public showTextboxDialog(
     title: string,
     info: string,
     content: Content
@@ -62,7 +62,7 @@ export default class Modal {
     this.showDialog();
   }
 
-  showTextboxInputDialog(
+  public showTextboxInputDialog(
     title: string,
     placeholder: string,
     okLabel: string,
@@ -81,7 +81,7 @@ export default class Modal {
     this.showDialog();
   }
 
-  showErrorDialog(title: string, content: Content) {
+  public showErrorDialog(title: string, content: Content) {
     this.setTitle(title);
     this.setContent([makeElement('p', content)]);
     this.clearButtons();
@@ -89,11 +89,11 @@ export default class Modal {
     this.showDialog();
   }
 
-  setTitle(title: string) {
+  public setTitle(title: string) {
     this.elements.title.textContent = title;
   }
 
-  setContent(content: Content) {
+  public setContent(content: Content) {
     this.elements.content.innerHTML = '';
     if (typeof content === 'string') {
       this.elements.content.innerHTML = content;
@@ -104,11 +104,11 @@ export default class Modal {
     }
   }
 
-  clearButtons() {
+  public clearButtons() {
     this.elements.footer.innerHTML = '';
   }
 
-  addButton(name: string, style: string, onclick: (event?: MouseEvent) => any) {
+  public addButton(name: string, style: string, onclick: (event?: MouseEvent) => any) {
     this.elements.footer.appendChild(makeElement(
       { className: 'modal__footer__button' +
         (style ? ' modal__footer__button--' + style : '')
@@ -118,11 +118,11 @@ export default class Modal {
     ));
   }
 
-  showDialog() {
+  public showDialog() {
     this.elements.container.className = 'modal-container show';
   }
 
-  hideDialog() {
+  public hideDialog() {
     this.elements.container.className = 'modal-container';
   }
 }

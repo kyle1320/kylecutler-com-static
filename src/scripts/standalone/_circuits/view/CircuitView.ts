@@ -7,9 +7,9 @@ import { Dimensions, Position, PositionalTree } from '../model/types';
 require('path2d-polyfill');
 
 export default class CircuitView extends View {
-  data: Circuit;
-  rotation: number;
-  children: NodeView[];
+  public data: Circuit;
+  public rotation: number;
+  private children: NodeView[];
 
   constructor (data: Circuit, x: number, y: number) {
     super(data, {
@@ -24,7 +24,7 @@ export default class CircuitView extends View {
 
     this.children = data.definition.pins.map((pin, i) => {
       var node = new NodeView(data.pins[i], pin.x, pin.y);
-      node.parent = this;
+      node.setParent(this);
 
       node.on('update', this.update);
 
@@ -32,13 +32,13 @@ export default class CircuitView extends View {
     });
   }
 
-  move(x: number, y: number) {
+  public move(x: number, y: number) {
     super.move(x, y);
 
     this.children.forEach(child => child.emit('move'));
   }
 
-  rotate(delta: number) {
+  public rotate(delta: number) {
     if (delta % 4 === 0) return;
 
     this.rotation = ((this.rotation + delta) % 4 + 4) % 4;
@@ -47,7 +47,7 @@ export default class CircuitView extends View {
     this.children.forEach(child => child.emit('move'));
   }
 
-  getDimensions(): Dimensions {
+  public getDimensions(): Dimensions {
     var dims = super.getDimensions();
 
     if (this.rotation % 2 !== 0) {
@@ -62,7 +62,7 @@ export default class CircuitView extends View {
     return dims;
   }
 
-  remove() {
+  public remove() {
     super.remove();
 
     this.children.forEach(child => child.remove());
@@ -70,7 +70,7 @@ export default class CircuitView extends View {
     this.data.disconnect();
   }
 
-  findAll(x: number, y: number): PositionalTree {
+  public findAll(x: number, y: number): PositionalTree {
     var { x: relX, y: relY } = getUnrotatedPosition({
       x: x - this.dimensions.x,
       y: y - this.dimensions.y
@@ -85,20 +85,20 @@ export default class CircuitView extends View {
     };
   }
 
-  getRelativePosition(x: number, y: number) {
+  public getRelativePosition(x: number, y: number) {
     var { x: rx, y: ry } = getRotatedPosition(
       {x, y}, this.dimensions, this.rotation
     );
     return super.getRelativePosition(rx, ry);
   }
 
-  eval(stmt: string) {
+  private eval(stmt: string) {
     var scope = this.data.pins.map(pin => pin.get());
     var expr = parse(stmt);
     return expr(scope);
   }
 
-  draw(context: CanvasRenderingContext2D) {
+  public draw(context: CanvasRenderingContext2D) {
     var style = this.style.general.gate;
 
     var {x, y} = this.getDimensions();

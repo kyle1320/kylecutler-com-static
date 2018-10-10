@@ -7,14 +7,14 @@ import ConnectionView from './ConnectionView';
 import { Position, PositionalTree } from '../model/types';
 
 export default class CanvasView extends View {
-  canvas: HTMLCanvasElement;
-  children: KDTree<View>;
-  previewChild: View;
-  selectionArea: {
+  public canvas: HTMLCanvasElement;
+  private children: KDTree<View>;
+  private previewChild: View;
+  private selectionArea: {
     startX: number, startY: number, endX: number, endY: number
   };
-  removeChild: (view: View) => void;
-  moveChild: (view: View) => void;
+  private removeChild: (view: View) => void;
+  private moveChild: (view: View) => void;
 
   constructor (canvasEl: HTMLCanvasElement) {
     super(
@@ -47,11 +47,11 @@ export default class CanvasView extends View {
     this.draw = this.draw.bind(this);
   }
 
-  remove() {
+  public remove() {
 
   }
 
-  addChild(view: View) {
+  public addChild(view: View) {
     view.setParent(this);
 
     this.children.insert(view, new BoundingBox(view.getDimensions()));
@@ -63,11 +63,11 @@ export default class CanvasView extends View {
     this.update();
   }
 
-  setPreviewChild(view: View) {
+  public setPreviewChild(view: View) {
     this.previewChild = view;
 
     if (view) {
-      view.parent = this;
+      view.setParent(this);
       view.on('update', this.update);
       view.on('move', this.update);
     }
@@ -75,18 +75,18 @@ export default class CanvasView extends View {
     this.update();
   }
 
-  addPreviewChild() {
+  public addPreviewChild() {
     if (this.previewChild) {
       this.addChild(this.previewChild);
       this.previewChild = null;
     }
   }
 
-  findChild(x: number, y: number, grow: number): View[] {
+  public findChild(x: number, y: number, grow: number): View[] {
     return this.children.find(new BoundingBox(x-grow, y-grow, grow*2, grow*2));
   }
 
-  findAll(x: number, y: number): PositionalTree {
+  public findAll(x: number, y: number): PositionalTree {
     var gridX = (x / this.attributes.scale) - this.dimensions.x;
     var gridY = (y / this.attributes.scale) - this.dimensions.y;
 
@@ -101,16 +101,16 @@ export default class CanvasView extends View {
     };
   }
 
-  move(x: number, y: number) {
+  public move(x: number, y: number) {
     super.move(x, y);
     this.update();
   }
 
-  zoomRel(scale: number, cx: number, cy: number) {
+  public zoomRel(scale: number, cx: number, cy: number) {
     this.zoomAbs((scale - 1) * this.attributes.scale, cx, cy);
   }
 
-  zoomAbs(delta: number, cx: number, cy: number) {
+  public zoomAbs(delta: number, cx: number, cy: number) {
     var { x, y } = this.getDimensions();
     var curScale = this.attributes.scale;
     var newScale = Math.min(70, Math.max(5, curScale + delta));
@@ -122,14 +122,14 @@ export default class CanvasView extends View {
     this.setAttribute('scale', newScale);
   }
 
-  getCoord(clientX: number, clientY: number): Position {
+  public getCoord(clientX: number, clientY: number): Position {
     return {
       x: (clientX / this.attributes.scale) - this.dimensions.x,
       y: (clientY / this.attributes.scale) - this.dimensions.y
     };
   }
 
-  startSelection(x: number, y: number) {
+  public startSelection(x: number, y: number) {
     this.selectionArea = {
       startX: x,
       startY: y,
@@ -139,18 +139,22 @@ export default class CanvasView extends View {
     this.update();
   }
 
-  endSelection(x: number, y: number) {
+  public endSelection(x: number, y: number) {
     this.selectionArea.endX = x;
     this.selectionArea.endY = y;
     this.update();
   }
 
-  clearSelection() {
+  public hasSelection(): boolean {
+    return !!this.selectionArea;
+  }
+
+  public clearSelection() {
     this.selectionArea = null;
     this.update();
   }
 
-  getSelected(): View[] {
+  public getSelected(): View[] {
     if (!this.selectionArea) return null;
 
     var boundingBox = new BoundingBox(0, 0, 0, 0);
@@ -171,15 +175,15 @@ export default class CanvasView extends View {
                     boundingBox.contains(new BoundingBox(v.getDimensions())));
   }
 
-  getAll(): View[] {
+  public getAll(): View[] {
     return this.children.all();
   }
 
-  drawBuffered() {
+  public drawBuffered() {
     bufferEvent('redraw-' + this._id, this.draw, true);
   }
 
-  draw() {
+  public draw() {
     var context = this.canvas.getContext('2d');
 
     var scale = this.attributes.scale * (window.devicePixelRatio || 1);
