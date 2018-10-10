@@ -1,6 +1,6 @@
 import Node from './Node';
 import bufferEvent from '../utils/eventBuffer';
-import parse from './parse';
+import { parse } from './parse';
 import { CircuitDefinition, CircuitRule } from './types';
 
 const EventEmitter = require('events');

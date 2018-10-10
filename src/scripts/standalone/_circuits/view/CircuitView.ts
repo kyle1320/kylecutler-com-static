@@ -1,6 +1,6 @@
 import View from './View';
 import NodeView from './NodeView';
-import parse from '../model/parse';
+import { parse } from '../model/parse';
 import Circuit from '../model/Circuit';
 import { Dimensions, Position, PositionalTree } from '../model/types';
 
