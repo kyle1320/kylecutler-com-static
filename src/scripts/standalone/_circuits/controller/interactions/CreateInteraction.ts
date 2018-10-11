@@ -4,6 +4,7 @@ import { findFirst } from '../treeUtils';
 
 import Node from '../../model/Node';
 import Circuit from '../../model/Circuit';
+import circuits from '../../model/circuits';
 
 import View from '../../view/View';
 import NodeView from '../../view/NodeView';
@@ -41,7 +42,6 @@ export default class CreateInteraction extends Interaction {
 
     addCircuit('Node', () => new NodeView(new Node(), 0, 0));
 
-    const circuits = require('../../model/circuits');
     for (let name in circuits) {
       let def = circuits[name];
       addCircuit(name, () => new CircuitView(new Circuit(def), 0, 0));

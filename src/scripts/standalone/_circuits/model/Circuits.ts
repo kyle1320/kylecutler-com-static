@@ -2,7 +2,7 @@ import { CircuitDefinition } from './types';
 
 /* eslint-disable max-len */
 
-module.exports = {
+export default {
   And: {
     key: 'And',
     size: { width: 2, height: 2 },
