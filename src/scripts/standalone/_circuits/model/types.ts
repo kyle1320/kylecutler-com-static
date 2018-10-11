@@ -20,14 +20,6 @@ export interface PositionalEvent {
   root: PositionalTree
 }
 
-export interface Tool {
-  name: string,
-  icon: string,
-  cursor: string,
-  label: string,
-  isAction: boolean
-}
-
 export interface Position {
   x: number,
   y: number
@@ -53,7 +45,11 @@ export interface CircuitDefinition {
   }
 }
 
+export type ActionEventType = 'select' | 'deselect' | 'click' | 'toggle';
+
 export interface ActionEvent {
+  type: ActionEventType,
   section: string,
-  action: string
+  name: string,
+  id: string
 }

@@ -39,7 +39,6 @@
 
 @include fa-mouse-pointer;
 @include fa-hand-rock;
-@include fa-info;
 @include fa-save;
 @include fa-folder-open;
 @include fa-search-plus;
@@ -51,6 +50,7 @@
 @include fa-check-double;
 @include fa-undo;
 @include fa-trash;
+@include fa-expand;
 
 html, body {
   margin: 0;
@@ -70,12 +70,9 @@ body {
   position: relative;
   display: flex;
   flex-flow: row nowrap;
-
-  &-container {
-    box-shadow: 0 0 rem(5px) rgba(0, 0, 0, 0.3);
-    background-color: #fafafa;
-    z-index: 100;
-  }
+  box-shadow: 0 0 rem(5px) rgba(0, 0, 0, 0.3);
+  background-color: #fafafa;
+  z-index: 100;
 
   .logo {
     display: flex;
@@ -89,78 +86,15 @@ body {
     border-right: 1px solid #cccccc;
 
     svg {
-      height: rem(24px);
-      width: rem(78px); // IE fix
+      height: rem(25px);
+      width: rem(80px); // IE fix
     }
 
     small {
-      font-size: rem(7px);
+      font-size: rem(9px);
       line-height: 1;
       padding-top: rem(3px);
       color: $gray;
-    }
-  }
-}
-
-.item {
-  box-sizing: border-box;
-  border-left: 1px solid #eeeeee;
-  flex-basis: rem(60px);
-  background-color: white;
-
-  &:last-child {
-    border-right: 1px solid #eeeeee;
-  }
-
-  &__content {
-    position: relative;
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: center;
-    text-align: center;
-    height: 100%;
-    box-sizing: border-box;
-    font-size: rem(12px);
-    line-height: 1;
-    cursor: pointer;
-    border-bottom: rem(2px) solid transparent;
-    padding: 0 rem(5px);
-    flex-grow: 1;
-    overflow: hidden;
-    font-weight: bold;
-
-    &:not(.disabled, .selected):hover {
-      border-color: #CCCCCC;
-    }
-
-    &.selected {
-      color: #4080FF;
-      border-bottom-color: currentColor;
-      box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
-    }
-
-    &--icon {
-      min-width: rem(40px);
-      font-size: rem(14px);
-      padding: rem(5px);
-    }
-
-    &--canvas {
-      align-items: center;
-    }
-
-    .label {
-      text-align: center;
-      white-space: nowrap;
-      font-size: rem(11px);
-      font-weight: bold;
-    }
-
-    &.disabled {
-      opacity: 0.5;
-      pointer-events: none;
-      cursor: disabled;
-      background-color: #f4f4f4;
     }
   }
 }
@@ -170,14 +104,18 @@ body {
   flex-flow: row nowrap;
   align-items: stretch;
   justify-content: flex-start;
-  min-height: rem(81px);
-  max-height: rem(81px);
+  width: auto;
   overflow-x: auto;
   overflow-y: hidden;
 
   &__section {
+    display: flex;
+    flex-flow: column nowrap;
+    flex-shrink: 0;
     padding: 0 rem(4px) 0 rem(7px);
     border-right: 1px solid #eeeeee;
+    min-height: rem(70px);
+    max-height: rem(70px);
     overflow-y: auto;
 
     &.hide {
@@ -185,21 +123,68 @@ body {
     }
 
     &__header {
-      font-size: rem(9px);
-      margin: rem(3px);
+      font-size: rem(10px);
+      margin: rem(3px) 0;
       line-height: 1;
       font-weight: bold;
       letter-spacing: 0.03em;
-      color: #A0A0A0;
+      color: $gray;
       text-transform: uppercase;
+    }
+
+    &__content {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: center;
+      flex-grow: 1;
+      max-width: rem(222px);
+
+      .column {
+        display: flex;
+        flex-flow: column wrap;
+      }
+    }
+
+    &__group {
+      padding: 0 rem(5px);
+      border-right: 1px solid #eeeeee;
+
+      &:first-child {
+        padding-left: 0;
+      }
+
+      &:last-child {
+        padding-right: 0;
+        border: none;
+      }
+
+      &--normal {
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+        max-width: rem(222px);
+      }
+
+      &--columns {
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+      }
     }
   }
 }
 
 .action-item {
-  display: inline-block;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
   width: rem(30px);
   height: rem(30px);
+  color: $dark-gray;
+  font-size: rem(14px);
+  line-height: 1;
+  text-align: center;
   padding: rem(1px);
   border: 1px solid #CCCCCC;
   border-radius: rem(3px);
@@ -211,20 +196,21 @@ body {
     height: 100%;
   }
 
-  &--icon {
-    color: $dark-gray;
-    height: rem(16px);
-    width: rem(16px);
-    font-size: rem(16px);
-    line-height: 1;
-    padding: rem(6px);
-    text-align: center;
+  &--small {
+    width: rem(20px);
+    height: rem(20px);
   }
 
   &.selected {
-    background-color: #D0E8FF;
+    background-color: #E0EAFF;
     color: #4080FF;
     border-color: #4080FF;
+  }
+
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: disabled;
   }
 }
 

@@ -1,16 +1,16 @@
 import Interaction from '../Interaction';
-import { Tool } from '../../model/types';
+import { ActionEvent } from '../../model/types';
 
 export default class ExportImportInteraction extends Interaction {
-  public handleSelectTool(tool: Tool) {
-    if (tool.name === 'export') {
+  public handleActionEvent(e: ActionEvent) {
+    if (e.id === 'data:export') {
       this.controller.modal.showTextboxDialog(
         'Export Data',
         'Copy the text below and save it somewhere. ' +
           'Then it can be imported later.',
         this.controller.export()
       );
-    } else if (tool.name === 'import') {
+    } else if (e.id === 'data:import') {
       this.controller.modal.showTextboxInputDialog(
         'Import Data',
         'Paste your previously exported data snippet here ' +

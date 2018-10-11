@@ -15,7 +15,6 @@ import {
   PositionalEvent,
   ActionEvent
 } from '../../model/types';
-import ActionItem from '../../view/ActionItem';
 
 export default class CreateInteraction extends Interaction {
   private circuits: string[];
@@ -32,11 +31,8 @@ export default class CreateInteraction extends Interaction {
 
     this.circuits = [];
     this.circuitsMap = {};
-    this.dragStart = null;
-    this.dragEnd = null;
-    this.dragging = false;
-    this.previewCircuit = null;
-    this.selectedCircuit = null;
+
+    this.reset();
 
     const addCircuit = (name: string, creator: () => View) => {
       this.circuits.push(name);
@@ -50,25 +46,17 @@ export default class CreateInteraction extends Interaction {
       let def = circuits[name];
       addCircuit(name, () => new CircuitView(new Circuit(def), 0, 0));
     }
-
-    this.initActionBar();
-  }
-
-  protected init() {
-    this.initActionBar();
-  }
-
-  public meetsConditions() {
-    return !!this.selectedCircuit;
   }
 
   public handleActionEvent(e: ActionEvent) {
-    if (e.section !== this.getActionBarSectionName()) return;
+    if (e.section !== 'create') return;
 
-    this.selectCircuit(e.action);
+    this.selectCircuit(e.type === 'select' ? e.name : null);
   }
 
   public handleMouseEvent(e: PositionalEvent) {
+    if (!this.selectedCircuit) return;
+
     var targetView = findNode(e.root);
     let targetPos = targetView && View.getRelativePosition(
       targetView,
@@ -165,12 +153,22 @@ export default class CreateInteraction extends Interaction {
   }
 
   private selectCircuit(name: string) {
-    if (this.selectedCircuit === name) {
-      name = null;
+    if (!name) {
+      this.reset();
+      return;
     }
 
     this.selectedCircuit = name;
+
     this.createNew();
+  }
+
+  protected reset() {
+    this.dragStart = null;
+    this.dragEnd = null;
+    this.dragging = false;
+    this.previewCircuit = null;
+    this.selectedCircuit = null;
   }
 
   private createNew() {
@@ -179,17 +177,6 @@ export default class CreateInteraction extends Interaction {
       this.previewCircuit.setAttribute('hidden', true);
       this.controller.canvas.setPreviewChild(this.previewCircuit);
     }
-  }
-
-  protected getActionBarSectionName(): string {
-    return 'Create';
-  }
-
-  protected getActionBarItems(): ActionItem[] {
-    return this.circuits.map(name => {
-      var view = this.circuitsMap[name]();
-      return ActionItem.withViewCanvas(name, view, name);
-    });
   }
 }
 

@@ -1,17 +1,25 @@
 import Interaction from '../Interaction';
-import { PositionalEvent } from '../../model/types';
+import { PositionalEvent, ActionEvent } from '../../model/types';
+import Controller from '..';
 
 export default class ZoomInteraction extends Interaction {
+  constructor(controller: Controller) {
+    super(controller);
+  }
+
+  public handleActionEvent(e: ActionEvent) {
+    switch (e.id) {
+    case 'zoom:in':
+      this.controller.canvas.zoomAbs(5, 0, 0);
+      break;
+    case 'zoom:out':
+      this.controller.canvas.zoomAbs(-5, 0, 0);
+      break;
+    }
+  }
+
   public handleMouseEvent(e: PositionalEvent) {
     switch (e.type) {
-    case 'down':
-      if (this.controller.selectedTool === 'zoomin') {
-        this.controller.canvas.zoomAbs(5, e.root.x, e.root.y);
-      } else if (this.controller.selectedTool === 'zoomout') {
-        this.controller.canvas.zoomAbs(-5, e.root.x, e.root.y);
-      }
-
-      break;
     case 'scroll':
       if (e.event instanceof WheelEvent) {
         this.controller.canvas.zoomAbs(

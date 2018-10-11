@@ -13,24 +13,23 @@ html
 
   body
     +gtmNoscript
-    .header-container
-      .header
-        .logo
-          svg(viewBox='0 0 216 67', xmlns='http://www.w3.org/2000/svg', stroke-width='8', fill='none')
-            circle(cx='47', cy='7', r='5', stroke-width='3', stroke='#00CC00') // dot over C
-            path(d='M42,7l-10,0a28,28 0 1,0 0,56l162,0a11,11 0 1,0 0,-22l-5,0a10,10 0 0,1 0,-20l15,0', stroke='#00CC00') // C, underline, S
-            circle(cx='209', cy='21', r='5', stroke-width='3', stroke='#00CC00') // dot over S
-            path.off(d='M47,53l0,-35', stroke='#A08080') // i
-            path.off(d='M62,53l0,-35m0,15a10,10 0 0,1 10,-10l5,0', stroke='#A08080') // r
-            path.off(d='M101,49l-7,0a12,12 0 0,1 -12,-12l0,-2a12,12 0 0,1 12,-12l7,0', stroke='#A08080') // c
-            path.off(d='M111,19l0,22a8,8 0 1,0 16,0l0,-22', stroke='#A08080') // u
-            path.off(d='M142,53l0,-35', stroke='#A08080') // i
-            circle(cx='142', cy='7', r='5', stroke-width='3', stroke='#00CC00') // dot over i
-            path.off(d='M162,53l0,-50', stroke='#A08080') // t line
-            path.off(d='M152,22l20,0', stroke='#A08080') // t cross
+    .header
+      .logo
+        svg(viewBox='0 0 216 67', xmlns='http://www.w3.org/2000/svg', stroke-width='8', fill='none')
+          circle(cx='47', cy='7', r='5', stroke-width='3', stroke='#00CC00') // dot over C
+          path(d='M42,7l-10,0a28,28 0 1,0 0,56l162,0a11,11 0 1,0 0,-22l-5,0a10,10 0 0,1 0,-20l15,0', stroke='#00CC00') // C, underline, S
+          circle(cx='209', cy='21', r='5', stroke-width='3', stroke='#00CC00') // dot over S
+          path.off(d='M47,53l0,-35', stroke='#A08080') // i
+          path.off(d='M62,53l0,-35m0,15a10,10 0 0,1 10,-10l5,0', stroke='#A08080') // r
+          path.off(d='M101,49l-7,0a12,12 0 0,1 -12,-12l0,-2a12,12 0 0,1 12,-12l7,0', stroke='#A08080') // c
+          path.off(d='M111,19l0,22a8,8 0 1,0 16,0l0,-22', stroke='#A08080') // u
+          path.off(d='M142,53l0,-35', stroke='#A08080') // i
+          circle(cx='142', cy='7', r='5', stroke-width='3', stroke='#00CC00') // dot over i
+          path.off(d='M162,53l0,-50', stroke='#A08080') // t line
+          path.off(d='M152,22l20,0', stroke='#A08080') // t cross
 
-          small alpha
-        .actionbar#actionbar
+        small alpha
+      .actionbar#actionbar
     .canvas
       canvas#canvas
     .infobar#infobar

@@ -6,7 +6,7 @@ import Infobar from '../view/Infobar';
 import Modal from '../view/Modal';
 import Serialize from '../view/serialize';
 
-import { Tool, PositionalEvent, BasicTree, ActionEvent } from '../model/types';
+import { PositionalEvent, BasicTree, ActionEvent } from '../model/types';
 
 import Interaction from './Interaction';
 import DebugInteraction from './interactions/DebugInteraction';
@@ -29,8 +29,6 @@ export default class Controller {
   public infobar: Infobar;
   public modal: Modal;
 
-  public selectedTool: string;
-
   public selected: View[];
   public hovering: View[];
 
@@ -47,8 +45,6 @@ export default class Controller {
     this.actionbar = actionbar;
     this.infobar = infobar;
     this.modal = modal;
-
-    this.selectedTool = 'point';
 
     this.selected = null;
     this.hovering = null;
@@ -72,6 +68,8 @@ export default class Controller {
     if (process.env.NODE_ENV === 'development') {
       this.interactions.push(new DebugInteraction(this));
     }
+
+    this.callInteractions(x => x.handleSelectViews(null));
   }
 
   public hoverTree(
@@ -134,6 +132,10 @@ export default class Controller {
       el.setAttribute('zIndex', this.topZIndex);
     }
 
+    shouldSnap = shouldSnap || this.actionbar.isSelected('drag:snap');
+
+    if (el === this.canvas) shouldSnap = false;
+
     if (shouldSnap) el.move(Math.round(dx), Math.round(dy));
     else            el.move(dx, dy);
   }
@@ -161,27 +163,9 @@ export default class Controller {
     this.callInteractions(x => x.handleKeyEvent(e));
   }
 
-  public selectTool(tool: Tool) {
-    if (tool.name === this.selectedTool) return;
-
-    if (!tool.isAction) {
-      this.selectedTool = tool.name;
-      this.canvas.canvas.style.cursor = tool.cursor;
-
-      this.infobar.showGenericToolInfo(tool.name);
-
-      this.hover(null);
-      // this.select(null);
-    }
-
-    this.callInteractions(x => x.handleSelectTool(tool));
-  }
-
   private callInteractions(handler: (x: Interaction) => boolean | void) {
     for (var i = 0; i < this.interactions.length; i++) {
       var interaction = this.interactions[i];
-
-      if (!interaction.meetsConditions()) continue;
 
       if (handler(interaction) === false) break;
     }

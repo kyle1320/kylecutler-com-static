@@ -4,29 +4,44 @@ import { findFirst } from '../treeUtils';
 import NodeView from '../../view/NodeView';
 import CircuitView from '../../view/CircuitView';
 import ConnectionView from '../../view/ConnectionView';
-import { PositionalEvent, PositionalTree, Tool } from '../../model/types';
+import {
+  PositionalEvent,
+  PositionalTree,
+  ActionEvent
+} from '../../model/types';
 import View from '../../view/View';
-import ActionItem from '../../view/ActionItem';
-import Controller from '..';
 
 export default class SelectInteraction extends Interaction {
   private isClickCandidate: boolean;
   private lastHoverTarget: View;
-
-  constructor(controller: Controller) {
-    super(controller);
-
-    this.initActionBar();
-    this.reset();
-  }
 
   protected reset() {
     this.isClickCandidate = true;
     this.lastHoverTarget = null;
   }
 
+  public handleActionEvent(e: ActionEvent) {
+    if (e.section !== 'select') return;
+
+    switch (e.name) {
+    case 'all':
+      this.select(this.controller.canvas.getAll());
+      break;
+    case 'rotate':
+      (<CircuitView>this.controller.selected[0]).rotate(1);
+      break;
+    case 'delete':
+      this.controller.selected.forEach(v => v.remove());
+      this.select(null);
+      break;
+    case 'cancel':
+      this.select(null);
+      break;
+    }
+  }
+
   public handleMouseEvent(e: PositionalEvent) {
-    if (this.controller.selectedTool !== 'point') return;
+    if (this.controller.actionbar.selectedItem !== 'select:tool') return;
 
     var canvas = this.controller.canvas;
 
@@ -90,35 +105,13 @@ export default class SelectInteraction extends Interaction {
     }
   }
 
-  public handleSelectTool(tool: Tool) {
-    if (tool.name !== 'point') return;
-
-    this.handleSelectViews(this.controller.selected);
-  }
-
   public handleSelectViews(views: View[]) {
-    // TODO: update actionbar icons
-  }
-
-  protected getActionBarSectionName(): string {
-    return 'Selection';
-  }
-
-  protected getActionBarItems(): ActionItem[] {
-    return [
-      ActionItem.withIcon(
-        'selectall', 'fa fa-check-double', 'Select All'
-      ),
-      ActionItem.withIcon(
-        'rotate', 'fa fa-undo fa-flip-horizontal', 'Rotate 90°'
-      ),
-      ActionItem.withIcon(
-        'delete', 'fa fa-trash', 'Delete'
-      ),
-      ActionItem.withIcon(
-        'cancel', 'fa fa-times', 'Cancel'
-      )
-    ];
+    this.controller.actionbar.setEnabled('select:cancel', !!views);
+    this.controller.actionbar.setEnabled('select:delete', !!views);
+    this.controller.actionbar.setEnabled(
+      'select:rotate',
+      views && views.length === 1 && views[0] instanceof CircuitView
+    );
   }
 
   private selectSingle(view: View, adding?: boolean) {

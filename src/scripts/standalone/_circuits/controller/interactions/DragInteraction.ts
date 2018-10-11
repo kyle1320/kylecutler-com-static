@@ -2,8 +2,11 @@ import Interaction from '../Interaction';
 import { findFirst } from '../treeUtils';
 import ConnectionView from '../../view/ConnectionView';
 import View from '../../view/View';
-// import { toggleClass } from '../../../../utils';
-import { PositionalEvent, Tool, PositionalTree } from '../../model/types';
+import {
+  PositionalEvent,
+  PositionalTree,
+  ActionEvent
+} from '../../model/types';
 
 type MoveData = {
   view: View,
@@ -13,18 +16,23 @@ type MoveData = {
 
 export default class DragInteraction extends Interaction {
   private target: MoveData[];
-  private forceSnapping: boolean;
 
   protected reset() {
     this.target = null;
-    this.forceSnapping = false;
   }
 
-  public meetsConditions() {
-    return this.controller.selectedTool === 'drag';
+  public handleActionEvent(e: ActionEvent) {
+    if (e.id === 'drag:tool') {
+
+      // TODO: allow for other custom cursors
+      this.controller.canvas.canvas.style.cursor =
+      e.type === 'select' ? 'grab': null;
+    }
   }
 
   public handleMouseEvent(e: PositionalEvent) {
+    if (this.controller.actionbar.selectedItem !== 'drag:tool') return;
+
     var canvas = this.controller.canvas;
     var selectedHover = findFirst(
       e.root,
@@ -79,8 +87,7 @@ export default class DragInteraction extends Interaction {
             data.view,
             e.root.x - data.x,
             e.root.y - data.y,
-            data.view !== this.controller.canvas
-                && (e.event.shiftKey || this.forceSnapping)
+            e.event.shiftKey
           );
         });
       }
@@ -91,16 +98,6 @@ export default class DragInteraction extends Interaction {
 
       break;
     }
-  }
-
-  public handleSelectTool(tool: Tool) {
-    if (tool.name !== 'drag') return;
-
-    // var item = Itembar.makeItem('Snap To Grid', null, () => {
-    //   this.forceSnapping = !this.forceSnapping;
-    //   toggleClass(item, 'selected', this.forceSnapping);
-    // });
-    // this.controller.infobar.addItem(item, this.forceSnapping);
   }
 }
 

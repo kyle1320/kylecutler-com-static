@@ -1,11 +1,11 @@
 /* eslint-disable max-len */
 
 import Interaction from '../Interaction';
-import { Tool } from '../../model/types';
+import { ActionEvent } from '../../model/types';
 
 export default class HelpInteraction extends Interaction {
-  public handleSelectTool(tool: Tool) {
-    if (tool.name === 'help') {
+  public handleActionEvent(e: ActionEvent) {
+    if (e.id === 'help:show') {
       this.controller.modal.showInfoDialog(
         'About This App',
         `
