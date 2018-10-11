@@ -381,3 +381,13 @@ defaultSections = [
     ])
   ])
 ];
+
+if (process.env.NODE_ENV === 'development') {
+  defaultSections.push(new Section('Debug', 'debug', [
+    new SectionGroup('columns', [
+      ActionItem.withIcon(
+        'debug', 'toggle', 'fa fa-bug', 'Toggle Debugging', 'small'
+      )
+    ])
+  ]));
+}
