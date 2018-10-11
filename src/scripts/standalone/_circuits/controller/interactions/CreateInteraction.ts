@@ -9,17 +9,17 @@ import View from '../../view/View';
 import NodeView from '../../view/NodeView';
 import CircuitView from '../../view/CircuitView';
 import ConnectionView from '../../view/ConnectionView';
-import Itembar from '../../view/Itembar';
 import Controller from '../index';
-import { Tool, PositionalTree, PositionalEvent } from '../../model/types';
+import {
+  PositionalTree,
+  PositionalEvent,
+  ActionEvent
+} from '../../model/types';
+import ActionItem from '../../view/ActionItem';
 
 export default class CreateInteraction extends Interaction {
   private circuits: string[];
-  private circuitsMap: {[name: string]: {
-    item: HTMLElement,
-    view: View,
-    creator: () => View
-  }};
+  private circuitsMap: {[name: string]: () => View};
   private selectedCircuit: string;
 
   private dragStart: NodeView;
@@ -32,17 +32,15 @@ export default class CreateInteraction extends Interaction {
 
     this.circuits = [];
     this.circuitsMap = {};
+    this.dragStart = null;
+    this.dragEnd = null;
+    this.dragging = false;
+    this.previewCircuit = null;
+    this.selectedCircuit = null;
 
     const addCircuit = (name: string, creator: () => View) => {
-      var view = creator();
-      var item = Itembar.makeCanvasItem(
-        (canvas: HTMLCanvasElement) => drawViewOnPreviewCanvas(canvas, view),
-        name,
-        () => this.selectCircuit(name)
-      );
-
       this.circuits.push(name);
-      this.circuitsMap[name] = { item, view, creator };
+      this.circuitsMap[name] = creator;
     };
 
     addCircuit('Node', () => new NodeView(new Node(), 0, 0));
@@ -52,18 +50,22 @@ export default class CreateInteraction extends Interaction {
       let def = circuits[name];
       addCircuit(name, () => new CircuitView(new Circuit(def), 0, 0));
     }
+
+    this.initActionBar();
   }
 
-  protected reset() {
-    this.dragStart = null;
-    this.dragEnd = null;
-    this.dragging = false;
-    this.previewCircuit = null;
-    this.selectedCircuit = null;
+  protected init() {
+    this.initActionBar();
   }
 
   public meetsConditions() {
-    return this.controller.selectedTool === 'create';
+    return !!this.selectedCircuit;
+  }
+
+  public handleActionEvent(e: ActionEvent) {
+    if (e.section !== this.getActionBarSectionName()) return;
+
+    this.selectCircuit(e.action);
   }
 
   public handleMouseEvent(e: PositionalEvent) {
@@ -162,66 +164,36 @@ export default class CreateInteraction extends Interaction {
     }
   }
 
-  public handleSelectTool(tool: Tool) {
-    if (tool.name !== 'create') return;
-
-    this.reset();
-
-    if (this.previewCircuit) {
-      this.controller.canvas.setPreviewChild(null);
-      this.previewCircuit = null;
+  private selectCircuit(name: string) {
+    if (this.selectedCircuit === name) {
+      name = null;
     }
 
-    var infobar = this.controller.infobar;
-
-    infobar.clear();
-
-    this.circuits.forEach(name => infobar.addItem(this.circuitsMap[name].item));
-
-    this.selectCircuit('Node');
-  }
-
-  private selectCircuit(name: string) {
     this.selectedCircuit = name;
-    this.controller.infobar.selectItem(this.circuitsMap[name].item);
     this.createNew();
   }
 
   private createNew() {
     if (this.selectedCircuit) {
-      this.previewCircuit = this.circuitsMap[this.selectedCircuit].creator();
+      this.previewCircuit = this.circuitsMap[this.selectedCircuit]();
       this.previewCircuit.setAttribute('hidden', true);
       this.controller.canvas.setPreviewChild(this.previewCircuit);
     }
+  }
+
+  protected getActionBarSectionName(): string {
+    return 'Create';
+  }
+
+  protected getActionBarItems(): ActionItem[] {
+    return this.circuits.map(name => {
+      var view = this.circuitsMap[name]();
+      return ActionItem.withViewCanvas(name, view, name);
+    });
   }
 }
 
 function findNode(tree: PositionalTree): NodeView {
   var node = findFirst(tree, x => x.data instanceof NodeView);
   return node && (node.data as NodeView);
-}
-
-function drawViewOnPreviewCanvas(canvas: HTMLCanvasElement, view: View) {
-  var size = 30 * (window.devicePixelRatio || 1);
-
-  canvas.style.width = '30px';
-  canvas.style.height = '30px';
-  canvas.width = size;
-  canvas.height = size;
-
-  var dim = view.getDimensions();
-  var context = canvas.getContext('2d');
-  var scale = Math.min(size*.5, size*.8 / Math.max(dim.width, dim.height));
-  var drawWidth = scale * dim.width;
-  var drawHeight = scale * dim.height;
-  var drawX = (size - drawWidth) / 2;
-  var drawY = (size - drawHeight) / 2;
-
-  context.lineWidth = 0.1;
-
-  context.transform(
-    scale, 0, 0, scale, drawX, drawY
-  );
-
-  view.draw(context);
 }

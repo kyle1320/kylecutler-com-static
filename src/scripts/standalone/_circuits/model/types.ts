@@ -52,3 +52,8 @@ export interface CircuitDefinition {
     path: string
   }
 }
+
+export interface ActionEvent {
+  section: string,
+  action: string
+}

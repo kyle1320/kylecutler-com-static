@@ -1,10 +1,14 @@
-import { Tool, PositionalEvent } from '../model/types';
+import { Tool, PositionalEvent, ActionEvent } from '../model/types';
 
 import View from '../view/View';
 import Controller from './index';
+import ActionItem from '../view/ActionItem';
 
-export default class Interaction {
-  protected controller: Controller
+export default abstract class Interaction {
+  protected controller: Controller;
+
+  private actionBarSection: number;
+  protected actionBarItems: ActionItem[];
 
   constructor (controller: Controller) {
     this.controller = controller;
@@ -12,8 +16,23 @@ export default class Interaction {
     this.reset();
   }
 
+  protected initActionBar() {
+    var sectionName = this.getActionBarSectionName();
+    if (sectionName) {
+      this.actionBarSection = this.controller.actionbar.addSection(sectionName);
+      this.actionBarItems = this.getActionBarItems() || [];
+      this.actionBarItems.forEach(item => {
+        this.controller.actionbar.addItem(this.actionBarSection, item);
+      });
+    }
+  }
+
   public meetsConditions(): boolean {
     return true;
+  }
+
+  public handleActionEvent(id: ActionEvent): boolean | void {
+
   }
 
   public handleMouseEvent(e: PositionalEvent): boolean | void {
@@ -34,5 +53,13 @@ export default class Interaction {
 
   protected reset() {
 
+  }
+
+  protected getActionBarSectionName(): string {
+    return null;
+  }
+
+  protected getActionBarItems(): ActionItem[] {
+    return [];
   }
 }

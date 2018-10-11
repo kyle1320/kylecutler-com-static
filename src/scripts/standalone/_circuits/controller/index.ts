@@ -2,12 +2,11 @@ import { flatten } from './treeUtils';
 
 import View from '../view/View';
 import CanvasView from '../view/CanvasView';
-import Toolbar from '../view/Toolbar';
 import Infobar from '../view/Infobar';
 import Modal from '../view/Modal';
 import Serialize from '../view/serialize';
 
-import { Tool, PositionalEvent, BasicTree } from '../model/types';
+import { Tool, PositionalEvent, BasicTree, ActionEvent } from '../model/types';
 
 import Interaction from './Interaction';
 import DebugInteraction from './interactions/DebugInteraction';
@@ -18,14 +17,15 @@ import SelectInteraction from './interactions/SelectInteraction';
 import ZoomInteraction from './interactions/ZoomInteraction';
 import ClipboardInteraction from './interactions/ClipboardInteraction';
 import ExportImportInteraction from './interactions/ExportImportInteraction';
-import TouchInteraction from './interactions/MultiTouchInteraction';
+import MultiTouchInteraction from './interactions/MultiTouchInteraction';
 import AutoSlideInteraction from './interactions/AutoSlideInteraction';
 import NoHoverInteraction from './interactions/NoHoverInteraction';
 import HelpInteraction from './interactions/HelpInteraction';
+import Actionbar from '../view/Actionbar';
 
 export default class Controller {
   public canvas: CanvasView;
-  public toolbar: Toolbar;
+  public actionbar: Actionbar;
   public infobar: Infobar;
   public modal: Modal;
 
@@ -39,16 +39,16 @@ export default class Controller {
 
   constructor (
     canvas: CanvasView,
-    toolbar: Toolbar,
+    actionbar: Actionbar,
     infobar: Infobar,
     modal: Modal
   ) {
     this.canvas = canvas;
-    this.toolbar = toolbar;
+    this.actionbar = actionbar;
     this.infobar = infobar;
     this.modal = modal;
 
-    this.selectedTool = 'move';
+    this.selectedTool = 'point';
 
     this.selected = null;
     this.hovering = null;
@@ -56,7 +56,7 @@ export default class Controller {
     this.topZIndex = 1;
 
     this.interactions = [
-      new TouchInteraction(this),
+      new MultiTouchInteraction(this),
       new DeleteInteraction(this),
       new SelectInteraction(this),
       new CreateInteraction(this),
@@ -149,6 +149,10 @@ export default class Controller {
     this.select(data);
   }
 
+  public handleActionEvent(e: ActionEvent) {
+    this.callInteractions(x => x.handleActionEvent(e));
+  }
+
   public handleMouseEvent(e: PositionalEvent) {
     this.callInteractions(x => x.handleMouseEvent(e));
   }
@@ -164,7 +168,7 @@ export default class Controller {
       this.selectedTool = tool.name;
       this.canvas.canvas.style.cursor = tool.cursor;
 
-      this.infobar.showGenericInfo(tool.name);
+      this.infobar.showGenericToolInfo(tool.name);
 
       this.hover(null);
       // this.select(null);

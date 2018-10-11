@@ -2,8 +2,7 @@ import Interaction from '../Interaction';
 import { findFirst } from '../treeUtils';
 import ConnectionView from '../../view/ConnectionView';
 import View from '../../view/View';
-import Itembar from '../../view/Itembar';
-import { toggleClass } from '../../../../utils';
+// import { toggleClass } from '../../../../utils';
 import { PositionalEvent, Tool, PositionalTree } from '../../model/types';
 
 type MoveData = {
@@ -97,11 +96,11 @@ export default class DragInteraction extends Interaction {
   public handleSelectTool(tool: Tool) {
     if (tool.name !== 'drag') return;
 
-    var item = Itembar.makeItem('Snap To Grid', null, () => {
-      this.forceSnapping = !this.forceSnapping;
-      toggleClass(item, 'selected', this.forceSnapping);
-    });
-    this.controller.infobar.addItem(item, this.forceSnapping);
+    // var item = Itembar.makeItem('Snap To Grid', null, () => {
+    //   this.forceSnapping = !this.forceSnapping;
+    //   toggleClass(item, 'selected', this.forceSnapping);
+    // });
+    // this.controller.infobar.addItem(item, this.forceSnapping);
   }
 }
 

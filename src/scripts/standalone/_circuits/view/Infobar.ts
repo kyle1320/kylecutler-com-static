@@ -1,4 +1,4 @@
-import Itembar from './Itembar';
+import { EventEmitter } from 'events';
 
 const toolText: {[name: string]: string} = {
   point: 'Select an element to edit',
@@ -8,9 +8,33 @@ const toolText: {[name: string]: string} = {
   zoomout: 'Click on the grid to zoom out'
 };
 
-export default class Infobar extends Itembar {
-  public showGenericInfo(toolName: string) {
-    this.clear();
-    this.addInfoText(toolText[toolName]);
+export default class Infobar extends EventEmitter {
+  private element: HTMLElement;
+  private generalText: string;
+  private infoText: string;
+  // private popupText: string;
+
+  constructor (element: HTMLElement) {
+    super();
+
+    this.element = element;
+  }
+
+  public setGeneralText(text: string) {
+    this.generalText = text;
+    this.update();
+  }
+
+  public setInfoText(text: string) {
+    this.infoText = text;
+    this.update();
+  }
+
+  public showGenericToolInfo(toolName: string) {
+    this.setGeneralText(toolText[toolName]);
+  }
+
+  private update() {
+    this.element.textContent = this.infoText || this.generalText;
   }
 }

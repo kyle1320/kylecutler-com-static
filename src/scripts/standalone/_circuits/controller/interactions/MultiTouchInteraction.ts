@@ -1,7 +1,7 @@
 import Interaction from '../Interaction';
 import { PositionalEvent } from '../../model/types';
 
-export default class TouchInteraction extends Interaction {
+export default class MultiTouchInteraction extends Interaction {
   private touchA: Touch;
   private touchB: Touch;
 

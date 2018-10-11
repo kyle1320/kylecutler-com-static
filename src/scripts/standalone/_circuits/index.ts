@@ -1,30 +1,28 @@
-const tools = require('./model/tools');
-
 import CanvasView from './view/CanvasView';
-import Toolbar from './view/Toolbar';
 import Infobar from './view/Infobar';
 import Modal from './view/Modal';
 import Serialize from './view/Serialize';
 
 import Controller from './controller';
+import Actionbar from './view/Actionbar';
 
 window.addEventListener('load', function () {
   var canvasView = getCanvasView(
     document.getElementById('canvas') as HTMLCanvasElement
   );
-  var toolbar = new Toolbar(document.getElementById('toolbar'), tools);
+  var actionbar = new Actionbar(document.getElementById('actionbar'));
   var infobar = new Infobar(document.getElementById('infobar'));
   var modal = new Modal(this.document.getElementById('modal'));
 
-  var controller = new Controller(canvasView, toolbar, infobar, modal);
+  var controller = new Controller(
+    canvasView, actionbar, infobar, modal
+  );
 
   addCanvasListeners(canvasView, controller);
-  toolbar.on('change', tool => controller.selectTool(tool));
-
+  actionbar.on('action', e => controller.handleActionEvent(e));
   window.addEventListener('keydown', e => controller.handleKeyEvent(e));
 
   addDefaultItems(canvasView);
-  toolbar.selectTool(tools[0].name);
 
   canvasView.drawBuffered();
 });
