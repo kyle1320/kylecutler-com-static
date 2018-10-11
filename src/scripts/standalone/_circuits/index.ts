@@ -23,6 +23,7 @@ window.addEventListener('load', function () {
   window.addEventListener('keydown', e => controller.handleKeyEvent(e));
 
   addDefaultItems(canvasView);
+  actionbar.init();
 
   canvasView.drawBuffered();
 });

@@ -1,40 +1,45 @@
 import { EventEmitter } from 'events';
 
-const toolText: {[name: string]: string} = {
-  point: 'Select an element to edit',
-  drag: 'Drag an object or the grid to move it',
-  debug: 'Move the cursor around to print information for debugging',
-  zoomin: 'Click on the grid to zoom in',
-  zoomout: 'Click on the grid to zoom out'
-};
-
 export default class Infobar extends EventEmitter {
   private element: HTMLElement;
-  private generalText: string;
-  private infoText: string;
-  // private popupText: string;
+  private data: {text: string, priority: number}[];
 
   constructor (element: HTMLElement) {
     super();
 
     this.element = element;
+    this.data = [];
   }
 
-  public setGeneralText(text: string) {
-    this.generalText = text;
+  public set(text: string, priority: number) {
+    var i;
+    var replace = false;
+
+    for (i = 0; i < this.data.length; i++) {
+      if (this.data[i].priority === priority) {
+        this.data[i].text = text;
+        replace = true;
+        break;
+      }
+      if (this.data[i].priority >= priority) {
+        break;
+      }
+    }
+
+    if (i >= 0) {
+      if (text) {
+        this.data.splice(i, replace ? 1 : 0, { text, priority });
+      } else {
+        this.data.splice(i, replace ? 1 : 0);
+      }
+    }
+
     this.update();
-  }
-
-  public setInfoText(text: string) {
-    this.infoText = text;
-    this.update();
-  }
-
-  public showGenericToolInfo(toolName: string) {
-    this.setGeneralText(toolText[toolName]);
   }
 
   private update() {
-    this.element.textContent = this.infoText || this.generalText;
+    if (this.data.length) {
+      this.element.textContent = this.data[this.data.length - 1].text;
+    }
   }
 }

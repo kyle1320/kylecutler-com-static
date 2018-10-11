@@ -23,6 +23,12 @@ import NoHoverInteraction from './interactions/NoHoverInteraction';
 import HelpInteraction from './interactions/HelpInteraction';
 import Actionbar from '../view/Actionbar';
 
+const infoText: {[name: string]: string} = {
+  'select:tool': 'Select an element to edit',
+  'drag:tool': 'Drag an object or the grid to move it',
+  'create': 'Click the grid to create an object'
+};
+
 export default class Controller {
   public canvas: CanvasView;
   public actionbar: Actionbar;
@@ -117,6 +123,14 @@ export default class Controller {
     this.selected = views;
 
     this.callInteractions(x => x.handleSelectViews(views));
+    this.infobar.set(
+      views ? (
+        views.length
+        + ' element'+ (views.length === 1 ? '' : 's')
+        + ' selected'
+      ) : '',
+      1
+    );
   }
 
   public addToSelection(
@@ -152,6 +166,10 @@ export default class Controller {
   }
 
   public handleActionEvent(e: ActionEvent) {
+    if (e.type === 'select') {
+      this.infobar.set(infoText[e.id] || infoText[e.section], 0);
+    }
+
     this.callInteractions(x => x.handleActionEvent(e));
   }
 

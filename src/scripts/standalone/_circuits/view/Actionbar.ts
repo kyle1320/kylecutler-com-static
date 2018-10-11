@@ -31,6 +31,9 @@ export default class Actionbar extends EventEmitter {
     this.addSections(defaultSections);
 
     this.defaultItem = 'select:tool';
+  }
+
+  public init() {
     this.selectItem(null);
   }
 
