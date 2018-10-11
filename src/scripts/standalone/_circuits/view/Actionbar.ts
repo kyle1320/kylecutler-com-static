@@ -60,7 +60,6 @@ export default class Actionbar extends EventEmitter {
     });
   }
 
-  // TODO: handle uniqueness, etc.
   private handleClick(section: string, item: ActionItem) {
     var id = section + ':' + item.name;
 
