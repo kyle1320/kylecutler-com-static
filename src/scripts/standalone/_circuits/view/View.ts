@@ -1,13 +1,17 @@
 import { defaultStyle } from './styles';
 import { Dimensions, Position, PositionalTree } from '../model/types';
 
-import { EventEmitter } from 'events';
+import EventEmitter from '../utils/EventEmitter';
 
 const viewKey = Symbol('View');
 
 var uniqueViewId = 0;
 
-export default abstract class View extends EventEmitter {
+export default abstract class View extends EventEmitter<{
+  update: void,
+  move: View,
+  remove: View
+  }> {
   public attributes: {
     hidden?: boolean,
     hover?: boolean,
@@ -59,7 +63,7 @@ export default abstract class View extends EventEmitter {
   public setAttribute(name: string, value: any): boolean {
     if (this.attributes[name] !== value) {
       this.attributes[name] = value;
-      this.emit('update', this);
+      this.emit('update');
       return true;
     }
     return false;
@@ -80,7 +84,7 @@ export default abstract class View extends EventEmitter {
   }
 
   public update() {
-    this.emit('update', this);
+    this.emit('update');
   }
 
   public setParent(parent: View) {

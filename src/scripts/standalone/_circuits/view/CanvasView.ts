@@ -144,6 +144,8 @@ export default class CanvasView extends View {
   }
 
   public endSelection(x: number, y: number) {
+    if (!this.selectionArea) return;
+
     this.selectionArea.endX = x;
     this.selectionArea.endY = y;
     this.update();

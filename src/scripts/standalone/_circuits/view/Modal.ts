@@ -1,6 +1,6 @@
-import { makeElement } from '../../../utils';
+import { makeElement, ElementContent } from '../../../utils';
 
-type Content = string | Node[] | Node;
+type Content = string | HTMLElement | HTMLElement[];
 
 export default class Modal {
   private elements: {[name: string]: HTMLElement};
@@ -48,13 +48,13 @@ export default class Modal {
   public showTextboxDialog(
     title: string,
     info: string,
-    content: Content
+    content: ElementContent
   ) {
     this.setTitle(title);
     this.setContent([
       makeElement('p', info),
-      makeElement('textarea', content, {
-        focus: (e: MouseEvent) => (e.target as HTMLTextAreaElement).select()
+      makeElement({ tag: 'textarea' }, content, {
+        focus: (e: FocusEvent) => (e.target as HTMLTextAreaElement).select()
       })
     ]);
     this.clearButtons();
@@ -81,7 +81,7 @@ export default class Modal {
     this.showDialog();
   }
 
-  public showErrorDialog(title: string, content: Content) {
+  public showErrorDialog(title: string, content: ElementContent) {
     this.setTitle(title);
     this.setContent([makeElement('p', content)]);
     this.clearButtons();

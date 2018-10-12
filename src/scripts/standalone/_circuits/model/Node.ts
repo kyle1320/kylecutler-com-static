@@ -1,6 +1,8 @@
-const EventEmitter = require('events');
+import EventEmitter from '../utils/EventEmitter';
 
-export default class Node extends EventEmitter {
+export default class Node extends EventEmitter<{
+  update: void
+  }> {
   connections: Set<Node>;
   sources: Set<Node>;
   isSource: boolean;
