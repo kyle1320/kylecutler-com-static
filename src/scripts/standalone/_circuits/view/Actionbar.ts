@@ -268,7 +268,8 @@ class ActionItem extends DynamicContent {
       + (props.className ? props.className : '');
 
     super(makeElement(props, content, {
-      click: () => this.isEnabled && this.emit('click')
+      click: () => this.isEnabled && this.emit('click'),
+      mousedown: (e: MouseEvent) => e.preventDefault()
     }));
 
     this.name = name;
