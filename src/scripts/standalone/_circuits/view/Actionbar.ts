@@ -13,8 +13,6 @@ import {
 import CircuitView from './CircuitView';
 import Circuit from '../model/Circuit';
 
-var defaultSections: Section[];
-
 export default class Actionbar extends EventEmitter {
   private itemMap: {[id: string]: ActionItem};
 
@@ -24,7 +22,7 @@ export default class Actionbar extends EventEmitter {
   constructor(element: HTMLElement) {
     super();
 
-    var sections = defaultSections;
+    var sections = getDefaultSections();
     this.itemMap = {};
 
     new DynamicContent(element, sections);
@@ -199,15 +197,7 @@ class Section extends DynamicContent {
     super(wrapper, groups, content);
 
     this.id = id;
-    this.items = [];
-
-    groups.forEach(group => {
-      group.items.forEach(item => {
-        item.section = id;
-
-        this.items.push(item);
-      });
-    });
+    this.items = [].concat.apply([], groups.map(group => group.items));
   }
 }
 
@@ -236,17 +226,13 @@ class SectionGroup extends DynamicContent {
     elements.forEach(el => {
       if (curColumn) {
         curColumn.appendChild(el);
-        columns.push(curColumn);
         curColumn = null;
       } else {
         curColumn = makeElement({ className: 'column' });
         curColumn.appendChild(el);
+        columns.push(curColumn);
       }
     });
-
-    if (curColumn) {
-      columns.push(curColumn);
-    }
 
     return columns;
   }
@@ -258,7 +244,6 @@ type ActionItemStyle = 'small' | 'large';
 class ActionItem extends DynamicContent {
   public name: string;
   public type: ActionItemType;
-  public section: string;
 
   public isSelected: boolean;
   public isEnabled: boolean;
@@ -283,7 +268,7 @@ class ActionItem extends DynamicContent {
     this.type = type;
 
     this.isSelected = !!props.className.match(/selected/);
-    this.isEnabled = true;
+    this.isEnabled = !props.className.match(/disabled/);
   }
 
   setSelected(isSelected: boolean) {
@@ -351,90 +336,95 @@ function createActionEventFromId(
   return { type, section, name, id };
 }
 
-var circuitList: CircuitDefinition[] = [];
-for (var name in circuits) {
-  circuitList.push(circuits[name]);
-}
-defaultSections = [
-  new Section('Select', 'select', [
-    new SectionGroup('normal', [
-      ActionItem.withIcon(
-        'tool', 'unique', 'fa fa-mouse-pointer', 'Select Items', 'large'
-      )
-    ]),
-    new SectionGroup('columns', [
-      ActionItem.withIcon(
-        'all', 'button', 'fa fa-check-double', 'Select All', 'small'
-      ),
-      ActionItem.withIcon(
-        'rotate', 'button',
-        'fa fa-undo fa-flip-horizontal', 'Rotate 90°', 'small'
-      ),
-      ActionItem.withIcon(
-        'delete', 'button', 'fa fa-trash', 'Delete', 'small'
-      ),
-      ActionItem.withIcon(
-        'cancel', 'button', 'fa fa-times', 'Cancel', 'small'
-      )
-    ])
-  ]),
-  new Section('Drag', 'drag', [
-    new SectionGroup('normal', [
-      ActionItem.withIcon(
-        'tool', 'unique',
-        'fa fa-hand-rock', 'Drag Elements or the Grid', 'large'
-      )
-    ]),
-    new SectionGroup('columns', [
-      ActionItem.withIcon(
-        'snap', 'toggle', 'fa fa-expand', 'Snap to Grid', 'small'
-      )
-    ])
-  ]),
-  new Section('Create', 'create', [
-    new SectionGroup('normal', [
-      ActionItem.withViewCanvas(
-        'Node', 'unique', 'Node', new NodeView(new Node(), 0, 0)
-      )
-    ].concat(circuitList.map(def => ActionItem.withViewCanvas(
-      def.key, 'unique', def.key, new CircuitView(new Circuit(def), 0, 0)
-    ))))
-  ]),
-  new Section('Zoom', 'zoom', [
-    new SectionGroup('columns', [
-      ActionItem.withIcon(
-        'in', 'button', 'fa fa-search-plus', 'Zoom In', 'small'
-      ),
-      ActionItem.withIcon(
-        'out', 'button', 'fa fa-search-minus', 'Zoom Out', 'small'
-      )
-    ])
-  ]),
-  new Section('Data', 'data', [
-    new SectionGroup('columns', [
-      ActionItem.withIcon(
-        'export', 'button', 'fa fa-save', 'Export Data', 'small'
-      ),
-      ActionItem.withIcon(
-        'import', 'button', 'fa fa-folder-open', 'Import Data', 'small'
-      )
-    ])
-  ]),
-  new Section('Help', 'help', [
-    new SectionGroup('columns', [
-      ActionItem.withIcon(
-        'show', 'button', 'fa fa-question-circle', 'Show Help Dialog', 'small'
-      )
-    ])
-  ])
-];
+function getDefaultSections(): Section[] {
+  var circuitList: CircuitDefinition[] = [];
+  for (var name in circuits) {
+    circuitList.push(circuits[name]);
+  }
 
-if (process.env.NODE_ENV === 'development') {
-  defaultSections.push(new Section('Debug', 'debug', [
-    new SectionGroup('columns', [
-      ActionItem.withIcon(
-        'debug', 'toggle', 'fa fa-bug', 'Toggle Debugging', 'small'
-      )
+  var defaultSections = [
+    new Section('Select', 'select', [
+      new SectionGroup('normal', [
+        ActionItem.withIcon(
+          'tool', 'unique', 'fa fa-mouse-pointer', 'Select Items', 'large'
+        )
+      ]),
+      new SectionGroup('columns', [
+        ActionItem.withIcon(
+          'all', 'button', 'fa fa-check-double', 'Select All', 'small'
+        ),
+        ActionItem.withIcon(
+          'rotate', 'button',
+          'fa fa-undo fa-flip-horizontal', 'Rotate 90°', 'small'
+        ),
+        ActionItem.withIcon(
+          'delete', 'button', 'fa fa-trash', 'Delete', 'small'
+        ),
+        ActionItem.withIcon(
+          'cancel', 'button', 'fa fa-times', 'Cancel', 'small'
+        )
+      ])
+    ]),
+    new Section('Drag', 'drag', [
+      new SectionGroup('normal', [
+        ActionItem.withIcon(
+          'tool', 'unique',
+          'fa fa-hand-rock', 'Drag Elements or the Grid', 'large'
+        )
+      ]),
+      new SectionGroup('columns', [
+        ActionItem.withIcon(
+          'snap', 'toggle', 'fa fa-expand', 'Snap to Grid', 'small'
+        )
+      ])
+    ]),
+    new Section('Create', 'create', [
+      new SectionGroup('normal', [
+        ActionItem.withViewCanvas(
+          'Node', 'unique', 'Node', new NodeView(new Node(), 0, 0)
+        )
+      ].concat(circuitList.map(def => ActionItem.withViewCanvas(
+        def.key, 'unique', def.key, new CircuitView(new Circuit(def), 0, 0)
+      ))))
+    ]),
+    new Section('Zoom', 'zoom', [
+      new SectionGroup('columns', [
+        ActionItem.withIcon(
+          'in', 'button', 'fa fa-search-plus', 'Zoom In', 'small'
+        ),
+        ActionItem.withIcon(
+          'out', 'button', 'fa fa-search-minus', 'Zoom Out', 'small'
+        )
+      ])
+    ]),
+    new Section('Data', 'data', [
+      new SectionGroup('columns', [
+        ActionItem.withIcon(
+          'export', 'button', 'fa fa-save', 'Export Data', 'small'
+        ),
+        ActionItem.withIcon(
+          'import', 'button', 'fa fa-folder-open', 'Import Data', 'small'
+        )
+      ])
+    ]),
+    new Section('Help', 'help', [
+      new SectionGroup('columns', [
+        ActionItem.withIcon(
+          'show', 'button', 'fa fa-question-circle', 'Show Help Dialog', 'small'
+        )
+      ])
     ])
-  ]));
+  ];
+
+  if (process.env.NODE_ENV === 'development') {
+    defaultSections.push(new Section('Debug', 'debug', [
+      new SectionGroup('columns', [
+        ActionItem.withIcon(
+          'debug', 'toggle', 'fa fa-bug', 'Toggle Debugging', 'small'
+        )
+      ])
+    ]));
+  }
+
+  return defaultSections;
 }
