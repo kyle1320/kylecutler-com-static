@@ -42,9 +42,9 @@ export default class MultiTouchInteraction extends Interaction {
 
         break;
       case 'move':
-        if (touch.identifier === this.touchA.identifier) {
+        if (this.touchA && touch.identifier === this.touchA.identifier) {
           this.touchA = touch;
-        } else if (touch.identifier === this.touchB.identifier) {
+        } else if (this.touchB && touch.identifier === this.touchB.identifier) {
           this.touchB = touch;
         }
 
@@ -68,10 +68,10 @@ export default class MultiTouchInteraction extends Interaction {
         }
         break;
       case 'up':
-        if (touch.identifier === this.touchA.identifier)  {
+        if (this.touchA && touch.identifier === this.touchA.identifier)  {
           this.touchA = this.touchB;
           this.touchB = null;
-        } else if (touch.identifier === this.touchB.identifier) {
+        } else if (this.touchB && touch.identifier === this.touchB.identifier) {
           this.touchB = null;
         }
         break;

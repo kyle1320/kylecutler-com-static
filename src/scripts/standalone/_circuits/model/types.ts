@@ -12,8 +12,11 @@ export interface PositionalTree extends Tree<View, PositionalTree> {
   y: number
 }
 
+export type PositionalEventType
+  = 'up' | 'down' | 'enter' | 'leave' | 'move' | 'scroll';
+
 export interface PositionalEvent {
-  type: string,
+  type: PositionalEventType,
   event: MouseEvent | TouchEvent | WheelEvent,
   x: number,
   y: number,

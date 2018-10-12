@@ -66,7 +66,7 @@ export default class Circuit extends EventEmitter {
     return function (this: Circuit) {
       var scope = this.pins.map(pin => pin.get());
 
-      funcs.forEach(f => f.call(this, scope));
+      funcs.forEach(f => f && f.call(this, scope));
     };
   }
 }

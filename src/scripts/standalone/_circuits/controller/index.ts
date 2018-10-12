@@ -105,7 +105,7 @@ export default class Controller {
   }
 
   public select(
-    views?: View[],
+    views: View[],
     onChange?: (data: View, added: boolean) => void
   ) {
     if (views && !views.length) views = null;
@@ -191,7 +191,7 @@ export default class Controller {
 }
 
 function setUnion<T>(a: T[], b: T[]): T[] {
-  return Array.from(new Set([].concat(a, b)));
+  return Array.from(new Set([].concat(a || [], b || [])));
 }
 
 function setDiff<T>(

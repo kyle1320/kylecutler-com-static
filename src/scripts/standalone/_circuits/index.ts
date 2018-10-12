@@ -5,6 +5,7 @@ import Serialize from './view/Serialize';
 
 import Controller from './controller';
 import Actionbar from './view/Actionbar';
+import { PositionalEventType } from './model/types';
 
 window.addEventListener('load', function () {
   var canvasView = getCanvasView(
@@ -12,7 +13,7 @@ window.addEventListener('load', function () {
   );
   var actionbar = new Actionbar(document.getElementById('actionbar'));
   var infobar = new Infobar(document.getElementById('infobar'));
-  var modal = new Modal(this.document.getElementById('modal'));
+  var modal = new Modal(document.getElementById('modal'));
 
   var controller = new Controller(
     canvasView, actionbar, infobar, modal
@@ -57,16 +58,17 @@ function getCanvasView(canvasEl: HTMLCanvasElement): CanvasView {
 function addCanvasListeners(canvasView: CanvasView, controller: Controller) {
   var canvas = canvasView.canvas;
 
-  const positionalAction = (type: string) => (event: MouseEvent) => {
-    event.preventDefault();
+  const positionalAction =
+    (type: PositionalEventType) => (event: MouseEvent) => {
+      event.preventDefault();
 
-    var x = event.offsetX, y = event.offsetY;
-    var root = canvasView.findAll(x, y);
+      var x = event.offsetX, y = event.offsetY;
+      var root = canvasView.findAll(x, y);
 
-    controller.handleMouseEvent({ type, x, y, root, event });
-  };
+      controller.handleMouseEvent({ type, x, y, root, event });
+    };
 
-  const touchAction = (type: string) => (event: TouchEvent) => {
+  const touchAction = (type: PositionalEventType) => (event: TouchEvent) => {
     event.preventDefault();
 
     var touch = event.changedTouches[0];
