@@ -144,7 +144,7 @@ class DynamicContent extends EventEmitter {
     this.render();
   }
 
-  private render() {
+  protected render() {
     if (!this.children.length) return;
 
     this.content.innerHTML = '';
@@ -215,6 +215,8 @@ class SectionGroup extends DynamicContent {
 
     this.style = style;
     this.items = items;
+
+    this.render();
   }
 
   formatContents(elements: HTMLElement[]): HTMLElement[] {
