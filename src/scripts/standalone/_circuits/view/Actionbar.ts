@@ -16,7 +16,6 @@ import Circuit from '../model/Circuit';
 var defaultSections: Section[];
 
 export default class Actionbar extends EventEmitter {
-  private element: HTMLElement;
   private itemMap: {[id: string]: ActionItem};
 
   public selectedItem: string;
@@ -25,10 +24,17 @@ export default class Actionbar extends EventEmitter {
   constructor(element: HTMLElement) {
     super();
 
-    this.element = element;
+    var sections = defaultSections;
     this.itemMap = {};
 
-    this.addSections(defaultSections);
+    new DynamicContent(element, sections);
+
+    sections.forEach(section => {
+      section.items.forEach(item => {
+        item.on('click', () => this.handleClick(section.id, item));
+        this.itemMap[section.id + ':' + item.name] = item;
+      });
+    });
 
     this.defaultItem = 'select:tool';
   }
@@ -45,19 +51,16 @@ export default class Actionbar extends EventEmitter {
     }
   }
 
-  public isSelected(itemId: string): boolean {
-    return this.itemMap[itemId].isSelected;
+  public setVisible(itemId: string, isVisible: boolean) {
+    var item = this.itemMap[itemId];
+
+    if (item) {
+      item.setVisible(isVisible);
+    }
   }
 
-  private addSections(sections: Section[]) {
-    sections.forEach(section => {
-      this.element.appendChild(section.wrapper);
-
-      section.items.forEach(item => {
-        item.on('click', () => this.handleClick(section.id, item));
-        this.itemMap[section.id + ':' + item.name] = item;
-      });
-    });
+  public isSelected(itemId: string): boolean {
+    return this.itemMap[itemId].isSelected;
   }
 
   private handleClick(section: string, item: ActionItem) {
@@ -117,38 +120,88 @@ export default class Actionbar extends EventEmitter {
   }
 }
 
-class Section {
-  public id: string;
-  public wrapper: HTMLElement;
-  public header: HTMLElement;
-  public content: HTMLElement;
+class DynamicContent extends EventEmitter {
+  private isVisible: boolean;
+  private children: DynamicContent[];
 
-  public groups: SectionGroup[];
+  public element: HTMLElement;
+  private content: HTMLElement;
+
+  constructor(
+    element: HTMLElement,
+    children: DynamicContent[] = [],
+    content: HTMLElement = element
+  ) {
+    super();
+
+    this.isVisible = true;
+    this.children = children;
+    this.element = element;
+    this.content = content;
+
+    children.forEach(
+      x => x.on('visibility-change', () => this.render())
+    );
+
+    this.render();
+  }
+
+  private render() {
+    if (!this.children.length) return;
+
+    this.content.innerHTML = '';
+
+    var items = this.children
+      .filter(item => item.isVisible)
+      .map(item => item.element);
+
+    if (items.length > 0) {
+      this.formatContents(items).forEach(el => this.content.appendChild(el));
+    }
+
+    this.setVisible(items.length > 0);
+  }
+
+  protected formatContents(elements: HTMLElement[]): HTMLElement[] {
+    return elements;
+  }
+
+  public setVisible(isVisible: boolean) {
+    if (this.isVisible === isVisible) return;
+
+    this.isVisible = isVisible;
+    this.emit('visibility-change');
+  }
+}
+
+class Section extends DynamicContent {
+  public id: string;
+
   public items: ActionItem[];
 
   constructor (
     label: string,
     id: string,
-    content: SectionGroup[]
+    groups: SectionGroup[]
   ) {
-    this.id = id;
-    this.header = makeElement(
+    var header = makeElement(
       { className: 'actionbar__section__header' },
       label
     );
-    this.content = makeElement(
+    var content = makeElement(
       { className: 'actionbar__section__content' },
-      content.map(group => group.element)
+      groups.map(group => group.element)
     );
-    this.wrapper = makeElement(
+    var wrapper = makeElement(
       { className: 'actionbar__section' },
-      [ this.header, this.content ]
+      [ header, content ]
     );
+    super(wrapper, groups, content);
 
-    this.groups = content;
+    this.id = id;
     this.items = [];
 
-    content.forEach(group => {
+    groups.forEach(group => {
       group.items.forEach(item => {
         item.section = id;
 
@@ -160,56 +213,52 @@ class Section {
 
 type SectionGroupStyle = 'columns' | 'normal';
 
-class SectionGroup {
+class SectionGroup extends DynamicContent {
   public style: SectionGroupStyle;
-  public element: HTMLElement;
   public items: ActionItem[];
 
   constructor(style: SectionGroupStyle, items: ActionItem[]) {
+    super(makeElement(
+      { className: 'actionbar__section__group '
+        + 'actionbar__section__group--' + style }
+    ), items);
+
     this.style = style;
     this.items = items;
-    this.element = makeElement(
-      { className: 'actionbar__section__group '
-        + 'actionbar__section__group--' + style },
-      this.getInternalItems()
-    );
   }
 
-  getInternalItems() {
-    if (this.style === 'columns') {
-      var items: HTMLElement[] = [];
-      var curColumn: HTMLElement = null;
+  formatContents(elements: HTMLElement[]): HTMLElement[] {
+    if (this.style === 'normal') return super.formatContents(elements);
 
-      this.items.forEach(item => {
-        if (curColumn) {
-          curColumn.appendChild(item.element);
-          items.push(curColumn);
-          curColumn = null;
-        } else {
-          curColumn = makeElement({ className: 'column' });
-          curColumn.appendChild(item.element);
-        }
-      });
+    var columns: HTMLElement[] = [];
+    var curColumn: HTMLElement = null;
 
+    elements.forEach(el => {
       if (curColumn) {
-        items.push(curColumn);
+        curColumn.appendChild(el);
+        columns.push(curColumn);
+        curColumn = null;
+      } else {
+        curColumn = makeElement({ className: 'column' });
+        curColumn.appendChild(el);
       }
+    });
 
-      return items;
-    } else {
-      return this.items.map(item => item.element);
+    if (curColumn) {
+      columns.push(curColumn);
     }
+
+    return columns;
   }
 }
 
 type ActionItemType = 'unique' | 'button' | 'toggle';
 type ActionItemStyle = 'small' | 'large';
 
-class ActionItem extends EventEmitter {
+class ActionItem extends DynamicContent {
   public name: string;
   public type: ActionItemType;
   public section: string;
-  public element: HTMLElement;
 
   public isSelected: boolean;
   public isEnabled: boolean;
@@ -221,18 +270,17 @@ class ActionItem extends EventEmitter {
     content: string | [HTMLElement],
     style: ActionItemStyle
   ) {
-    super();
-
     props = props || {};
     props.className = 'action-item '
       + (style ? 'action-item--' + style + ' ' : '')
       + (props.className ? props.className : '');
 
+    super(makeElement(props, content, {
+      click: () => this.isEnabled && this.emit('click')
+    }));
+
     this.name = name;
     this.type = type;
-    this.element = makeElement(props, content, {
-      click: () => this.isEnabled && this.emit('click')
-    });
 
     this.isSelected = !!props.className.match(/selected/);
     this.isEnabled = true;
