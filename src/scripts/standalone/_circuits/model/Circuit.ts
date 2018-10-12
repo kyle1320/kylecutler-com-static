@@ -3,12 +3,15 @@ import bufferEvent from '../utils/eventBuffer';
 import { parse } from './parse';
 import { CircuitDefinition, CircuitRule } from './types';
 
-const EventEmitter = require('events');
+import EventEmitter from '../utils/EventEmitter';
 
-export default class Circuit extends EventEmitter {
+export default class Circuit extends EventEmitter<{
+  update: void
+  }> {
   public definition: CircuitDefinition;
   public pins: Node[];
   private internalPins: Node[];
+  private doUpdate: (this: Circuit) => void;
 
   constructor (def: CircuitDefinition) {
     super();
@@ -35,10 +38,6 @@ export default class Circuit extends EventEmitter {
 
   private _set(index: number, state: boolean) {
     this.internalPins[index].set(state);
-  }
-
-  private _get(index: number) {
-    return this.internalPins[index].get();
   }
 
   public update() {

@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events';
+import EventEmitter from '../utils/EventEmitter';
 import { makeElement, toggleClass } from '../../../utils';
 import View from './View';
 import NodeView from './NodeView';
@@ -13,7 +13,9 @@ import {
 import CircuitView from './CircuitView';
 import Circuit from '../model/Circuit';
 
-export default class Actionbar extends EventEmitter {
+export default class Actionbar extends EventEmitter<{
+  action: ActionEvent
+  }> {
   private itemMap: {[id: string]: ActionItem};
 
   public selectedItem: string;
@@ -118,7 +120,10 @@ export default class Actionbar extends EventEmitter {
   }
 }
 
-class DynamicContent extends EventEmitter {
+class DynamicContent extends EventEmitter<{
+  'visibility-change': void,
+  click: void
+  }> {
   private isVisible: boolean;
   private children: DynamicContent[];
 

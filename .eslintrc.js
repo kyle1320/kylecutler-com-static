@@ -48,6 +48,7 @@ module.exports = {
             "parser": 'typescript-eslint-parser',
             "plugins": ["typescript"],
             "rules": {
+                "no-dupe-class-members": "off",
                 "no-undef": "off",
                 "typescript/no-unused-vars": devWarn
             }

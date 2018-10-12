@@ -1,12 +1,8 @@
-import { EventEmitter } from 'events';
-
-export default class Infobar extends EventEmitter {
+export default class Infobar {
   private element: HTMLElement;
   private data: {text: string, priority: number}[];
 
   constructor (element: HTMLElement) {
-    super();
-
     this.element = element;
     this.data = [];
   }

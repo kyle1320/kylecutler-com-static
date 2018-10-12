@@ -37,7 +37,7 @@ export default class CircuitView extends View {
   public move(x: number, y: number) {
     super.move(x, y);
 
-    this.children.forEach(child => child.emit('move'));
+    this.children.forEach(child => child.emit('move', child));
   }
 
   public rotate(delta: number) {
@@ -46,7 +46,7 @@ export default class CircuitView extends View {
     this.rotation = ((this.rotation + delta) % 4 + 4) % 4;
 
     this.emit('move', this);
-    this.children.forEach(child => child.emit('move'));
+    this.children.forEach(child => child.emit('move', child));
   }
 
   public getDimensions(): Dimensions {
