@@ -6,7 +6,7 @@ export default class ClipboardInteraction extends Interaction {
   private copiedData: string;
   private offset: number;
 
-  constructor(controller: Controller) {
+  public constructor(controller: Controller) {
     super(controller);
 
     this.copiedData = null;

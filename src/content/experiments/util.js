@@ -163,8 +163,9 @@ function linkInputToNumber(input, object, attr, func, instant) {
 
   input.value = String(object[attr]);
   input.addEventListener(instant ? 'input' : 'change', function() {
-    if (!isNaN(input.valueAsNumber))
+    if (!isNaN(input.valueAsNumber)) {
       object[attr] = input.valueAsNumber;
+    }
     func();
   });
 
@@ -218,8 +219,10 @@ function loadFile(url, data, callback, errorCallback) {
 
   // Hook the event that gets called as the request progresses
   request.onreadystatechange = function () {
+
     // If the request is "DONE" (completed or failed)
     if (request.readyState == 4) {
+
       // If we got HTTP status 200 (OK)
       if (request.status == 200) {
         callback(request.responseText, data);
@@ -343,8 +346,7 @@ QuadTree.prototype.inRegion = function(minx, miny, maxx, maxy) {
 
   // if we have no children, return our bucket.
   // I decided not to copy the bucket, for speed reasons.
-  if (!this.nw)
-    return this.bucket;
+  if (!this.nw) return this.bucket;
 
   var found = [];
 
@@ -479,6 +481,7 @@ function poissonDisk(minx, miny, width, height, r) {
         cvs.drawHeight / 2 + (points[j].y - points[i].y), 1, 1);
     }
   }
+
   // tree.draw(cvs, ctx, 0, 0, 1, 1);
 
   return points;
@@ -491,11 +494,11 @@ window.requestAnimFrame = (function(){
     function(callback){
       window.setTimeout(callback, 1000 / 60);
     });
-})();
+}());
 
 window.cancelAnimFrame = (function(){
   return (window.cancelAnimationFrame ||
     window.webkitCancelAnimationFrame ||
     window.mozCancelAnimationFrame ||
     window.clearTimeout);
-})();
+}());

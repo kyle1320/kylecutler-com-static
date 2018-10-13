@@ -5,7 +5,7 @@ type Content = string | HTMLElement | HTMLElement[];
 export default class Modal {
   private elements: {[name: string]: HTMLElement};
 
-  constructor(container: HTMLElement) {
+  public constructor(container: HTMLElement) {
     this.elements = {
       container: container,
       modal: null,

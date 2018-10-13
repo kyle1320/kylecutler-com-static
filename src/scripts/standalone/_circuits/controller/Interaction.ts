@@ -6,7 +6,7 @@ import Controller from './index';
 export default abstract class Interaction {
   protected controller: Controller;
 
-  constructor (controller: Controller) {
+  public constructor (controller: Controller) {
     this.controller = controller;
 
     this.reset();

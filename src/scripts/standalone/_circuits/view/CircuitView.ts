@@ -12,7 +12,7 @@ export default class CircuitView extends View {
   private children: NodeView[];
   private path: Path2D;
 
-  constructor (data: Circuit, x: number, y: number) {
+  public constructor (data: Circuit, x: number, y: number) {
     super(data, {
       x, y,
       width: data.definition.size.width,

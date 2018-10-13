@@ -13,7 +13,7 @@ export default class KDTree<T> {
   private items: InternalItem<T>[];
   private rootNode: Node<T>;
 
-  constructor () {
+  public constructor () {
     this.items = [];
     this.rootNode = new LeafNode(this);
   }
@@ -71,7 +71,7 @@ class InternalItem<T> {
   public isValid: boolean;
   public containerNode: Node<T>;
 
-  constructor (item: T, boundingBox: BoundingBox) {
+  public constructor (item: T, boundingBox: BoundingBox) {
     this.innerItem = item as Item<T>;
     this.boundingBox = boundingBox;
     this.isValid = true;
@@ -99,7 +99,7 @@ class InternalNode<T> {
   private lower: Node<T>;
   private parent: NodeParent<T>;
 
-  constructor (axis: number, coord: number, parent: NodeParent<T>) {
+  public constructor (axis: number, coord: number, parent: NodeParent<T>) {
     this.axis = axis;
     this.coord = coord;
     this.items = [];
@@ -169,7 +169,7 @@ class LeafNode<T> {
   private items: InternalItem<T>[];
   private parent: NodeParent<T>;
 
-  constructor (parent: NodeParent<T>, items: InternalItem<T>[] = []) {
+  public constructor (parent: NodeParent<T>, items: InternalItem<T>[] = []) {
     this.items = items;
     this.items.forEach(i => i.containerNode = this);
     this.parent = parent;

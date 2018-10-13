@@ -3,11 +3,11 @@ import EventEmitter from '../utils/EventEmitter';
 export default class Node extends EventEmitter<{
   update: void
   }> {
-  connections: Set<Node>;
-  sources: Set<Node>;
-  isSource: boolean;
+  public connections: Set<Node>;
+  public sources: Set<Node>;
+  public isSource: boolean;
 
-  constructor (isSource = false) {
+  public constructor (isSource = false) {
     super();
     this.connections = new Set();
 
@@ -105,6 +105,7 @@ function updateSourcesAfterDisconnect(nodeA: Node, nodeB: Node) {
   var foundA = findAllDFS(nodeA);
 
   if (foundA.has(nodeB)) {
+
     // nodes are still connected, no need to update
     return;
   }

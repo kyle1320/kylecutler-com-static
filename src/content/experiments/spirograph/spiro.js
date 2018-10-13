@@ -85,7 +85,7 @@ window.onload = function() {
     });
 
     window.addEventListener('keydown', function(evt) {
-      //console.log(evt.keyCode);
+      // console.log(evt.keyCode);
       switch (evt.keyCode) {
       case 32:
         setPaused(!paused);
@@ -242,7 +242,7 @@ window.onload = function() {
       draw();
     };
 
-  })();
+  }());
 
   function setSpeed(speed) {
     if (speed <= 0) return;

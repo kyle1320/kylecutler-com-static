@@ -31,7 +31,7 @@ window.onload = function() {
     neighbors: [],
     baseRGB: [255, 165, 0],
     // goalRGB: [255, 100, 100],
-    //drawRGB: [255, 255, 255],
+    // drawRGB: [255, 255, 255],
     deviation: 5,
     reliance: 1.0,
     // tendency: 0.002,
@@ -55,7 +55,7 @@ window.onload = function() {
     deviationInput: $('deviation'),
     colorInput: $('color'),
     // goalColorInput: $('goal-color'),
-    //drawColorInput: $('draw-color'),
+    // drawColorInput: $('draw-color'),
     // tendencyInput: $('tendency'),
     delayInput: $('delay'),
     widthInput: $('width'),
@@ -112,7 +112,7 @@ window.onload = function() {
 
     linkColorChooserToValues(inputs.colorInput, options, 'baseRGB');
     // linkColorChooserToValues(inputs.goalColorInput, options, 'goalRGB');
-    //linkColorChooserToValues(inputs.drawColorInput, options, 'drawRGB');
+    // linkColorChooserToValues(inputs.drawColorInput, options, 'drawRGB');
 
     // setup button events
     inputs.pauseBtn.addEventListener('click', function() {setPaused(!paused);});

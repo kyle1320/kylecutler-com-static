@@ -6,8 +6,8 @@ window.onload = function() {
 
   var nodes, edges;
 
-  /*var zip = new JSZip();
-  var image = 0;*/
+  /* var zip = new JSZip();
+  var image = 0; */
 
   // used in redrawing to determine what has changed and needs to be updated.
   var updates = {
@@ -19,7 +19,7 @@ window.onload = function() {
     nodesChanged : false,
     edgesChanged : false,
     orderChanged : false,
-    selection   : false,
+    selection    : false,
     deselection  : false,
     graph        : false,
     background   : false,
@@ -92,7 +92,7 @@ window.onload = function() {
     // var width = drawCanvas.drawWidth;
     // var height = drawCanvas.drawHeight;
 
-    /*nodes = [];
+    /* nodes = [];
     edges = [];
 
     for (var i=0; i < 3; i++) {
@@ -114,7 +114,7 @@ window.onload = function() {
 
     options.order = 4;
     options.range = 2500;
-    }*/
+    } */
 
     var graph = connectedGraph(drawCanvas.drawWidth, drawCanvas.drawHeight, 4);
     nodes = graph.nodes;
@@ -333,7 +333,7 @@ window.onload = function() {
 
     glFrameQueued = false;
 
-    /*if (image < drawCanvas.height) {
+    /* if (image < drawCanvas.height) {
       gl.finish();
       zip.file('slice'+("0000"+(image++)).slice(-4)+'.png', glCanvas.toDataURL('image/png').split("base64,")[1], {base64: true, compression : "DEFLATE"});
       //node.y += (drawCanvas.drawHeight / drawCanvas.height);
@@ -349,7 +349,7 @@ window.onload = function() {
       saveAs(zip.generate({type:"blob"}), "model.zip");
       console.log("saving");
       image++;
-    }*/
+    } */
   }
 
   // function changeOrder(order) {
@@ -572,7 +572,7 @@ window.onload = function() {
           }
         }
       }
-    } /*else if (evt.keyCode == 39) { // right arrow
+    } /* else if (evt.keyCode == 39) { // right arrow
       changeOrder(options.order + 1);
       updates.orderChanged = true;
     } else if (evt.keyCode == 37) { // left arrow
@@ -580,7 +580,7 @@ window.onload = function() {
         changeOrder(options.order - 1);
         updates.orderChanged = true;
       }
-    }*/
+    } */
 
     draw();
   }

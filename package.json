@@ -41,7 +41,9 @@
   "scripts": {
     "gulp": "node ./node_modules/gulp/bin/gulp.js",
     "typecheck": "node ./node_modules/typescript/lib/tsc.js",
-    "build": "npm run typecheck && npm run gulp build:prod"
+    "lint": "node ./node_modules/eslint/bin/eslint.js . --ext .js,.ts",
+    "verify": "npm run typecheck && npm run lint",
+    "build": "npm run verify && npm run gulp build:prod"
   },
   "engines": {}
 }

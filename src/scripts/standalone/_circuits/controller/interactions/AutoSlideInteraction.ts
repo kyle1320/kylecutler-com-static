@@ -30,7 +30,7 @@ export default class AutoSlideInteraction extends Interaction {
     this.dragOrigin = null;
   }
 
-  handleMouseEvent(e: PositionalEvent) {
+  public handleMouseEvent(e: PositionalEvent) {
     var ev = e.event;
     var target, bounds, offsetX, offsetY;
 
@@ -94,7 +94,7 @@ export default class AutoSlideInteraction extends Interaction {
     this.start(distX, distY);
   }
 
-  start(dx: number, dy: number) {
+  private start(dx: number, dy: number) {
     this.dx = dx / this.controller.canvas.attributes.scale / 3;
     this.dy = dy / this.controller.canvas.attributes.scale / 3;
 
@@ -114,7 +114,7 @@ export default class AutoSlideInteraction extends Interaction {
     }
   }
 
-  stop() {
+  private stop() {
     if (this.interval) {
       clearInterval(this.interval);
     }
@@ -123,7 +123,7 @@ export default class AutoSlideInteraction extends Interaction {
     this.lastEvent = null;
   }
 
-  setLastEvent(
+  private setLastEvent(
     screenX: number,
     screenY: number,
     clientX: number,
@@ -132,7 +132,7 @@ export default class AutoSlideInteraction extends Interaction {
     this.lastEvent = { screenX, screenY, clientX, clientY, buttons: 1 };
   }
 
-  refireMouseEvent() {
+  private refireMouseEvent() {
     if (!this.lastEvent) return;
 
     var event;

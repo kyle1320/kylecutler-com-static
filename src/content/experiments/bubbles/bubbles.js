@@ -145,14 +145,12 @@ window.onload = function() {
         } else {
           drawContext.fillStyle = randomColor();
         }
+      } else if (options.bgcolor) {
+        drawContext.fillStyle = options.bgcolor;
       } else {
-        if (options.bgcolor) {
-          drawContext.fillStyle = options.bgcolor;
-        } else {
 
-          // eraser
-          drawContext.globalCompositeOperation = 'destination-out';
-        }
+        // eraser
+        drawContext.globalCompositeOperation = 'destination-out';
       }
     } else if (options.pattern == 'rainbow') {
       drawContext.fillStyle = getSaturatedColor((currlevel-1) / 6);
@@ -300,29 +298,27 @@ window.onload = function() {
 
       // show the progress
       outputs.progress.innerHTML = progress + '%';
+
+    // we need to move up a level. Reset anything related to this level.
+    } else if (currlevel != options.maxlevel && currmax > 0) {
+      currlevel++;
+
+      inactive = 0;
+      prevmax = currmax;
+      currmax = 0;
+
+      densitysamples = new Array(1000);
+      currsample = 0;
+      density = 0.0;
+      progress = 0;
+
+      outputs.level.innerHTML = currlevel;
+
     } else {
+      outputs.status.innerHTML = 'Done';
 
-      // we need to move up a level. Reset anything related to this level.
-      if (currlevel != options.maxlevel && currmax > 0) {
-        currlevel++;
-
-        inactive = 0;
-        prevmax = currmax;
-        currmax = 0;
-
-        densitysamples = new Array(1000);
-        currsample = 0;
-        density = 0.0;
-        progress = 0;
-
-        outputs.level.innerHTML = currlevel;
-
-      } else {
-        outputs.status.innerHTML = 'Done';
-
-        // progress never actually ends on 100%, so it looks nicer this way..
-        outputs.progress.innerHTML = '100%';
-      }
+      // progress never actually ends on 100%, so it looks nicer this way..
+      outputs.progress.innerHTML = '100%';
     }
 
     // schedule another update

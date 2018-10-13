@@ -4,7 +4,7 @@ export default class BoundingBox {
   public min: [number, number];
   public max: [number, number];
 
-  constructor (
+  public constructor (
     x: number | Dimensions,
     y?: number,
     width?: number,

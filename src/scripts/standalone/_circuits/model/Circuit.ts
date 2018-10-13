@@ -13,7 +13,7 @@ export default class Circuit extends EventEmitter<{
   private internalPins: Node[];
   private doUpdate: (this: Circuit) => void;
 
-  constructor (def: CircuitDefinition) {
+  public constructor (def: CircuitDefinition) {
     super();
 
     this.definition = def;

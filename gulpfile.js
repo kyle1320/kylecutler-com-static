@@ -202,15 +202,8 @@ gulp.task('hidden-items:prod', function (done) {
 
 gulp.task('lint', function () {
   return gulp.src('src/**/*.{js,ts}')
-    .pipe(eslint({ extensions: ['.js','.ts'] }))
+    .pipe(eslint({ extensions: ['.js', '.ts'] }))
     .pipe(eslint.format());
-});
-
-gulp.task('lint:prod', function () {
-  return gulp.src('src/**/*.{js,ts}')
-    .pipe(eslint({ extensions: ['.js','.ts'] }))
-    .pipe(eslint.format())
-    .pipe(eslint.failAfterError());
 });
 
 gulp.task('watch:content', function () {
@@ -273,8 +266,8 @@ gulp.task('build', gulp.series(
     done();
   },
   'clean',
-  'lint',
   gulp.parallel(
+    'lint',
     'styles',
     'content-scripts',
     'site-scripts',
@@ -289,7 +282,6 @@ gulp.task('build:prod', gulp.series(
     done();
   },
   'clean',
-  'lint:prod',
   gulp.parallel(
     'styles:prod',
     'content-scripts:prod',

@@ -28,7 +28,7 @@ export default abstract class View extends EventEmitter<{
 
   public abstract draw(context: CanvasRenderingContext2D): void;
 
-  constructor (
+  public constructor (
     data: any,
     dimensions: Dimensions,
     attributes = {},
@@ -70,8 +70,7 @@ export default abstract class View extends EventEmitter<{
   }
 
   public move(x: number, y: number) {
-    if (this.dimensions.x === x && this.dimensions.y === y)
-      return;
+    if (this.dimensions.x === x && this.dimensions.y === y) return;
 
     this.dimensions.x = x;
     this.dimensions.y = y;

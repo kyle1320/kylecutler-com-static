@@ -17,7 +17,7 @@ export default class CanvasView extends View {
   private moveChild: (view: View) => void;
   private boundDraw: () => void;
 
-  constructor (canvasEl: HTMLCanvasElement) {
+  public constructor (canvasEl: HTMLCanvasElement) {
     super(
       null,
       { x: 0, y: 0, width: Infinity, height: Infinity },

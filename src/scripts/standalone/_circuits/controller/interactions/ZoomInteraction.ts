@@ -1,12 +1,7 @@
 import Interaction from '../Interaction';
 import { PositionalEvent, ActionEvent } from '../../model/types';
-import Controller from '..';
 
 export default class ZoomInteraction extends Interaction {
-  constructor(controller: Controller) {
-    super(controller);
-  }
-
   public handleActionEvent(e: ActionEvent) {
     switch (e.id) {
     case 'zoom:in':

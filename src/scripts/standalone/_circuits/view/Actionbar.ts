@@ -21,7 +21,7 @@ export default class Actionbar extends EventEmitter<{
   public selectedItem: string;
   public defaultItem: string;
 
-  constructor(element: HTMLElement) {
+  public constructor(element: HTMLElement) {
     super();
 
     var sections = getDefaultSections();
@@ -130,7 +130,7 @@ class DynamicContent extends EventEmitter<{
   public element: HTMLElement;
   private content: HTMLElement;
 
-  constructor(
+  public constructor(
     element: HTMLElement,
     children: DynamicContent[] = [],
     content: HTMLElement = element
@@ -182,7 +182,7 @@ class Section extends DynamicContent {
 
   public items: ActionItem[];
 
-  constructor (
+  public constructor (
     label: string,
     id: string,
     groups: SectionGroup[]
@@ -212,7 +212,7 @@ class SectionGroup extends DynamicContent {
   public style: SectionGroupStyle;
   public items: ActionItem[];
 
-  constructor(style: SectionGroupStyle, items: ActionItem[]) {
+  public constructor(style: SectionGroupStyle, items: ActionItem[]) {
     super(makeElement(
       { className: 'actionbar__section__group '
         + 'actionbar__section__group--' + style }
@@ -224,7 +224,7 @@ class SectionGroup extends DynamicContent {
     this.render();
   }
 
-  formatContents(elements: HTMLElement[]): HTMLElement[] {
+  protected formatContents(elements: HTMLElement[]): HTMLElement[] {
     if (this.style === 'normal') return super.formatContents(elements);
 
     var columns: HTMLElement[] = [];
@@ -279,17 +279,17 @@ class ActionItem extends DynamicContent {
     this.isEnabled = !props.className.match(/disabled/);
   }
 
-  setSelected(isSelected: boolean) {
+  public setSelected(isSelected: boolean) {
     this.isSelected = isSelected;
     toggleClass(this.element, 'selected', isSelected);
   }
 
-  setEnabled(isEnabled: boolean) {
+  public setEnabled(isEnabled: boolean) {
     this.isEnabled = isEnabled;
     toggleClass(this.element, 'disabled', !isEnabled);
   }
 
-  static withIcon(
+  public static withIcon(
     name: string,
     type: ActionItemType,
     icon: string,
@@ -299,7 +299,7 @@ class ActionItem extends DynamicContent {
     return new ActionItem(name, type, { className: icon, title }, '', style);
   }
 
-  static withViewCanvas(
+  public static withViewCanvas(
     name: string,
     type: ActionItemType,
     title: string,

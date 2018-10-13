@@ -5,7 +5,7 @@ import Node from '../model/Node';
 export default class NodeView extends View {
   public data: Node;
 
-  constructor (data: Node, x: number, y: number) {
+  public constructor (data: Node, x: number, y: number) {
     super(data, { x, y, width: 0, height: 0 }, {});
   }
 

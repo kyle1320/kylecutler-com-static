@@ -11,7 +11,7 @@ NonVoidTypes extends Exclude<keyof T, VoidTypes> = Exclude<keyof T, VoidTypes>
 > {
   private _listeners: {[K in keyof T]?: ((arg: T) => any)[]};
 
-  constructor() {
+  public constructor() {
     this._listeners = {};
   }
 

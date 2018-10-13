@@ -27,7 +27,7 @@ export default class CreateInteraction extends Interaction {
   private dragging: boolean;
   private previewCircuit: View;
 
-  constructor(controller: Controller) {
+  public constructor(controller: Controller) {
     super(controller);
 
     this.circuits = [];

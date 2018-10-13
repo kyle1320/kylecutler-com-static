@@ -121,7 +121,7 @@ window.onload = function() {
     this.vy = this.my + this.vy * (1 - options.decay);
 
     if (options.bounce) {
-      /*if (this.x < this.radius && this.vx < 0) {
+      /* if (this.x < this.radius && this.vx < 0) {
         this.x = this.radius*2 - this.x;
         this.vx = -this.vx;
       } else if (this.x > width - this.radius && this.vx > 0) {
@@ -135,7 +135,7 @@ window.onload = function() {
       } else if (this.y > height - this.radius && this.vy > 0) {
         this.y = height*2 - this.y;
         this.vy = -this.vy;
-      }*/
+      } */
       if (
         (this.x < this.radius && this.vx < 0) ||
         (this.x > width - this.radius && this.vx > 0)
@@ -155,7 +155,7 @@ window.onload = function() {
       this.y += this.vy*time;
     }
 
-    //if (this.mass === 0) console.log(Math.sqrt(this.mx*this.mx + this.my*this.my));
+    // if (this.mass === 0) console.log(Math.sqrt(this.mx*this.mx + this.my*this.my));
 
     this.mx = 0;
     this.my = 0;

@@ -8,7 +8,7 @@ export default class ConnectionView extends View {
   private start: Position;
   private end: Position;
 
-  constructor (nodeA: NodeView, nodeB: NodeView, parent?: View) {
+  public constructor (nodeA: NodeView, nodeB: NodeView, parent?: View) {
     super([], getDimensions(nodeA, nodeB, parent), {});
 
     this.parent = parent;

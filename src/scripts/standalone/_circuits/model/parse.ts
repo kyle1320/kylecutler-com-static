@@ -120,7 +120,7 @@ class ConsumableStream {
   private arr: string | string[];
   private index: number;
 
-  constructor (arr: string | string[]) {
+  public constructor (arr: string | string[]) {
     this.arr = arr;
     this.index = 0;
   }
@@ -140,8 +140,9 @@ class ConsumableStream {
   public forward(cond: (val: string) => boolean, takeLast: boolean = false) {
     var res = [];
     while (cond(this.peek())) {
-      if (this.index >= this.arr.length)
+      if (this.index >= this.arr.length) {
         throw new Error('Reached end of input unexpectedly');
+      }
       res.push(this.next());
     }
     if (takeLast) {

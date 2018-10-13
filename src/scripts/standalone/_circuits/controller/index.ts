@@ -41,7 +41,7 @@ export default class Controller {
   private topZIndex: number;
   private interactions: Interaction[];
 
-  constructor (
+  public constructor (
     canvas: CanvasView,
     actionbar: Actionbar,
     infobar: Infobar,

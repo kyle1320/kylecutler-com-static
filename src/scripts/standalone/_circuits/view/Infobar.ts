@@ -2,7 +2,7 @@ export default class Infobar {
   private element: HTMLElement;
   private data: {text: string, priority: number}[];
 
-  constructor (element: HTMLElement) {
+  public constructor (element: HTMLElement) {
     this.element = element;
     this.data = [];
   }
