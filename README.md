@@ -49,7 +49,7 @@ All Javascript and TypeScript files will be transpiled to ES5 using Babel.
 All other content will be copied directly to the output folder.
 
 **Note:**
-The `content/` folder eliminates the technical need for the `assets/` folder. The presence of the `assets/` folder is intended to reduce clutter within the `content/` folder by separating out non-compiled items like fonts and images. However, non-compiled items can still be present within the `content/` folder, in order to make deeply-nested assets more manageable.
+The `content/` folder eliminates the technical need for the `assets/` folder. The presence of the `assets/` folder is intended to reduce clutter within the `content/` folder by separating out non-compiled items like fonts and images. It also makes it possible to have static assets that use compiled extensions like `.js` or `.pug`. Non-compiled items can still be present within the `content/` folder, in order to make deeply-nested assets more manageable.
 
 ### `scripts/`:
 
