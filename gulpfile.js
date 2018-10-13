@@ -14,6 +14,7 @@ const eslint = require('gulp-eslint');
 const htmlmin = require('gulp-htmlmin');
 const notify = require('gulp-notify');
 const pug = require('gulp-pug');
+const rename = require('gulp-rename');
 const sass = require('gulp-sass');
 const sourcemaps = require('gulp-sourcemaps');
 const uglify = require('gulp-uglify');
@@ -43,6 +44,19 @@ const babelConfig_withTransform = {
     }]
   ]
 };
+
+const vendorScripts = [
+  {
+    devSrc: 'node_modules/three/build/three.js',
+    prodSrc: 'node_modules/three/build/three.min.js',
+    targetName: 'three.js'
+  },
+  {
+    devSrc: 'node_modules/jscolor-picker/jscolor.js',
+    prodSrc: 'node_modules/jscolor-picker/jscolor.min.js',
+    targetName: 'jscolor.js'
+  }
+];
 
 function target(fpath = '') {
   return path.join('public', fpath);
@@ -196,6 +210,22 @@ gulp.task('assets', function () {
   ]).pipe(gulp.dest(target()));
 });
 
+function vendorScript(def) {
+  const task = function () {
+    const isProduction = process.env.NODE_ENV === 'production';
+
+    return gulp.src(isProduction ? def.prodSrc : def.devSrc)
+      .pipe(rename(def.targetName))
+      .pipe(gulp.dest(target('js')));
+  };
+
+  task.displayName = 'vendor:' + def.targetName;
+
+  return task;
+}
+
+gulp.task('vendor', gulp.parallel(vendorScripts.map(vendorScript)));
+
 gulp.task('hidden-items:prod', function (done) {
   done(); // return del(['public/circuits']);
 });
@@ -272,7 +302,8 @@ gulp.task('build', gulp.series(
     'content-scripts',
     'site-scripts',
     'content',
-    'assets'
+    'assets',
+    'vendor'
   )
 ));
 
@@ -287,7 +318,8 @@ gulp.task('build:prod', gulp.series(
     'content-scripts:prod',
     'site-scripts:prod',
     'content',
-    'assets'
+    'assets',
+    'vendor'
   ),
   'hidden-items:prod'
 ));
