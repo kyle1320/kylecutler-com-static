@@ -140,7 +140,13 @@ export default class Controller {
     this.select(setUnion(this.selected, views), onChange);
   }
 
-  public move(el: View, dx: number, dy: number, shouldSnap?: boolean) {
+  public move(
+    el: View,
+    dx: number,
+    dy: number,
+    shouldSnap?: boolean,
+    snapOverride?: boolean
+  ) {
     if (el.attributes.zIndex !== this.topZIndex) {
       this.topZIndex++;
       el.setAttribute('zIndex', this.topZIndex);
@@ -149,6 +155,10 @@ export default class Controller {
     shouldSnap = shouldSnap || this.actionbar.isSelected('drag:snap');
 
     if (el === this.canvas) shouldSnap = false;
+
+    if (typeof snapOverride !== 'undefined') {
+      shouldSnap = snapOverride;
+    }
 
     if (shouldSnap) el.move(Math.round(dx), Math.round(dy));
     else            el.move(dx, dy);

@@ -85,7 +85,9 @@ export default class CreateInteraction extends Interaction {
         this.previewCircuit.setAttribute('hidden', false);
 
         if (targetView) {
-          this.controller.move(this.dragEnd, targetPos.x, targetPos.y);
+          this.controller.move(
+            this.dragEnd, targetPos.x, targetPos.y, false, false
+          );
         } else {
           this.controller.move(
             this.dragEnd, e.root.x, e.root.y, e.event.shiftKey
