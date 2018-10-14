@@ -7,6 +7,10 @@
 @include fa-envelope;
 @include fa-github-alt;
 @include fa-linkedin;
+@include fa-briefcase;
+@include fa-wrench;
+@include fa-graduation-cap;
+@include fa-project-diagram;
 
 html {
   background-color: #fcfcfc;
@@ -26,7 +30,7 @@ body {
   line-height: 1.4em;
 
   @media print {
-    padding: 0 rem(16px);
+    padding: 0 rem(27px);
   }
 }
 
@@ -179,6 +183,7 @@ sup {
     flex-flow: row nowrap;
     align-items: center;
     justify-content: space-between;
+    position: relative;
 
     border-top: 1px solid $dark-gray;
     border-bottom: 1px solid black;
@@ -188,7 +193,16 @@ sup {
     line-height: 1em;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.14em;
+
+    i {
+      font-size: rem(14px);
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: 100%;
+      padding-right: rem(5px);
+    }
   }
 
   table {
