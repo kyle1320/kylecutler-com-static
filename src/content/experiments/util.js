@@ -179,9 +179,9 @@ function linkColorChooserToValues(color, object, attr, func) {
 
   color.jscolor.fromRGB(object[attr][0], object[attr][1], object[attr][2]);
   color.addEventListener('change', function() {
-    object[attr][0] = Math.floor(color.jscolor.rgb[0] * 255);
-    object[attr][1] = Math.floor(color.jscolor.rgb[1] * 255);
-    object[attr][2] = Math.floor(color.jscolor.rgb[2] * 255);
+    object[attr][0] = Math.floor(color.jscolor.rgb[0]);
+    object[attr][1] = Math.floor(color.jscolor.rgb[1]);
+    object[attr][2] = Math.floor(color.jscolor.rgb[2]);
     func();
   });
 }
