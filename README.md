@@ -5,7 +5,7 @@ Static files for my personal website.
 http://www.kylecutler.com/
 
 ## Get Started
-To build the project, simply execute the following commands from the root project directory:
+To build the project, execute the following commands from the root project directory:
 
 ```
 npm install
@@ -42,9 +42,9 @@ Static content. All content within this directory is directly copied to the outp
 
 Mostly intended for HTML page templates, but also allows for Javascript files and static content.
 
-All Pug templates will be converted into HTML files and added to the output directory.
+All Pug templates will be converted to HTML and added to the output directory.
 
-All Javascript and TypeScript files will be transpiled to ES5 using Babel.
+All Javascript and TypeScript files will be transpiled to ES5 using Babel and output (with no bundling).
 
 All other content will be copied directly to the output folder.
 
@@ -55,7 +55,7 @@ The `content/` folder eliminates the technical need for the `assets/` folder. Th
 
 Intended for more advanced scripts. Supports a mix of Javascript and TypeScript files that will be bundled together using Browserify.
 
-The module entry points include `/site.js`, as well as any files matching the pattern `/standalone/*.js`. The idea behind this is that most pages on the site will include `site.js`. Any non-standard pages, like standalone apps or the résumé page, can have their own separate scripts bundle under the `standalone/` directory and include that file instead.
+The module entry points include `site.js`, as well as any files matching the pattern `standalone/*.js`. The idea behind this is that most pages on the site will include `site.js`, while any non-standard pages, like standalone apps or the résumé page, can have their own separate scripts bundle under the `standalone/` directory and include that file instead.
 
 Each bundle will be transpiled to ES5, and automatically include polyfills according to the `browserslist` browser query in `package.json`.
 
@@ -67,17 +67,27 @@ if (process.env.NODE_ENV === 'development') {
 }
 ```
 
-The included Gulp tasks set the `NODE_ENV` environment variable to `development` when running a development build, and `production` when running a production build. When processed with `envify`, followed by a minifier, the `if` statement will be optimized away entirely, either leaving the code within or removing it entirely.
+The included Gulp tasks set the `NODE_ENV` environment variable to `development` when running a development build, and `production` when running a production build. When processed with `envify`, followed by a minifier, the `if` statement will be optimized away, either leaving the code within or removing it entirely.
 
 ### `styles/`:
 
 All site styles, compiled using Sass. Any files that don't start with an underscore will be compiled and added to the output directory.
 
-This directory follows a similar structure to the `scripts/` directory -- the only files that will be compiled (currently) are `/main.scss` and a few standalone stylesheets within the `standalone/` directory. The reasoning behind this is the same as for having standalone bundles within the `scripts/` directory.
+This directory follows a similar structure to the `scripts/` directory -- the only files that will be compiled (currently) are `main.scss` and a few standalone stylesheets within the `standalone/` directory. The reasoning behind this is the same as for having standalone bundles within the `scripts/` directory.
 
 ### `templates/`:
 
 Pug templates. These templates will not be compiled to the output. Instead, they are used for importing by the Pug templates within the `content/` directory.
+
+## Vendor Scripts
+
+The Gulp build process includes a task that allows external scripts to be included in the compiled output. In order to achieve this, the desired sources must be added to the project dependencies, and then added to the `vendorScripts` configuration variable within `Gulpfile.js`. Each element of the configuration has the following properties:
+
+* `devSrc`: A path to the file to include in development builds (relative to the project root).
+* `prodSrc`: A path to the file to include in production builds (most likely a minified version of `devSrc`).
+* `targetName`: The name of the output file.
+
+Vendored scripts will be copied to the `js/` directory within the output folder.
 
 ## Development vs. Production Builds
 
