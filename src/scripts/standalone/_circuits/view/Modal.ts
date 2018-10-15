@@ -1,4 +1,4 @@
-import { makeElement, ElementContent } from '../../../utils';
+import { makeElement, ElementContent } from '../../../_utils';
 
 type Content = string | HTMLElement | HTMLElement[];
 
