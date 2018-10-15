@@ -1,7 +1,7 @@
-import Interaction from '../Interaction';
+import Feature from '../Feature';
 import { ActionEvent } from '../../model/types';
 
-export default class ExportImportInteraction extends Interaction {
+export default class ExportImportFeature extends Feature {
   public handleActionEvent(e: ActionEvent) {
     if (e.id === 'data:export') {
       this.controller.modal.showTextboxDialog(

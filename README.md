@@ -55,7 +55,9 @@ The `content/` folder eliminates the technical need for the `assets/` folder. Th
 
 Intended for more advanced scripts. Supports a mix of Javascript and TypeScript files that will be bundled together using Browserify.
 
-The module entry points include `site.js`, as well as any files matching the pattern `standalone/*.js`. The idea behind this is that most pages on the site will include `site.js`, while any non-standard pages, like standalone apps or the résumé page, can have their own separate scripts bundle under the `standalone/` directory and include that file instead.
+All `.js` files (and not `.ts`) within this folder and its subdirectories will be used as entry points to Browserify, unless they reside under a _directory_ that starts with an underscore. For example, `/src/scripts/examples/myexample.js` would be used as an entry point, but `/src/scripts/_utils/myutils.js` would not.
+
+Right now, the only entry points are `site.js` and a few files in the `standalone/` folder. The idea behind this is that most pages on the site will include `site.js`, while any non-standard pages, like standalone apps or the résumé page, can have their own separate scripts bundle under the `standalone/` directory and include that file instead.
 
 Each bundle will be transpiled to ES5, and automatically include polyfills according to the `browserslist` browser query in `package.json`.
 

@@ -1,4 +1,4 @@
-require('../site');
+require('../_utils/obfuscate');
 
 window.addEventListener('load', function () {
   var showMoreButtons = document.querySelectorAll('.show-more-btn');

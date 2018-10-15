@@ -1,1 +1,1 @@
-require('./obfuscate');
+require('./_utils/obfuscate');

@@ -1,4 +1,4 @@
-import Interaction from '../Interaction';
+import Feature from '../Feature';
 import { PositionalEvent, Position } from '../../model/types';
 
 type SavedEvent = {
@@ -9,7 +9,7 @@ type SavedEvent = {
   buttons: 1
 };
 
-export default class AutoSlideInteraction extends Interaction {
+export default class AutoSlideFeature extends Feature {
   private dx: number;
   private dy: number;
 

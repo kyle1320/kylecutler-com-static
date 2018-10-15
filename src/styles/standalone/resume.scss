@@ -80,6 +80,7 @@ sup {
   letter-spacing: 0.1em;
   vertical-align: middle;
   cursor: pointer;
+  margin-left: auto;
 
   &:hover {
     opacity: 0.8;
@@ -182,7 +183,7 @@ sup {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     position: relative;
 
     border-top: 1px solid $dark-gray;

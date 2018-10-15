@@ -84,7 +84,9 @@ gulp.task('content-scripts', function () {
 gulp.task('site-scripts', function (done) {
 
   // eslint-disable-next-line max-len
-  glob('{src/scripts/site.js,src/scripts/standalone/*.js}', function (err, files) {
+  glob('src/scripts/**/*.js', {
+    ignore: ['src/scripts/**/_*/**/*.js']
+  }, function (err, files) {
     if (err) done(err);
 
     var tasks = files.map(function (entry) {
@@ -143,7 +145,9 @@ gulp.task('content-scripts:prod', function () {
 gulp.task('site-scripts:prod', function (done) {
 
   // eslint-disable-next-line max-len
-  glob('{src/scripts/site.js,src/scripts/standalone/*.js}', function (err, files) {
+  glob('src/scripts/**/*.js', {
+    ignore: ['src/scripts/**/_*/**/*.js']
+  }, function (err, files) {
     if (err) done(err);
 
     var tasks = files.map(function (entry) {

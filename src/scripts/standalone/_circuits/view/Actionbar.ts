@@ -1,5 +1,5 @@
 import EventEmitter from '../utils/EventEmitter';
-import { makeElement, toggleClass } from '../../../utils';
+import { makeElement, toggleClass } from '../../../_utils';
 import View from './View';
 import NodeView from './NodeView';
 import Node from '../model/Node';
@@ -17,6 +17,7 @@ export default class Actionbar extends EventEmitter<{
   action: ActionEvent
   }> {
   private itemMap: {[id: string]: ActionItem};
+  private element: DynamicContent;
 
   public selectedItem: string;
   public defaultItem: string;
@@ -27,7 +28,7 @@ export default class Actionbar extends EventEmitter<{
     var sections = getDefaultSections();
     this.itemMap = {};
 
-    new DynamicContent(element, sections);
+    this.element = new DynamicContent(element, sections);
 
     sections.forEach(section => {
       section.items.forEach(item => {
@@ -40,6 +41,7 @@ export default class Actionbar extends EventEmitter<{
   }
 
   public init() {
+    this.element.init();
     this.selectItem(null);
   }
 
@@ -145,14 +147,19 @@ class DynamicContent extends EventEmitter<{
     children.forEach(
       x => x.on('visibility-change', () => this.render())
     );
+  }
 
+  public init() {
+    this.children.forEach(child => child.init());
     this.render();
   }
 
   protected render() {
     if (!this.children.length) return;
 
-    this.content.innerHTML = '';
+    while (this.content.firstChild) {
+      this.content.removeChild(this.content.firstChild);
+    }
 
     var items = this.children
       .filter(item => item.isVisible)
@@ -220,8 +227,6 @@ class SectionGroup extends DynamicContent {
 
     this.style = style;
     this.items = items;
-
-    this.render();
   }
 
   protected formatContents(elements: HTMLElement[]): HTMLElement[] {

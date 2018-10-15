@@ -2,31 +2,50 @@ import { flatten } from './treeUtils';
 
 import View from '../view/View';
 import CanvasView from '../view/CanvasView';
+import Actionbar from '../view/Actionbar';
 import Infobar from '../view/Infobar';
 import Modal from '../view/Modal';
 import Serialize from '../view/serialize';
 
-import { PositionalEvent, BasicTree, ActionEvent } from '../model/types';
+import {
+  PositionalEventType,
+  PositionalEvent,
+  PositionalTree,
+  BasicTree,
+  ActionEvent
+} from '../model/types';
 
-import Interaction from './Interaction';
-import DebugInteraction from './interactions/DebugInteraction';
-import CreateInteraction from './interactions/CreateInteraction';
-import DeleteInteraction from './interactions/DeleteInteraction';
-import DragInteraction from './interactions/DragInteraction';
-import SelectInteraction from './interactions/SelectInteraction';
-import ZoomInteraction from './interactions/ZoomInteraction';
-import ClipboardInteraction from './interactions/ClipboardInteraction';
-import ExportImportInteraction from './interactions/ExportImportInteraction';
-import MultiTouchInteraction from './interactions/MultiTouchInteraction';
-import AutoSlideInteraction from './interactions/AutoSlideInteraction';
-import NoHoverInteraction from './interactions/NoHoverInteraction';
-import HelpInteraction from './interactions/HelpInteraction';
-import Actionbar from '../view/Actionbar';
+import Feature from './Feature';
+import DebugFeature from './features/DebugFeature';
+import CreateFeature from './features/CreateFeature';
+import DeleteFeature from './features/DeleteFeature';
+import DragFeature from './features/DragFeature';
+import SelectFeature from './features/SelectFeature';
+import ZoomFeature from './features/ZoomFeature';
+import ClipboardFeature from './features/ClipboardFeature';
+import ExportImportFeature from './features/ExportImportFeature';
+import MultiTouchFeature from './features/MultiTouchFeature';
+import AutoSlideFeature from './features/AutoSlideFeature';
+import NoHoverFeature from './features/NoHoverFeature';
+import HelpFeature from './features/HelpFeature';
 
 const infoText: {[name: string]: string} = {
   'select:tool': 'Select an element to edit',
   'drag:tool': 'Drag an object or the grid to move it',
   'create': 'Click the grid to create an object'
+};
+
+const eventTypeMap:
+{[name: string]: PositionalEventType | PositionalEventType[]} = {
+  'mouseup': 'up',
+  'mousedown': 'down',
+  'mousemove': 'move',
+  'mouseenter': 'enter',
+  'mouseleave': 'leave',
+  'wheel': 'scroll',
+  'touchstart': ['enter', 'down'],
+  'touchend': ['up', 'leave'],
+  'touchmove': 'move'
 };
 
 export default class Controller {
@@ -39,7 +58,7 @@ export default class Controller {
   public hovering: View[];
 
   private topZIndex: number;
-  private interactions: Interaction[];
+  private features: Feature[];
 
   public constructor (
     canvas: CanvasView,
@@ -57,25 +76,52 @@ export default class Controller {
 
     this.topZIndex = 1;
 
-    this.interactions = [
-      new MultiTouchInteraction(this),
-      new DeleteInteraction(this),
-      new SelectInteraction(this),
-      new CreateInteraction(this),
-      new DragInteraction(this),
-      new ZoomInteraction(this),
-      new ClipboardInteraction(this),
-      new ExportImportInteraction(this),
-      new HelpInteraction(this),
-      new AutoSlideInteraction(this),
-      new NoHoverInteraction(this)
+    this.features = [
+      new MultiTouchFeature(this),
+      new DeleteFeature(this),
+      new SelectFeature(this),
+      new CreateFeature(this),
+      new DragFeature(this),
+      new ZoomFeature(this),
+      new ClipboardFeature(this),
+      new ExportImportFeature(this),
+      new HelpFeature(this),
+      new AutoSlideFeature(this),
+      new NoHoverFeature(this)
     ];
 
     if (process.env.NODE_ENV === 'development') {
-      this.interactions.push(new DebugInteraction(this));
+      this.features.push(new DebugFeature(this));
     }
 
-    this.callInteractions(x => x.handleSelectViews(null));
+    this.handleActionEvent = this.handleActionEvent.bind(this);
+    this.handleMouseEvent  = this.handleMouseEvent.bind(this);
+    this.handleTouchEvent  = this.handleTouchEvent.bind(this);
+    this.handleKeyEvent    = this.handleKeyEvent.bind(this);
+
+    actionbar.on('action', this.handleActionEvent);
+
+    canvas.canvas.addEventListener('mousedown',  this.handleMouseEvent);
+    canvas.canvas.addEventListener('mouseup',    this.handleMouseEvent);
+    canvas.canvas.addEventListener('mousemove',  this.handleMouseEvent);
+    canvas.canvas.addEventListener('mouseenter', this.handleMouseEvent);
+    canvas.canvas.addEventListener('mouseleave', this.handleMouseEvent);
+    canvas.canvas.addEventListener('wheel',      this.handleMouseEvent);
+
+    canvas.canvas.addEventListener('touchstart', this.handleTouchEvent);
+    canvas.canvas.addEventListener('touchend',   this.handleTouchEvent);
+    canvas.canvas.addEventListener('touchmove',  this.handleTouchEvent);
+
+    window.addEventListener('keydown', this.handleKeyEvent);
+
+    canvas.canvas.oncontextmenu = () => false;
+
+    this.addDefaultItems();
+    actionbar.init();
+
+    this.notifyFeatures(x => x.handleSelectViews(null));
+
+    canvas.drawBuffered();
   }
 
   public hoverTree(
@@ -122,7 +168,7 @@ export default class Controller {
 
     this.selected = views;
 
-    this.callInteractions(x => x.handleSelectViews(views));
+    this.notifyFeatures(x => x.handleSelectViews(views));
     this.infobar.set(
       views ? (
         views.length
@@ -169,34 +215,75 @@ export default class Controller {
     return Serialize.serialize(data);
   }
 
-  public import(text: string) {
+  public import(text: string, select: boolean = true) {
     var data = Serialize.deserialize(text);
     data.forEach(view => this.canvas.addChild(view));
-    this.select(data);
+
+    if (select) this.select(data);
   }
 
-  public handleActionEvent(e: ActionEvent) {
+  private handleMouseEvent(event: MouseEvent) {
+    event.preventDefault();
+
+    this.dispatchPositionalEvent(
+      event, event.offsetX, event.offsetY
+    );
+  }
+
+  private handleTouchEvent(event: TouchEvent) {
+    event.preventDefault();
+
+    var touch = event.changedTouches[0];
+    var bounds = (touch.target as HTMLElement)
+      .getBoundingClientRect() as DOMRect;
+
+    this.dispatchPositionalEvent(
+      event, touch.clientX - bounds.x, touch.clientY - bounds.y
+    );
+  }
+
+  private dispatchPositionalEvent(
+    event: MouseEvent | WheelEvent | TouchEvent,
+    x: number,
+    y: number,
+    type?: PositionalEventType | PositionalEventType[],
+    root?: PositionalTree
+  ) {
+    if (!type) type = eventTypeMap[event.type];
+    if (!root) root = this.canvas.findAll(x, y);
+
+    if (type instanceof Array) {
+      type.forEach(t => this.dispatchPositionalEvent(event, x, y, t, root));
+      return;
+    }
+
+    var e: PositionalEvent = { event, x, y, type, root };
+    this.notifyFeatures(x => x.handleMouseEvent(e));
+  }
+
+  private handleActionEvent(e: ActionEvent) {
     if (e.type === 'select') {
       this.infobar.set(infoText[e.id] || infoText[e.section], 0);
     }
 
-    this.callInteractions(x => x.handleActionEvent(e));
+    this.notifyFeatures(x => x.handleActionEvent(e));
   }
 
-  public handleMouseEvent(e: PositionalEvent) {
-    this.callInteractions(x => x.handleMouseEvent(e));
+  private handleKeyEvent(e: KeyboardEvent) {
+    this.notifyFeatures(x => x.handleKeyEvent(e));
   }
 
-  public handleKeyEvent(e: KeyboardEvent) {
-    this.callInteractions(x => x.handleKeyEvent(e));
-  }
+  private notifyFeatures(handler: (x: Feature) => boolean | void) {
+    for (var i = 0; i < this.features.length; i++) {
+      var feature = this.features[i];
 
-  private callInteractions(handler: (x: Interaction) => boolean | void) {
-    for (var i = 0; i < this.interactions.length; i++) {
-      var interaction = this.interactions[i];
-
-      if (handler(interaction) === false) break;
+      if (handler(feature) === false) break;
     }
+  }
+
+  private addDefaultItems() {
+    // eslint-disable-next-line max-len
+    this.import('{"o":[["n",1,1],["n",1,7],["c",3,3,0,"Not"],["c",3,5,0,"Not"],["c",6,1,0,"And"],["c",6,5,0,"And"],["c",10,3,0,"Or"],["n",14,4]],"c":[[[0],[4,0]],[[1],[2,0]],[[0],[3,0]],[[1],[5,1]],[[2,1],[4,1]],[[3,1],[5,0]],[[4,2],[6,0]],[[5,2],[6,1]],[[6,2],[7]]]}', false);
   }
 }
 

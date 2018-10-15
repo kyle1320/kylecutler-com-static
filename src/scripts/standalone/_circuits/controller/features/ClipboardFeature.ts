@@ -1,8 +1,8 @@
-import Interaction from '../Interaction';
+import Feature from '../Feature';
 import Controller from '..';
 import Serialize from '../../view/serialize';
 
-export default class ClipboardInteraction extends Interaction {
+export default class ClipboardFeature extends Feature {
   private copiedData: string;
   private offset: number;
 

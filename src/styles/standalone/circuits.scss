@@ -228,6 +228,7 @@ body {
   box-shadow: 0 0 rem(4px) rgba(0, 0, 0, 0.2);
   display: flex;
   flex-flow: column nowrap;
+  overflow: hidden;
 
   &-container {
     position: fixed;

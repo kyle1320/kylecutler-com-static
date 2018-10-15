@@ -1,8 +1,8 @@
-import Interaction from '../Interaction';
+import Feature from '../Feature';
 import { PositionalEvent, ActionEvent } from '../../model/types';
 import View from '../../view/View';
 
-export default class DebugInteraction extends Interaction {
+export default class DebugFeature extends Feature {
   public handleActionEvent(e: ActionEvent) {
     if (!this.controller.actionbar.isSelected('debug:debug')) return;
 

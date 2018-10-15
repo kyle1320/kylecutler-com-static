@@ -1,9 +1,9 @@
 import { PositionalEvent, ActionEvent } from '../model/types';
 
 import View from '../view/View';
-import Controller from './index';
+import Controller from '.';
 
-export default abstract class Interaction {
+export default abstract class Feature {
   protected controller: Controller;
 
   public constructor (controller: Controller) {
