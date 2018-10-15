@@ -6,7 +6,13 @@ import Infobar from '../view/Infobar';
 import Modal from '../view/Modal';
 import Serialize from '../view/serialize';
 
-import { PositionalEvent, BasicTree, ActionEvent } from '../model/types';
+import {
+  PositionalEventType,
+  PositionalEvent,
+  PositionalTree,
+  BasicTree,
+  ActionEvent
+} from '../model/types';
 
 import Interaction from './Interaction';
 import DebugInteraction from './interactions/DebugInteraction';
@@ -27,6 +33,19 @@ const infoText: {[name: string]: string} = {
   'select:tool': 'Select an element to edit',
   'drag:tool': 'Drag an object or the grid to move it',
   'create': 'Click the grid to create an object'
+};
+
+const eventTypeMap:
+{[name: string]: PositionalEventType | PositionalEventType[]} = {
+  'mouseup': 'up',
+  'mousedown': 'down',
+  'mousemove': 'move',
+  'mouseenter': 'enter',
+  'mouseleave': 'leave',
+  'wheel': 'scroll',
+  'touchstart': ['enter', 'down'],
+  'touchend': ['up', 'leave'],
+  'touchmove': 'move'
 };
 
 export default class Controller {
@@ -75,7 +94,34 @@ export default class Controller {
       this.interactions.push(new DebugInteraction(this));
     }
 
+    this.handleActionEvent = this.handleActionEvent.bind(this);
+    this.handleMouseEvent  = this.handleMouseEvent.bind(this);
+    this.handleTouchEvent  = this.handleTouchEvent.bind(this);
+    this.handleKeyEvent    = this.handleKeyEvent.bind(this);
+
+    actionbar.on('action', this.handleActionEvent);
+
+    canvas.canvas.addEventListener('mousedown',  this.handleMouseEvent);
+    canvas.canvas.addEventListener('mouseup',    this.handleMouseEvent);
+    canvas.canvas.addEventListener('mousemove',  this.handleMouseEvent);
+    canvas.canvas.addEventListener('mouseenter', this.handleMouseEvent);
+    canvas.canvas.addEventListener('mouseleave', this.handleMouseEvent);
+    canvas.canvas.addEventListener('wheel',      this.handleMouseEvent);
+
+    canvas.canvas.addEventListener('touchstart', this.handleTouchEvent);
+    canvas.canvas.addEventListener('touchend',   this.handleTouchEvent);
+    canvas.canvas.addEventListener('touchmove',  this.handleTouchEvent);
+
+    window.addEventListener('keydown', this.handleKeyEvent);
+
+    canvas.canvas.oncontextmenu = () => false;
+
+    this.addDefaultItems();
+    actionbar.init();
+
     this.callInteractions(x => x.handleSelectViews(null));
+
+    canvas.drawBuffered();
   }
 
   public hoverTree(
@@ -169,13 +215,53 @@ export default class Controller {
     return Serialize.serialize(data);
   }
 
-  public import(text: string) {
+  public import(text: string, select: boolean = true) {
     var data = Serialize.deserialize(text);
     data.forEach(view => this.canvas.addChild(view));
-    this.select(data);
+
+    if (select) this.select(data);
   }
 
-  public handleActionEvent(e: ActionEvent) {
+  private handleMouseEvent(event: MouseEvent) {
+    event.preventDefault();
+
+    this.dispatchPositionalEvent(
+      event, event.offsetX, event.offsetY
+    );
+  }
+
+  private handleTouchEvent(event: TouchEvent) {
+    event.preventDefault();
+
+    var touch = event.changedTouches[0];
+    var bounds = (touch.target as HTMLElement)
+      .getBoundingClientRect() as DOMRect;
+
+    this.dispatchPositionalEvent(
+      event, touch.clientX - bounds.x, touch.clientY - bounds.y
+    );
+  }
+
+  private dispatchPositionalEvent(
+    event: MouseEvent | WheelEvent | TouchEvent,
+    x: number,
+    y: number,
+    type?: PositionalEventType | PositionalEventType[],
+    root?: PositionalTree
+  ) {
+    if (!type) type = eventTypeMap[event.type];
+    if (!root) root = this.canvas.findAll(x, y);
+
+    if (type instanceof Array) {
+      type.forEach(t => this.dispatchPositionalEvent(event, x, y, t, root));
+      return;
+    }
+
+    var e: PositionalEvent = { event, x, y, type, root };
+    this.callInteractions(x => x.handleMouseEvent(e));
+  }
+
+  private handleActionEvent(e: ActionEvent) {
     if (e.type === 'select') {
       this.infobar.set(infoText[e.id] || infoText[e.section], 0);
     }
@@ -183,11 +269,7 @@ export default class Controller {
     this.callInteractions(x => x.handleActionEvent(e));
   }
 
-  public handleMouseEvent(e: PositionalEvent) {
-    this.callInteractions(x => x.handleMouseEvent(e));
-  }
-
-  public handleKeyEvent(e: KeyboardEvent) {
+  private handleKeyEvent(e: KeyboardEvent) {
     this.callInteractions(x => x.handleKeyEvent(e));
   }
 
@@ -197,6 +279,11 @@ export default class Controller {
 
       if (handler(interaction) === false) break;
     }
+  }
+
+  private addDefaultItems() {
+    // eslint-disable-next-line max-len
+    this.import('{"o":[["n",1,1],["n",1,7],["c",3,3,0,"Not"],["c",3,5,0,"Not"],["c",6,1,0,"And"],["c",6,5,0,"And"],["c",10,3,0,"Or"],["n",14,4]],"c":[[[0],[4,0]],[[1],[2,0]],[[0],[3,0]],[[1],[5,1]],[[2,1],[4,1]],[[3,1],[5,0]],[[4,2],[6,0]],[[5,2],[6,1]],[[6,2],[7]]]}', false);
   }
 }
 
