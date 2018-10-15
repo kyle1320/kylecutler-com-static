@@ -2,6 +2,7 @@ import { flatten } from './treeUtils';
 
 import View from '../view/View';
 import CanvasView from '../view/CanvasView';
+import Actionbar from '../view/Actionbar';
 import Infobar from '../view/Infobar';
 import Modal from '../view/Modal';
 import Serialize from '../view/serialize';
@@ -14,20 +15,19 @@ import {
   ActionEvent
 } from '../model/types';
 
-import Interaction from './Interaction';
-import DebugInteraction from './interactions/DebugInteraction';
-import CreateInteraction from './interactions/CreateInteraction';
-import DeleteInteraction from './interactions/DeleteInteraction';
-import DragInteraction from './interactions/DragInteraction';
-import SelectInteraction from './interactions/SelectInteraction';
-import ZoomInteraction from './interactions/ZoomInteraction';
-import ClipboardInteraction from './interactions/ClipboardInteraction';
-import ExportImportInteraction from './interactions/ExportImportInteraction';
-import MultiTouchInteraction from './interactions/MultiTouchInteraction';
-import AutoSlideInteraction from './interactions/AutoSlideInteraction';
-import NoHoverInteraction from './interactions/NoHoverInteraction';
-import HelpInteraction from './interactions/HelpInteraction';
-import Actionbar from '../view/Actionbar';
+import Feature from './Feature';
+import DebugFeature from './features/DebugFeature';
+import CreateFeature from './features/CreateFeature';
+import DeleteFeature from './features/DeleteFeature';
+import DragFeature from './features/DragFeature';
+import SelectFeature from './features/SelectFeature';
+import ZoomFeature from './features/ZoomFeature';
+import ClipboardFeature from './features/ClipboardFeature';
+import ExportImportFeature from './features/ExportImportFeature';
+import MultiTouchFeature from './features/MultiTouchFeature';
+import AutoSlideFeature from './features/AutoSlideFeature';
+import NoHoverFeature from './features/NoHoverFeature';
+import HelpFeature from './features/HelpFeature';
 
 const infoText: {[name: string]: string} = {
   'select:tool': 'Select an element to edit',
@@ -58,7 +58,7 @@ export default class Controller {
   public hovering: View[];
 
   private topZIndex: number;
-  private interactions: Interaction[];
+  private features: Feature[];
 
   public constructor (
     canvas: CanvasView,
@@ -76,22 +76,22 @@ export default class Controller {
 
     this.topZIndex = 1;
 
-    this.interactions = [
-      new MultiTouchInteraction(this),
-      new DeleteInteraction(this),
-      new SelectInteraction(this),
-      new CreateInteraction(this),
-      new DragInteraction(this),
-      new ZoomInteraction(this),
-      new ClipboardInteraction(this),
-      new ExportImportInteraction(this),
-      new HelpInteraction(this),
-      new AutoSlideInteraction(this),
-      new NoHoverInteraction(this)
+    this.features = [
+      new MultiTouchFeature(this),
+      new DeleteFeature(this),
+      new SelectFeature(this),
+      new CreateFeature(this),
+      new DragFeature(this),
+      new ZoomFeature(this),
+      new ClipboardFeature(this),
+      new ExportImportFeature(this),
+      new HelpFeature(this),
+      new AutoSlideFeature(this),
+      new NoHoverFeature(this)
     ];
 
     if (process.env.NODE_ENV === 'development') {
-      this.interactions.push(new DebugInteraction(this));
+      this.features.push(new DebugFeature(this));
     }
 
     this.handleActionEvent = this.handleActionEvent.bind(this);
@@ -119,7 +119,7 @@ export default class Controller {
     this.addDefaultItems();
     actionbar.init();
 
-    this.callInteractions(x => x.handleSelectViews(null));
+    this.notifyFeatures(x => x.handleSelectViews(null));
 
     canvas.drawBuffered();
   }
@@ -168,7 +168,7 @@ export default class Controller {
 
     this.selected = views;
 
-    this.callInteractions(x => x.handleSelectViews(views));
+    this.notifyFeatures(x => x.handleSelectViews(views));
     this.infobar.set(
       views ? (
         views.length
@@ -258,7 +258,7 @@ export default class Controller {
     }
 
     var e: PositionalEvent = { event, x, y, type, root };
-    this.callInteractions(x => x.handleMouseEvent(e));
+    this.notifyFeatures(x => x.handleMouseEvent(e));
   }
 
   private handleActionEvent(e: ActionEvent) {
@@ -266,18 +266,18 @@ export default class Controller {
       this.infobar.set(infoText[e.id] || infoText[e.section], 0);
     }
 
-    this.callInteractions(x => x.handleActionEvent(e));
+    this.notifyFeatures(x => x.handleActionEvent(e));
   }
 
   private handleKeyEvent(e: KeyboardEvent) {
-    this.callInteractions(x => x.handleKeyEvent(e));
+    this.notifyFeatures(x => x.handleKeyEvent(e));
   }
 
-  private callInteractions(handler: (x: Interaction) => boolean | void) {
-    for (var i = 0; i < this.interactions.length; i++) {
-      var interaction = this.interactions[i];
+  private notifyFeatures(handler: (x: Feature) => boolean | void) {
+    for (var i = 0; i < this.features.length; i++) {
+      var feature = this.features[i];
 
-      if (handler(interaction) === false) break;
+      if (handler(feature) === false) break;
     }
   }
 

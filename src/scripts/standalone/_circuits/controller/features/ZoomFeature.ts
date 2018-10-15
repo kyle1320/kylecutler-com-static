@@ -1,7 +1,7 @@
-import Interaction from '../Interaction';
+import Feature from '../Feature';
 import { PositionalEvent, ActionEvent } from '../../model/types';
 
-export default class ZoomInteraction extends Interaction {
+export default class ZoomFeature extends Feature {
   public handleActionEvent(e: ActionEvent) {
     switch (e.id) {
     case 'zoom:in':

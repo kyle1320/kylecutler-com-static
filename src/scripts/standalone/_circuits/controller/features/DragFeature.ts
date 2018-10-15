@@ -1,4 +1,4 @@
-import Interaction from '../Interaction';
+import Feature from '../Feature';
 import { findFirst } from '../treeUtils';
 import ConnectionView from '../../view/ConnectionView';
 import View from '../../view/View';
@@ -14,7 +14,7 @@ type MoveData = {
   y: number
 };
 
-export default class DragInteraction extends Interaction {
+export default class DragFeature extends Feature {
   private target: MoveData[];
 
   protected reset() {

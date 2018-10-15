@@ -1,4 +1,4 @@
-import Interaction from '../Interaction';
+import Feature from '../Feature';
 import { findFirst } from '../treeUtils';
 
 import NodeView from '../../view/NodeView';
@@ -11,7 +11,7 @@ import {
 } from '../../model/types';
 import View from '../../view/View';
 
-export default class SelectInteraction extends Interaction {
+export default class SelectFeature extends Feature {
   private isClickCandidate: boolean;
   private lastHoverTarget: View;
 

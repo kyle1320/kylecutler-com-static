@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
 
-import Interaction from '../Interaction';
+import Feature from '../Feature';
 import { ActionEvent } from '../../model/types';
 
-export default class HelpInteraction extends Interaction {
+export default class HelpFeature extends Feature {
   public handleActionEvent(e: ActionEvent) {
     if (e.id === 'help:show') {
       this.controller.modal.showInfoDialog(

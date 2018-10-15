@@ -1,6 +1,6 @@
-import Interaction from '../Interaction';
+import Feature from '../Feature';
 
-export default class DeleteInteraction extends Interaction {
+export default class DeleteFeature extends Feature {
   public handleKeyEvent(e: KeyboardEvent) {
     switch (e.keyCode) {
     case 8:

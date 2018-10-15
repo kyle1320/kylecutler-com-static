@@ -1,4 +1,4 @@
-import Interaction from '../Interaction';
+import Feature from '../Feature';
 
 import { findFirst } from '../treeUtils';
 
@@ -17,7 +17,7 @@ import {
   ActionEvent
 } from '../../model/types';
 
-export default class CreateInteraction extends Interaction {
+export default class CreateFeature extends Feature {
   private circuits: string[];
   private circuitsMap: {[name: string]: () => View};
   private selectedCircuit: string;

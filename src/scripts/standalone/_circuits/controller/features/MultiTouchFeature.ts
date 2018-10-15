@@ -1,7 +1,7 @@
-import Interaction from '../Interaction';
+import Feature from '../Feature';
 import { PositionalEvent } from '../../model/types';
 
-export default class MultiTouchInteraction extends Interaction {
+export default class MultiTouchFeature extends Feature {
   private touchA: Touch;
   private touchB: Touch;
 
@@ -36,7 +36,7 @@ export default class MultiTouchInteraction extends Interaction {
           this.touchB = touch;
           this.update();
 
-          // fake out the other interactions so they will cancel their behavior
+          // fake out the other features so they will cancel their behavior
           e.type = 'leave';
         }
 
@@ -63,7 +63,7 @@ export default class MultiTouchInteraction extends Interaction {
           var { x: cx, y: cy } = canvas.getCoord(this.center.x, this.center.y);
           canvas.zoomRel( this.distance / oldDistance, cx, cy );
 
-          // prevent other interactions from handling this event
+          // prevent other features from handling this event
           ret = false;
         }
         break;
