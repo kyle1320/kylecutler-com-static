@@ -60,8 +60,6 @@ function addCanvasListeners(canvasView: CanvasView, controller: Controller) {
 
   const positionalAction =
     (type: PositionalEventType) => (event: MouseEvent) => {
-      event.preventDefault();
-
       var x = event.offsetX, y = event.offsetY;
       var root = canvasView.findAll(x, y);
 
@@ -69,8 +67,6 @@ function addCanvasListeners(canvasView: CanvasView, controller: Controller) {
     };
 
   const touchAction = (type: PositionalEventType) => (event: TouchEvent) => {
-    event.preventDefault();
-
     var touch = event.changedTouches[0];
     var bounds = (touch.target as HTMLElement)
       .getBoundingClientRect() as DOMRect;
