@@ -102,14 +102,18 @@ export function makeElement<T extends ElementTag>(
 export function toggleClass(
   el: HTMLElement,
   className: string,
-  enabled: boolean
+  enabled?: boolean
 ) {
   var regexp = new RegExp('\\s*' + className, 'g');
 
+  if (typeof enabled === 'undefined') {
+    enabled = !regexp.test(el.className);
+  } else if (enabled && regexp.test(el.className)) {
+    return;
+  }
+
   if (enabled) {
-    if (!regexp.test(el.className)) {
-      el.className += ' ' + className;
-    }
+    el.className += ' ' + className;
   } else {
     el.className = el.className.replace(regexp, '');
   }
