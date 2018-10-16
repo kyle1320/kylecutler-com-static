@@ -83,7 +83,7 @@ Pug templates. These templates will not be compiled to the output. Instead, they
 
 ## Vendor Scripts
 
-The Gulp build process includes a task that allows external scripts to be included in the compiled output. In order to achieve this, the desired sources must be added to the project dependencies, and then added to the `vendorScripts` configuration variable within `Gulpfile.js`. Each element of the configuration has the following properties:
+The Gulp build process includes a task that allows external scripts to be included in the compiled output. In order to achieve this, the desired sources must be added to the project dependencies, and then added to the `paths.vendorScripts.src` configuration item within `Gulpfile.js`. Each element of the configuration has the following properties:
 
 * `devSrc`: A path to the file to include in development builds (relative to the project root).
 * `prodSrc`: A path to the file to include in production builds (most likely a minified version of `devSrc`).
