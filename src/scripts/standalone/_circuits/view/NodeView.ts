@@ -1,5 +1,4 @@
 import View from './View';
-import CircuitView from './CircuitView';
 import Node from '../model/Node';
 
 export default class NodeView extends View {
@@ -13,12 +12,6 @@ export default class NodeView extends View {
     super.remove();
 
     this.data.disconnect();
-  }
-
-  public getRenderOrder() {
-    return (this.parent instanceof CircuitView)
-      ? this.parent.getRenderOrder()
-      : super.getRenderOrder();
   }
 
   public intersects(x: number, y: number, grow: number = 0) {
