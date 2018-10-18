@@ -8,6 +8,6 @@
         "sourceType": "module"
     },
     "globals": {
-        "process": true
+        "__DEBUG__": false
     }
 }

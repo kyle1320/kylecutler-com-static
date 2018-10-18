@@ -1,4 +1,4 @@
-require('../_utils/obfuscate');
+import '../_utils/obfuscate';
 
 import { toggleClass } from '../_utils';
 

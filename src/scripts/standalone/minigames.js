@@ -1,2 +1,2 @@
-require('../site');
-require('./_minigames');
+import '../site';
+import './_minigames';

@@ -9,15 +9,6 @@ const babelConfig_noTransform = {
   ]
 };
 
-const babelConfig_withTransform = {
-  'presets': [
-    '@babel/preset-env', '@babel/preset-typescript'
-  ],
-  'plugins': [
-    '@babel/plugin-transform-runtime'
-  ]
-};
-
 const configPaths = {
   assets: {
     src: [
@@ -45,7 +36,8 @@ const configPaths = {
   siteScripts: {
     include: 'src/scripts/**/*.js',
     exclude: 'src/scripts/**/_*/**/*.js',
-    dest: 'public/js'
+    dest: 'public/js',
+    watch: 'src/scripts/**/*.{js,ts}'
   },
   styles: {
     src: ['src/styles/**/*.scss'],
@@ -116,71 +108,86 @@ setUpTasks('contentScripts', paths => {
 });
 
 setUpTasks('siteScripts', paths => {
-  const babelify   = require('babelify');
-  const browserify = require('browserify');
-  const envify     = require('envify');
-  const es         = require('event-stream');
-  const glob       = require('glob');
-  const path       = require('path');
-  const source     = require('vinyl-source-stream');
-  const tinyify    = require('tinyify');
-  const watchify   = require('watchify');
+  const babel    = require('rollup-plugin-babel');
+  const commonjs = require('rollup-plugin-commonjs');
+  const es       = require('event-stream');
+  const glob     = require('glob');
+  const path     = require('path');
+  const Readable = require('stream').Readable;
+  const replace  = require('rollup-plugin-replace');
+  const resolve  = require('rollup-plugin-node-resolve');
+  const rollup   = require('rollup');
+  const source   = require('vinyl-source-stream');
+  const uglify   = require('rollup-plugin-uglify');
+
+  const cache = {};
+
+  const babelConfig = {
+    'presets': [
+      '@babel/preset-env', '@babel/preset-typescript'
+    ],
+    'plugins': [
+      '@babel/plugin-transform-runtime'
+    ],
+    extensions: ['.js', '.ts'],
+    runtimeHelpers: true,
+    exclude: 'node_modules/**'
+  };
+
+  // modified from rollup-stream to work with latest version of Rollup
+  function rollupStream(options) {
+    var stream = new Readable();
+    stream._read = function () {};
+
+    rollup.rollup(options).then(function (bundle) {
+      stream.emit('bundle', bundle);
+
+      return bundle.generate(options.output);
+    }).then(function ({code, map}) {
+      stream.push(code);
+
+      if (options.output.sourcemap) {
+        stream.push('\n//# sourceMappingURL=');
+        stream.push(map.toUrl());
+      }
+
+      stream.push(null);
+    }).catch(function (reason) {
+      stream.emit('error', reason);
+    });
+
+    return stream;
+  }
 
   gulp.task('site-scripts', function (done) {
-    getBundles(function (err, bundles) {
-      if (err) done(err);
-
-      es.merge(bundles.map(bundleSiteScripts)).on('end', done);
-    });
-  });
-
-  gulp.task('watch:site-scripts', function (done) {
-    getBundles(function (err, bundles) {
-      if (err) done(err);
-
-      es.merge(bundles.map(b => bundleSiteScripts(
-        watchify(b).on('update', () => bundleSiteScripts(b))
-      )));
-    });
-  });
-
-  function getBundles(callback) {
-    const browserifyArgs = Object.assign({},
-      watchify.args,
-      { debug: !isProd(), extensions: ['.js', '.ts'] }
-    );
-
-    const babelifyArgs = Object.assign({},
-      babelConfig_withTransform,
-      { extensions: ['.js', '.ts'] }
-    );
-
     glob(paths.include, { ignore: paths.exclude }, function (err, files) {
-      if (err) callback(err);
+      if (err) return done(err);
 
-      callback(null, files.map(function (entry) {
-        var bundler = browserify(entry, browserifyArgs)
-          .transform(babelify, babelifyArgs)
-          .transform(envify, { _: 'purge' });
+      const streams = files.map(entry => rollupStream({
+        input: entry,
+        output: {
+          format: 'iife',
+          sourcemap: !isProd()
+        },
+        cache: cache[entry],
+        plugins: [
+          resolve({ extensions: ['.js', '.ts'] }),
+          commonjs(),
+          replace({ __DEBUG__: !isProd() }),
+          babel(babelConfig)
+        ].concat(isProd() ? uglify.uglify() : [])
+      }).on('bundle', b => cache[entry] = b)
+        .pipe(source(path.relative('src/scripts', entry)))
+        .pipe(gulp.dest(paths.dest))
+      );
 
-        bundler._relPath = path.relative('src/scripts', entry);
-
-        if (isProd()) {
-          bundler = bundler.plugin(tinyify);
-        }
-
-        return bundler;
-      }));
+      es.merge(streams).on('end', done);
     });
-  }
+  });
 
-  function bundleSiteScripts(bundler) {
-    return (function (b) {
-      return isProd() ? b : b.on('error', e => log.error(e.toString()));
-    }(bundler.bundle()))
-      .pipe(source(bundler._relPath))
-      .pipe(gulp.dest(paths.dest));
-  }
+  gulp.task('watch:site-scripts', function () {
+    gulp.watch(paths.watch, gulp.series('site-scripts'));
+  });
 });
 
 setUpTasks('content', paths => {

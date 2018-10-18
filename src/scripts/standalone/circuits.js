@@ -1,1 +1,1 @@
-require('./_circuits');
+import './_circuits';

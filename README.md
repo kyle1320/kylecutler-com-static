@@ -30,7 +30,7 @@ This project uses the following libraries for source file compilation:
 |---------------|------------|
 | HTML | [Pug](https://pugjs.org), [Babel](https://babeljs.io), [htmlmin](https://www.npmjs.com/package/htmlmin) |
 | CSS | [Sass](https://sass-lang.com), [autoprefixer](https://www.npmjs.com/package/autoprefixer), [clean-css](https://github.com/jakubpawlowicz/clean-css) |
-| JS | [Babel](https://babeljs.io), [Browserify](http://browserify.org), [TypeScript](http://typescriptlang.org), [envify](https://www.npmjs.com/package/envify), [tinyify](https://www.npmjs.com/package/tinyify), [UglifyJS](https://www.npmjs.com/package/uglify-js) |
+| JS | [Babel](https://babeljs.io), [Rollup](https://rollupjs.org), [TypeScript](http://typescriptlang.org) |
 
 All source files reside within the `src/` directory, separated into the following directories:
 
@@ -53,23 +53,23 @@ The `content/` folder eliminates the technical need for the `assets/` folder. Th
 
 ### `scripts/`:
 
-Intended for more advanced scripts. Supports a mix of Javascript and TypeScript files that will be bundled together using Browserify.
+Intended for more advanced scripts. Supports a mix of Javascript and TypeScript files that will be bundled together using Rollup.
 
-All `.js` files (and not `.ts`) within this folder and its subdirectories will be used as entry points to Browserify, unless they reside under a _directory_ that starts with an underscore. For example, `/src/scripts/examples/myexample.js` would be used as an entry point, but `/src/scripts/_utils/myutils.js` would not.
+All `.js` files (and not `.ts`) within this folder and its subdirectories will be used as entry points to Rollup, unless they reside under a _directory_ that starts with an underscore. For example, `/src/scripts/examples/myexample.js` would be used as an entry point, but `/src/scripts/_utils/myutils.js` would not.
 
 Right now, the only entry points are `site.js` and a few files in the `standalone/` folder. The idea behind this is that most pages on the site will include `site.js`, while any non-standard pages, like standalone apps or the résumé page, can have their own separate scripts bundle under the `standalone/` directory and include that file instead.
 
 Each bundle will be transpiled to ES5 using the Babel `env` preset.
 
-In addition, the `envify` package is used to replace `process.env.*` expressions with string values. This essentially allows conditional compilation of Javascript code, when used in the following way:
+In addition, the name `__DEBUG__` can be used to determine whether the code is running in a development or production environment. It can be used to allow conditional compilation of code, when used in the following way:
 
 ```javascript
-if (process.env.NODE_ENV === 'development') {
+if (__DEBUG__) {
   // print debug info, etc.
 }
 ```
 
-The included Gulp tasks set the `NODE_ENV` environment variable to `development` when running a development build, and `production` when running a production build. When processed with `envify`, followed by a minifier, the `if` statement will be optimized away, either leaving the code within or removing it entirely.
+The `__DEBUG__` token will be replaced with `true` when running a development build, and `false` when running a production build. When processed with a minifier, the `if` statement will be optimized away, either leaving the code within or removing it entirely.
 
 ### `styles/`:
 

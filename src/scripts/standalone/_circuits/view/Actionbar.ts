@@ -429,7 +429,7 @@ function getDefaultSections(): Section[] {
     ])
   ];
 
-  if (process.env.NODE_ENV === 'development') {
+  if (__DEBUG__) {
     defaultSections.push(new Section('Debug', 'debug', [
       new SectionGroup('columns', [
         ActionItem.withIcon(

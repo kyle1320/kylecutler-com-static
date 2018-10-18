@@ -1,1 +1,1 @@
-require('./toggle');
+import './toggle';

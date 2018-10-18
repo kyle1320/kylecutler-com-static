@@ -1,1 +1,1 @@
-require('./_utils/obfuscate');
+import './_utils/obfuscate';

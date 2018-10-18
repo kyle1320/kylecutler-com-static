@@ -4,7 +4,7 @@ import { parse } from '../model/parse';
 import Circuit from '../model/Circuit';
 import { Dimensions, Position, PositionalTree } from '../model/types';
 
-require('path2d-polyfill');
+import 'path2d-polyfill';
 
 export default class CircuitView extends View {
   public data: Circuit;
