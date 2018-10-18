@@ -197,7 +197,7 @@ setUpTasks('content', paths => {
 
   const pugArgs = {
     basedir: 'src/templates',
-    globals: ['obfuscate'],
+    globals: ['obfuscate', '__DEBUG__'],
     filters: {
       babel: function (text) {
         return babel.transformSync(text, babelConfig_noTransform).code;
@@ -222,6 +222,8 @@ setUpTasks('content', paths => {
   };
 
   gulp.task('content', function () {
+    global.__DEBUG__ = !isProd();
+
     return gulp.src(paths.src)
       .pipe(handleErrors())
       .pipe(pug(pugArgs))
