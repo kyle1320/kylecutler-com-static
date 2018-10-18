@@ -1,7 +1,7 @@
-var $ = function(e) { return document.getElementById(e); };
+var $ = function (e) { return document.getElementById(e); };
 var isNaN =  Number.isNaN
           || window.isNaN
-          || function(n) { return typeof n === 'number' && n !== n; };
+          || function (n) { return typeof n === 'number' && n !== n; };
 
 /****************
  *    CANVAS    *
@@ -56,10 +56,10 @@ function resizeCanvas(canvas, context, width, height, scaleContext) {
 function fitElement(el, preferredWidth, preferredHeight, onresize) {
   preferredWidth = preferredWidth || el.clientWidth;
   preferredHeight = preferredHeight || el.clientHeight;
-  onresize = onresize || function() {};
+  onresize = onresize || function () {};
   var preferredRatio = preferredWidth / preferredHeight;
 
-  var resize = function() {
+  var resize = function () {
     var style = window.getComputedStyle(el.parentElement, null);
     var width = parseInt(style.getPropertyValue('width'));
     var height = parseInt(style.getPropertyValue('height'));
@@ -148,21 +148,21 @@ function takeTouchFocus(evt) {
 }
 
 function linkCheckboxToBoolean(checkbox, object, attr, func) {
-  func = func || function() {};
+  func = func || function () {};
 
   checkbox.checked = object[attr];
-  checkbox.addEventListener('click', function() {
+  checkbox.addEventListener('click', function () {
     object[attr] = checkbox.checked;
     func();
   });
 }
 
 function linkInputToNumber(input, object, attr, func, instant) {
-  func = func || function() {};
+  func = func || function () {};
   if (instant === undefined) instant = true;
 
   input.value = String(object[attr]);
-  input.addEventListener(instant ? 'input' : 'change', function() {
+  input.addEventListener(instant ? 'input' : 'change', function () {
     var value = +input.value;
     if (!isNaN(value)) {
       object[attr] = value;
@@ -170,16 +170,16 @@ function linkInputToNumber(input, object, attr, func, instant) {
     func();
   });
 
-  input.addEventListener('blur', function() {
+  input.addEventListener('blur', function () {
     input.value = String(object[attr]);
   });
 }
 
 function linkColorChooserToValues(color, object, attr, func) {
-  func = func || function() {};
+  func = func || function () {};
 
   color.jscolor.fromRGB(object[attr][0], object[attr][1], object[attr][2]);
-  color.addEventListener('change', function() {
+  color.addEventListener('change', function () {
     object[attr][0] = Math.floor(color.jscolor.rgb[0]);
     object[attr][1] = Math.floor(color.jscolor.rgb[1]);
     object[attr][2] = Math.floor(color.jscolor.rgb[2]);
@@ -188,20 +188,20 @@ function linkColorChooserToValues(color, object, attr, func) {
 }
 
 function linkColorChooserToHexString(color, object, attr, func) {
-  func = func || function() {};
+  func = func || function () {};
 
   color.jscolor.fromString(object[attr] ? object[attr].slice(1) : '');
-  color.addEventListener('change', function() {
+  color.addEventListener('change', function () {
     object[attr] = color.value ? '#' + color.jscolor.toString() : null;
     func();
   });
 }
 
 function linkSelectToString(select, object, attr, func) {
-  func = func || function() {};
+  func = func || function () {};
 
   select.value = object[attr];
-  select.addEventListener('change', function() {
+  select.addEventListener('change', function () {
     object[attr] = select.value;
     func();
   });
@@ -212,7 +212,7 @@ function linkSelectToString(select, object, attr, func) {
  ****************/
 
 function loadFile(url, data, callback, errorCallback) {
-  errorCallback = errorCallback || function() {};
+  errorCallback = errorCallback || function () {};
 
   // Set up an asynchronous request
   var request = new XMLHttpRequest();
@@ -261,12 +261,12 @@ function loadFiles(urls, callback, errorCallback) {
  *     MISC     *
  ****************/
 
-Math.clamp = function(num, min, max) {
+Math.clamp = function (num, min, max) {
   return Math.max(min, Math.min(num, max));
 };
 
 // pushes every element in the given list into this list
-Array.prototype.pushAll = function(list) {
+Array.prototype.pushAll = function (list) {
   for (var i = 0; i < list.length; i++) {
     this.push(list[i]);
   }
@@ -288,7 +288,7 @@ function QuadTree(minx, miny, maxx, maxy) {
   this.se = null;
 }
 
-QuadTree.prototype.insert = function(obj) {
+QuadTree.prototype.insert = function (obj) {
 
   // first make sure that the object goes inside our region.
   if (
@@ -318,7 +318,7 @@ QuadTree.prototype.insert = function(obj) {
            this.sw.insert(obj) || this.se.insert(obj);
 };
 
-QuadTree.prototype.subdivide = function(obj) {
+QuadTree.prototype.subdivide = function (obj) {
 
   // split up into four quadrants (child nodes)
   this.nw = new QuadTree(this.minx, this.miny, this.midx, this.midy);
@@ -333,7 +333,7 @@ QuadTree.prototype.subdivide = function(obj) {
   this.bucket = null;
 };
 
-QuadTree.prototype.inRegion = function(minx, miny, maxx, maxy) {
+QuadTree.prototype.inRegion = function (minx, miny, maxx, maxy) {
 
   // check that we overlap with the region
   if (
@@ -360,7 +360,7 @@ QuadTree.prototype.inRegion = function(minx, miny, maxx, maxy) {
   return found;
 };
 
-QuadTree.prototype.draw = function(canvas, ctx, minx, miny, maxx, maxy) {
+QuadTree.prototype.draw = function (canvas, ctx, minx, miny, maxx, maxy) {
   var midx = (minx + maxx) / 2;
   var midy = (miny + maxy) / 2;
 
@@ -488,16 +488,16 @@ function poissonDisk(minx, miny, width, height, r) {
   return points;
 }
 
-window.requestAnimFrame = (function(){
+window.requestAnimFrame = (function () {
   return (window.requestAnimationFrame ||
     window.webkitRequestAnimationFrame ||
     window.mozRequestAnimationFrame ||
-    function(callback){
+    function (callback) {
       window.setTimeout(callback, 1000 / 60);
     });
 }());
 
-window.cancelAnimFrame = (function(){
+window.cancelAnimFrame = (function () {
   return (window.cancelAnimationFrame ||
     window.webkitCancelAnimationFrame ||
     window.mozCancelAnimationFrame ||

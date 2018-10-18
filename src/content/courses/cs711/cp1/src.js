@@ -1,4 +1,4 @@
-window.onload = function() {
+window.onload = function () {
   var scene = new THREE.Scene();
   var renderer = new THREE.WebGLRenderer({
     antialias: true,
@@ -128,7 +128,7 @@ window.onload = function() {
     floorMesh.rotation.x = -Math.PI / 2;
     light.position.set(options.lightPosX, options.lightPosY, options.lightPosZ);
 
-    while(scene.children.length > 0){
+    while (scene.children.length > 0) {
       scene.remove(scene.children[0]);
     }
 

@@ -1,4 +1,4 @@
-window.onload = function() {
+window.onload = function () {
   var drawCanvas = $('draw-canvas');
   var traceCanvas = $('trace-canvas');
   var drawContext = drawCanvas.getContext('2d');
@@ -55,7 +55,7 @@ window.onload = function() {
     scaleCanvas(traceCanvas, traceContext);
 
     var canvases = $('canvases');
-    fitElement(canvases, 500, 500, function(el) {
+    fitElement(canvases, 500, 500, function (el) {
       drawCanvas.style.width
         = traceCanvas.style.width
         = canvases.style.width;
@@ -80,10 +80,12 @@ window.onload = function() {
     linkCheckboxToBoolean(inputs.bocheck, options, 'bounce');
     linkCheckboxToBoolean(inputs.trcheck, options, 'trace');
 
-    inputs.pauseBtn.addEventListener('click', function() {setPaused(!paused);});
+    inputs.pauseBtn.addEventListener('click', function () {
+      setPaused(!paused);
+    });
     inputs.clearBtn.addEventListener('click', clear);
     inputs.clearTraceBtn.addEventListener('click', clearTrace);
-    inputs.saveBtn.addEventListener('click', function() {
+    inputs.saveBtn.addEventListener('click', function () {
       inputs.saveImg.src = traceCanvas.toDataURL();
     });
 
@@ -116,7 +118,7 @@ window.onload = function() {
   Particle.prototype.mx = 0;
   Particle.prototype.my = 0;
 
-  Particle.prototype.update = function(time) {
+  Particle.prototype.update = function (time) {
     this.vx = this.mx + this.vx * (1 - options.decay);
     this.vy = this.my + this.vy * (1 - options.decay);
 
@@ -161,7 +163,7 @@ window.onload = function() {
     this.my = 0;
   };
 
-  Particle.prototype.attract = function(p, time) {
+  Particle.prototype.attract = function (p, time) {
     var dx = this.x - p.x;
     var dy = this.y - p.y;
     var dsq = dx*dx + dy*dy;
@@ -307,7 +309,7 @@ window.onload = function() {
     if (p && !paused) {
       clearInterval(runInterval);
     } else if (paused) {
-      runInterval = setInterval(function() {
+      runInterval = setInterval(function () {
         update(0.015);
       }, 15);
     }
@@ -333,7 +335,7 @@ window.onload = function() {
 
   function mouseUp(evt) {
     if (newgroup) {
-      newgroup.forEach(function (p) {p.vx = groupvel.x; p.vy = groupvel.y;});
+      newgroup.forEach(function (p) { p.vx = groupvel.x; p.vy = groupvel.y; });
       groupvel = null;
       particles = particles.concat(newgroup);
       newgroup = null;
@@ -374,7 +376,7 @@ window.onload = function() {
         mousepos.x, mousepos.y, 1, options.mouseDensity, '#FFFF00', false, false
       );
       doubletap = true;
-      setTimeout(function() {doubletap = false;}, 400);
+      setTimeout(function () { doubletap = false; }, 400);
     }
   }
 

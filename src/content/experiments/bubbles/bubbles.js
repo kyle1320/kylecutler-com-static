@@ -1,4 +1,4 @@
-window.onload = function() {
+window.onload = function () {
   var drawCanvas = $('draw-canvas');
   var drawContext = drawCanvas.getContext('2d');
 
@@ -65,20 +65,22 @@ window.onload = function() {
     fitElement(drawCanvas, 500, 500);
 
     Object.defineProperty(options, 'width', {
-      get: function() {return drawCanvas.width;},
-      set: function(w) {setSize(w, drawCanvas.height);},
+      get: function () { return drawCanvas.width; },
+      set: function (w) { setSize(w, drawCanvas.height); },
     });
 
     Object.defineProperty(options, 'height', {
-      get: function() {return drawCanvas.height;},
-      set: function(h) {setSize(drawCanvas.width, h);},
+      get: function () { return drawCanvas.height; },
+      set: function (h) { setSize(drawCanvas.width, h); },
     });
 
     // setup button events
-    inputs.pauseBtn.addEventListener('click', function() {setPaused(!paused);});
+    inputs.pauseBtn.addEventListener('click', function () {
+      setPaused(!paused);
+    });
     inputs.resetBtn.addEventListener('click', reset);
     inputs.saveBtn.addEventListener('click',
-      function() {inputs.saveImg.src = drawCanvas.toDataURL();}
+      function () { inputs.saveImg.src = drawCanvas.toDataURL(); }
     );
 
     // link numerical options to their html inputs

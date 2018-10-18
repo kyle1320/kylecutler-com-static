@@ -1,4 +1,4 @@
-window.onload = function() {
+window.onload = function () {
   var drawCanvas = $('draw-canvas');
   var neighborCanvas = $('neighbor-canvas');
   var drawContext = drawCanvas.getContext('2d');
@@ -87,13 +87,13 @@ window.onload = function() {
     fitElement(drawCanvas);
 
     Object.defineProperty(options, 'width', {
-      get: function() {return drawCanvas.width;},
-      set: function(w) {setSize(w, height);},
+      get: function () { return drawCanvas.width; },
+      set: function (w) { setSize(w, height); },
     });
 
     Object.defineProperty(options, 'height', {
-      get: function() {return drawCanvas.height;},
-      set: function(h) {setSize(width, h);},
+      get: function () { return drawCanvas.height; },
+      set: function (h) { setSize(width, h); },
     });
 
     // link HTML inputs to their respective options
@@ -115,16 +115,18 @@ window.onload = function() {
     // linkColorChooserToValues(inputs.drawColorInput, options, 'drawRGB');
 
     // setup button events
-    inputs.pauseBtn.addEventListener('click', function() {setPaused(!paused);});
+    inputs.pauseBtn.addEventListener('click', function () {
+      setPaused(!paused);
+    });
     inputs.resetBtn.addEventListener('click', reset);
-    inputs.saveBtn.addEventListener('click', function() {
+    inputs.saveBtn.addEventListener('click', function () {
       inputs.saveImg.src = drawCanvas.toDataURL();
     });
-    inputs.neighborsZoomInBtn.addEventListener('click', function() {
+    inputs.neighborsZoomInBtn.addEventListener('click', function () {
       neighborData.scale++;
       drawNeighbors();
     });
-    inputs.neighborsZoomOutBtn.addEventListener('click', function() {
+    inputs.neighborsZoomOutBtn.addEventListener('click', function () {
       if (neighborData.scale > 1) {
         neighborData.scale--;
         drawNeighbors();
@@ -183,7 +185,7 @@ window.onload = function() {
     drawContext.clearRect(0, 0, drawCanvas.drawWidth, drawCanvas.drawHeight);
 
     // add the initial cells based on the pattern
-    switch(options.pattern) {
+    switch (options.pattern) {
     // a single cell is added in the center of the painting
     default:
     case 'center':

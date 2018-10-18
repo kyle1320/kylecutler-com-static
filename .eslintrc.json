@@ -65,7 +65,18 @@
                     "balanced": true
                 }
             }
-        ]
+        ],
+        "keyword-spacing": "error",
+        "space-before-function-paren": [
+            "error",
+            {
+                "anonymous": "always",
+                "named": "ignore",
+                "asyncArrow": "always"
+            }
+        ],
+        "space-before-blocks": "error",
+        "block-spacing": "error"
     },
     "overrides": [
         {

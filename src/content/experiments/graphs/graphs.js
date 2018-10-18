@@ -1,4 +1,4 @@
-window.onload = function() {
+window.onload = function () {
   var drawCanvas = $('draw-canvas');
   var glCanvas = $('gl-canvas');
   var drawContext = drawCanvas.getContext('2d');
@@ -24,7 +24,7 @@ window.onload = function() {
     graph        : false,
     background   : false,
 
-    setAll : function(b) {
+    setAll : function (b) {
       this.mouseMotion = this.mousePress = this.mouseRelease =
       this.mouseEnter = this.mouseLeave = this.nodesChanged =
       this.edgesChanged = this.orderChanged = this.selection =
@@ -84,7 +84,7 @@ window.onload = function() {
     var scale = scaleCanvas(glCanvas, gl);
 
     var canvases = $('canvases');
-    fitElement(canvases, 500, 500, function(el) {
+    fitElement(canvases, 500, 500, function (el) {
       drawCanvas.style.width = glCanvas.style.width = canvases.style.width;
       drawCanvas.style.height = glCanvas.style.height = canvases.style.height;
     });
@@ -122,7 +122,7 @@ window.onload = function() {
 
     // webGL setup for background drawing
 
-    loadFiles(['shader.vert', 'shader.frag'], function(files) {
+    loadFiles(['shader.vert', 'shader.frag'], function (files) {
       var program = getGLProgram(gl, files[0], files[1]);
       gl.useProgram(program);
 
@@ -143,7 +143,7 @@ window.onload = function() {
 
       glReady = true;
       redrawBackground();
-    }, function(url) {
+    }, function (url) {
       console.log('Couldn\'t find file: ' + url);
     });
 
@@ -261,7 +261,7 @@ window.onload = function() {
 
       // draw the edges first, so they don't overlap the nodes
       if (options.showEdges) {
-        edges.forEach(function(edge) {
+        edges.forEach(function (edge) {
           drawContext.beginPath();
           drawContext.moveTo(edge.a.x, edge.a.y);
           drawContext.lineTo(edge.b.x, edge.b.y);
@@ -275,7 +275,7 @@ window.onload = function() {
 
       // now draw the nodes
       if (options.showNodes) {
-        nodes.forEach(function(node) {
+        nodes.forEach(function (node) {
           drawContext.beginPath();
           drawContext.arc(node.x, node.y, options.nodeSize, 0, 2*Math.PI);
           drawContext.closePath();
@@ -388,21 +388,21 @@ window.onload = function() {
     this.y = y;
   }
 
-  Node.prototype.distance = function(coord) {
+  Node.prototype.distance = function (coord) {
     var dx = coord.x - this.x;
     var dy = coord.y - this.y;
 
     return Math.sqrt(dx*dx + dy*dy);
   };
 
-  Node.prototype.nearby = function(coord, dist) {
+  Node.prototype.nearby = function (coord, dist) {
     var dx = coord.x - this.x;
     var dy = coord.y - this.y;
 
     return dx*dx + dy*dy < dist*dist;
   };
 
-  Node.prototype.move = function(coord) {
+  Node.prototype.move = function (coord) {
     this.x = coord.x;
     this.y = coord.y;
   };
@@ -413,7 +413,7 @@ window.onload = function() {
     this.color = color;
   }
 
-  Edge.prototype.distance = function(p) {
+  Edge.prototype.distance = function (p) {
     var tx = this.b.x - this.a.x;
     var ty = this.b.y - this.a.y;
     var l2 = tx*tx + ty*ty;

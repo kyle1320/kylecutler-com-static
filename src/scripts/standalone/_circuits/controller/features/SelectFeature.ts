@@ -28,7 +28,7 @@ export default class SelectFeature extends Feature {
       this.select(this.controller.canvas.getAll());
       break;
     case 'rotate':
-      (<CircuitView>this.controller.selected[0]).rotate(1);
+      (<CircuitView> this.controller.selected[0]).rotate(1);
       break;
     case 'delete':
       this.controller.selected.forEach(v => v.remove());

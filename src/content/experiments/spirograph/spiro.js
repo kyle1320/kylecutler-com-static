@@ -1,4 +1,4 @@
-window.onload = function() {
+window.onload = function () {
   var spiroCanvas = $('spiro-canvas');
   var infoCanvas = $('info-canvas');
   var spiroCtx = spiroCanvas.getContext('2d');
@@ -56,7 +56,7 @@ window.onload = function() {
     scaleCanvas(infoCanvas, infoCtx);
 
     var canvases = $('canvases');
-    fitElement(canvases, 500, 500, function(el) {
+    fitElement(canvases, 500, 500, function (el) {
       spiroCanvas.style.width
         = infoCanvas.style.width
         = canvases.style.width;
@@ -74,17 +74,17 @@ window.onload = function() {
     linkCheckboxToBoolean(inputs.spcheck, options, 'showPen', draw);
     linkCheckboxToBoolean(inputs.uccheck, options, 'useColor');
 
-    inputs.pauseBtn.addEventListener('click', function() {
+    inputs.pauseBtn.addEventListener('click', function () {
       setPaused(!paused);
     });
-    inputs.resetBtn.addEventListener('click', function() {
+    inputs.resetBtn.addEventListener('click', function () {
       reset();
     });
-    inputs.saveBtn.addEventListener('click', function() {
+    inputs.saveBtn.addEventListener('click', function () {
       inputs.saveImg.src = spiroCanvas.toDataURL();
     });
 
-    window.addEventListener('keydown', function(evt) {
+    window.addEventListener('keydown', function (evt) {
       // console.log(evt.keyCode);
       switch (evt.keyCode) {
       case 32:
@@ -119,8 +119,8 @@ window.onload = function() {
   }
 
   function eachCircle(eachCallback, doneCallback) {
-    eachCallback = eachCallback || function() {};
-    doneCallback = doneCallback || function() {};
+    eachCallback = eachCallback || function () {};
+    doneCallback = doneCallback || function () {};
 
     var unit = spiroCanvas.drawWidth / 2;
     var x = unit;
@@ -167,7 +167,7 @@ window.onload = function() {
     infoCtx.clearRect(0, 0, infoCanvas.drawWidth, infoCanvas.drawHeight);
 
     if (options.showCircles || options.showRadii || options.showPen) {
-      eachCircle(function(c) {
+      eachCircle(function (c) {
         if (options.showCircles) {
           infoCtx.strokeStyle = '#000000';
           infoCtx.beginPath();
@@ -187,8 +187,8 @@ window.onload = function() {
           infoCtx.closePath();
           infoCtx.stroke();
         }
-      }, function(c) {
-        if(options.showPen) {
+      }, function (c) {
+        if (options.showPen) {
           infoCtx.fillStyle='#FF0000';
           infoCtx.beginPath();
           infoCtx.arc(c.penx, c.peny, 2, 0, 360);
@@ -199,26 +199,26 @@ window.onload = function() {
     }
   }
 
-  var update = (function() {
+  var update = (function () {
     var oldx, oldy, newx, newy, angle, idt;
 
-    var position = function(c) {
+    var position = function (c) {
       oldx = c.penx;
       oldy = c.peny;
     };
 
-    var update = function(c) {
+    var update = function (c) {
       c.angle += options.speed * c.speed * idt;
     };
 
-    var calculate = function(c) {
+    var calculate = function (c) {
       newx = c.penx;
       newy = c.peny;
       // radius = c.realradius;
       angle = c.realangle;
     };
 
-    return function(dt) {
+    return function (dt) {
       idt = dt / options.iterations;
       eachCircle(null, position);
 
@@ -262,7 +262,7 @@ window.onload = function() {
     if (p && !paused) {
       clearInterval(runInterval);
     } else if (paused) {
-      runInterval = setInterval(function() {
+      runInterval = setInterval(function () {
         update(0.015);
       }, 15);
     }
@@ -272,7 +272,7 @@ window.onload = function() {
   }
 
   function reset() {
-    circles.forEach(function(c) {c.angle = 0;});
+    circles.forEach(function (c) { c.angle = 0; });
     spiroCtx.clearRect(0, 0, spiroCanvas.drawWidth, spiroCanvas.drawHeight);
     draw();
   }
