@@ -1,14 +1,19 @@
-@import '../base/_variables';
-@import '../base/_mixins';
+@import '../base/variables';
+@import '../base/mixins';
 
 @import '../vendor/fontawesome/fontawesome';
 @import '../vendor/fontawesome/solid';
 
 @import 'minigame-toggle';
+@import 'minigame-snake';
 
 .minigame-container {
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
   margin: rem(40px) 0 rem(20px);
+
+  & > *:not(:first-child) {
+    margin-top: rem(15px);
+  }
 }

@@ -1,7 +1,8 @@
 import { delay, makeElement, count } from '../../_utils';
 
-window.addEventListener('load', async function () {
-  new ToggleGame(document.getElementById('minigame-toggle'));
+window.addEventListener('load', function () {
+  const el = document.getElementById('minigame-toggle');
+  el && new ToggleGame(el);
 });
 
 class ToggleGame {

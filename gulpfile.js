@@ -30,7 +30,7 @@ const configPaths = {
   },
   hiddenItems: {
     dev: [],
-    prod: []
+    prod: ['public/debug']
   },
   lint: ['src/**/*.{js,ts}'],
   siteScripts: {

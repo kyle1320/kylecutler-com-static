@@ -1,0 +1,18 @@
+doctype html
+
+html
+  head
+    title Minigames
+    meta(charset="utf-8")
+    meta(name="viewport" content="width=device-width")
+    link(href="/css/main.css" rel="stylesheet")
+    link(href="/css/standalone/minigames.css" rel="stylesheet")
+    include /components/polyfill.pug
+    script(src="/js/standalone/minigames.js" type="text/javascript" defer)
+
+  body
+    .content.container
+      .contentbox
+        .minigame-container
+          #minigame-toggle
+          #minigame-snake
