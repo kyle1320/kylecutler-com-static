@@ -59,7 +59,7 @@ All `.js` files (and not `.ts`) within this folder and its subdirectories will b
 
 Right now, the only entry points are `site.js` and a few files in the `standalone/` folder. The idea behind this is that most pages on the site will include `site.js`, while any non-standard pages, like standalone apps or the résumé page, can have their own separate scripts bundle under the `standalone/` directory and include that file instead.
 
-Each bundle will be transpiled to ES5, and automatically include polyfills according to the `browserslist` browser query in `package.json`.
+Each bundle will be transpiled to ES5 using the Babel `env` preset.
 
 In addition, the `envify` package is used to replace `process.env.*` expressions with string values. This essentially allows conditional compilation of Javascript code, when used in the following way:
 
@@ -80,6 +80,10 @@ This directory follows a similar structure to the `scripts/` directory -- the on
 ### `templates/`:
 
 Pug templates. These templates will not be compiled to the output. Instead, they are used for importing by the Pug templates within the `content/` directory.
+
+## Polyfills
+
+The majority of polyfills are included via [polyfill.io](https://cdn.polyfill.io). This way, modern browsers need not load as many polyfills, and browsers can leverage caching to reduce overall load times across pages. There are a few ES6+ polyfills injected by Babel, and any additional polyfills needed can be included by requiring their NPM packages in the appropriate JS source file.
 
 ## Vendor Scripts
 
