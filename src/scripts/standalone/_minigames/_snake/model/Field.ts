@@ -1,7 +1,17 @@
 import Snake from './snake';
 import Food from './food';
-import { dirTowards, SNAKE_WIDTH, scaleCanvas, GAME_SCALE } from '../utils';
+import {
+  dirTowards,
+  scaleCanvas,
+  SNAKE_RADIUS,
+  FOOD_RADIUS,
+  FOOD_WIDTH,
+  SNAKE_WIDTH
+} from '../utils';
 import EventEmitter from '../../../_circuits/utils/EventEmitter';
+import { makeElement } from '../../../../_utils';
+
+const GAME_SCALE = 14;
 
 export default class Field extends EventEmitter<{
   die: number,
@@ -11,20 +21,24 @@ export default class Field extends EventEmitter<{
   private snake: Snake;
   private food: Food;
 
-  private canvas: HTMLCanvasElement;
+  public canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
 
   private centerTouch: Touch;
 
-  public constructor(canvas: HTMLCanvasElement, size: number) {
+  public constructor(size: number) {
     super();
 
     this.size = size;
     this.snake = new Snake(0, 0, 0, 0);
     this.food = new Food(0, 0);
 
-    this.canvas = canvas;
-    this.context = canvas.getContext('2d');
+    this.canvas = makeElement({
+      tag: 'canvas',
+      width: size * GAME_SCALE, height: size * GAME_SCALE,
+      tabIndex: 0
+    });
+    this.context = this.canvas.getContext('2d');
 
     this.centerTouch = null;
 
@@ -38,8 +52,8 @@ export default class Field extends EventEmitter<{
   }
 
   public reset() {
-    var x = Math.random() * (this.size - 1) + 0.5;
-    var y = Math.random() * (this.size - 1) + 0.5;
+    var x = Math.random() * (this.size - SNAKE_WIDTH) + SNAKE_RADIUS;
+    var y = Math.random() * (this.size - SNAKE_WIDTH) + SNAKE_RADIUS;
     var dir = dirTowards(this.size / 2 - x, this.size / 2 - y);
 
     this.snake.reset(x, y, dir.x, dir.y);
@@ -62,9 +76,7 @@ export default class Field extends EventEmitter<{
   }
 
   private draw() {
-    this.context.clearRect(
-      0, 0, this.canvas.width, this.canvas.height
-    );
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.snake.draw(this.context);
     this.food.draw(this.context);
@@ -75,7 +87,9 @@ export default class Field extends EventEmitter<{
     var dx = head.x - this.food.position.x;
     var dy = head.y - this.food.position.y;
 
-    if (dx * dx + dy * dy < .75 * .75) {
+    const DIST = FOOD_RADIUS + SNAKE_RADIUS;
+
+    if (dx * dx + dy * dy < DIST * DIST) {
       this.snake.eat();
       this.placeFood();
       this.emit('eat', this.snake.foodEaten);
@@ -85,17 +99,17 @@ export default class Field extends EventEmitter<{
   private checkForDeath(dt: number): boolean {
     var head = this.snake.getHead(dt);
     var hitWall =
-      head.x < SNAKE_WIDTH / 2 ||
-      head.x > this.size - SNAKE_WIDTH / 2 ||
-      head.y < SNAKE_WIDTH / 2 ||
-      head.y > this.size - SNAKE_WIDTH / 2;
+      head.x < SNAKE_RADIUS ||
+      head.x > this.size - SNAKE_RADIUS ||
+      head.y < SNAKE_RADIUS ||
+      head.y > this.size - SNAKE_RADIUS;
 
     return hitWall || this.snake.willEatSelf(dt);
   }
 
   private placeFood() {
-    var x = Math.random() * (this.size - 1) + 0.5;
-    var y = Math.random() * (this.size - 1) + 0.5;
+    var x = Math.random() * (this.size - FOOD_WIDTH) + FOOD_RADIUS;
+    var y = Math.random() * (this.size - FOOD_WIDTH) + FOOD_RADIUS;
 
     this.food.move(x, y);
   }

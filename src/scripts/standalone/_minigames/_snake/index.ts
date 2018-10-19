@@ -1,7 +1,6 @@
 import { makeElement } from '../../../_utils';
 import Field from './model/Field';
 import SnakeAI from './ai';
-import { GAME_SCALE } from './utils';
 
 window.addEventListener('load', function () {
   const el = document.getElementById('minigame-snake');
@@ -21,13 +20,23 @@ class SnakeGame {
   private scoreEl: HTMLElement;
 
   public constructor(root: HTMLElement, size = 20) {
+    this.field = new Field(size);
+    this.ai = new SnakeAI(this.field);
+
+    this.lastUpdateTime = 0;
+
+    this.isPaused = false;
+    this.userPlaying = false;
+
+    this.pause    = this.pause.bind(this);
+    this.resume   = this.resume.bind(this);
+    this.update   = this.update.bind(this);
+    this.setScore = this.setScore.bind(this);
+    this.gameOver = this.gameOver.bind(this);
+
     [
       makeElement({ className: 'game-container' }, [
-        this.canvas = makeElement({
-          tag: 'canvas',
-          width: size * GAME_SCALE, height: size * GAME_SCALE,
-          tabIndex: 0
-        }),
+        this.canvas = this.field.canvas,
         makeElement({ className: 'score' }, [
           makeElement('span', 'Score: '),
           this.scoreEl = makeElement('span', '0')
@@ -41,20 +50,6 @@ class SnakeGame {
         'Use W,A,S,D / arrow keys / swipe to turn'
       )
     ].forEach(el => root.appendChild(el));
-
-    this.field = new Field(this.canvas, size);
-    this.ai = new SnakeAI(this.field);
-
-    this.lastUpdateTime = 0;
-
-    this.isPaused = false;
-    this.userPlaying = false;
-
-    this.pause    = this.pause.bind(this);
-    this.resume   = this.resume.bind(this);
-    this.update   = this.update.bind(this);
-    this.setScore = this.setScore.bind(this);
-    this.gameOver = this.gameOver.bind(this);
 
     this.canvas.addEventListener('focus',      this.resume);
     this.canvas.addEventListener('blur',       this.pause);
@@ -124,20 +119,20 @@ class SnakeGame {
     this.hideOverlay();
 
     if (!this.userPlaying) {
-      this.reset();
       this.userPlaying = true;
+      this.reset();
     }
 
-    if (!this.isPaused) return;
-
-    this.isPaused = false;
-    this.lastUpdateTime = +new Date();
-    this.update();
+    if (this.isPaused) {
+      this.isPaused = false;
+      this.lastUpdateTime = +new Date();
+      this.update();
+    }
   }
 
-  private showOverlay(text: string) {
+  private showOverlay(content: string) {
     this.overlay.style.display = '';
-    this.overlay.innerHTML = text;
+    this.overlay.innerHTML = content;
     this.canvas.style.opacity = '0.5';
   }
 

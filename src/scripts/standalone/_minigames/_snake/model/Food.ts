@@ -1,5 +1,5 @@
 import { Vec2 } from '../types';
-import { drawDot } from '../utils';
+import { drawDot, FOOD_RADIUS, FOOD_WIDTH } from '../utils';
 
 export default class Food {
   public position: Vec2<number>;
@@ -13,19 +13,23 @@ export default class Food {
   }
 
   public draw(context: CanvasRenderingContext2D) {
+    var pos = this.position;
+
     context.fillStyle = '#f44336';
-    drawDot(context, this.position.x, this.position.y, 0.5);
+    drawDot(context, pos.x, pos.y, FOOD_RADIUS);
 
     context.fillStyle = '#00897B';
     context.beginPath();
-    context.moveTo(this.position.x, this.position.y - 0.3);
+    context.moveTo(pos.x, pos.y - 0.3);
     context.arcTo(
-      this.position.x, this.position.y - 0.8,
-      this.position.x + 0.5, this.position.y - 0.7, 0.5
+      pos.x,                    pos.y - FOOD_WIDTH * 0.8,
+      pos.x + FOOD_WIDTH * 0.5, pos.y - FOOD_WIDTH * 0.7,
+      FOOD_WIDTH * 0.5
     );
     context.arcTo(
-      this.position.x + 0.5, this.position.y - 0.3,
-      this.position.x, this.position.y - 0.3, 0.5
+      pos.x + FOOD_WIDTH * 0.5, pos.y - FOOD_WIDTH * 0.3,
+      pos.x,                    pos.y - FOOD_WIDTH * 0.3,
+      FOOD_WIDTH * 0.5
     );
     context.fill();
   }

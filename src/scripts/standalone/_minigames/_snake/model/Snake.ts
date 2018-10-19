@@ -4,7 +4,8 @@ import {
   getBoundingBox,
   boundingBoxesIntersect,
   drawDot,
-  SNAKE_WIDTH
+  SNAKE_WIDTH,
+  SNAKE_RADIUS
 } from '../utils';
 
 const DEFAULT_SPEED = 7.5;
@@ -71,12 +72,12 @@ export default class Snake {
     var head = this.getHead();
     var dist = lookaheadTime * this.speed;
     var front = getForwardBoundingBox(
-      head, this.direction, SNAKE_WIDTH, SNAKE_WIDTH / 1.99, dist
+      head, this.direction, SNAKE_RADIUS, SNAKE_RADIUS * 1.01, dist
     );
 
     for (var i = this.segments.length - 3; i >= 0; i--) {
       var bb = getBoundingBox(
-        this.segments[i+1], this.segments[i], SNAKE_WIDTH
+        this.segments[i+1], this.segments[i], SNAKE_RADIUS
       );
 
       if (boundingBoxesIntersect(front, bb)) {
@@ -128,7 +129,7 @@ export default class Snake {
     context.stroke();
 
     context.fillStyle = '#00897B';
-    drawDot(context, 0, 0, SNAKE_WIDTH / 2);
+    drawDot(context, 0, 0, SNAKE_RADIUS);
 
     // eyes
     context.fillStyle = 'white';

@@ -7,7 +7,8 @@ import {
   getForwardBoundingBox,
   getBoundingBox,
   boundingBoxesIntersect,
-  accessUnsafe
+  accessUnsafe,
+  SNAKE_RADIUS
 } from './utils';
 
 const TYPE_WALL = 0;
@@ -79,12 +80,12 @@ export default class SnakeAI {
     var segments = accessUnsafe<Vec2<number>[]>(this.snake, 'segments');
 
     var searchBB = getForwardBoundingBox(
-      head, dir, SNAKE_WIDTH, SNAKE_WIDTH / 1.99, 10000
+      head, dir, SNAKE_RADIUS, SNAKE_RADIUS * 1.01, 10000
     );
 
     var minObstacle: Obstacle = null;
     for (var i = segments.length - 2; i >= 0; i--) {
-      var targetBB = getBoundingBox(segments[i+1], segments[i], SNAKE_WIDTH);
+      var targetBB = getBoundingBox(segments[i+1], segments[i], SNAKE_RADIUS);
 
       if (boundingBoxesIntersect(targetBB, searchBB)) {
         const dist = Math.max(
@@ -96,7 +97,7 @@ export default class SnakeAI {
             dir.y * (targetBB.minY - head.y),
             dir.y * (targetBB.maxY - head.y)
           )
-        ) - SNAKE_WIDTH / 2;
+        ) - SNAKE_RADIUS;
 
         if (!minObstacle || minObstacle.dist > dist) {
           minObstacle = { type: TYPE_SNAKE, dist: dist };
@@ -113,10 +114,10 @@ export default class SnakeAI {
     return {
       type: TYPE_WALL,
       dist: Math.max(
-        dir.x * (size - SNAKE_WIDTH / 2 - head.x),
-        dir.x * (SNAKE_WIDTH / 2 - head.x),
-        dir.y * (size - SNAKE_WIDTH / 2 - head.y),
-        dir.y * (SNAKE_WIDTH / 2 - head.y)
+        dir.x * (size - SNAKE_RADIUS - head.x),
+        dir.x * (SNAKE_RADIUS - head.x),
+        dir.y * (size - SNAKE_RADIUS - head.y),
+        dir.y * (SNAKE_RADIUS - head.y)
       )
     };
   }

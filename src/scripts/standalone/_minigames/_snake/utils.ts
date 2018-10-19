@@ -1,7 +1,9 @@
 import { Vec2, Unit, BoundingBox, Direction } from './types';
 
 export const SNAKE_WIDTH = 0.7;
-export const GAME_SCALE = 14;
+export const SNAKE_RADIUS = SNAKE_WIDTH / 2;
+export const FOOD_WIDTH = 1;
+export const FOOD_RADIUS = FOOD_WIDTH / 2;
 
 export function drawDot(
   context: CanvasRenderingContext2D,
@@ -17,20 +19,20 @@ export function drawDot(
 export function getBoundingBox(
   a: Vec2<number>,
   b: Vec2<number>,
-  width: number
+  grow: number
 ) {
   return {
-    minX: Math.min(a.x, b.x) - (width / 2),
-    minY: Math.min(a.y, b.y) - (width / 2),
-    maxX: Math.max(a.x, b.x) + (width / 2),
-    maxY: Math.max(a.y, b.y) + (width / 2)
+    minX: Math.min(a.x, b.x) - grow,
+    minY: Math.min(a.y, b.y) - grow,
+    maxX: Math.max(a.x, b.x) + grow,
+    maxY: Math.max(a.y, b.y) + grow
   };
 }
 
 export function getForwardBoundingBox(
   start: Vec2<number>,
   direction: Vec2<Unit>,
-  width: number,
+  grow: number,
   min: number,
   len: number
 ): BoundingBox {
@@ -44,10 +46,10 @@ export function getForwardBoundingBox(
   };
 
   return {
-    minX: Math.min(a.x, b.x) - (width / 2) * Math.abs(direction.y),
-    minY: Math.min(a.y, b.y) - (width / 2) * Math.abs(direction.x),
-    maxX: Math.max(a.x, b.x) + (width / 2) * Math.abs(direction.y),
-    maxY: Math.max(a.y, b.y) + (width / 2) * Math.abs(direction.x)
+    minX: Math.min(a.x, b.x) - grow * Math.abs(direction.y),
+    minY: Math.min(a.y, b.y) - grow * Math.abs(direction.x),
+    maxX: Math.max(a.x, b.x) + grow * Math.abs(direction.y),
+    maxY: Math.max(a.y, b.y) + grow * Math.abs(direction.x)
   };
 }
 
