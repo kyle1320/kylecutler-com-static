@@ -1,12 +1,15 @@
 @include fa-undo;
 
 #minigame-snake {
-  position: relative;
-  line-height: 0;
   color: $secondary;
   text-transform: uppercase;
   font-weight: bold;
   letter-spacing: 0.03em;
+
+  .game-container {
+    position: relative;
+    line-height: 0;
+  }
 
   .overlay {
     display: flex;
@@ -40,5 +43,11 @@
     line-height: 1;
     padding: rem(5px) rem(6px);
     font-size: rem(12px);
+  }
+
+  .info {
+    line-height: 1.6;
+    font-size: rem(12px);
+    text-align: center;
   }
 }

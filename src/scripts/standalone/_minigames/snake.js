@@ -6,6 +6,7 @@ window.addEventListener('load', function () {
 });
 
 const SCALE = 14;
+const SNAKE_WIDTH = 0.7;
 
 class SnakeGame {
   constructor(element, size = 20) {
@@ -17,6 +18,7 @@ class SnakeGame {
     };
 
     this.size = size;
+
     this.snake = [];
     this.food = null;
     this.direction = {x: 0, y: 0};
@@ -24,39 +26,55 @@ class SnakeGame {
     this.speed = 0;
     this.moveStun = 0;
     this.chaseStun = 0;
-    this.isPaused = false;
     this.score = 0;
+
+    this.isPaused = false;
     this.isPlaying = false;
 
     this.centerTouch = null;
 
     this.update = this.update.bind(this);
 
-    [ this.elements.canvas = makeElement({
-      tag: 'canvas',
-      width: size * SCALE,
-      height: size * SCALE,
-      tabIndex: 0
-    }),
-    makeElement({ className: 'score' }, [
-      makeElement('span', 'Score: '),
-      this.elements.score = makeElement('span', '' + this.score)
-    ]),
-    this.elements.overlay = makeElement(
-      { className: 'overlay' }, 'Click to Play'
-    )
+    [
+      makeElement({ className: 'game-container' }, [
+        this.elements.canvas = makeElement({
+          tag: 'canvas',
+          width: size * SCALE,
+          height: size * SCALE,
+          tabIndex: 0
+        }),
+        makeElement({ className: 'score' }, [
+          makeElement('span', 'Score: '),
+          this.elements.score = makeElement('span', '' + this.score)
+        ]),
+        this.elements.overlay = makeElement(
+          { className: 'overlay' }, 'Click to Play'
+        )
+      ]),
+      makeElement(
+        { className: 'info' },
+        'Use W,A,S,D / arrow keys / swipe to turn'
+      )
     ].forEach(el => this.elements.root.appendChild(el));
 
     this.context = this.elements.canvas.getContext('2d');
     scaleCanvas(this.elements.canvas, this.context);
 
+    this.context.lineJoin = 'round';
+    this.context.lineCap = 'round';
+    this.context.scale(SCALE, SCALE);
+
     this.elements.canvas.addEventListener('keydown', event => {
       event.preventDefault();
 
       switch (event.keyCode) {
+      case 65: // A
       case 37: return this.setDirection(-1,  0); // left
+      case 87: // W
       case 38: return this.setDirection( 0, -1); // up
+      case 68: // D
       case 39: return this.setDirection( 1,  0); // right
+      case 83: // S
       case 40: return this.setDirection( 0,  1); // down
       }
     });
@@ -76,10 +94,13 @@ class SnakeGame {
 
           if (touch.identifier === this.centerTouch.identifier) {
             event.preventDefault();
-            this.moveRel(
-              touch.clientX - this.centerTouch.clientX,
-              touch.clientY - this.centerTouch.clientY
-            );
+
+            var dx = touch.clientX - this.centerTouch.clientX;
+            var dy = touch.clientY - this.centerTouch.clientY;
+
+            if (Math.abs(dx) > 20 || Math.abs(dy) > 20) {
+              this.moveRel(dx, dy);
+            }
             break;
           }
         }
@@ -99,10 +120,6 @@ class SnakeGame {
       }
     });
 
-    this.context.lineJoin = 'round';
-    this.context.lineCap = 'round';
-    this.context.scale(SCALE, SCALE);
-
     this.showOverlay('Click to Play');
 
     this.reset();
@@ -111,21 +128,22 @@ class SnakeGame {
   }
 
   reset() {
-    var x = Math.random() * this.size;
-    var y = Math.random() * this.size;
+    var x = Math.random() * (this.size - 1) + 0.5;
+    var y = Math.random() * (this.size - 1) + 0.5;
 
-    this.snake = [{x, y}, {x, y}];
+    this.direction = {x: 0, y: 0};
+    this.snake = [{x, y}];
+    this.moveRel(this.size / 2 - x, this.size / 2 - y);
+
     this.speed = 7.5;
 
     this.setScore(0);
-    this.moveRel(this.size / 2 - x, this.size / 2 - y);
 
-    this.isMoving = true;
-    this.isChasing = false;
+    this.moveStun = 0;
+    this.chaseStun = 2;
 
     this.lastUpdateTime = +new Date();
 
-    this.chaseStun = 2;
     this.placeFood();
   }
 
@@ -134,13 +152,21 @@ class SnakeGame {
     var dt = time - this.lastUpdateTime;
     this.lastUpdateTime = time;
 
-    if (this.checkForDeath()) {
+    var dist = dt * this.speed / 1000;
+
+    if (!this.isPlaying) {
+      this.consultAI();
+    }
+
+    var didDie = this.checkForDeath(dist);
+
+    this.move(dist);
+    this.chase(dist);
+
+    if (didDie) {
       this.gameOver();
     } else {
       this.tryEat();
-
-      this.move(dt * this.speed / 1000);
-      this.chase(dt * this.speed / 1000);
     }
 
     this.draw();
@@ -152,28 +178,16 @@ class SnakeGame {
 
   draw() {
     var head = this.snake[this.snake.length - 1];
+    const ax = this.direction.x;
+    const ay = this.direction.y;
 
     this.context.clearRect(
       0, 0, this.elements.canvas.width, this.elements.canvas.height
     );
 
-    // tongue
-    this.context.strokeStyle = '#f44336';
-    this.context.lineWidth = 0.15;
-    this.context.beginPath();
-    this.context.moveTo(
-      head.x + this.direction.x * 0.3,
-      head.y + this.direction.y * 0.3
-    );
-    this.context.lineTo(
-      head.x + this.direction.x * 0.45,
-      head.y + this.direction.y * 0.45
-    );
-    this.context.stroke();
-
     // body
     this.context.strokeStyle = '#009688';
-    this.context.lineWidth = 0.7;
+    this.context.lineWidth = SNAKE_WIDTH;
     this.context.beginPath();
     this.context.moveTo(head.x, head.y);
     for (let i = this.snake.length - 2; i >= 0; i--) {
@@ -181,7 +195,7 @@ class SnakeGame {
     }
     this.context.stroke();
     this.context.strokeStyle = '#00897B';
-    this.context.lineWidth = 0.6;
+    this.context.lineWidth = SNAKE_WIDTH * 0.9;
     this.context.setLineDash([0, 0.99]);
     this.context.beginPath();
     this.context.moveTo(head.x, head.y);
@@ -191,35 +205,60 @@ class SnakeGame {
     this.context.stroke();
     this.context.setLineDash([]);
 
+    // tongue
+    this.context.strokeStyle = '#f44336';
+    this.context.lineWidth = 0.1;
+    this.context.beginPath();
+    this.context.moveTo(
+      head.x + ax * 0.35,
+      head.y + ay * 0.35
+    );
+    this.context.arcTo(
+      head.x + ax * 0.4 + ay * 0.05, head.y + ay * 0.4 + ax * 0.05,
+      head.x + ax * 0.45, head.y + ay * 0.45,
+      0.07
+    );
+    this.context.arcTo(
+      head.x + ax * 0.5 - ay * 0.05, head.y + ay * 0.5 - ax * 0.05,
+      head.x + ax * 0.55, head.y + ay * 0.55,
+      0.07
+    );
+    this.context.stroke();
+    this.context.fillStyle = '#00897B';
+    this.context.lineWidth = SNAKE_WIDTH * 0.9;
+    this.context.beginPath();
+    drawDot(this.context, head.x, head.y, SNAKE_WIDTH / 2);
+    this.context.fill();
+
     // eyes
     this.context.fillStyle = 'white';
     this.context.beginPath();
     drawDot(
       this.context,
-      head.x - this.direction.y * 0.2,
-      head.y - this.direction.x * 0.2,
-      0.15
+      head.x - ay * SNAKE_WIDTH * 0.25,
+      head.y - ax * SNAKE_WIDTH * 0.25,
+      SNAKE_WIDTH * 0.2
     );
     drawDot(
       this.context,
-      head.x + this.direction.y * 0.2,
-      head.y + this.direction.x * 0.2,
-      0.15
+      head.x + ay * SNAKE_WIDTH * 0.25,
+      head.y + ax * SNAKE_WIDTH * 0.25,
+      SNAKE_WIDTH * 0.2
     );
     this.context.fill();
     this.context.fillStyle = 'black';
     this.context.beginPath();
     drawDot(
       this.context,
-      head.x - this.direction.y * 0.16 + this.direction.x * 0.04,
-      head.y - this.direction.x * 0.16 + this.direction.y * 0.04,
-      0.08
+      head.x - ay * SNAKE_WIDTH * 0.23 + ax * SNAKE_WIDTH * 0.1,
+      head.y - ax * SNAKE_WIDTH * 0.23 + ay * SNAKE_WIDTH * 0.1,
+      SNAKE_WIDTH * 0.1
     );
     drawDot(
       this.context,
-      head.x + this.direction.y * 0.16 + this.direction.x * 0.04,
-      head.y + this.direction.x * 0.16 + this.direction.y * 0.04,
-      0.08
+      head.x + ay * SNAKE_WIDTH * 0.23 + ax * SNAKE_WIDTH * 0.1,
+      head.y + ax * SNAKE_WIDTH * 0.23 + ay * SNAKE_WIDTH * 0.1,
+      SNAKE_WIDTH * 0.1
     );
     this.context.fill();
 
@@ -242,19 +281,26 @@ class SnakeGame {
     this.context.fill();
   }
 
-  checkForDeath() {
+  checkForDeath(dist) {
     var head = this.snake[this.snake.length - 1];
 
-    if (head.x < 0 || head.x > this.size || head.y < 0 || head.y > this.size) {
+    if (
+      head.x < SNAKE_WIDTH / 2 ||
+      head.x > this.size - SNAKE_WIDTH / 2 ||
+      head.y < SNAKE_WIDTH / 2 ||
+      head.y > this.size - SNAKE_WIDTH / 2
+    ) {
       return true;
     }
 
-    var headSegment = [ head, this.snake[this.snake.length - 2] ];
+    var front = getForwardBoundingBox(
+      head, this.direction, SNAKE_WIDTH / 1.99, dist
+    );
 
     for (var i = this.snake.length - 3; i >= 0; i--) {
-      var segment = [this.snake[i+1], this.snake[i]];
+      var bb = getBoundingBox(this.snake[i+1], this.snake[i]);
 
-      if (segmentsIntersect(headSegment, segment)) {
+      if (boundingBoxesIntersect(front, bb)) {
         return true;
       }
     }
@@ -325,17 +371,18 @@ class SnakeGame {
 
   gameOver() {
     if (this.isPlaying) {
+      this.pause();
+
       this.showOverlay(
-        '<span>You got ' + this.score + '.</span>' +
+        '<span>You scored ' + this.score + ' points</span>' +
         '<span>Click to play again</span>'
       );
+      this.isPlaying = false;
+
+      this.elements.canvas.blur();
+    } else {
+      this.reset();
     }
-
-    this.isPlaying = false;
-
-    this.elements.canvas.blur();
-
-    this.reset();
   }
 
   setScore(score) {
@@ -353,13 +400,108 @@ class SnakeGame {
 
   resume() {
     this.hideOverlay();
-    this.isPlaying = true;
+
+    if (!this.isPlaying) {
+      this.reset();
+      this.isPlaying = true;
+    }
 
     if (!this.isPaused) return;
 
     this.isPaused = false;
     this.lastUpdateTime = +new Date();
     this.update();
+  }
+
+  consultAI() {
+    const head = this.snake[this.snake.length - 1];
+
+    const findNearestObstacle = (dir) => {
+      var searchBB = getForwardBoundingBox(
+        head, dir, SNAKE_WIDTH / 1.99, 10000
+      );
+
+      var minObstacle = null;
+      for (var i = this.snake.length - 2; i >= 0; i--) {
+        var targetBB = getBoundingBox(this.snake[i+1], this.snake[i]);
+
+        if (boundingBoxesIntersect(targetBB, searchBB)) {
+          const dist = Math.max(
+            Math.min(
+              dir.x * (targetBB.minX - head.x),
+              dir.x * (targetBB.maxX - head.x)
+            ),
+            Math.min(
+              dir.y * (targetBB.minY - head.y),
+              dir.y * (targetBB.maxY - head.y)
+            )
+          ) - SNAKE_WIDTH / 2;
+
+          if (!minObstacle || minObstacle.dist > dist) {
+            minObstacle = { type: 1, dist: dist };
+          }
+        }
+      }
+
+      if (minObstacle) {
+        return minObstacle;
+      }
+
+      return {
+        type: 0,
+        dist: Math.max(
+          dir.x * (this.size - SNAKE_WIDTH / 2 - head.x),
+          dir.x * (SNAKE_WIDTH / 2 - head.x),
+          dir.y * (this.size - SNAKE_WIDTH / 2 - head.y),
+          dir.y * (SNAKE_WIDTH / 2 - head.y)
+        )
+      };
+    };
+
+    const avoid = (dir, goingForFood = false) => {
+      var obstacle = findNearestObstacle(dir);
+      return (obstacle.type === 1 && goingForFood)
+        ? obstacle.dist < (SNAKE_WIDTH * 2 * Math.sqrt(this.score + 1))
+        : obstacle.dist < 0.2;
+    };
+
+    var dir, turn = true;
+    var dx = this.food.x - head.x;
+    var dy = this.food.y - head.y;
+    var f = dx * this.direction.x + dy * this.direction.y;
+
+    if (
+      f < SNAKE_WIDTH / 4 &&
+      (Math.abs(dx) > SNAKE_WIDTH || Math.abs(dy) > SNAKE_WIDTH)
+    ) {
+      dir = {
+        x: Math.abs(this.direction.y) * Math.sign(dx),
+        y: Math.abs(this.direction.x) * Math.sign(dy)
+      };
+      turn = avoid(dir, true);
+    }
+
+    if (turn) {
+      dir = this.direction;
+      turn = avoid(dir);
+    }
+
+    if (turn) {
+      dir = {
+        x: this.direction.y * Math.sign(Math.random() - 0.5),
+        y: this.direction.x * Math.sign(Math.random() - 0.5)
+      };
+      turn = avoid(dir);
+    }
+
+    if (turn) {
+      dir = { x: -dir.x, y: -dir.y };
+      turn = avoid(dir);
+    }
+
+    if (!turn) {
+      this.setDirection(dir.x, dir.y);
+    }
   }
 
   showOverlay(text) {
@@ -371,14 +513,6 @@ class SnakeGame {
   hideOverlay() {
     this.elements.overlay.style.display = 'none';
     this.elements.canvas.style.opacity = '1';
-  }
-
-  clearGrid() {
-    for (let y = 0; y < this.size; y++) {
-      for (let x = 0; x < this.size; x++) {
-        this.grid[y][x] = CELL_TYPES.EMPTY;
-      }
-    }
   }
 
   placeFood() {
@@ -421,19 +555,30 @@ function drawDot(context, x, y, radius) {
   context.arc(x, y, radius, 0, 2 * Math.PI);
 }
 
-function segmentsIntersect(a, b) {
-  return boundingBoxesIntersect(
-    getBoundingBox(a[0], a[1]),
-    getBoundingBox(b[0], b[1])
-  );
-}
-
 function getBoundingBox(a, b) {
   return {
-    minX: Math.min(a.x, b.x),
-    minY: Math.min(a.y, b.y),
-    maxX: Math.max(a.x, b.x),
-    maxY: Math.max(a.y, b.y)
+    minX: Math.min(a.x, b.x) - (SNAKE_WIDTH / 2),
+    minY: Math.min(a.y, b.y) - (SNAKE_WIDTH / 2),
+    maxX: Math.max(a.x, b.x) + (SNAKE_WIDTH / 2),
+    maxY: Math.max(a.y, b.y) + (SNAKE_WIDTH / 2)
+  };
+}
+
+function getForwardBoundingBox(start, direction, min, len) {
+  var a = {
+    x: start.x + direction.x * min,
+    y: start.y + direction.y * min
+  };
+  var b = {
+    x: start.x + direction.x * (min + len),
+    y: start.y + direction.y * (min + len)
+  };
+
+  return {
+    minX: Math.min(a.x, b.x) - (SNAKE_WIDTH / 2) * Math.abs(direction.y),
+    minY: Math.min(a.y, b.y) - (SNAKE_WIDTH / 2) * Math.abs(direction.x),
+    maxX: Math.max(a.x, b.x) + (SNAKE_WIDTH / 2) * Math.abs(direction.y),
+    maxY: Math.max(a.y, b.y) + (SNAKE_WIDTH / 2) * Math.abs(direction.x)
   };
 }
 

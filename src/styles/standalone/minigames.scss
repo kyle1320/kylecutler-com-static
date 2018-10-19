@@ -9,11 +9,12 @@
 
 .minigame-container {
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: row wrap;
   align-items: center;
+  justify-content: center;
   margin: rem(40px) 0 rem(20px);
 
-  & > *:not(:first-child) {
-    margin-top: rem(15px);
+  & > * {
+    margin: rem(15px) rem(30px);
   }
 }
