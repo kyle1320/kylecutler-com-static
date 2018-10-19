@@ -53,7 +53,7 @@ export default class SnakeAI {
     // then default to just going straight
     if (needToTurn) {
       dir = direction;
-      needToTurn = this.avoid(dir);
+      needToTurn = this.avoid(dir, false, false);
     }
 
     // if we need to turn, pick a random direction
@@ -121,12 +121,18 @@ export default class SnakeAI {
     };
   }
 
-  private avoid(dir: Direction, goingForFood: boolean = false): boolean {
+  private avoid(
+    dir: Direction,
+    goingForFood: boolean = false,
+    turning: boolean = true
+  ): boolean {
     var obstacle = this.findNearestObstacle(dir);
     var eaten = accessUnsafe<number>(this.snake, 'foodEaten');
 
     return (obstacle.type === TYPE_SNAKE && goingForFood)
       ? obstacle.dist < (SNAKE_WIDTH * 2 * Math.sqrt(eaten + 1))
-      : obstacle.dist < 0.2;
+      : turning
+        ? obstacle.dist < SNAKE_WIDTH + 0.2
+        : obstacle.dist < 0.2;
   }
 }
