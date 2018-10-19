@@ -1,2 +1,2 @@
 import './toggle';
-import './snake';
+import './_snake';
