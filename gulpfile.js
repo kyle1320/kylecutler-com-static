@@ -3,18 +3,14 @@ const gulpIf  = require('gulp-if');
 const log     = require('fancy-log');
 const plumber = require('gulp-plumber');
 
-const babelConfig_noTransform = {
-  'presets': [
-    '@babel/preset-env', '@babel/preset-typescript'
-  ]
-};
+const babelConfig_noTransform = { 'presets': ['@babel/preset-env'] };
 
 const configPaths = {
   assets: {
     src: [
       'src/assets/**/*',
       'src/content/**/*',
-      '!src/content/**/*.{js,ts}',
+      '!src/content/**/*.js',
       '!src/content/**/*.pug'
     ],
     dest: 'public'
@@ -25,7 +21,7 @@ const configPaths = {
     watch: ['src/**/*.pug']
   },
   contentScripts: {
-    src: ['src/content/**/*.{js,ts}'],
+    src: ['src/content/**/*.js'],
     dest: 'public'
   },
   hiddenItems: {
@@ -108,31 +104,18 @@ setUpTasks('contentScripts', paths => {
 });
 
 setUpTasks('siteScripts', paths => {
-  const babel    = require('rollup-plugin-babel');
-  const commonjs = require('rollup-plugin-commonjs');
-  const es       = require('event-stream');
-  const glob     = require('glob');
-  const path     = require('path');
-  const Readable = require('stream').Readable;
-  const replace  = require('rollup-plugin-replace');
-  const resolve  = require('rollup-plugin-node-resolve');
-  const rollup   = require('rollup');
-  const source   = require('vinyl-source-stream');
-  const uglify   = require('rollup-plugin-uglify');
+  const es         = require('event-stream');
+  const glob       = require('glob');
+  const path       = require('path');
+  const Readable   = require('stream').Readable;
+  const replace    = require('rollup-plugin-replace');
+  const resolve    = require('rollup-plugin-node-resolve');
+  const rollup     = require('rollup');
+  const source     = require('vinyl-source-stream');
+  const typescript = require('rollup-plugin-typescript');
+  const uglify     = require('rollup-plugin-uglify');
 
   const cache = {};
-
-  const babelConfig = {
-    'presets': [
-      '@babel/preset-env', '@babel/preset-typescript'
-    ],
-    'plugins': [
-      '@babel/plugin-transform-runtime'
-    ],
-    extensions: ['.js', '.ts'],
-    runtimeHelpers: true,
-    exclude: 'node_modules/**'
-  };
 
   // modified from rollup-stream to work with latest version of Rollup
   function rollupStream(options) {
@@ -172,9 +155,8 @@ setUpTasks('siteScripts', paths => {
         cache: cache[entry],
         plugins: [
           resolve({ extensions: ['.js', '.ts'] }),
-          commonjs(),
           replace({ __DEBUG__: !isProd() }),
-          babel(babelConfig)
+          typescript({ include: ['**/*.js', '**/*.ts'] })
         ].concat(isProd() ? uglify.uglify() : [])
       }).on('bundle', b => cache[entry] = b)
         .pipe(source(path.relative('src/scripts', entry)))

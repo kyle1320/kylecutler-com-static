@@ -9,9 +9,10 @@
     "noImplicitThis": true,
     "sourceMap": true,
     "strictFunctionTypes": true,
+    "target": "es5",
     "lib": [ "dom", "esnext" ]
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts", "src/**/*.js"
   ]
 }

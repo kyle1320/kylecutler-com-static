@@ -44,7 +44,7 @@ Mostly intended for HTML page templates, but also allows for Javascript files an
 
 All Pug templates will be converted to HTML and added to the output directory.
 
-All Javascript and TypeScript files will be transpiled to ES5 using Babel and output (with no bundling).
+All Javascript files will be transpiled to ES5 using Babel and output (with no bundling).
 
 All other content will be copied directly to the output folder.
 
@@ -59,7 +59,7 @@ All `.js` files (and not `.ts`) within this folder and its subdirectories will b
 
 Right now, the only entry points are `site.js` and a few files in the `standalone/` folder. The idea behind this is that most pages on the site will include `site.js`, while any non-standard pages, like standalone apps or the résumé page, can have their own separate scripts bundle under the `standalone/` directory and include that file instead.
 
-Each bundle will be transpiled to ES5 using the Babel `env` preset.
+Each bundle will be transpiled to ES5 using Typescript (including JS files).
 
 In addition, the name `__DEBUG__` can be used to determine whether the code is running in a development or production environment. It can be used to allow conditional compilation of code, when used in the following way:
 
@@ -83,7 +83,7 @@ Pug templates. These templates will not be compiled to the output. Instead, they
 
 ## Polyfills
 
-The majority of polyfills are included via [polyfill.io](https://cdn.polyfill.io). This way, modern browsers need not load as many polyfills, and browsers can leverage caching to reduce overall load times across pages. There are a few ES6+ polyfills injected by Babel, and any additional polyfills needed can be included by requiring their NPM packages in the appropriate JS source file.
+The majority of polyfills are included via [polyfill.io](https://cdn.polyfill.io). This way, modern browsers need not load as many polyfills, and browsers can leverage caching to reduce overall load times across pages. There are a few ES6+ polyfills injected by Babel / Typescript, and any additional polyfills needed can be included by requiring their NPM packages in the appropriate JS source file.
 
 ## Vendor Scripts
 

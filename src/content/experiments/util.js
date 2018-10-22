@@ -1,7 +1,4 @@
 var $ = function (e) { return document.getElementById(e); };
-var isNaN =  Number.isNaN
-          || window.isNaN
-          || function (n) { return typeof n === 'number' && n !== n; };
 
 /****************
  *    CANVAS    *
