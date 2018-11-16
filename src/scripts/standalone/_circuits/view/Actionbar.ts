@@ -194,15 +194,15 @@ class Section extends DynamicContent {
     id: string,
     groups: SectionGroup[]
   ) {
-    var header = makeElement(
+    var header = makeElement('div',
       { className: 'actionbar__section__header' },
       label
     );
-    var content = makeElement(
+    var content = makeElement('div',
       { className: 'actionbar__section__content' },
       groups.map(group => group.element)
     );
-    var wrapper = makeElement(
+    var wrapper = makeElement('div',
       { className: 'actionbar__section' },
       [ header, content ]
     );
@@ -220,7 +220,7 @@ class SectionGroup extends DynamicContent {
   public items: ActionItem[];
 
   public constructor(style: SectionGroupStyle, items: ActionItem[]) {
-    super(makeElement(
+    super(makeElement('div',
       { className: 'actionbar__section__group '
         + 'actionbar__section__group--' + style }
     ), items);
@@ -240,7 +240,7 @@ class SectionGroup extends DynamicContent {
         curColumn.appendChild(el);
         curColumn = null;
       } else {
-        curColumn = makeElement({ className: 'column' });
+        curColumn = makeElement('div', { className: 'column' });
         curColumn.appendChild(el);
         columns.push(curColumn);
       }
@@ -264,18 +264,19 @@ class ActionItem extends DynamicContent {
     name: string,
     type: ActionItemType,
     props: {[name: string]: string},
-    content: string | [HTMLElement],
-    style: ActionItemStyle
+    style: ActionItemStyle,
+    ...content: (string | HTMLElement)[]
   ) {
     props = props || {};
     props.className = 'action-item '
       + (style ? 'action-item--' + style + ' ' : '')
       + (props.className ? props.className : '');
 
-    super(makeElement(props, content, {
-      click: () => this.isEnabled && this.emit('click'),
-      mousedown: (e: MouseEvent) => e.preventDefault()
-    }));
+    super(makeElement('div', {
+      onclick: () => this.isEnabled && this.emit('click'),
+      onmousedown: (e: MouseEvent) => e.preventDefault(),
+      ...props
+    }, content));
 
     this.name = name;
     this.type = type;
@@ -301,7 +302,7 @@ class ActionItem extends DynamicContent {
     title: string,
     style: ActionItemStyle
   ) {
-    return new ActionItem(name, type, { className: icon, title }, '', style);
+    return new ActionItem(name, type, { className: icon, title }, style);
   }
 
   public static withViewCanvas(
@@ -310,11 +311,11 @@ class ActionItem extends DynamicContent {
     title: string,
     view: View
   ) {
-    var canvas = makeElement({ tag: 'canvas', width: 30, height: 30 });
+    var canvas = makeElement('canvas', { width: 30, height: 30 });
 
     drawViewOnPreviewCanvas(canvas, view);
 
-    return new ActionItem(name, type, { title }, [canvas], 'large');
+    return new ActionItem(name, type, { title }, 'large', canvas);
   }
 }
 

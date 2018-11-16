@@ -34,67 +34,36 @@ export function count<T>(max: number, callback: (n: number) => T): T[] {
   return arr;
 }
 
-export type ElementContent = string | HTMLElement[];
-type ElementTag = keyof HTMLElementTagNameMap;
-type ElementProps<T extends ElementTag> =
-  Partial<HTMLElementTagNameMap[T]>;
-type ElementPropsWithTag<T extends ElementTag> =
-  ElementProps<T> & { tag: T };
-type ElementPropsWithMaybeTag<T extends ElementTag> =
-  ElementProps<T> & { tag?: T };
-type ElementEventMap =
-  {[U in keyof HTMLElementEventMap]?: (e: HTMLElementEventMap[U]) => any};
+type ElementContentSingle = string | HTMLElement;
+export type ElementContent = ElementContentSingle | ElementContentSingle[];
 
-export function makeElement<T extends ElementTag>(
+export function makeElement<T extends keyof HTMLElementTagNameMap>(
   tag: T,
-  content?: ElementContent,
-  events?: ElementEventMap
-): HTMLElementTagNameMap[T];
-
-export function makeElement(
-  keys: ElementProps<'div'>,
-  content?: ElementContent,
-  events?: ElementEventMap
-): HTMLElementTagNameMap['div'];
-
-export function makeElement<T extends ElementTag>(
-  keys: ElementPropsWithTag<T>,
-  content?: ElementContent,
-  events?: ElementEventMap
-): HTMLElementTagNameMap[T];
-
-export function makeElement<T extends ElementTag>(
-  keys: T | ElementPropsWithMaybeTag<T>,
-  content?: ElementContent,
-  events?: ElementEventMap
-): HTMLElementTagNameMap[T];
-
-export function makeElement<T extends ElementTag>(
-  keys: T | ElementPropsWithMaybeTag<T>,
-  content?: ElementContent,
-  events?: ElementEventMap
+  props?: {[U in keyof HTMLElementTagNameMap[T]]?: HTMLElementTagNameMap[T][U]},
+  ...children: ElementContent[]
 ): HTMLElementTagNameMap[T] {
-  if (typeof keys === 'string') {
-    keys = <ElementPropsWithTag<T>>{ tag: keys };
+  var el = document.createElement(tag);
+
+  for (var key in props) {
+    if (typeof props[key] === 'function' && key[0] === 'o' && key[1] === 'n') {
+      el.addEventListener(
+        key.substr(2),
+        (props[key] as unknown) as EventListenerOrEventListenerObject
+      );
+    } else {
+      el[key] = props[key];
+    }
   }
 
-  var el = document.createElement(keys.tag || 'div');
-  delete keys.tag;
-
-  Object.assign(el, keys);
-
-  for (const key in events) {
-    let k = <keyof HTMLElementEventMap> key;
-    el.addEventListener(key, <EventListener>events[k]);
-  }
-
-  if (typeof content === 'string') {
-    el.innerHTML = content;
-  } else if (content instanceof Array) {
-    content.forEach(function (child) {
+  children.forEach(function addChild(child) {
+    if (typeof child === 'string') {
+      el.appendChild(document.createTextNode(child));
+    } else if (child instanceof Array) {
+      child.forEach(addChild);
+    } else {
       el.appendChild(child);
-    });
-  }
+    }
+  });
 
   return el;
 }

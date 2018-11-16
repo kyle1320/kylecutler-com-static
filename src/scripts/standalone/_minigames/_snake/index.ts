@@ -35,18 +35,17 @@ class SnakeGame {
     this.gameOver = this.gameOver.bind(this);
 
     [
-      makeElement({ className: 'game-container' }, [
+      makeElement('div', { className: 'game-container' },
         this.canvas = this.field.canvas,
-        makeElement({ className: 'score' }, [
-          makeElement('span', 'Score: '),
-          this.scoreEl = makeElement('span', '0')
-        ]),
-        this.overlay = makeElement(
-          { className: 'overlay' }, 'Click to Play'
+        makeElement('div', { className: 'score' },
+          makeElement('span', null, 'Score: '),
+          this.scoreEl = makeElement('span', null, '0')
+        ),
+        this.overlay = makeElement('div', { className: 'overlay' },
+          'Click to Play'
         )
-      ]),
-      makeElement(
-        { className: 'info' },
+      ),
+      makeElement('div', { className: 'info' },
         'Use W,A,S,D / arrow keys / swipe to turn'
       )
     ].forEach(el => root.appendChild(el));

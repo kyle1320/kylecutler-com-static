@@ -35,58 +35,66 @@ class ToggleGame {
 
   init() {
     [
-      makeElement({className: 'game-container'}, [
-        makeElement('table', count(this.size, y =>
-          makeElement('tr', this.elements.cells[y] = count(this.size, x =>
-            makeElement('td', '', {
-              click: this.toggleAround.bind(this, x, y)
+      makeElement('div', {className: 'game-container'}, [
+        makeElement('table', null, count(this.size, y =>
+          makeElement('tr', null, this.elements.cells[y] = count(this.size, x =>
+            makeElement('td', {
+              onclick: this.toggleAround.bind(this, x, y)
             })
-          ), {})
+          ))
         )),
-        makeElement({className: 'win-screen'}, [
-          makeElement({className: 'win-text'}, 'You Win!'),
-          makeElement({className: 'reset-text'}, 'Play Again')
+        makeElement('div', {className: 'win-screen'}, [
+          makeElement('div', {className: 'win-text'}, 'You Win!'),
+          makeElement('div', {className: 'reset-text'}, 'Play Again')
         ])
       ]),
-      makeElement({className: 'text-container'}, [
-        makeElement({}, 'Turn off all the cells!'),
-        makeElement({className: 'hint'}, '(It is possible, I promise)'),
-        makeElement({className: 'fa fa-undo reset-btn'}, '', {
-          click: this.reset.bind(this)
+      makeElement('div', {className: 'text-container'}, [
+        makeElement('div', null, 'Turn off all the cells!'),
+        makeElement('div', {className: 'hint'}, '(It is possible, I promise)'),
+        makeElement('div', {
+          className: 'fa fa-undo reset-btn',
+          onclick: this.reset.bind(this)
         })
       ]),
-      makeElement({className: 'options-container'}, [
-        makeElement({className: 'options-row'}, [
+      makeElement('div', {className: 'options-container'}, [
+        makeElement('div', {className: 'options-row'}, [
           this.elements.options.difficultyEasy =
-            makeElement({className: 'option'}, 'Easy', {
-              click: () => this.setDifficulty('easy')
-            }),
+            makeElement('div', {
+              className: 'option',
+              onclick: () => this.setDifficulty('easy')
+            }, 'Easy'),
           this.elements.options.difficultyMedium =
-            makeElement({className: 'option'}, 'Medium', {
-              click: () => this.setDifficulty('medium')
-            }),
+            makeElement('div', {
+              className: 'option',
+              onclick: () => this.setDifficulty('medium')
+            }, 'Medium'),
           this.elements.options.difficultyHard =
-            makeElement({className: 'option'}, 'Hard', {
-              click: () => this.setDifficulty('hard')
-            })
+            makeElement('div', {
+              className: 'option',
+              onclick: () => this.setDifficulty('hard')
+            }, 'Hard')
         ]),
-        makeElement({className: 'options-row'}, [
+        makeElement('div', {className: 'options-row'}, [
           this.elements.options.shapePlus =
-            makeElement({className: 'option shape-plus'}, '<span></span>', {
-              click: () => this.setShape('plus')
-            }),
+            makeElement('div', {
+              className: 'option shape-plus',
+              onclick: () => this.setShape('plus')
+            }, makeElement('span')),
           this.elements.options.shapeDiamond =
-            makeElement({className: 'option shape-diamond'}, '<span></span>', {
-              click: () => this.setShape('diamond')
-            }),
+            makeElement('div', {
+              className: 'option shape-diamond',
+              onclick: () => this.setShape('diamond')
+            }, makeElement('span')),
           this.elements.options.shapeX =
-            makeElement({className: 'option shape-x'}, '<span></span>', {
-              click: () => this.setShape('x')
-            }),
+            makeElement('div', {
+              className: 'option shape-x',
+              onclick: () => this.setShape('x')
+            }, makeElement('span')),
           this.elements.options.shapeO =
-            makeElement({className: 'option shape-o'}, '<span></span>', {
-              click: () => this.setShape('o')
-            })
+            makeElement('div', {
+              className: 'option shape-o',
+              onclick: () => this.setShape('o')
+            }, makeElement('span'))
         ])
       ])
     ].forEach(el => this.elements.root.appendChild(el));

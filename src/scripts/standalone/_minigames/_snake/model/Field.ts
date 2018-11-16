@@ -33,8 +33,7 @@ export default class Field extends EventEmitter<{
     this.snake = new Snake(0, 0, 0, 0);
     this.food = new Food(0, 0);
 
-    this.canvas = makeElement({
-      tag: 'canvas',
+    this.canvas = makeElement('canvas', {
       width: size * GAME_SCALE, height: size * GAME_SCALE,
       tabIndex: 0
     });

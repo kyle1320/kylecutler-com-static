@@ -18,29 +18,32 @@ export default class Modal {
     this.elements.container.className = 'modal-container';
     this.elements.container.addEventListener('click', () => this.hideDialog());
     this.elements.container.appendChild(
-      this.elements.modal = makeElement(
-        { className: 'modal' },
-        [
-          this.elements.header = makeElement(
-            { className: 'modal__header' },
-            [
-              this.elements.title = makeElement(
-                { className: 'modal__header__title' }
-              ),
-              makeElement(
-                { className: 'modal__header__close-btn fa fa-times' },
-                '',
-                { click: () => this.hideDialog() }
-              )
-            ]
-          ),
-          this.elements.content = makeElement({ className: 'modal__content' }),
-          this.elements.footer = makeElement({ className: 'modal__footer' })
-        ],
+      this.elements.modal = makeElement('div',
         {
-          click: (e: Event) => e.stopPropagation(),
-          keydown: (e: Event) => e.stopPropagation()
-        }
+          className: 'modal',
+          onclick: (e: Event) => e.stopPropagation(),
+          onkeydown: (e: Event) => e.stopPropagation()
+        },
+        this.elements.header = makeElement('div',
+          { className: 'modal__header' },
+          [
+            this.elements.title = makeElement('div',
+              { className: 'modal__header__title' }
+            ),
+            makeElement('div',
+              {
+                className: 'modal__header__close-btn fa fa-times',
+                onclick: () => this.hideDialog()
+              }
+            )
+          ]
+        ),
+        this.elements.content = makeElement('div',
+          { className: 'modal__content' }
+        ),
+        this.elements.footer = makeElement('div',
+          { className: 'modal__footer' }
+        )
       )
     );
   }
@@ -52,10 +55,10 @@ export default class Modal {
   ) {
     this.setTitle(title);
     this.setContent([
-      makeElement('p', info),
-      makeElement({ tag: 'textarea' }, content, {
-        focus: (e: FocusEvent) => (e.target as HTMLTextAreaElement).select()
-      })
+      makeElement('p', null, info),
+      makeElement('textarea', {
+        onfocus: (e: FocusEvent) => (e.target as HTMLTextAreaElement).select()
+      }, content)
     ]);
     this.clearButtons();
     this.addButton('OK', 'confirm', () => this.hideDialog());
@@ -68,7 +71,7 @@ export default class Modal {
     okLabel: string,
     onSubmit: (text: string) => boolean | void
   ) {
-    var text = makeElement({ tag: 'textarea', placeholder });
+    var text = makeElement('textarea', { placeholder });
     this.setTitle(title);
     this.setContent(text);
     this.clearButtons();
@@ -83,7 +86,7 @@ export default class Modal {
 
   public showErrorDialog(title: string, content: ElementContent) {
     this.setTitle(title);
-    this.setContent([makeElement('p', content)]);
+    this.setContent([makeElement('p', null, content)]);
     this.clearButtons();
     this.addButton('OK', '', () => this.hideDialog());
     this.showDialog();
@@ -121,12 +124,13 @@ export default class Modal {
     style: string,
     onclick: (event?: MouseEvent) => any
   ) {
-    this.elements.footer.appendChild(makeElement(
-      { className: 'modal__footer__button' +
-        (style ? ' modal__footer__button--' + style : '')
+    this.elements.footer.appendChild(makeElement('div',
+      {
+        className: 'modal__footer__button' +
+          (style ? ' modal__footer__button--' + style : ''),
+        onclick
       },
-      name,
-      { click: onclick }
+      name
     ));
   }
 
