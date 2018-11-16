@@ -5,6 +5,9 @@ const plumber = require('gulp-plumber');
 
 const babelConfig_noTransform = { 'presets': ['@babel/preset-env'] };
 
+const extensionsNoDot = ['js', 'ts', 'jsx', 'tsx'];
+const extensions = extensionsNoDot.map(x => '.' + x);
+
 const configPaths = {
   assets: {
     src: [
@@ -28,12 +31,12 @@ const configPaths = {
     dev: [],
     prod: ['public/debug']
   },
-  lint: ['src/**/*.{js,ts}'],
+  lint: [`src/**/*.{${extensionsNoDot.join(',')}}`],
   siteScripts: {
     include: 'src/scripts/**/*.js',
     exclude: 'src/scripts/**/_*/**/*.js',
     dest: 'public/js',
-    watch: 'src/scripts/**/*.{js,ts}'
+    watch: `src/scripts/**/*.{${extensionsNoDot.join(',')}}`
   },
   styles: {
     src: ['src/styles/**/*.scss'],
@@ -154,9 +157,9 @@ setUpTasks('siteScripts', paths => {
         },
         cache: cache[entry],
         plugins: [
-          resolve({ extensions: ['.js', '.ts'] }),
+          resolve({ extensions }),
           replace({ __DEBUG__: !isProd() }),
-          typescript({ include: ['**/*.js', '**/*.ts'] })
+          typescript({ include: extensions.map(x => '**/*' + x) })
         ].concat(isProd() ? uglify.uglify() : [])
       }).on('bundle', b => cache[entry] = b)
         .pipe(source(path.relative('src/scripts', entry)))
@@ -235,7 +238,7 @@ setUpTasks('lint', paths => {
   gulp.task('lint', function () {
     return gulp.src(paths)
       .pipe(handleErrors())
-      .pipe(eslint({ extensions: ['.js', '.ts'] }))
+      .pipe(eslint({ extensions }))
       .pipe(eslint.format());
   });
 

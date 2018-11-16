@@ -10,9 +10,11 @@
     "sourceMap": true,
     "strictFunctionTypes": true,
     "target": "es5",
+    "jsx": "react",
+    "jsxFactory": "makeElement",
     "lib": [ "dom", "esnext" ]
   },
   "include": [
-    "src/**/*.ts", "src/**/*.js"
+    "src/**/*.ts", "src/**/*.js, src/**/*.tsx", "src/**/*.jsx"
   ]
 }

@@ -80,7 +80,7 @@
     },
     "overrides": [
         {
-            "files": ["**/*.ts"],
+            "files": ["**/*.ts", "**/*.tsx"],
             "parser": "typescript-eslint-parser",
             "plugins": ["typescript"],
             "rules": {
@@ -96,6 +96,24 @@
                     }
                 ],
                 "typescript/type-annotation-spacing": "error"
+            }
+        },
+        {
+            "files": ["**/*.jsx", "**/*.tsx"],
+            "parserOptions": {
+                "ecmaFeatures": {
+                    "jsx": true
+                }
+            },
+            "rules": {
+                "no-unused-vars": [
+                    "error",
+                    {
+                        "vars": "local",
+                        "args": "none",
+                        "varsIgnorePattern": "^makeElement$"
+                    }
+                ]
             }
         }
     ]
