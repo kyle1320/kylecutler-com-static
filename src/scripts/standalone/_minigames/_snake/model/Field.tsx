@@ -33,10 +33,10 @@ export default class Field extends EventEmitter<{
     this.snake = new Snake(0, 0, 0, 0);
     this.food = new Food(0, 0);
 
-    this.canvas = makeElement('canvas', {
-      width: size * GAME_SCALE, height: size * GAME_SCALE,
-      tabIndex: 0
-    });
+    this.canvas = <canvas
+      width={size * GAME_SCALE}
+      height={size * GAME_SCALE}
+      tabIndex={0} />;
     this.context = this.canvas.getContext('2d');
 
     this.centerTouch = null;

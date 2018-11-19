@@ -34,70 +34,48 @@ class ToggleGame {
   }
 
   init() {
+    /* eslint-disable max-len */
     [
-      makeElement('div', {className: 'game-container'}, [
-        makeElement('table', null, count(this.size, y =>
-          makeElement('tr', null, this.elements.cells[y] = count(this.size, x =>
-            makeElement('td', {
-              onclick: this.toggleAround.bind(this, x, y)
-            })
-          ))
-        )),
-        makeElement('div', {className: 'win-screen'}, [
-          makeElement('div', {className: 'win-text'}, 'You Win!'),
-          makeElement('div', {className: 'reset-text'}, 'Play Again')
-        ])
-      ]),
-      makeElement('div', {className: 'text-container'}, [
-        makeElement('div', null, 'Turn off all the cells!'),
-        makeElement('div', {className: 'hint'}, '(It is possible, I promise)'),
-        makeElement('div', {
-          className: 'fa fa-undo reset-btn',
-          onclick: this.reset.bind(this)
-        })
-      ]),
-      makeElement('div', {className: 'options-container'}, [
-        makeElement('div', {className: 'options-row'}, [
+      <div className='game-container'>{[
+        <table>{count(this.size, y =>
+          <tr>{this.elements.cells[y] = count(this.size, x =>
+            <td onclick={this.toggleAround.bind(this, x, y)} />
+          )}</tr>
+        )}</table>,
+        <div className='win-screen'>
+          <div className='win-text'>You Win!</div>
+          <div className='reset-text'>Play Again</div>
+        </div>
+      ]}</div>,
+      <div className='text-container'>
+        <div>'Turn off all the cells!</div>
+        <div className='hint'>(It is possible, I promise)</div>
+        <div
+          className='fa fa-undo reset-btn'
+          onclick={this.reset.bind(this)} />
+      </div>,
+      <div className='options-container'>{[
+        <div className='options-row'>{[
           this.elements.options.difficultyEasy =
-            makeElement('div', {
-              className: 'option',
-              onclick: () => this.setDifficulty('easy')
-            }, 'Easy'),
+            <div className='option' onclick={() => this.setDifficulty('easy')}>Easy</div>,
           this.elements.options.difficultyMedium =
-            makeElement('div', {
-              className: 'option',
-              onclick: () => this.setDifficulty('medium')
-            }, 'Medium'),
+            <div className='option' onclick={() => this.setDifficulty('medium')}>Medium</div>,
           this.elements.options.difficultyHard =
-            makeElement('div', {
-              className: 'option',
-              onclick: () => this.setDifficulty('hard')
-            }, 'Hard')
-        ]),
-        makeElement('div', {className: 'options-row'}, [
+            <div className='option' onclick={() => this.setDifficulty('hard')}>Hard</div>
+        ]}</div>,
+        <div className='options-row'>{[
           this.elements.options.shapePlus =
-            makeElement('div', {
-              className: 'option shape-plus',
-              onclick: () => this.setShape('plus')
-            }, makeElement('span')),
+            <div className='option shape-plus' onclick={() => this.setShape('plus')}><span></span></div>,
           this.elements.options.shapeDiamond =
-            makeElement('div', {
-              className: 'option shape-diamond',
-              onclick: () => this.setShape('diamond')
-            }, makeElement('span')),
+            <div className='option shape-diamond' onclick={() => this.setShape('diamond')}><span></span></div>,
           this.elements.options.shapeX =
-            makeElement('div', {
-              className: 'option shape-x',
-              onclick: () => this.setShape('x')
-            }, makeElement('span')),
+            <div className='option shape-x' onclick={() => this.setShape('x')}><span></span></div>,
           this.elements.options.shapeO =
-            makeElement('div', {
-              className: 'option shape-o',
-              onclick: () => this.setShape('o')
-            }, makeElement('span'))
-        ])
-      ])
+            <div className='option shape-o' onclick={() => this.setShape('o')}><span></span></div>
+        ]}</div>
+      ]}</div>
     ].forEach(el => this.elements.root.appendChild(el));
+    /* eslint-enable max-len */
 
     this.setDifficulty(this.difficulty, false);
     this.setShape(this.shape, false);

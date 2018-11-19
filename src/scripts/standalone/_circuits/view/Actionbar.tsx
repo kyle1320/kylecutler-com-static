@@ -194,18 +194,12 @@ class Section extends DynamicContent {
     id: string,
     groups: SectionGroup[]
   ) {
-    var header = makeElement('div',
-      { className: 'actionbar__section__header' },
-      label
-    );
-    var content = makeElement('div',
-      { className: 'actionbar__section__content' },
-      groups.map(group => group.element)
-    );
-    var wrapper = makeElement('div',
-      { className: 'actionbar__section' },
-      [ header, content ]
-    );
+    var header = <div className='actionbar__section__header'>{label}</div>;
+    var content = <div className='actionbar__section__content'>
+      {groups.map(group => group.element)}
+    </div>;
+    var wrapper = <div className='actionbar__section'>{[header, content]}</div>;
+
     super(wrapper, groups, content);
 
     this.id = id;
@@ -220,10 +214,11 @@ class SectionGroup extends DynamicContent {
   public items: ActionItem[];
 
   public constructor(style: SectionGroupStyle, items: ActionItem[]) {
-    super(makeElement('div',
-      { className: 'actionbar__section__group '
-        + 'actionbar__section__group--' + style }
-    ), items);
+    super(
+      <div className={'actionbar__section__group '
+        + 'actionbar__section__group--' + style} />,
+      items
+    );
 
     this.style = style;
     this.items = items;
@@ -240,7 +235,7 @@ class SectionGroup extends DynamicContent {
         curColumn.appendChild(el);
         curColumn = null;
       } else {
-        curColumn = makeElement('div', { className: 'column' });
+        curColumn = <div className='column'/>;
         curColumn.appendChild(el);
         columns.push(curColumn);
       }
@@ -272,11 +267,12 @@ class ActionItem extends DynamicContent {
       + (style ? 'action-item--' + style + ' ' : '')
       + (props.className ? props.className : '');
 
-    super(makeElement('div', {
-      onclick: () => this.isEnabled && this.emit('click'),
-      onmousedown: (e: MouseEvent) => e.preventDefault(),
-      ...props
-    }, content));
+    super(
+      <div
+        onclick={() => this.isEnabled && this.emit('click')}
+        onmousedown={(e: MouseEvent) => e.preventDefault()}
+        {...props}>{content}</div>
+    );
 
     this.name = name;
     this.type = type;
@@ -311,7 +307,7 @@ class ActionItem extends DynamicContent {
     title: string,
     view: View
   ) {
-    var canvas = makeElement('canvas', { width: 30, height: 30 });
+    var canvas = <canvas width={30} height={30} />;
 
     drawViewOnPreviewCanvas(canvas, view);
 
