@@ -3,13 +3,15 @@ type Callback<T> = T extends void ? () => any : (arg: T) => any;
 // eslint-disable-next-line no-unused-vars
 type VoidKeys<T, K extends keyof T = keyof T> =
   K extends (T[K] extends void ? K : never) ? K : never;
+type Listeners<T> =
+  {[name: string]: any} & {[K in keyof T]?: ((arg: T) => any)[]};
 
 export default class EventEmitter<
 T extends {[name: string]: any},
 VoidTypes = VoidKeys<T>,
 NonVoidTypes extends Exclude<keyof T, VoidTypes> = Exclude<keyof T, VoidTypes>
 > {
-  private _listeners: {[K in keyof T]?: ((arg: T) => any)[]};
+  private _listeners: Listeners<T>;
 
   public constructor() {
     this._listeners = {};
@@ -32,7 +34,7 @@ NonVoidTypes extends Exclude<keyof T, VoidTypes> = Exclude<keyof T, VoidTypes>
     var registered = this._listeners[type];
 
     if (registered) {
-      registered.forEach(cb => cb.call(this, arg));
+      registered.forEach((cb: (arg: T) => any) => cb.call(this, arg));
     }
   }
 
