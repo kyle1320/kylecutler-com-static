@@ -145,7 +145,7 @@ setUpTasks('siteScripts', paths => {
   }
 
   function getOutputPath(entry) {
-    return path.relative('src/scripts', entry.replace(/\.entry\./, '.'));
+    return path.relative('src/scripts', entry.replace(/\.entry\..*$/, '.js'));
   }
 
   gulp.task('site-scripts', function (done) {
