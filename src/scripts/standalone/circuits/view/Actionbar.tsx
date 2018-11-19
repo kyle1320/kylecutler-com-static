@@ -1,5 +1,5 @@
 import EventEmitter from '../utils/EventEmitter';
-import { makeElement, toggleClass } from '../../../_utils';
+import { makeElement, toggleClass } from '../../../utils';
 import View from './View';
 import NodeView from './NodeView';
 import Node from '../model/Node';

@@ -33,8 +33,7 @@ const configPaths = {
   },
   lint: [`src/**/*.{${extensionsNoDot.join(',')}}`],
   siteScripts: {
-    include: 'src/scripts/**/*.js',
-    exclude: 'src/scripts/**/_*/**/*.js',
+    include: `src/scripts/**/*.entry.{${extensionsNoDot.join(',')}}`,
     dest: 'public/js',
     watch: `src/scripts/**/*.{${extensionsNoDot.join(',')}}`
   },
@@ -145,8 +144,12 @@ setUpTasks('siteScripts', paths => {
     return stream;
   }
 
+  function getOutputPath(entry) {
+    return path.relative('src/scripts', entry.replace(/\.entry\./, '.'));
+  }
+
   gulp.task('site-scripts', function (done) {
-    glob(paths.include, { ignore: paths.exclude }, function (err, files) {
+    glob(paths.include, function (err, files) {
       if (err) return done(err);
 
       const streams = files.map(entry => rollupStream({
@@ -162,7 +165,7 @@ setUpTasks('siteScripts', paths => {
           typescript({ include: extensions.map(x => '**/*' + x) })
         ].concat(isProd() ? uglify.uglify() : [])
       }).on('bundle', b => cache[entry] = b)
-        .pipe(source(path.relative('src/scripts', entry)))
+        .pipe(source(getOutputPath(entry)))
         .pipe(gulp.dest(paths.dest))
       );
 
