@@ -1,91 +1,47 @@
 import EventEmitter from './EventEmitter';
 
-export interface Writable<T> extends EventEmitter<{'can-write': void}> {
+export type Transform<T, U> = (data: T) => U;
+export type AsyncTransform<T, U> = (data: T, cb: Transform<U, any>) => void;
+
+export interface Consumer<T> extends EventEmitter<{'can-write': void}> {
+  write(data: T): void;
   canWrite(): boolean;
-  write(chunk: T): void;
-  reset(): void;
+
+  clear(): void;
 }
 
-export interface Readable<T> extends EventEmitter<{'can-read': void}> {
+export interface Producer<T> extends EventEmitter<{
+  'can-read': void,
+  'clear': void
+}> {
+  read(data: T): void;
   canRead(): boolean;
-  read(): T;
-  reset(): void;
 
-  pipe<U extends Writable<T>>(dest: U): U;
+  clear(): void;
+
+  map<U>(transform: Transform<T, U>, capacity?: number): Producer<U>;
+  mapAsync<U>(
+    transform: AsyncTransform<T, U>, abort: (item: T) => any, capacity?: number
+  ): Producer<U>;
+
+  filter(pred: Transform<T, boolean>, capacity?: number): Producer<T>;
+  filterAsync(
+    pred: AsyncTransform<T, boolean>, abort: (item: T) => any, capacity?: number
+  ): Producer<T>;
+
+  forEach(callback: Transform<T, any>): void;
+
+  pipe<U extends Consumer<T>>(dest: U): U;
 }
 
-export type ReadWritable<T, U> = Writable<T> & Readable<U>;
-
-export class ReadableImpl<T> extends EventEmitter<{
-  'can-read': void
-  }> implements Readable<T> {
-
-  private data: T[];
-
-  public constructor () {
-    super();
-
-    this.data = [];
-  }
-
-  protected write(chunk: T) {
-    this.data.push(chunk);
-
-    if (this.data.length === 1) {
-      this.emit('can-read');
-    }
-  }
-
-  public canRead() {
-    return this.data.length > 0;
-  }
-
-  public read() {
-    return this.data.shift();
-  }
-
-  public reset() {
-    this.data = [];
-  }
-
-  public pipe<U extends Writable<T>>(dest: U) {
-    pipeImpl(this, dest);
-    return dest;
-  }
-}
-
-export class WritableImpl<T> extends EventEmitter<{
-  'can-write': void
-  }> implements Writable<T> {
-
-  private onWrite: (data: T) => any;
-
-  public constructor (onWrite: (data: T) => any) {
-    super();
-
-    this.onWrite = onWrite;
-  }
-
-  public write(data: T) {
-    this.onWrite(data);
-  }
-
-  public canWrite() {
-    return true;
-  }
-
-  public reset() {
-
-  }
-}
-
-export class ReadWritableImpl<T> extends EventEmitter<{
+export class Stream<In, Out = In> extends EventEmitter<{
+  'can-read': void,
   'can-write': void,
-  'can-read': void
-  }> implements ReadWritable<T, T> {
+  'clear': void
+  }> implements Consumer<In>, Producer<Out> {
 
-  private data: T[];
-  private capacity: number;
+  protected data: (In | Out)[];
+  protected capacity: number;
 
   public constructor (capacity: number) {
     super();
@@ -94,7 +50,112 @@ export class ReadWritableImpl<T> extends EventEmitter<{
     this.capacity = capacity;
   }
 
-  public write(chunk: T) {
+  public map<U>(
+    transform: Transform<Out, U>,
+    capacity: number = Infinity
+  ): Producer<U> {
+    return this.mapAsync((x, cb) => cb(transform(x)), null, capacity);
+  }
+
+  public mapAsync<U>(
+    transform: AsyncTransform<Out, U>,
+    abort?: Transform<Out, any>,
+    capacity: number = Infinity
+  ): Producer<U> {
+    return this.pipe(new Transformer<Out, U>(transform, abort, capacity));
+  }
+
+  public filter(
+    predicate: Transform<Out, boolean>,
+    capacity: number = Infinity
+  ): Producer<Out> {
+    return this.filterAsync((x, cb) => cb(predicate(x)), null, capacity);
+  }
+
+  public filterAsync(
+    predicate: AsyncTransform<Out, boolean>,
+    abort?: Transform<Out, any>,
+    capacity: number = Infinity
+  ): Producer<Out> {
+    return this.pipe(new Filter<Out>(predicate, abort, capacity));
+  }
+
+  public forEach(callback: Transform<Out, any>): void {
+    var self = this;
+    function fill() {
+      while (self.canRead()) {
+        callback(self.read());
+      }
+    }
+
+    this.on('can-read', fill);
+
+    fill();
+  }
+
+  public pipe<T extends Consumer<Out>>(dest: T): T {
+    var source = this;
+    function fill() {
+
+      // TODO: Break this up if the streams have unlimited bandwidth
+      while (source.canRead() && dest.canWrite()) {
+        dest.write(source.read());
+      }
+    }
+
+    this.on('can-read', fill);
+    dest.on('can-write', fill);
+
+    this.on('clear', dest.clear.bind(dest));
+
+    fill();
+
+    return dest;
+  }
+
+  public clear() {
+    this.data = [];
+    this.emit('clear');
+  }
+
+  public canRead() {
+    return this.data.length > 0;
+  }
+
+  public read(): Out {
+    var res = this.data.shift();
+
+    if (this.data.length === this.capacity - 1) {
+
+      // This prevents infinite recursion when piping A=>B=>C
+      //   where A and C have unlimited bandwidth and B has a capacity of 1:
+      //   [can-write B]>(pipe A=>B)>[can-read B]>(pipe B=>C)>[can-write B]>...
+      // If B has a capacity of greater than 1, this becomes:
+      //   [can-write B]>(pipe A=>B)>[can-read B]>(pipe B=>C)
+      //                            >[can-read B]>(pipe B=>C)
+      //                            >...
+      //   because writing from B does not cause its length to be (capacity-1),
+      //   so the [can-write B] event does not get triggered during (pipe B=>C).
+      // This delays the [can-write B] event if capacity === 1, so it becomes:
+      //   [can-write B]>(pipe A=>B)>[can-read B]>(pipe B=>C)>[setTimeout]
+      //   [can-write B]>(pipe A=>B)>[can-read B]>(pipe B=>C)>[setTimeout]
+      //   ...
+      // This will be slower, but hey, that's what you get ¯\_(ツ)_/¯
+      if (this.capacity === 1) {
+        this.emitOnceAsync('can-write');
+      } else {
+        this.emit('can-write');
+      }
+    }
+
+    return res as Out;
+  }
+
+  public canWrite() {
+    return this.data.length < this.capacity;
+  }
+
+  public write(chunk: In) {
     if (this.canWrite()) {
       this.data.push(chunk);
 
@@ -103,168 +164,85 @@ export class ReadWritableImpl<T> extends EventEmitter<{
       }
     }
   }
-
-  public canWrite() {
-    return this.data.length < this.capacity;
-  }
-
-  public canRead() {
-    return this.data.length > 0;
-  }
-
-  public read() {
-    var res = this.data.shift();
-
-    if (this.data.length === this.capacity - 1) {
-      this.emit('can-write');
-    }
-
-    return res;
-  }
-
-  public reset() {
-    this.data = [];
-  }
-
-  public pipe<U extends Writable<T>>(dest: U) {
-    pipeImpl(this, dest);
-    return dest;
-  }
 }
 
-interface Processor<In, Out> {
-  process(data: In, callback: (data: Out) => any): any;
-  cancel(data: In): void;
-}
-type ProcessorOrFunc<In, Out> = Processor<In, Out> | ((data: In) => Out);
+class Transformer<In, Out> extends Stream<In, Out> {
+  private transform: AsyncTransform<In, Out>;
+  private abort: Transform<In, any>;
+  private numReady: number;
 
-export class Transform<In, Out> extends EventEmitter<{
-  'can-write': void,
-  'can-read': void
-  }> implements ReadWritable<In, Out> {
-
-  private input: In[];
-  private output: Out[];
-
-  private capacity: number;
-  private processor: Processor<In, Out>;
-
-  public constructor (processor: ((data: In) => Out));
-  public constructor (processor: Processor<In, Out>, capacity: number);
-  public constructor (
-    processor: ProcessorOrFunc<In, Out>,
-    capacity: number = Infinity
+  public constructor(
+    transform: AsyncTransform<In, Out>,
+    abort: Transform<In, any>,
+    capacity: number
   ) {
-    super();
+    super(capacity);
 
-    this.input = [];
-    this.output = [];
-    this.capacity = capacity;
-
-    if (typeof processor === 'function') {
-      this.processor = {
-        process: (item, cb) => cb(processor(item)),
-        cancel: () => {}
-      };
-    } else {
-      this.processor = processor;
-    }
-  }
-
-  public write(input: In) {
-    if (this.canWrite()) {
-      this.input.push(input);
-
-      this.processor.process(input, (data) => {
-        this.remove(input);
-
-        this.output.push(data);
-
-        if (this.output.length === 1) {
-          this.emit('can-read');
-        }
-      });
-    }
-  }
-
-  public canWrite() {
-    return (this.input.length + this.output.length) < this.capacity;
+    this.transform = transform;
+    this.abort = abort;
+    this.numReady = 0;
   }
 
   public canRead() {
-    return this.output.length > 0;
+    return this.numReady > 0;
   }
 
-  public read() {
-    var res = this.output.shift();
+  public read(): Out {
+    this.numReady--;
 
-    if (this.input.length + this.output.length === this.capacity - 1) {
-      this.emit('can-write');
+    return super.read();
+  }
+
+  public write(chunk: In) {
+    super.write(chunk);
+
+    this.transform(chunk, (data) => {
+      var index = this.data.indexOf(chunk);
+      this.data.splice(index, 1);
+      this.data.splice(this.numReady, 0, data);
+      this.numReady++;
+
+      if (this.numReady === 1) {
+        this.emit('can-read');
+      }
+    });
+  }
+
+  public clear() {
+    if (this.abort) {
+      for (var i = this.numReady; i < this.data.length; i++) {
+        this.abort(this.data[i] as In);
+      }
     }
 
-    return res;
-  }
-
-  private remove(input: In) {
-    var index = this.input.indexOf(input);
-    this.input.splice(index, 1);
-
-    if (this.input.length + this.output.length === this.capacity - 1) {
-      this.emit('can-write');
-    }
-  }
-
-  public reset() {
-    this.input.forEach(item => this.processor.cancel(item));
-    this.input = [];
-    this.output = [];
-  }
-
-  public pipe<U extends Writable<Out>>(dest: U) {
-    pipeImpl(this, dest);
-    return dest;
+    super.clear();
   }
 }
 
-export class Pipeline<T> {
-  private source: Readable<T>;
-  private all: (Readable<any> | Writable<any>)[];
+class Filter<T> extends Stream<T> {
+  private predicate: AsyncTransform<T, boolean>;
+  private abort: Transform<T, any>;
 
-  public constructor (source: Readable<T>) {
-    this.source = source;
-    this.all = [source];
+  public constructor(
+    predicate: AsyncTransform<T, boolean>,
+    abort: Transform<T, any>,
+    capacity: number
+  ) {
+    super(capacity);
+
+    this.predicate = predicate;
+    this.abort = abort;
   }
 
-  public pipe<U>(dest: ReadWritable<T, U>): Pipeline<U>;
-  public pipe(dest: Writable<T>): Pipeline<void>;
-  public pipe<U>(dest: ReadWritable<T, U>) {
-    this.all.push(dest);
-    this.source.pipe(dest);
+  public write(chunk: T) {
+    this.predicate(chunk, x => x && super.write(chunk));
+  }
 
-    if ('canRead' in dest) {
-      let self = (this as any) as Pipeline<U>;
-      self.source = dest as Readable<U>;
-      return self;
-    } else {
-      this.source = null;
-      return (this as any) as Pipeline<void>;
+  public clear() {
+    if (this.abort) {
+      this.data.forEach(data => this.abort(data));
     }
+
+    super.clear();
   }
-
-  public reset() {
-    this.all.forEach(s => s.reset());
-  }
-}
-
-function pipeImpl<T>(source: Readable<T>, dest: Writable<T>) {
-  function fill() {
-    while (source.canRead() && dest.canWrite()) {
-      dest.write(source.read());
-    }
-  }
-
-  source.on('can-read', fill);
-  dest.on('can-write', fill);
-
-  fill();
 }

@@ -5,6 +5,8 @@ type VoidKeys<T, K extends keyof T = keyof T> =
   K extends (T[K] extends void ? K : never) ? K : never;
 type Listeners<T> =
   {[name: string]: any} & {[K in keyof T]?: ((arg: T) => any)[]};
+type QueuedEvents<T> =
+  {[name: string]: any} & {[K in keyof T]?: T[K]};
 
 export default class EventEmitter<
 T extends {[name: string]: any},
@@ -13,8 +15,13 @@ NonVoidTypes extends Exclude<keyof T, VoidTypes> = Exclude<keyof T, VoidTypes>
 > {
   private _listeners: Listeners<T>;
 
+  private _queued: QueuedEvents<T>;
+  private _timeout: NodeJS.Timer;
+
   public constructor() {
     this._listeners = {};
+    this._queued = {};
+    this._timeout = null;
   }
 
   public on<K extends keyof T>(type: K, callback: Callback<T[K]>) {
@@ -35,6 +42,25 @@ NonVoidTypes extends Exclude<keyof T, VoidTypes> = Exclude<keyof T, VoidTypes>
 
     if (registered) {
       registered.forEach((cb: (arg: T) => any) => cb.call(this, arg));
+    }
+  }
+
+  public emitOnceAsync<K extends NonVoidTypes>(type: K, arg: T[K]): void;
+  public emitOnceAsync<K extends VoidTypes>(type: K): void;
+  public emitOnceAsync<K extends keyof T>(type: K, arg?: T[K]): void {
+    this._queued[type] = arg;
+
+    if (!this._timeout) {
+      this._timeout = setTimeout(() => {
+        this._timeout = null;
+
+        var queued = this._queued;
+        this._queued = {};
+
+        for (var type in queued) {
+          this.emit(<any>type, queued[type]);
+        }
+      }, 0);
     }
   }
 
