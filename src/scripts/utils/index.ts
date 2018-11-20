@@ -36,22 +36,35 @@ export function count<T>(max: number, callback: (n: number) => T): T[] {
 
 type ElementContentSingle = string | HTMLElement;
 export type ElementContent = ElementContentSingle | ElementContentSingle[];
+type ElementProps<T extends keyof HTMLElementTagNameMap> =
+  {
+    [U in keyof HTMLElementTagNameMap[T]]?:
+      U extends 'style'
+        ? Partial<HTMLElementTagNameMap[T][U]>
+        : HTMLElementTagNameMap[T][U]
+  };
 
 export function makeElement<T extends keyof HTMLElementTagNameMap>(
   tag: T,
-  props?: {[U in keyof HTMLElementTagNameMap[T]]?: HTMLElementTagNameMap[T][U]},
+  props?: ElementProps<T>,
   ...children: ElementContent[]
 ): HTMLElementTagNameMap[T] {
   var el = document.createElement(tag);
 
   for (var key in props) {
-    if (typeof props[key] === 'function' && key[0] === 'o' && key[1] === 'n') {
+    if (key === 'style') {
+      for (var key2 in props.style) {
+        el.style[key2] = props.style[key2];
+      }
+    } else if (
+      typeof props[key] === 'function' && key[0] === 'o' && key[1] === 'n'
+    ) {
       el.addEventListener(
         key.substr(2),
         (props[key] as unknown) as EventListenerOrEventListenerObject
       );
     } else {
-      el[key] = props[key];
+      (el[key] as any) = props[key];
     }
   }
 
