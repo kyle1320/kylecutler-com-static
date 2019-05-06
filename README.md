@@ -20,8 +20,6 @@ In addition, the following commands are also available:
 * `npm run typecheck` : Runs TypeScript type-checking on all `.ts` files within the `src/content` and `src/scripts` directories.
 * `npm run verify` : Alias for `npm run typecheck && npm run lint`.
 
-`index.js` contains exports for the location of the `public` directory, as well as the location of the 404 page.
-
 ## Project Structure
 
 This project uses the following libraries for source file compilation:
