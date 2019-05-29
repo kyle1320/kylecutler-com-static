@@ -4,7 +4,7 @@ import View from './View';
 import NodeView from './NodeView';
 import Node from '../model/Node';
 
-import circuits from '../model/circuits';
+import circuits from '../model/Circuits';
 import {
   CircuitDefinition,
   ActionEvent,
