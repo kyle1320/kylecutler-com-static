@@ -1,5 +1,5 @@
-import Snake from './snake';
-import Food from './food';
+import Snake from './Snake';
+import Food from './Food';
 import {
   dirTowards,
   scaleCanvas,

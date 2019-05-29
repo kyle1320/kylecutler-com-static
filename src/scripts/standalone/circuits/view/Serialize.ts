@@ -5,7 +5,7 @@ import CircuitView from './CircuitView';
 import Node from '../model/Node';
 import Circuit from '../model/Circuit';
 
-import circuits from '../model/circuits';
+import circuits from '../model/Circuits';
 
 type SerializedObject
   = NodeSerializedObject

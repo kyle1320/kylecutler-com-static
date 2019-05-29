@@ -4,7 +4,7 @@ import { findFirst } from '../treeUtils';
 
 import Node from '../../model/Node';
 import Circuit from '../../model/Circuit';
-import circuits from '../../model/circuits';
+import circuits from '../../model/Circuits';
 
 import View from '../../view/View';
 import NodeView from '../../view/NodeView';
