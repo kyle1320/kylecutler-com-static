@@ -1,13 +1,11 @@
 body {
   margin: 0;
   padding: 0;
-  background: url('/img/grid.png') repeat 0 0;
-  background-size: 26px 26px;
-
-  @include hi-res {
-    background: url('/img/grid@2X.png') repeat 0 0;
-    background-size: 26px 26px;
-  }
+  background: url('/img/voronoi.svg'), linear-gradient(120deg, $primary-light 0%, $primary-accent 100%);
+  background-size: 500px 500px, cover;
+  background-position: 0 0, 0 0;
+  color: white;
+  min-height: 100vh;
 }
 
 .content {
