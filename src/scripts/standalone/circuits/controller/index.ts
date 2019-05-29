@@ -5,7 +5,7 @@ import CanvasView from '../view/CanvasView';
 import Actionbar from '../view/Actionbar';
 import Infobar from '../view/Infobar';
 import Modal from '../view/Modal';
-import Serialize from '../view/serialize';
+import Serialize from '../view/Serialize';
 
 import {
   PositionalEventType,
