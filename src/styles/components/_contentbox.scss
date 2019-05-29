@@ -3,56 +3,57 @@
 .contentbox {
   margin-top: rem(20px);
   margin-bottom: rem(20px);
-  padding: rem(10px);
+  padding: rem(10px) rem(15px);
   overflow: hidden;
   line-height: 1.5em;
-  background-color: $secondary-lighter;
-  border: 1px solid $secondary-light;
+  background-color: #f0f0f0;
   border-radius: rem(5px);
   box-shadow: 0 rem(2px) rem(5px) rgba(0, 0, 0, 0.2);
+  color: $dark-gray;
+  border-left: rem(10px) solid $primary-dark;
+
+  & .contentbox {
+    border-radius: 0;
+  }
 
   ul {
     list-style-type: none;
+    padding-left: 0;
   }
 
   li {
     position: relative;
-  }
+    border-left: rem(6px) solid $primary;
+    padding-left: rem(10px);
 
-  p {
-    margin: 0 0 rem(15px) 0;
-  }
+    &:hover {
+      background-color: rgba($primary-light, 0.1);
+    }
 
-  li {
-    & > h2, & > h3, & > h4 {
-      position: relative;
-      margin: .5em 0 .8em;
-      line-height: 1;
+    li {
+      border-color: $primary-light;
 
-      &::before {
-        @extend .fa;
-        @extend .fa-chevron-right:before;
-
-        position: absolute;
-        right: 100%;
-        margin: 0;
-        padding: 0 rem(10px) 0 0;
-        color: $secondary;
+      li {
+        border-color: $primary-accent;
       }
     }
   }
 
-  & > h2, & > h3 {
-    margin: .5em 0 .8em;
-    line-height: 1;
+  p {
+    margin: 0 0 rem(15px) 0;
 
-    &::before {
-      @extend .fa;
-      @extend .fa-chevron-right:before;
-
+    &:last-child {
       margin: 0;
-      padding: 0 rem(10px) 0 0.1em;
-      color: $secondary;
+    }
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    margin: .4em 0 .8em;
+  }
+
+  li {
+    h1, h2, h3, h4, h5, h6 {
+      margin: .8em 0 .6em;
     }
   }
 

@@ -19,8 +19,9 @@
     display: inline-flex;
     align-items: center;
     margin: rem(1px);
-    background-color: #4DB6AC;
-    border: rem(2px) solid #00897B;
+    background-color: $primary-light;
+    border: rem(2px) solid $primary;
+    border-radius: rem(3px);
     color: white;
     height: 1em;
     padding: rem(5px);

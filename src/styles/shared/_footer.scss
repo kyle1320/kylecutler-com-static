@@ -1,28 +1,27 @@
-@include fa-github-alt;
+@include fa-github;
 @include fa-linkedin-in;
 @include fa-envelope;
 
 .footer {
-  padding: rem(10px);
+  padding: rem(10px) rem(10px) rem(30px);
   text-align: center;
-  color: $gray;
 
-  &__links a {
-    font-size: rem(22px);
-    text-decoration: none;
-    color: $primary-darker;
-    margin-right: rem(16px);
+  &__links {
+    padding-bottom: rem(5px);
 
-    &:hover {
-      color: $primary;
+    a {
+      font-size: rem(24px);
+      text-decoration: none;
+      color: $primary-darker;
+      margin-right: rem(16px);
+  
+      &:hover {
+        color: white;
+      }
+  
+      &:last-child {
+        margin-right: 0;
+      }
     }
-
-    &:active {
-      color:  $primary-accent;
-    }
-
-    &:last-child {
-      margin-right: 0;
-    }
-  }
+  } 
 }

@@ -35,6 +35,11 @@
       border-radius: 50%;
       border: 1px solid white;
     }
+
+    small {
+      margin-left: rem(10px);
+      font-size: .5em;
+    }
   }
 
   &__menu {
@@ -45,6 +50,11 @@
     list-style-type: none;
     z-index: 100;
     letter-spacing: rem(0.4px);
+
+    span {
+      @extend a;
+      cursor: default;
+    }
 
     a {
       margin: 0;
