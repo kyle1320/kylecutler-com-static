@@ -1,0 +1,46 @@
+.tiles {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-areas:
+        "a a b c d"
+        "a a e f f"
+        "g h i f f";
+    justify-items: stretch;
+    align-items: stretch;
+
+    @include mobile-only {
+        grid-template-areas:
+            "a a b"
+            "a a c"
+            "g e d"
+            "h f f"
+            "i f f";
+    }
+}
+
+.tile {
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    box-shadow: 0 rem(2px) rem(5px) rgba(0, 0, 0, 0.2);
+    margin: rem(5px);
+    min-width: 20px;
+    min-height: 20px;
+    line-height: 0;
+    overflow: hidden;
+
+    &--a-lg { grid-area: a; }
+    &--b { grid-area: b; }
+    &--c { grid-area: c; }
+    &--d { grid-area: d; }
+    &--e { grid-area: e; }
+    &--f-lg { grid-area: f; }
+    &--g { grid-area: g; }
+    &--h { grid-area: h; }
+    &--i { grid-area: i; }
+
+    img {
+        width: 100%;
+        height: auto; 
+    }
+}

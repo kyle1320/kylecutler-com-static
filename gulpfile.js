@@ -77,7 +77,7 @@ setUpTasks('styles', paths => {
       .pipe(handleErrors())
       .pipe(dev(sourcemaps.init()))
       .pipe(sass())
-      .pipe(autoprefixer())
+      .pipe(autoprefixer({ grid: true }))
       .pipe(prod(cleanCSS({compatibility: 'ie8'})))
       .pipe(dev(sourcemaps.write()))
       .pipe(gulp.dest(paths.dest));
