@@ -10,7 +10,10 @@
   border-radius: rem(5px);
   box-shadow: 0 rem(2px) rem(5px) rgba(0, 0, 0, 0.2);
   color: $dark-gray;
-  border-left: rem(10px) solid $primary-dark;
+
+  &:first-of-type {
+    margin-top: 0;
+  }
 
   & .contentbox {
     border-radius: 0;
@@ -18,17 +21,16 @@
 
   ul {
     list-style-type: none;
-    padding-left: 0;
+    padding: 0;
+    margin: 0;
   }
 
   li {
     position: relative;
     border-left: rem(6px) solid $primary;
-    padding-left: rem(10px);
-
-    &:hover {
-      background-color: rgba($primary-light, 0.1);
-    }
+    padding: rem(10px);
+    margin-top: rem(10px);
+    background-color: rgba(white, 0.5);
 
     li {
       border-color: $primary-light;
@@ -36,6 +38,10 @@
       li {
         border-color: $primary-accent;
       }
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      margin: 0 0 .6em;
     }
   }
 
@@ -51,9 +57,16 @@
     margin: .4em 0 .8em;
   }
 
-  li {
-    h1, h2, h3, h4, h5, h6 {
-      margin: .8em 0 .6em;
+  & > h1, & > h2, & > h3 {
+    &:first-child {
+      background-color: $primary-dark;
+      color: white;
+      margin: rem(-10px) rem(-15px) rem(15px) rem(-15px);
+      padding: rem(20px) rem(15px) .6em;
+
+      &.error {
+        background-color: $error;
+      }
     }
   }
 
