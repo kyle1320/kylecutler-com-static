@@ -1,3 +1,5 @@
+@include fa-external-link-alt;
+
 .tiles {
     display: grid;
     grid-template-rows: repeat(3, 1fr);
@@ -23,72 +25,85 @@
 }
 
 .tile {
-    background-color: #f0f0f0;
-    border-radius: 5px;
-    box-shadow: 0 rem(2px) rem(5px) rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-flow: column nowrap;
     margin: rem(5px);
-    min-width: 20px;
-    min-height: 20px;
+    font-weight: normal;
     line-height: 0;
+    background-color: $off-white;
+    color: $dark-gray;
+    box-shadow: 0 rem(2px) rem(5px) rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
     overflow: hidden;
+    transition: margin 0.1s;
 
-    &:hover a {
-        padding: 0;
-    }
+    .info {
+        padding: rem(15px);
+        background-color: $primary-dark;
+        color: white;
+        line-height: 1.2;
+        flex-grow: 1;
 
-    a {
-        box-sizing: border-box;
-        display: block;
-        height: 100%;
-        position: relative;
-        padding: 5px;
-        transition: padding 50ms;
+        &__title {
+            font-size: rem(24px);
+            line-height: 1;
+        }
 
-        .info {
-            position: absolute;
-            left: 5px;
-            right: 5px;
-            top: 5px;
-            bottom: 5px;
-            // color: white;
-            color: $dark-gray;
-            line-height: 1.2;
-            padding: rem(10px) rem(13px);
-            background: linear-gradient(to bottom, rgba(white, 1) 0%, rgba(white, 0.4) 100%);
-            font-weight: normal;
-            // text-shadow: 0 rem(2px) rem(4px) rgba(0, 0, 0, 0.4);
-            transition: background-color .1s;
-
-            &--title {
-                font-weight: bold;
-                font-size: rem(22px);
-            }
-
-            &--desc {
-                margin-top: rem(10px);
-                font-weight: normal;
-            }
+        &__desc {
+            margin-top: rem(10px);
         }
     }
 
     &--a-lg { grid-area: a; }
-    &--b { grid-area: b; }
-    &--c { grid-area: c; }
-    &--d { grid-area: d; }
-    &--e { grid-area: e; }
+    &--b    { grid-area: b; }
+    &--c    { grid-area: c; }
+    &--d    { grid-area: d; }
+    &--e    { grid-area: e; }
     &--f-lg { grid-area: f; }
-    &--g { grid-area: g; }
-    &--h { grid-area: h; }
-    &--i { grid-area: i; }
+    &--g    { grid-area: g; }
+    &--h    { grid-area: h; }
+    &--i    { grid-area: i; }
+
+    &__image {
+        position: relative;
+        padding-top: 100%;
+    }
 
     img {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
         height: auto;
     }
 
     @include tablet-and-below {
-        a .info--title {
-            font-size: rem(18px);
+        .info {
+            padding: rem(10px);
+
+            &__title {
+                font-size: rem(18px);
+            }
         }
+    }
+}
+
+a.tile {
+    .info {
+        position: relative;
+
+        &::after {
+            @extend .fa;
+            @extend .fa-external-link-alt:before;
+
+            position: absolute;
+            top: rem(5px);
+            right: rem(5px);
+            font-size: rem(10px);
+        }
+    }
+
+    &:hover {
+        margin: 0;
     }
 }

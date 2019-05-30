@@ -4,58 +4,58 @@ block title
   | Home
 
 block content
-  .tiles
-    .tile.tile--a-lg
-      a(href="#")
-        img(src="/img/timetracker_xl.png")
-        .info
-          .info--title Time Tracker
-          .info--desc Track time spent on various tasks at work
-    .tile.tile--b
-      a(href="#")
-        img(src="/img/experiments/js-painter_lg.png")
-        .info
-          .info--title Painter
-    .tile.tile--c
-      a(href="#")
-        img(src="/img/experiments/js-spirograph-1_lg.png")
-        .info
-          .info--title Spirograph
-    .tile.tile--d
-      a(href="#")
-        img(src="/img/experiments/js-minigames_lg.png")
-        .info
-          .info--title Minigames
-    .tile.tile--e
-      a(href="#")
-        img(src="/img/resume_lg.png")
-        .info
-          .info--title Résumé
-    .tile.tile--f-lg
-      a(href="#")
-        img(src="/img/circuits_xl.png")
-        .info
-          .info--title Circuits
-          .info--desc Design and test boolean logic circuits
-    .tile.tile--g
-      a(href="#")
-        img(src="/img/experiments/js-bubbles_lg.png")
-        .info
-          .info--title Bubbles
-    .tile.tile--h
-      a(href="#")
-        img(src="/img/experiments/js-particles_lg.png")
-        .info
-          .info--title Particles
-    .tile.tile--i
-      a(href="#")
-        img(src="/img/experiments/js-graphs_lg.png")
-        .info
-          .info--title Graphs
   .contentbox
     h2 Welcome!
-    p This website is a place for me to put information about various projects I've worked on. This could be anything from screenshots and descriptions to working demos.
+    p This website is a place for me to showcase some of my programming projects. Currently, it mostly consists of JavaScript applets. In the future I may add other types of projects or blog posts.
     p This site is very much a work in progress, so check back often!
+  .tiles
+    a.tile.tile--a-lg(href="/timetracker/")
+      .info
+        .info__title Time Tracker
+        .info__desc Track time spent on various tasks at work
+      .tile__image
+        img(src="/img/tiles/timetracker_xl.png")
+    a.tile.tile--b(href="/experiments/painter/")
+      .info
+        .info__title Painter
+      .tile__image
+        img(src="/img/tiles/painter_lg.png")
+    a.tile.tile--c(href="/experiments/spirograph/")
+      .info
+        .info__title Spirograph
+      .tile__image
+        img(src="/img/tiles/spirograph_lg.png")
+    a.tile.tile--d(href="/experiments/minigames/")
+      .info
+        .info__title Minigames
+      .tile__image
+        img(src="/img/tiles/minigames_lg.png")
+    a.tile.tile--e(href="/resume/")
+      .info
+        .info__title Résumé
+      .tile__image
+        img(src="/img/tiles/resume_lg.png")
+    a.tile.tile--f-lg(href="/circuits/")
+      .info
+        .info__title Circuits
+        .info__desc Design and test boolean logic circuits
+      .tile__image
+        img(src="/img/tiles/circuits_xl.png")
+    a.tile.tile--g(href="/experiments/bubbles/")
+      .info
+        .info__title Bubbles
+      .tile__image
+        img(src="/img/tiles/bubbles_lg.png")
+    a.tile.tile--h(href="/experiments/particles/")
+      .info
+        .info__title Particles
+      .tile__image
+        img(src="/img/tiles/particles_lg.png")
+    a.tile.tile--i(href="/experiments/graphs/")
+      .info
+        .info__title Graphs
+      .tile__image
+        img(src="/img/tiles/graphs_lg.png")
   .contentbox
     h2 A little about me...
     img(src="/img/kyle-sm.jpg" height="160px" style="float: left; padding: 5px 15px 5px 0;")

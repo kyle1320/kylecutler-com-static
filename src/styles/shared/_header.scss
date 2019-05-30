@@ -47,11 +47,10 @@
     letter-spacing: rem(0.4px);
 
     span {
-      @extend a;
       cursor: default;
     }
 
-    a {
+    a, span {
       margin: 0;
       padding: rem(10px) rem(15px);
       display: block;
@@ -69,7 +68,7 @@
         border-left: none;
       }
 
-      & > a {
+      & > a, & > span {
         position: relative;
         bottom: 0;
         text-shadow: 0 rem(2px) rem(3px) rgba(0, 0, 0, 0.2);
@@ -77,7 +76,7 @@
         font-weight: bold;
       }
 
-      &:hover > a {
+      &:hover > a, &:hover > span {
         bottom: rem(2px);
         text-shadow: 0 rem(4px) rem(4px) rgba(0, 0, 0, 0.2);
       }
