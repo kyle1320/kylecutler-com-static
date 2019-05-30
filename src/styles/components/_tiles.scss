@@ -10,7 +10,7 @@
         "g h i f f";
     justify-items: stretch;
     align-items: stretch;
-    margin: rem(-5px);
+    margin: rem(-10px) rem(-5px);
 
     @include mobile-only {
         grid-template-rows: repeat(5, 1fr);
@@ -25,13 +25,11 @@
 }
 
 .tile {
-    display: flex;
-    flex-flow: column nowrap;
-    margin: rem(5px);
+    display: block;
+    margin: rem(10px) rem(5px);
     font-weight: normal;
     line-height: 0;
     background-color: $off-white;
-    color: $dark-gray;
     box-shadow: 0 rem(2px) rem(5px) rgba(0, 0, 0, 0.2);
     border-radius: 5px;
     overflow: hidden;
@@ -39,10 +37,8 @@
 
     .info {
         padding: rem(15px);
-        background-color: $primary-dark;
-        color: white;
+        color: $dark-gray;
         line-height: 1.2;
-        flex-grow: 1;
 
         &__title {
             font-size: rem(24px);
@@ -67,6 +63,7 @@
     &__image {
         position: relative;
         padding-top: 100%;
+        background-color: white;
     }
 
     img {
