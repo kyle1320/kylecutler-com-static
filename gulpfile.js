@@ -76,7 +76,7 @@ setUpTasks('styles', paths => {
     return gulp.src(paths.src)
       .pipe(handleErrors())
       .pipe(dev(sourcemaps.init()))
-      .pipe(sass())
+      .pipe(sass().on('error', sass.logError))
       .pipe(autoprefixer({ grid: true }))
       .pipe(prod(cleanCSS({compatibility: 'ie8'})))
       .pipe(dev(sourcemaps.write()))
