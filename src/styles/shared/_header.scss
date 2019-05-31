@@ -45,6 +45,7 @@
     list-style-type: none;
     z-index: 100;
     letter-spacing: rem(0.4px);
+    user-select: none;
 
     span {
       cursor: default;
