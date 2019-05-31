@@ -8,8 +8,6 @@
         "a a b c d"
         "a a e f f"
         "g h i f f";
-    justify-items: stretch;
-    align-items: stretch;
     margin: rem(-10px) rem(-5px);
 
     @include mobile-only {

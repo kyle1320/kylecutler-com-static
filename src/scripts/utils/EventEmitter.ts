@@ -28,7 +28,7 @@ NonVoidTypes extends Exclude<keyof T, VoidTypes> = Exclude<keyof T, VoidTypes>
     var registered = this._listeners[type];
 
     if (!registered) {
-      registered = [];
+      registered = [] as Listeners<T>[K];
       this._listeners[type] = registered;
     }
 

@@ -106,71 +106,32 @@ setUpTasks('contentScripts', paths => {
 });
 
 setUpTasks('siteScripts', paths => {
-  const es         = require('event-stream');
-  const glob       = require('glob');
-  const path       = require('path');
-  const Readable   = require('stream').Readable;
+  const rename     = require('gulp-rename');
   const replace    = require('rollup-plugin-replace');
   const resolve    = require('rollup-plugin-node-resolve');
-  const rollup     = require('rollup');
-  const source     = require('vinyl-source-stream');
+  const rollup     = require('gulp-better-rollup');
+  const sourcemaps = require('gulp-sourcemaps');
   const typescript = require('rollup-plugin-typescript');
   const uglify     = require('rollup-plugin-uglify');
 
-  const cache = {};
-
-  // modified from rollup-stream to work with latest version of Rollup
-  function rollupStream(options) {
-    var stream = new Readable();
-    stream._read = function () {};
-
-    rollup.rollup(options).then(function (bundle) {
-      stream.emit('bundle', bundle);
-
-      return bundle.generate(options.output);
-    }).then(function ({code, map}) {
-      stream.push(code);
-
-      if (options.output.sourcemap) {
-        stream.push('\n//# sourceMappingURL=');
-        stream.push(map.toUrl());
-      }
-
-      stream.push(null);
-    }).catch(function (reason) {
-      stream.emit('error', reason);
-    });
-
-    return stream;
-  }
-
-  function getOutputPath(entry) {
-    return path.relative('src/scripts', entry.replace(/\.entry\..*$/, '.js'));
-  }
-
-  gulp.task('site-scripts', function (done) {
-    glob(paths.include, function (err, files) {
-      if (err) return done(err);
-
-      const streams = files.map(entry => rollupStream({
-        input: entry,
-        output: {
-          format: 'iife',
-          sourcemap: !isProd()
-        },
-        cache: cache[entry],
+  gulp.task('site-scripts', function () {
+    return gulp.src(paths.include)
+      .pipe(handleErrors())
+      .pipe(dev(sourcemaps.init()))
+      .pipe(rollup({
+        cache: true,
         plugins: [
           resolve({ extensions }),
           replace({ __DEBUG__: !isProd() }),
           typescript({ include: extensions.map(x => '**/*' + x) })
         ].concat(isProd() ? uglify.uglify() : [])
-      }).on('bundle', b => cache[entry] = b)
-        .pipe(source(getOutputPath(entry)))
-        .pipe(gulp.dest(paths.dest))
-      );
-
-      es.merge(streams).on('end', done);
-    });
+      }, 'iife'))
+      .pipe(rename(path => {
+        path.basename = path.basename.replace(/\.entry$/, '');
+        path.extname = '.js';
+      }))
+      .pipe(dev(sourcemaps.write()))
+      .pipe(gulp.dest(paths.dest));
   });
 
   gulp.task('watch:site-scripts', function () {
@@ -237,9 +198,11 @@ setUpTasks('assets', paths => {
 
 setUpTasks('lint', paths => {
   const eslint = require('gulp-eslint');
+  const cache  = require('gulp-cached');
 
   gulp.task('lint', function () {
     return gulp.src(paths)
+      .pipe(cache('linter', { optimizeMemory: true }))
       .pipe(handleErrors())
       .pipe(eslint({ extensions }))
       .pipe(eslint.format());

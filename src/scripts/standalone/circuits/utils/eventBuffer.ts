@@ -1,4 +1,4 @@
-const bufferMap: {[name:string]: (() => any)[]} = {};
+const bufferMap: {[name: string]: (() => any)[]} = {};
 
 export default function bufferEvent(
   name: string,
