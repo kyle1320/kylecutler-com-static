@@ -57,12 +57,9 @@ typings/
 # dotenv environment variables file
 .env
 
-# configuration and deployment scripts
-config.sh
-deploy.sh
-
-# Gulp target folder
-public/
+# Parcel target, cache folder
+dist/
+.cache/
 
 # VS Code config
 .vscode/

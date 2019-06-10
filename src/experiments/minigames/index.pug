@@ -1,0 +1,18 @@
+extends ../../templates/shared/main.pug
+
+block title
+  | Minigames
+
+block scripts
+  include ../../templates/components/polyfill.pug
+  script(src="minigames.ts" type="text/javascript" defer)
+append styles
+  link(href="minigames.scss" rel="stylesheet")
+
+block content
+  .contentbox
+    h2 Minigames
+    .minigame-container
+      #minigame-toggle
+      #minigame-snake
+    p More to come!

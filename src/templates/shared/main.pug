@@ -1,4 +1,4 @@
-include /components/gtm.pug
+include ../components/gtm.pug
 
 doctype html
 
@@ -11,10 +11,10 @@ html
         meta(name="viewport" content="width=device-width")
         +gtmScript
         block styles
-            link(href="/css/main.css" rel="stylesheet")
+            link(href="/styles/main.scss" rel="stylesheet")
         block scripts
-            include /components/polyfill.pug
-            script(src="/js/site.js" type="text/javascript" defer)
+            include ../components/polyfill.pug
+            script(src="/scripts/site.js" type="text/javascript" defer)
 
     body
         +gtmNoscript

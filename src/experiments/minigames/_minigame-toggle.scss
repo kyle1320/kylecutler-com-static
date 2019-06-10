@@ -1,0 +1,224 @@
+@include fa-undo;
+
+#minigame-toggle {
+  position: relative;
+  border: 1px solid rgba($secondary, 0.2);
+  text-align: center;
+  transition: border-color 300ms ease-in-out;
+
+  .options-container {
+    display: flex;
+    flex-flow: column nowrap;
+  }
+
+  .game-container {
+    position: relative;
+  }
+
+  .text-container {
+    position: relative;
+    padding: rem(5px);
+    border: 1px solid rgba($secondary, 0.2);
+  }
+
+  .reset-btn {
+    position: absolute;
+    top: 50%;
+    right: rem(5px);
+    font-size: rem(20px);
+    width: rem(20px);
+    height: rem(20px);
+    padding: rem(7px);
+    color: rgba($secondary, 0.5);
+    border-radius: 50%;
+    cursor: pointer;
+    transform: translateY(-50%) rotate(0);
+
+    &:hover {
+      color: rgba($primary, 0.8);
+    }
+
+    &::before {
+      position: relative;
+      top: 1px;
+    }
+  }
+
+  &.game-over .reset-btn {
+    color: $primary;
+    background-color: white;
+    transform: translateY(-50%) rotate(-360deg);
+    transition: transform .4s ease-in-out;
+  }
+
+  .options-row {
+    display: flex;
+    flex-flow: row wrap;
+  }
+
+  .option {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+    min-height: rem(30px);
+    flex-grow: 1;
+    color: rgba($primary, 0.8);
+    text-align: center;
+    border: 1px solid rgba($secondary, 0.2);
+    cursor: pointer;
+    font-weight: bold;
+    background-clip: padding-box;
+
+    &.active {
+      background-color: rgba($primary, 0.8);
+      color: white;
+    }
+
+    &:not(.active):hover {
+      background-color: rgba($secondary, 0.1);
+    }
+  }
+
+  .shape-plus, .shape-diamond, .shape-x, .shape-o {
+    height: rem(18px);
+
+    span {
+      display: inline-block;
+      position: relative;
+      width: rem(6px);
+      height: rem(6px);
+      padding: 0;
+      margin: rem(6px);
+    }
+  }
+
+  .shape-diamond span {
+    box-shadow:
+      0 rem(6px) 0 0 currentColor,
+      0 rem(-6px) 0 0 currentColor,
+      rem(6px) 0 0 0 currentColor,
+      rem(-6px) 0 0 0 currentColor;
+  }
+
+  .shape-plus span {
+    background-color: currentColor;
+    box-shadow:
+      0 rem(6px) 0 0 currentColor,
+      0 rem(-6px) 0 0 currentColor,
+      rem(6px) 0 0 0 currentColor,
+      rem(-6px) 0 0 0 currentColor;
+  }
+
+  .shape-x span {
+    background-color: currentColor;
+    box-shadow:
+      rem(6px)  rem(6px)  0 0 currentColor,
+      rem(6px)  rem(-6px) 0 0 currentColor,
+      rem(-6px) rem(6px)  0 0 currentColor,
+      rem(-6px) rem(-6px) 0 0 currentColor;
+  }
+
+  .shape-o span {
+    box-shadow: 0 0 0 rem(6px) currentColor;
+  }
+
+  table {
+    border-spacing: 0;
+  }
+
+  .win-screen {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    color: white;
+    background-color: $primary;
+    transition: transform 300ms ease-in-out;
+    transform: scale(0);
+    pointer-events: none;
+    border: 2px solid $primary;
+
+    .win-text {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      flex-grow: 1;
+      font-size: rem(40px);
+      font-weight: bold;
+    }
+
+    .reset-text {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      text-align: right;
+      font-size: rem(18px);
+      line-height: rem(18px);
+      font-weight: bold;
+      padding: rem(5px);
+      padding-right: rem(18px);
+      margin-right: rem(15px);
+
+      &::after {
+        position: absolute;
+        content: "";
+        right: 0;
+        top: rem(12px);
+        width: 0;
+        height: 0;
+        border-radius: 3px;
+        border: 5px solid transparent;
+        border-bottom-color: currentColor;
+        border-right-color: currentColor;
+        transform: rotate(45deg);
+      }
+    }
+  }
+
+  &.game-over {
+    .win-screen {
+      transform: scale(1);
+      pointer-events: all;
+    }
+  }
+
+  .hint {
+    font-size: rem(12px);
+    line-height: rem(14px);
+  }
+
+  td {
+    position: relative;
+    width: rem(32px);
+    height: rem(32px);
+    margin: 0;
+    padding: 0;
+    border: 1px solid rgba($secondary, 0.2);
+
+    &::after {
+      position: absolute;
+      content: "";
+      top: rem(2px);
+      right: rem(2px);
+      bottom: rem(2px);
+      left: rem(2px);
+      width: rem(28px);
+      height: rem(28px);
+      border-radius: 50%;
+      background-color: rgba($primary, 0.8);
+      transition: transform 150ms ease-in-out;
+      transform: scale(0);
+    }
+
+    &.active::after {
+      transform: scale(1);
+    }
+  }
+}

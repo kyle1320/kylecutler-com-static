@@ -1,0 +1,20 @@
+@import 'styles/base/variables';
+@import 'styles/base/mixins';
+
+@import 'styles/vendor/fontawesome/fontawesome';
+@import 'styles/vendor/fontawesome/solid';
+
+@import 'minigame-toggle';
+@import 'minigame-snake';
+
+.minigame-container {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+  margin: rem(40px) 0 rem(20px);
+
+  & > * {
+    margin: rem(15px) rem(30px);
+  }
+}
