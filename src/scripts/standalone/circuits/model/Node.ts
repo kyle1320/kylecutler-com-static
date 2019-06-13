@@ -125,7 +125,7 @@ function updateSources(nodes: Set<Node>) {
 }
 
 function findAllDFS(start: Node): Set<Node> {
-  var found = new Set();
+  var found = new Set<Node>();
   var front = [start];
 
   while (front.length > 0) {
