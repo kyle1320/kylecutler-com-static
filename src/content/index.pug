@@ -1,5 +1,7 @@
 extends /shared/main.pug
 
+include /components/images.pug
+
 block title
   | Home
 
@@ -11,54 +13,54 @@ block content
   .tiles
     a.tile.tile--a-lg(href="/timetracker/")
       .tile__image
-        img(src="/img/tiles/timetracker_xl.png")
+        +img-hi-res("/img/tiles/timetracker_xl.png")
       .info
         .info__title Time Tracker
         .info__desc Track time spent on various tasks at work
     a.tile.tile--b(href="/experiments/painter/")
       .tile__image
-        img(src="/img/tiles/painter_lg.png")
+        +img-hi-res("/img/tiles/painter_lg.png")
       .info
         .info__title Painter
     a.tile.tile--c(href="/experiments/spirograph/")
       .tile__image
-        img(src="/img/tiles/spirograph_lg.png")
+        +img-hi-res("/img/tiles/spirograph_lg.png")
       .info
         .info__title Spirograph
     a.tile.tile--d(href="/experiments/minigames/")
       .tile__image
-        img(src="/img/tiles/minigames_lg.png")
+        +img-hi-res("/img/tiles/minigames_lg.png")
       .info
         .info__title Minigames
     a.tile.tile--e(href="/resume/")
       .tile__image
-        img(src="/img/tiles/resume_lg.png")
+        +img-hi-res("/img/tiles/resume_lg.png")
       .info
         .info__title Résumé
     a.tile.tile--f-lg(href="/circuits/")
       .tile__image
-        img(src="/img/tiles/circuits_xl.png")
+        +img-hi-res("/img/tiles/circuits_xl.png")
       .info
         .info__title Circuits
         .info__desc Design and test boolean logic circuits
     a.tile.tile--g(href="/experiments/bubbles/")
       .tile__image
-        img(src="/img/tiles/bubbles_lg.png")
+        +img-hi-res("/img/tiles/bubbles_lg.png")
       .info
         .info__title Bubbles
     a.tile.tile--h(href="/experiments/particles/")
       .tile__image
-        img(src="/img/tiles/particles_lg.png")
+        +img-hi-res("/img/tiles/particles_lg.png")
       .info
         .info__title Particles
     a.tile.tile--i(href="/experiments/graphs/")
       .tile__image
-        img(src="/img/tiles/graphs_lg.png")
+        +img-hi-res("/img/tiles/graphs_lg.png")
       .info
         .info__title Graphs
   .contentbox
     h2 A little about me...
-    img(src="/img/kyle-sm.jpg" height="160px" style="float: left; padding: 5px 15px 5px 0;")
+    +img-hi-res("/img/kyle-sm.jpg")(height="160px" style="float: left; padding: 5px 15px 5px 0;")
     p My name is Kyle Cutler; I'm a graduate Computer Science student at Rochester Institute of Technology.
     p I have been programming for about seven years, and I always love to learn more. At the moment, I consider myself most fluent in Javascript, Java, Python, and C, but I have experience with many other languages as well.
     p I love to create visual programs, such as fractal generators, simulations, games, and anything else I come up with. (check out some of <a href="/experiments">my JavaScript experiments!</a>)
