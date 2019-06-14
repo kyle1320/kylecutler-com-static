@@ -8,6 +8,7 @@
     "@types/node": "^12.0.8",
     "@typescript-eslint/eslint-plugin": "^1.10.2",
     "@typescript-eslint/parser": "^1.10.2",
+    "autoprefixer": "^9.6.0",
     "eslint": "^5.16.0",
     "jscolor-picker": "^2.0.4",
     "parcel": "^1.12.3",
@@ -22,9 +23,9 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .js,.ts,.jsx,.tsx",
     "verify": "npm run typecheck && npm run lint",
-    "build": "parcel build src/**/*.pug --experimental-scope-hoisting",
+    "build": "parcel build src/*.pug src/*/*.pug src/*/*/*.pug --experimental-scope-hoisting",
     "deploy": "npm run verify && npm run build",
-    "watch": "parcel src/**/*.pug"
+    "watch": "parcel src/*.pug src/*/*.pug src/*/*/*.pug"
   },
   "engines": {}
 }
