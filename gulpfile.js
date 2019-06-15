@@ -55,6 +55,10 @@ const configPaths = {
       }
     ],
     dest: 'public/js'
+  },
+  sitemap: {
+    src: 'public/**/*.html',
+    dest: 'public'
   }
 };
 
@@ -240,6 +244,19 @@ setUpTasks('hiddenItems', paths => {
   });
 });
 
+setUpTasks('sitemap', paths => {
+  const sitemap = require('gulp-sitemap');
+
+  gulp.task('sitemap', function () {
+    return gulp.src(paths.src, { read: false })
+      .pipe(sitemap({
+        siteUrl: 'https://www.kylecutler.com',
+        changefreq: 'monthly'
+      }))
+      .pipe(gulp.dest(paths.dest));
+  });
+});
+
 setUpTasks('extras', () => {
   const browserSync = require('browser-sync');
   const del         = require('del');
@@ -263,28 +280,30 @@ setUpTasks('extras', () => {
 });
 
 setUpTasks('build', () => {
+  const build = gulp.parallel(
+    'styles',
+    'content-scripts',
+    'site-scripts',
+    'content',
+    'assets',
+    'vendor'
+  );
+
   gulp.task('build', gulp.series(
+    setEnv('production'),
+    'clean',
+    build,
+    'hidden-items',
+    'sitemap'
+  ));
+
+  gulp.task('default', gulp.series(
     'clean',
     gulp.parallel(
-      'lint',
-      'styles',
-      'content-scripts',
-      'site-scripts',
-      'content',
-      'assets',
-      'vendor'
+      build,
+      'lint'
     ),
-    'hidden-items'
-  ));
-
-  gulp.task('build:dev', gulp.series(
-    setEnv('development'),
-    'build'
-  ));
-
-  gulp.task('build:prod', gulp.series(
-    setEnv('production'),
-    'build'
+    gulp.parallel('watch', 'browser-sync')
   ));
 
   function setEnv(name) {
@@ -298,8 +317,3 @@ setUpTasks('build', () => {
     return task;
   }
 });
-
-gulp.task('default', gulp.series(
-  'build:dev',
-  gulp.parallel('watch', 'browser-sync')
-));

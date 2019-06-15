@@ -24,6 +24,7 @@
     "gulp-pug": "^4.0.1",
     "gulp-rename": "^1.4.0",
     "gulp-sass": "^4.0.2",
+    "gulp-sitemap": "^7.2.0",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-uglify": "^3.0.2",
     "jscolor-picker": "^2.0.4",
@@ -42,7 +43,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.ts,.jsx,.tsx",
     "verify": "npm run typecheck && npm run lint",
-    "build": "npm run verify && gulp build:prod"
+    "build": "npm run verify && gulp build"
   },
   "engines": {}
 }
