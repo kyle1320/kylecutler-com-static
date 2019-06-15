@@ -1,6 +1,6 @@
 import Field from './model/Field';
-import Snake from './model/snake';
-import Food from './model/food';
+import Snake from './model/Snake';
+import Food from './model/Food';
 import { Direction, Vec2 } from './types';
 import {
   SNAKE_WIDTH,
