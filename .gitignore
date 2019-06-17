@@ -69,3 +69,6 @@ public/
 
 # Alternate, untracked versions of files
 *.alt
+
+# Netlify CLI settings
+.netlify/
