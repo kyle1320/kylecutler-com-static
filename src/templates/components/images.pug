@@ -1,2 +1,2 @@
-mixin img-hi-res(src, alt = "")
+mixin img-hi-res(src)
   img(src=src, srcset=`${src.replace(/^(.*)(\.[^.]+)$/, `$1@2x$2`)} 2x`)&attributes(attributes)

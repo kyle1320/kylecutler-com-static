@@ -2,8 +2,8 @@ extends /shared/main.pug
 
 include /components/controls.pug
 
-block title
-  | Experiment: Graphs
+block vars
+  - title = "Experiment: Graphs"
 
 append scripts
   //- script(type="text/javascript" src="/js/jszip.js")

@@ -56,5 +56,5 @@ window.addEventListener('load', function () {
     el.addEventListener('touchstart', deobfuscate);
   }
 
-  window.addEventListener('touchmove', deobfuscateAll);
+  window.addEventListener('touchmove', deobfuscateAll, { passive: true });
 });

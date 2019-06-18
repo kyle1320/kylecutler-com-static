@@ -2,13 +2,21 @@ include /components/gtm.pug
 
 doctype html
 
-html
+- title = ""
+- description = "Kyle Cutler's Personal Website – Coding Experiments, Games, Web Apps, and More"
+block vars
+
+html(lang="en")
     head
         title
-            block title
-            |  – Kyle Cutler
+            if title
+                | #{title} – Kyle Cutler
+            else
+                | Kyle Cutler
         meta(charset="utf-8")
         meta(name="viewport" content="width=device-width")
+        meta(name="description" content=description)
+        meta(name="theme-color" content="#00897B")
         +gtmScript
         block styles
             link(href="/css/main.css" rel="stylesheet")

@@ -2,8 +2,8 @@ extends /shared/main.pug
 
 include /components/controls.pug
 
-block title
-  | CSCI711 – Checkpoint 1
+block vars
+  - title = "CSCI711 – Checkpoint 1"
 
 append scripts
   script(type="text/javascript" src="/js/three.js")

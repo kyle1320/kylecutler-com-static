@@ -2,8 +2,9 @@ extends /shared/main.pug
 
 include /components/controls.pug
 
-block title
-  | Experiment: Spirograph
+block vars
+  - title = "Experiment: Spirograph"
+  - description = "An online emulator similar to the classic toy. Configure it beyond physical limits to see what's possible!"
 
 append scripts
   script(type="text/javascript" src="spiro.js")
