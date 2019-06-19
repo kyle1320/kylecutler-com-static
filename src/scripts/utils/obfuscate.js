@@ -53,7 +53,7 @@ window.addEventListener('load', function () {
 
     el.addEventListener('focus', deobfuscate);
     el.addEventListener('mouseenter', deobfuscate);
-    el.addEventListener('touchstart', deobfuscate);
+    el.addEventListener('touchstart', deobfuscate, { passive: true });
   }
 
   window.addEventListener('touchmove', deobfuscateAll, { passive: true });
