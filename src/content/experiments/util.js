@@ -1,10 +1,10 @@
-var $ = function (e) { return document.getElementById(e); };
+export const $ = function (e) { return document.getElementById(e); };
 
 /****************
  *    CANVAS    *
  ****************/
 
-function scaleCanvas(canvas, context, scaleContext) {
+export const scaleCanvas = function (canvas, context, scaleContext) {
   var devicePixelRatio = window.devicePixelRatio || 1;
   var backingStoreRatio = context.webkitBackingStorePixelRatio ||
     context.mozBackingStorePixelRatio ||
@@ -24,9 +24,11 @@ function scaleCanvas(canvas, context, scaleContext) {
   );
 
   return scale;
-}
+};
 
-function resizeCanvas(canvas, context, width, height, scaleContext) {
+export const resizeCanvas = function (
+  canvas, context, width, height, scaleContext
+) {
   if (scaleContext === undefined) scaleContext = true;
 
   canvas.width = width;
@@ -48,9 +50,11 @@ function resizeCanvas(canvas, context, width, height, scaleContext) {
       context.scale(scalex, scaley);
     }
   }
-}
+};
 
-function fitElement(el, preferredWidth, preferredHeight, onresize) {
+export const fitElement = function (
+  el, preferredWidth, preferredHeight, onresize
+) {
   preferredWidth = preferredWidth || el.clientWidth;
   preferredHeight = preferredHeight || el.clientHeight;
   onresize = onresize || function () {};
@@ -78,19 +82,19 @@ function fitElement(el, preferredWidth, preferredHeight, onresize) {
 
   resize();
   window.addEventListener('resize', resize);
-}
+};
 
 /****************
  *    COLORS    *
  ****************/
 
-function randomColor() {
+export const randomColor = function () {
   return '#' + (
     '00000' + (Math.floor(Math.random()*16777216)).toString(16)
   ).slice(-6);
-}
+};
 
-function getSaturatedColor(v) {
+export const getSaturatedColor = function (v) {
   var i = Math.floor(v * 6);
   var f = ((v * 6 - i) + 1) % 1;
   var q = ('0' + Math.round(255 * (1 - f)).toString(16)).slice(-2);
@@ -103,19 +107,19 @@ function getSaturatedColor(v) {
   case 4: return '#' + t + '00FF';
   case 5: return '#FF00' + q;
   }
-}
+};
 
-function toRGBString(r, g, b) {
+export const toRGBString = function (r, g, b) {
   return '#' + ('0' + Math.floor(r).toString(16)).slice(-2) +
                  ('0' + Math.floor(g).toString(16)).slice(-2) +
                  ('0' + Math.floor(b).toString(16)).slice(-2);
-}
+};
 
 /****************
  *    EVENTS    *
  ****************/
 
-function getRelativeCoord(canvas, evt) {
+export const getRelativeCoord = function (canvas, evt) {
   var x, y;
   // var pressed;
   if (evt instanceof MouseEvent) {
@@ -134,17 +138,17 @@ function getRelativeCoord(canvas, evt) {
     x: (x - rect.left) * (canvas.drawWidth / canvas.clientWidth),
     y: (y - rect.top) * (canvas.drawHeight / canvas.clientHeight),
   };
-}
+};
 
-function takeTouchFocus(evt) {
+export const takeTouchFocus = function (evt) {
   if (window.TouchEvent && evt instanceof TouchEvent) {
     if (evt.touches.length < 2) {
       evt.preventDefault();
     }
   }
-}
+};
 
-function linkCheckboxToBoolean(checkbox, object, attr, func) {
+export const linkCheckboxToBoolean = function (checkbox, object, attr, func) {
   func = func || function () {};
 
   checkbox.checked = object[attr];
@@ -152,9 +156,9 @@ function linkCheckboxToBoolean(checkbox, object, attr, func) {
     object[attr] = checkbox.checked;
     func();
   });
-}
+};
 
-function linkInputToNumber(input, object, attr, func, instant) {
+export const linkInputToNumber = function (input, object, attr, func, instant) {
   func = func || function () {};
   if (instant === undefined) instant = true;
 
@@ -170,9 +174,9 @@ function linkInputToNumber(input, object, attr, func, instant) {
   input.addEventListener('blur', function () {
     input.value = String(object[attr]);
   });
-}
+};
 
-function linkColorChooserToValues(color, object, attr, func) {
+export const linkColorChooserToValues = function (color, object, attr, func) {
   func = func || function () {};
 
   color.jscolor.fromRGB(object[attr][0], object[attr][1], object[attr][2]);
@@ -182,9 +186,11 @@ function linkColorChooserToValues(color, object, attr, func) {
     object[attr][2] = Math.floor(color.jscolor.rgb[2]);
     func();
   });
-}
+};
 
-function linkColorChooserToHexString(color, object, attr, func) {
+export const linkColorChooserToHexString = function (
+  color, object, attr, func
+) {
   func = func || function () {};
 
   color.jscolor.fromString(object[attr] ? object[attr].slice(1) : '');
@@ -192,9 +198,9 @@ function linkColorChooserToHexString(color, object, attr, func) {
     object[attr] = color.value ? '#' + color.jscolor.toString() : null;
     func();
   });
-}
+};
 
-function linkSelectToString(select, object, attr, func) {
+export const linkSelectToString = function (select, object, attr, func) {
   func = func || function () {};
 
   select.value = object[attr];
@@ -202,13 +208,13 @@ function linkSelectToString(select, object, attr, func) {
     object[attr] = select.value;
     func();
   });
-}
+};
 
 /****************
  *    FILES     *
  ****************/
 
-function loadFile(url, data, callback, errorCallback) {
+export const loadFile = function (url, data, callback, errorCallback) {
   errorCallback = errorCallback || function () {};
 
   // Set up an asynchronous request
@@ -231,9 +237,9 @@ function loadFile(url, data, callback, errorCallback) {
   };
 
   request.send(null);
-}
+};
 
-function loadFiles(urls, callback, errorCallback) {
+export const loadFiles = function (urls, callback, errorCallback) {
   var numUrls = urls.length;
   var numComplete = 0;
   var result = [];
@@ -252,7 +258,7 @@ function loadFiles(urls, callback, errorCallback) {
   for (var i = 0; i < numUrls; i++) {
     loadFile(urls[i], i, partialCallback, errorCallback);
   }
-}
+};
 
 /****************
  *     MISC     *
@@ -270,7 +276,7 @@ Array.prototype.pushAll = function (list) {
 };
 
 // definition for a point quadtree. Useful every now and again.. especially when working with 2D grids ;)
-function QuadTree(minx, miny, maxx, maxy) {
+export const QuadTree = function (minx, miny, maxx, maxy) {
   this.minx = minx;
   this.miny = miny;
   this.maxx = maxx;
@@ -283,7 +289,7 @@ function QuadTree(minx, miny, maxx, maxy) {
   this.ne = null;
   this.sw = null;
   this.se = null;
-}
+};
 
 QuadTree.prototype.insert = function (obj) {
 
@@ -396,11 +402,11 @@ QuadTree.prototype.draw = function (canvas, ctx, minx, miny, maxx, maxy) {
   }
 };
 
-function poissonDisk(minx, miny, width, height, r) {
+export const poissonDisk = function (minx, miny, width, height, r) {
   var r2 = r * r;
   var maxx = minx + width;
   var maxy = miny + height;
-  var i, j, k;
+  var j, k;
 
   var points = [
     {x: Math.random() * width + minx, y: Math.random() * height + miny}
@@ -470,33 +476,17 @@ function poissonDisk(minx, miny, width, height, r) {
     }
   }
 
-  var cvs = $('draw-canvas');
-  var ctx = cvs.getContext('2d');
+  // var cvs = $('draw-canvas');
+  // var ctx = cvs.getContext('2d');
 
-  for (i = 0; i < points.length; i++) {
-    for (j = 0; j < points.length; j++) {
-      ctx.fillRect(cvs.drawWidth / 2 + (points[j].x - points[i].x),
-        cvs.drawHeight / 2 + (points[j].y - points[i].y), 1, 1);
-    }
-  }
+  // for (i = 0; i < points.length; i++) {
+  //   for (j = 0; j < points.length; j++) {
+  //     ctx.fillRect(cvs.drawWidth / 2 + (points[j].x - points[i].x),
+  //       cvs.drawHeight / 2 + (points[j].y - points[i].y), 1, 1);
+  //   }
+  // }
 
   // tree.draw(cvs, ctx, 0, 0, 1, 1);
 
   return points;
-}
-
-window.requestAnimFrame = (function () {
-  return (window.requestAnimationFrame ||
-    window.webkitRequestAnimationFrame ||
-    window.mozRequestAnimationFrame ||
-    function (callback) {
-      window.setTimeout(callback, 1000 / 60);
-    });
-}());
-
-window.cancelAnimFrame = (function () {
-  return (window.cancelAnimationFrame ||
-    window.webkitCancelAnimationFrame ||
-    window.mozCancelAnimationFrame ||
-    window.clearTimeout);
-}());
+};

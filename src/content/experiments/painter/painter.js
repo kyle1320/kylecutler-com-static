@@ -1,3 +1,16 @@
+import 'jscolor-picker';
+import {
+  $,
+  scaleCanvas,
+  fitElement,
+  linkInputToNumber,
+  takeTouchFocus,
+  linkSelectToString,
+  linkColorChooserToValues,
+  poissonDisk,
+  resizeCanvas,
+  getRelativeCoord } from '../util';
+
 window.onload = function () {
   var drawCanvas = $('draw-canvas');
   var neighborCanvas = $('neighbor-canvas');

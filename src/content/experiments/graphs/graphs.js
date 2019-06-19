@@ -1,3 +1,16 @@
+const fs = require('fs');
+
+import {
+  $,
+  scaleCanvas,
+  fitElement,
+  linkInputToNumber,
+  linkCheckboxToBoolean,
+  takeTouchFocus,
+  getRelativeCoord,
+  randomColor } from '../util';
+import { getGL, getGLProgram } from '../webgl';
+
 window.onload = function () {
   var drawCanvas = $('draw-canvas');
   var glCanvas = $('gl-canvas');
@@ -122,30 +135,30 @@ window.onload = function () {
 
     // webGL setup for background drawing
 
-    loadFiles(['shader.vert', 'shader.frag'], function (files) {
-      var program = getGLProgram(gl, files[0], files[1]);
-      gl.useProgram(program);
+    var program = getGLProgram(
+      gl,
+      fs.readFileSync(__dirname + '/shader.vert', 'utf-8'),
+      fs.readFileSync(__dirname + '/shader.frag', 'utf-8'),
+    );
+    gl.useProgram(program);
 
-      positionAttrib = gl.getAttribLocation(program, 'position');
+    positionAttrib = gl.getAttribLocation(program, 'position');
 
-      for (var i=0; i < 16; i++) { // MAX_EDGES is 16 in shader.frag
-        uniforms.edges[i] = gl.getUniformLocation(program, 'edges['+i+']');
-      }
+    for (var i=0; i < 16; i++) { // MAX_EDGES is 16 in shader.frag
+      uniforms.edges[i] = gl.getUniformLocation(program, 'edges['+i+']');
+    }
 
-      uniforms.nEdges = gl.getUniformLocation(program, 'num_edges');
-      uniforms.order = gl.getUniformLocation(program, 'order');
-      uniforms.range = gl.getUniformLocation(program, 'range');
-      uniforms.highlight = gl.getUniformLocation(program, 'highlight');
-      uniforms.modulo = gl.getUniformLocation(program, 'modulo');
+    uniforms.nEdges = gl.getUniformLocation(program, 'num_edges');
+    uniforms.order = gl.getUniformLocation(program, 'order');
+    uniforms.range = gl.getUniformLocation(program, 'range');
+    uniforms.highlight = gl.getUniformLocation(program, 'highlight');
+    uniforms.modulo = gl.getUniformLocation(program, 'modulo');
 
-      uniforms.scale = gl.getUniformLocation(program, 'scale');
-      gl.uniform1f(uniforms.scale, scale);
+    uniforms.scale = gl.getUniformLocation(program, 'scale');
+    gl.uniform1f(uniforms.scale, scale);
 
-      glReady = true;
-      redrawBackground();
-    }, function (url) {
-      console.log('Couldn\'t find file: ' + url);
-    });
+    glReady = true;
+    redrawBackground();
 
     bgbuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, bgbuffer);
@@ -249,7 +262,7 @@ window.onload = function () {
       // requesting another using a boolean flag.
       if (!glFrameQueued) {
         glFrameQueued = true;
-        window.requestAnimFrame(drawBackground);
+        requestAnimationFrame(drawBackground);
       }
     } else if (!options.background) {
       gl.clear(gl.COLOR_BUFFER_BIT);

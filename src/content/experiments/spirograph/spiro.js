@@ -1,3 +1,11 @@
+import {
+  $,
+  scaleCanvas,
+  fitElement,
+  getSaturatedColor,
+  linkInputToNumber,
+  linkCheckboxToBoolean } from '../util';
+
 window.onload = function () {
   var spiroCanvas = $('spiro-canvas');
   var infoCanvas = $('info-canvas');

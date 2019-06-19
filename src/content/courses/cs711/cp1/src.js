@@ -1,3 +1,6 @@
+const THREE = require('three');
+import { $, linkInputToNumber } from '../../../experiments/util';
+
 window.onload = function () {
   var scene = new THREE.Scene();
   var renderer = new THREE.WebGLRenderer({

@@ -1,3 +1,16 @@
+import 'jscolor-picker';
+import {
+  $,
+  scaleCanvas,
+  fitElement,
+  linkInputToNumber,
+  linkColorChooserToHexString,
+  linkSelectToString,
+  resizeCanvas,
+  QuadTree,
+  randomColor,
+  getSaturatedColor } from '../util';
+
 window.onload = function () {
   var drawCanvas = $('draw-canvas');
   var drawContext = drawCanvas.getContext('2d');

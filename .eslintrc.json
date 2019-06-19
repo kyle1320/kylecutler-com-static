@@ -114,6 +114,17 @@
                     }
                 ]
             }
+        },
+        {
+            "files": ["src/content/**/*"],
+            "env": {
+                "browser": true,
+                "commonjs": true,
+                "node": true
+            },
+            "parserOptions": {
+                "sourceType": "module"
+            }
         }
     ]
 }

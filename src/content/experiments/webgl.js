@@ -1,4 +1,4 @@
-function getGL(canvas, attributes) {
+export const getGL = function (canvas, attributes) {
   var gl = null;
 
   try {
@@ -13,9 +13,9 @@ function getGL(canvas, attributes) {
   }
 
   return gl;
-}
+};
 
-function getGLProgram(gl, vertSource, fragSource) {
+export const getGLProgram = function (gl, vertSource, fragSource) {
   var program = null;
   var vertShader = gl.createShader(gl.VERTEX_SHADER);
   var fragShader = gl.createShader(gl.FRAGMENT_SHADER);
@@ -60,4 +60,4 @@ function getGLProgram(gl, vertSource, fragSource) {
   }
 
   return program;
-}
+};

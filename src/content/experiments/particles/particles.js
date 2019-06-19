@@ -1,3 +1,13 @@
+import {
+  $,
+  scaleCanvas,
+  fitElement,
+  linkInputToNumber,
+  linkCheckboxToBoolean,
+  takeTouchFocus,
+  getRelativeCoord,
+  randomColor } from '../util';
+
 window.onload = function () {
   var drawCanvas = $('draw-canvas');
   var traceCanvas = $('trace-canvas');
