@@ -1,5 +1,5 @@
-import EventEmitter from '../../../utils/EventEmitter';
-import { makeElement, toggleClass } from '../../../utils';
+import EventEmitter from '../../../js/utils/EventEmitter';
+import { makeElement, toggleClass } from '../../../js/utils';
 import View from './View';
 import NodeView from './NodeView';
 import Node from '../model/Node';

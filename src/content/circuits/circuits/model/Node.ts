@@ -1,4 +1,4 @@
-import EventEmitter from '../../../utils/EventEmitter';
+import EventEmitter from '../../../js/utils/EventEmitter';
 
 export default class Node extends EventEmitter<{
   update: void

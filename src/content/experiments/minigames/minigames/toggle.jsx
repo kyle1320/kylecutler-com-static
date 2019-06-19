@@ -1,4 +1,4 @@
-import { delay, makeElement, count } from '../../utils';
+import { delay, makeElement, count } from '../../../js/utils';
 
 window.addEventListener('load', function () {
   const el = document.getElementById('minigame-toggle');

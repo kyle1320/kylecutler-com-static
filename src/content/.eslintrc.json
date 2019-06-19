@@ -1,28 +1,13 @@
 {
     "env": {
         "browser": true,
-        "es6": true,
+        "commonjs": true,
         "node": false
     },
+    "parserOptions": {
+        "sourceType": "module"
+    },
     "globals": {
-        "$": false,
-        "fitElement": false,
-        "scaleCanvas": false,
-        "resizeCanvas": false,
-        "getRelativeCoord": false,
-        "takeTouchFocus": false,
-        "linkCheckboxToBoolean": false,
-        "linkColorChooserToValues": false,
-        "linkColorChooserToHexString": false,
-        "linkInputToNumber": false,
-        "linkSelectToString": false,
-        "poissonDisk": false,
-        "QuadTree": false,
-        "randomColor": false,
-        "getSaturatedColor": false,
-        "getGL": false,
-        "getGLProgram": false,
-        "loadFiles": false,
-        "THREE": false
+        "__DEBUG__": false
     }
 }

@@ -1,7 +1,7 @@
 import { PositionalEvent, ActionEvent } from '../model/types';
 
 import View from '../view/View';
-import Controller from '.';
+import Controller from '../controller';
 
 export default abstract class Feature {
   protected controller: Controller;

@@ -1,5 +1,5 @@
 import Feature from '../Feature';
-import Controller from '..';
+import Controller from '../../controller';
 import Serialize from '../../view/Serialize';
 
 export default class ClipboardFeature extends Feature {

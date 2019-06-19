@@ -1,6 +1,6 @@
-import '../utils/obfuscate';
+import '../js/utils/obfuscate';
 
-import { toggleClass } from '../utils';
+import { toggleClass } from '../js/utils';
 
 window.addEventListener('load', function () {
   var showMoreButtons = document.querySelectorAll('.show-more-btn');

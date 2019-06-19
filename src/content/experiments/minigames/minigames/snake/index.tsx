@@ -1,4 +1,4 @@
-import { makeElement } from '../../../utils';
+import { makeElement } from '../../../../js/utils';
 import Field from './model/Field';
 import SnakeAI from './ai';
 

@@ -10,12 +10,7 @@ const extensions = extensionsNoDot.map(x => '.' + x);
 
 const configPaths = {
   assets: {
-    src: [
-      'src/assets/**/*',
-      'src/content/**/*',
-      '!src/content/**/*.js',
-      '!src/content/**/*.pug'
-    ],
+    src: 'src/assets/**/*',
     dest: 'public'
   },
   content: {
@@ -23,24 +18,24 @@ const configPaths = {
     dest: 'public',
     watch: ['src/**/*.pug']
   },
-  contentScripts: {
-    src: ['src/content/**/*.js'],
-    dest: 'public'
-  },
+  // contentScripts: {
+  //   src: ['src/content/**/*.js'],
+  //   dest: 'public'
+  // },
   hiddenItems: {
     dev: [],
     prod: ['public/debug']
   },
   lint: [`src/**/*.{${extensionsNoDot.join(',')}}`],
-  siteScripts: {
-    include: `src/scripts/**/*.entry.{${extensionsNoDot.join(',')}}`,
-    dest: 'public/js',
-    watch: `src/scripts/**/*.{${extensionsNoDot.join(',')}}`
-  },
-  styles: {
-    src: ['src/styles/**/*.scss'],
-    dest: 'public/css'
-  },
+  // siteScripts: {
+  //   include: `src/scripts/**/*.entry.{${extensionsNoDot.join(',')}}`,
+  //   dest: 'public/js',
+  //   watch: `src/scripts/**/*.{${extensionsNoDot.join(',')}}`
+  // },
+  // styles: {
+  //   src: ['src/styles/**/*.scss'],
+  //   dest: 'public/css'
+  // },
   vendorScripts: {
     src: [
       {
@@ -70,46 +65,88 @@ const setUpTasks = (name, cb) => cb(configPaths[name]);
 // don't handle errors in production builds -- just let Gulp crash.
 const handleErrors = () => dev(plumber(e => log.error(e.toString())));
 
-setUpTasks('styles', paths => {
-  const autoprefixer = require('gulp-autoprefixer');
-  const cleanCSS     = require('gulp-clean-css');
-  const sass         = require('gulp-sass');
-  const sourcemaps   = require('gulp-sourcemaps');
+// setUpTasks('styles', paths => {
+//   const autoprefixer = require('gulp-autoprefixer');
+//   const cleanCSS     = require('gulp-clean-css');
+//   const sass         = require('gulp-sass');
+//   const sourcemaps   = require('gulp-sourcemaps');
 
-  gulp.task('styles', function () {
-    return gulp.src(paths.src)
-      .pipe(handleErrors())
-      .pipe(dev(sourcemaps.init()))
-      .pipe(sass().on('error', sass.logError))
-      .pipe(autoprefixer({ grid: true }))
-      .pipe(prod(cleanCSS({compatibility: 'ie8'})))
-      .pipe(dev(sourcemaps.write()))
-      .pipe(gulp.dest(paths.dest));
-  });
+//   gulp.task('styles', function () {
+//     return gulp.src(paths.src)
+//       .pipe(handleErrors())
+//       .pipe(dev(sourcemaps.init()))
+//       .pipe(sass().on('error', sass.logError))
+//       .pipe(autoprefixer({ grid: true }))
+//       .pipe(prod(cleanCSS({compatibility: 'ie8'})))
+//       .pipe(dev(sourcemaps.write()))
+//       .pipe(gulp.dest(paths.dest));
+//   });
 
-  gulp.task('watch:styles', function () {
-    gulp.watch(paths.src, gulp.series('styles'));
-  });
-});
+//   gulp.task('watch:styles', function () {
+//     gulp.watch(paths.src, gulp.series('styles'));
+//   });
+// });
 
-setUpTasks('contentScripts', paths => {
-  const babel = require('gulp-babel');
-  const uglify = require('gulp-uglify');
+// setUpTasks('contentScripts', paths => {
+//   const babel = require('gulp-babel');
+//   const uglify = require('gulp-uglify');
 
-  gulp.task('content-scripts', function () {
-    return gulp.src(paths.src)
-      .pipe(handleErrors())
-      .pipe(babel(babelConfig_noTransform))
-      .pipe(prod(uglify()))
-      .pipe(gulp.dest(paths.dest));
-  });
+//   gulp.task('content-scripts', function () {
+//     return gulp.src(paths.src)
+//       .pipe(handleErrors())
+//       .pipe(babel(babelConfig_noTransform))
+//       .pipe(prod(uglify()))
+//       .pipe(gulp.dest(paths.dest));
+//   });
 
-  gulp.task('watch:content-scripts', function () {
-    gulp.watch(paths.src, gulp.series('content-scripts'));
-  });
-});
+//   gulp.task('watch:content-scripts', function () {
+//     gulp.watch(paths.src, gulp.series('content-scripts'));
+//   });
+// });
 
-setUpTasks('siteScripts', paths => {
+// setUpTasks('siteScripts', paths => {
+//   const rename     = require('gulp-rename');
+//   const replace    = require('rollup-plugin-replace');
+//   const resolve    = require('rollup-plugin-node-resolve');
+//   const rollup     = require('gulp-better-rollup');
+//   const sourcemaps = require('gulp-sourcemaps');
+//   const typescript = require('rollup-plugin-typescript');
+//   const uglify     = require('rollup-plugin-uglify');
+
+//   gulp.task('site-scripts', function () {
+//     return gulp.src(paths.include)
+//       .pipe(handleErrors())
+//       .pipe(dev(sourcemaps.init()))
+//       .pipe(rollup({
+//         cache: true,
+//         plugins: [
+//           resolve({ extensions }),
+//           replace({ __DEBUG__: !isProd() }),
+//           typescript({ include: extensions.map(x => '**/*' + x) })
+//         ].concat(isProd() ? uglify.uglify() : [])
+//       }, 'iife'))
+//       .pipe(rename(path => {
+//         path.basename = path.basename.replace(/\.entry$/, '');
+//         path.extname = '.js';
+//       }))
+//       .pipe(dev(sourcemaps.write()))
+//       .pipe(gulp.dest(paths.dest));
+//   });
+
+//   gulp.task('watch:site-scripts', function () {
+//     gulp.watch(paths.watch, gulp.series('site-scripts'));
+//   });
+// });
+
+setUpTasks('content', paths => {
+  const babel   = require('@babel/core');
+  const pug     = require('gulp-pug');
+  const htmlmin = require('gulp-htmlmin');
+
+  const htmlDep   = require('./lib/htmlAssets');
+  const gulpIf    = require('gulp-if');
+  const multipipe = require('multipipe');
+
   const rename     = require('gulp-rename');
   const replace    = require('rollup-plugin-replace');
   const resolve    = require('rollup-plugin-node-resolve');
@@ -118,35 +155,9 @@ setUpTasks('siteScripts', paths => {
   const typescript = require('rollup-plugin-typescript');
   const uglify     = require('rollup-plugin-uglify');
 
-  gulp.task('site-scripts', function () {
-    return gulp.src(paths.include)
-      .pipe(handleErrors())
-      .pipe(dev(sourcemaps.init()))
-      .pipe(rollup({
-        cache: true,
-        plugins: [
-          resolve({ extensions }),
-          replace({ __DEBUG__: !isProd() }),
-          typescript({ include: extensions.map(x => '**/*' + x) })
-        ].concat(isProd() ? uglify.uglify() : [])
-      }, 'iife'))
-      .pipe(rename(path => {
-        path.basename = path.basename.replace(/\.entry$/, '');
-        path.extname = '.js';
-      }))
-      .pipe(dev(sourcemaps.write()))
-      .pipe(gulp.dest(paths.dest));
-  });
-
-  gulp.task('watch:site-scripts', function () {
-    gulp.watch(paths.watch, gulp.series('site-scripts'));
-  });
-});
-
-setUpTasks('content', paths => {
-  const babel   = require('@babel/core');
-  const pug     = require('gulp-pug');
-  const htmlmin = require('gulp-htmlmin');
+  const autoprefixer = require('gulp-autoprefixer');
+  const cleanCSS     = require('gulp-clean-css');
+  const sass         = require('gulp-sass');
 
   const pugArgs = {
     basedir: 'src/templates',
@@ -180,7 +191,40 @@ setUpTasks('content', paths => {
     return gulp.src(paths.src)
       .pipe(handleErrors())
       .pipe(pug(pugArgs))
-      .pipe(prod(htmlmin(htmlMinArgs)))
+      .pipe(htmlDep({
+        rename: function (path) {
+          switch (path.ext) {
+          case '.ts':
+          case '.jsx':
+          case '.tsx': path.ext = '.js'; break;
+          case '.scss': path.ext = '.css'; break;
+          }
+        },
+        baseDir: 'src/content',
+        script: (src, dest) => src
+          .pipe(dev(sourcemaps.init()))
+          .pipe(rollup({
+            cache: true,
+            plugins: [
+              resolve({ extensions }),
+              replace({ __DEBUG__: !isProd() }),
+              typescript({ include: extensions.map(x => '**/*' + x) })
+            ].concat(isProd() ? uglify.uglify() : [])
+          }, 'iife'))
+          .pipe(rename({ extname: '.js' }))
+          .pipe(dev(sourcemaps.write()))
+          .pipe(dest),
+        style: (src, dest) => src
+          .pipe(dev(sourcemaps.init()))
+          .pipe(sass().on('error', sass.logError))
+          .pipe(autoprefixer({ grid: true }))
+          .pipe(prod(cleanCSS({compatibility: 'ie8'})))
+          .pipe(dev(sourcemaps.write()))
+          .pipe(dest)
+      }))
+
+      // TODO: remove need for this
+      .pipe(gulpIf('*.html', prod(htmlmin(htmlMinArgs))))
       .pipe(gulp.dest(paths.dest));
   });
 
@@ -267,9 +311,9 @@ setUpTasks('extras', () => {
 
   gulp.task('watch', gulp.parallel(
     'watch:content',
-    'watch:content-scripts',
-    'watch:site-scripts',
-    'watch:styles',
+    // 'watch:content-scripts',
+    // 'watch:site-scripts',
+    // 'watch:styles',
     'watch:assets',
     'watch:lint'
   ));
@@ -281,11 +325,11 @@ setUpTasks('extras', () => {
 
 setUpTasks('build', () => {
   const build = gulp.parallel(
-    'styles',
-    'content-scripts',
-    'site-scripts',
-    'content',
     'assets',
+    // 'content-scripts',
+    // 'site-scripts',
+    // 'styles',
+    'content',
     'vendor'
   );
 
