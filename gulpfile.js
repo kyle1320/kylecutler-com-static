@@ -14,7 +14,7 @@ const htmlDep     = require('./lib/htmlAssets');
 
 const extensionsNoDot = ['js', 'ts', 'jsx', 'tsx'];
 const extensions = extensionsNoDot.map(x => '.' + x);
-const scripts = `src/**/*.{${extensionsNoDot.join(',')}}`;
+const allScripts = `src/**/*.{${extensionsNoDot.join(',')}}`;
 
 const isProd = ()       => process.env.NODE_ENV === 'production';
 const prod   = (stream) => $.if(isProd(), stream);
@@ -23,7 +23,11 @@ const dev    = (stream) => $.if(!isProd(), stream);
 // don't handle errors in production builds -- just let Gulp crash.
 const handleErrors = () => dev($.plumber(e => log.error(e.toString())));
 
+var scripts = new Set(), styles = new Set();
+
 gulp.task('content', function () {
+  const newScripts = new Set(), newStyles = new Set();
+
   return gulp.src('src/content/**/*.pug')
     .pipe(handleErrors())
     .pipe($.pug({
@@ -48,39 +52,64 @@ gulp.task('content', function () {
         case '.scss': path.ext = '.css'; break;
         }
       },
-      baseDir: 'src/content',
-      html: src => src
-        .pipe(prod($.htmlmin({
-          collapseBooleanAttributes: true,
-          collapseWhitespace: true,
-          minifyCSS: true,
-          minifyJS: true,
-          removeComments: true
-        }))),
-      script: src => src
-        .pipe(dev($.sourcemaps.init()))
-        .pipe($.betterRollup({
-          cache: true,
-          plugins: [
-            resolve({ extensions }),
-            replace({ __DEBUG__: !isProd() }),
-            typescript({ include: extensions.map(x => '**/*' + x) })
-          ].concat(isProd() ? uglify.uglify() : [])
-        }, 'iife'))
-        .pipe($.rename({ extname: '.js' }))
-        .pipe(dev($.sourcemaps.write())),
-      style: src => src
-        .pipe(dev($.sourcemaps.init()))
-        .pipe($.sass().on('error', $.sass.logError))
-        .pipe($.autoprefixer({ grid: true }))
-        .pipe(prod($.cleanCss({compatibility: 'ie8'})))
-        .pipe(dev($.sourcemaps.write()))
+      onScript: path => newScripts.add(path),
+      onStyle: path => newStyles.add(path),
+      baseDir: 'src/content'
     }))
+    .pipe(prod($.htmlmin({
+      collapseBooleanAttributes: true,
+      collapseWhitespace: true,
+      minifyCSS: true,
+      minifyJS: true,
+      removeComments: true
+    })))
+    .on('end', function () {
+      styles = newStyles;
+      scripts = newScripts;
+    })
     .pipe(gulp.dest('public'));
 });
 
 gulp.task('watch:content', function () {
-  gulp.watch('src/{templates,content}/**/*', gulp.series('content'));
+  gulp.watch('src/{templates,content}/**/*.pug', gulp.series('content'));
+});
+
+gulp.task('scripts', function () {
+  return gulp.src([...scripts], { base: 'src/content' })
+    .pipe(dev($.sourcemaps.init()))
+    .pipe($.betterRollup({
+      cache: true,
+      plugins: [
+        resolve({ extensions }),
+        replace({ __DEBUG__: !isProd() }),
+        typescript({ include: extensions.map(x => '**/*' + x) })
+      ].concat(isProd() ? uglify.uglify() : [])
+    }, 'iife'))
+    .pipe($.rename({ extname: '.js' }))
+    .pipe(dev($.sourcemaps.write()))
+    .pipe(gulp.dest('public'));
+});
+
+gulp.task('watch:scripts', function () {
+
+  // TODO: watch for updates to scripts map
+  gulp.watch(allScripts, gulp.series('scripts'));
+});
+
+gulp.task('styles', function () {
+  return gulp.src([...styles], { base: 'src/content' })
+    .pipe(dev($.sourcemaps.init()))
+    .pipe($.sass().on('error', $.sass.logError))
+    .pipe($.autoprefixer({ grid: true }))
+    .pipe(prod($.cleanCss({compatibility: 'ie8'})))
+    .pipe(dev($.sourcemaps.write()))
+    .pipe(gulp.dest('public'));
+});
+
+gulp.task('watch:styles', function () {
+
+  // TODO: watch for updates to styles map
+  gulp.watch('src/content/**/*.scss', gulp.series('styles'));
 });
 
 gulp.task('assets', function () {
@@ -92,7 +121,7 @@ gulp.task('watch:assets', function () {
 });
 
 gulp.task('lint', function () {
-  return gulp.src(scripts)
+  return gulp.src(allScripts)
     .pipe($.cached('linter', { optimizeMemory: true }))
     .pipe(handleErrors())
     .pipe($.eslint({ extensions }))
@@ -100,7 +129,7 @@ gulp.task('lint', function () {
 });
 
 gulp.task('watch:lint', function () {
-  gulp.watch(scripts, gulp.series('lint'));
+  gulp.watch(allScripts, gulp.series('lint'));
 });
 
 gulp.task('sitemap', function () {
@@ -117,13 +146,23 @@ gulp.task('clean', function () {
 });
 
 gulp.task('watch',
-  gulp.parallel('watch:content', 'watch:assets', 'watch:lint'));
+  gulp.parallel(
+    'watch:content',
+    'watch:assets',
+    'watch:styles',
+    'watch:scripts',
+    'watch:lint'
+  )
+);
 
 gulp.task('browser-sync', function (done) {
   browserSync('public/**/*', { server: { baseDir: './public' } }, done);
 });
 
-const build = gulp.parallel('assets', 'content');
+const build = gulp.series(
+  gulp.parallel('assets', 'content'),
+  gulp.parallel('scripts', 'styles'),
+);
 
 gulp.task('build',
   gulp.series(setEnv('production'), 'clean', build, 'sitemap'));
