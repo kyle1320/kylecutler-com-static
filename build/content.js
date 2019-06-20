@@ -2,6 +2,7 @@ const gulp = require('gulp');
 
 const replace    = require('rollup-plugin-replace');
 const resolve    = require('rollup-plugin-node-resolve');
+const string     = require('rollup-plugin-string');
 const typescript = require('rollup-plugin-typescript');
 const uglify     = require('rollup-plugin-uglify');
 
@@ -113,7 +114,8 @@ function doScripts(auto, done) {
       plugins: [
         resolve({ extensions }),
         replace({ __DEBUG__: !isProd() }),
-        typescript({ include: extensions.map(x => '**/*' + x) })
+        typescript({ include: extensions.map(x => '**/*' + x) }),
+        string.string({ include: '**/*.{txt,frag,vert}' })
       ].concat(isProd() ? uglify.uglify() : [])
     }, 'iife'))
     .pipe($.rename({ extname: '.js' }))

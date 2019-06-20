@@ -1,5 +1,3 @@
-const fs = require('fs');
-
 import {
   $,
   scaleCanvas,
@@ -10,6 +8,8 @@ import {
   getRelativeCoord,
   randomColor } from '../util';
 import { getGL, getGLProgram } from '../webgl';
+import vertShader from './shader.vert';
+import fragShader from './shader.frag';
 
 window.onload = function () {
   var drawCanvas = $('draw-canvas');
@@ -135,11 +135,7 @@ window.onload = function () {
 
     // webGL setup for background drawing
 
-    var program = getGLProgram(
-      gl,
-      fs.readFileSync(__dirname + '/shader.vert', 'utf-8'),
-      fs.readFileSync(__dirname + '/shader.frag', 'utf-8'),
-    );
+    var program = getGLProgram(gl, vertShader, fragShader);
     gl.useProgram(program);
 
     positionAttrib = gl.getAttribLocation(program, 'position');
