@@ -9,6 +9,7 @@ const uglify     = require('rollup-plugin-uglify');
 const {
   $,
   extensions,
+  extensionsNoDot,
   handleErrors,
   prod,
   dev,
@@ -44,7 +45,7 @@ function html() {
     // Uncomment to recompile scripts / styles upon removal.
     // This shouldn't be necessary -- we'll just have some unneeded files.
     //
-    // stylesUpdated |= stylesUpdated || styles.size !== newStyles.size;
+    // stylesUpdated = stylesUpdated || styles.size !== newStyles.size;
     // scriptsUpdated = scriptsUpdated || scripts.size !== newScripts.size;
 
     styles = newStyles;
@@ -114,7 +115,7 @@ function doScripts(auto, done) {
       plugins: [
         resolve({ extensions }),
         replace({ __DEBUG__: !isProd() }),
-        typescript({ include: extensions.map(x => '**/*' + x) }),
+        typescript({ include: `**/*.{${extensionsNoDot.join()}}` }),
         string.string({ include: '**/*.{txt,frag,vert}' })
       ].concat(isProd() ? uglify.uglify() : [])
     }, 'iife'))
