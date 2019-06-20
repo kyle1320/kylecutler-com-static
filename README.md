@@ -28,9 +28,9 @@ This project uses the following libraries for source file compilation:
 
 | Output Format | Tools Used |
 |---------------|------------|
-| HTML | [Pug](https://pugjs.org), [Babel](https://babeljs.io), [htmlmin](https://www.npmjs.com/package/htmlmin) |
+| HTML | [Pug](https://pugjs.org), [htmlmin](https://www.npmjs.com/package/htmlmin) |
 | CSS | [Sass](https://sass-lang.com), [autoprefixer](https://www.npmjs.com/package/autoprefixer), [clean-css](https://github.com/jakubpawlowicz/clean-css) |
-| JS | [Babel](https://babeljs.io), [Rollup](https://rollupjs.org), [TypeScript](http://typescriptlang.org) |
+| JS | [Rollup](https://rollupjs.org), [TypeScript](http://typescriptlang.org) |
 
 All source files reside within the `src/` directory, separated into the following directories:
 
@@ -40,28 +40,11 @@ Static content. All content within this directory is directly copied to the outp
 
 ### `content/`:
 
-Mostly intended for HTML page templates, but also allows for Javascript files and static content.
+Contains Pug, Javascript / TypeScript, and SASS sources.
 
-All Pug templates will be converted to HTML and added to the output directory.
+All Pug files are the entry points when compiling, and used to determine what scripts and stylesheets should be compiled. This works by first compiling the Pug into HTML and then scanning the HTML for script / stylesheet tags (resolved relative to the Pug source file, or to the `content/` root folder for absolute paths). The HTML is then output to the target directory.
 
-All Javascript files will be transpiled to ES5 using Babel and output (with no bundling).
-
-All other content will be copied directly to the output folder.
-
-**Note:**
-The `content/` folder eliminates the technical need for the `assets/` folder. The presence of the `assets/` folder is intended to reduce clutter within the `content/` folder by separating out non-compiled items like fonts and images. It also makes it possible to have static assets that use compiled extensions like `.js` or `.pug`. Non-compiled items can still be present within the `content/` folder, in order to make deeply-nested assets more manageable.
-
-### `scripts/`:
-
-Intended for more advanced scripts. Supports a mix of Javascript and TypeScript files that will be bundled together using Rollup.
-
-All `.entry.{js,jsx,ts,tsx}` files within this folder and its subdirectories will be used as entry points to Rollup. Compiled scripts will not include the `.entry` suffix.
-
-Right now, the only entry points are `site.entry.js` and a few files in the `standalone/` folder. The idea behind this is that most pages on the site will include `site.js`, while any non-standard pages, like standalone apps or the résumé page, can have their own separate scripts bundle under the `standalone/` directory and include that file instead.
-
-Each bundle will be transpiled to ES5 using Typescript (including JS files).
-
-In addition, the name `__DEBUG__` can be used to determine whether the code is running in a development or production environment. It can be used to allow conditional compilation of code, when used in the following way:
+Scripts are compiled using [Rollup](https://rollupjs.org), and support a combination of Javascript and TypeScript sources, as well as JSX / TSX compilation. In addition, the name `__DEBUG__` can be used to determine whether the code was compiled in a development or production environment. It can be used to allow conditional compilation of code, when used in the following way:
 
 ```javascript
 if (__DEBUG__) {
@@ -71,11 +54,7 @@ if (__DEBUG__) {
 
 The `__DEBUG__` token will be replaced with `true` when running a development build, and `false` when running a production build. When processed with a minifier, the `if` statement will be optimized away, either leaving the code within or removing it entirely.
 
-### `styles/`:
-
-All site styles, compiled using Sass. Any files that don't start with an underscore will be compiled and added to the output directory.
-
-This directory follows a similar structure to the `scripts/` directory -- the only files that will be compiled (currently) are `main.scss` and a few standalone stylesheets within the `standalone/` directory. The reasoning behind this is the same as for having standalone bundles within the `scripts/` directory.
+Styles are compiled using [Sass](https://sass-lang.com) and [autoprefixer](https://www.npmjs.com/package/autoprefixer).
 
 ### `templates/`:
 
@@ -83,17 +62,7 @@ Pug templates. These templates will not be compiled to the output. Instead, they
 
 ## Polyfills
 
-The majority of polyfills are included via [polyfill.io](https://cdn.polyfill.io). This way, modern browsers need not load as many polyfills, and browsers can leverage caching to reduce overall load times across pages. There are a few ES6+ polyfills injected by Babel / Typescript, and any additional polyfills needed can be included by requiring their NPM packages in the appropriate JS source file.
-
-## Vendor Scripts
-
-The Gulp build process includes a task that allows external scripts to be included in the compiled output. In order to achieve this, the desired sources must be added to the project dependencies, and then added to the `paths.vendorScripts.src` configuration item within `Gulpfile.js`. Each element of the configuration has the following properties:
-
-* `devSrc`: A path to the file to include in development builds (relative to the project root).
-* `prodSrc`: A path to the file to include in production builds (most likely a minified version of `devSrc`).
-* `targetName`: The name of the output file.
-
-Vendored scripts will be copied to the `js/` directory within the output folder.
+The majority of polyfills are included via [polyfill.io](https://cdn.polyfill.io). This way, modern browsers need not load as many polyfills, and browsers can leverage caching to reduce overall load times across pages. There are a few ES6+ polyfills injected by the TypeScript compiler, and any additional polyfills needed can be included by requiring their NPM packages in the appropriate source file.
 
 ## Development vs. Production Builds
 
@@ -101,4 +70,4 @@ There are a couple of differences between the development and production builds,
 
 In development builds, Sass and JS / TS files will include sourcemaps to allow for easier debugging. They will also not undergo minification, mostly to reduce build time.
 
-In production builds, HTML, CSS, and JS files will all undergo minification in order to reduce the output file size.
+In production builds, HTML, CSS, and JS files will all undergo minification in order to reduce the output bundle size.
