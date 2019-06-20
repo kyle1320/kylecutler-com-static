@@ -97,7 +97,9 @@ function doStyles(auto, done) {
 
   return gulp.src([...styles], { base: `${dirs.source}/${dirs.content}` })
     .pipe(dev($.sourcemaps.init()))
-    .pipe($.sass().on('error', $.sass.logError))
+    .pipe($.sass({
+      includePaths: [`${dirs.source}/${dirs.content}`]
+    }).on('error', $.sass.logError))
     .pipe($.autoprefixer({ grid: true }))
     .pipe(prod($.cleanCss({compatibility: 'ie8'})))
     .pipe(dev($.sourcemaps.write()))
