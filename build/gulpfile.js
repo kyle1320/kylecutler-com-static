@@ -30,7 +30,7 @@ gulp.task('watch:content', function () {
     gulp.series('content')
   );
   gulp.watch(
-    `${dirs.source}/${dirs.content}/**/*.scss`,
+    `${dirs.source}/${dirs.content}/**/*.{css,scss}`,
     gulp.series(stylesManual)
   );
   gulp.watch(allScripts, gulp.series(scriptsManual));
