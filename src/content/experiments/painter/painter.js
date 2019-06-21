@@ -202,7 +202,7 @@ window.onload = function () {
     // a single cell is added in the center of the painting
     default:
     case 'center':
-      add(Cell(width/2, height/2, options.baseRGB));
+      add(Cell(Math.floor(width/2), Math.floor(height/2), options.baseRGB));
       break;
       // a line of cells is added in the top row of the painting
     case 'vertical':
