@@ -34,19 +34,12 @@ export function count<T>(max: number, callback: (n: number) => T): T[] {
   return arr;
 }
 
-type ElementContentSingle = string | HTMLElement;
-export type ElementContent = ElementContentSingle | ElementContentSingle[];
-type ElementProps<T extends keyof HTMLElementTagNameMap> =
-  {
-    [U in keyof HTMLElementTagNameMap[T]]?:
-      U extends 'style'
-        ? Partial<HTMLElementTagNameMap[T][U]>
-        : HTMLElementTagNameMap[T][U]
-  };
+type JSXChild = HTMLElement | string | number | boolean | null | undefined;
+export type ElementContent = JSXChild | JSXChild[];
 
-export function makeElement<T extends keyof HTMLElementTagNameMap>(
+export function makeElement<T extends keyof JSX.IntrinsicElements>(
   tag: T,
-  props?: ElementProps<T>,
+  props?: JSX.IntrinsicElements[T],
   ...children: ElementContent[]
 ): HTMLElementTagNameMap[T] {
   var el = document.createElement(tag);
@@ -69,12 +62,12 @@ export function makeElement<T extends keyof HTMLElementTagNameMap>(
   }
 
   children.forEach(function addChild(child) {
-    if (typeof child === 'string') {
-      el.appendChild(document.createTextNode(child));
-    } else if (child instanceof Array) {
+    if (child instanceof Array) {
       child.forEach(addChild);
-    } else {
+    } else if (child instanceof Node) {
       el.appendChild(child);
+    } else if (child) {
+      el.appendChild(document.createTextNode(String(child)));
     }
   });
 
