@@ -5,6 +5,7 @@ import {
   getSaturatedColor,
   linkInputToNumber,
   linkCheckboxToBoolean } from '../util';
+import { makeElement } from '../../js/utils';
 
 window.onload = function () {
   var spiroCanvas = $('spiro-canvas');
@@ -74,7 +75,6 @@ window.onload = function () {
     });
 
     linkInputToNumber(inputs.speedInput, options, 'speed');
-    linkInputToNumber(inputs.iterInput, options, 'iterations');
     linkInputToNumber(inputs.penDistInput, options, 'penDist', draw);
 
     linkCheckboxToBoolean(inputs.sccheck, options, 'showCircles', draw);
@@ -105,14 +105,6 @@ window.onload = function () {
         break;
       case 37:
         setSpeed(options.speed / 1.1);
-        evt.preventDefault();
-        break;
-      case 187:
-        setIterations(options.iterations + 10);
-        evt.preventDefault();
-        break;
-      case 189:
-        setIterations(options.iterations - 10);
         evt.preventDefault();
         break;
       case 13:
@@ -259,13 +251,6 @@ window.onload = function () {
     inputs.speedInput.valueAsNumber = speed;
   }
 
-  function setIterations(iterations) {
-    if (iterations <= 0) return;
-
-    options.iterations = iterations;
-    inputs.iterInput.valueAsNumber = iterations;
-  }
-
   function setPaused(p) {
     if (p && !paused) {
       clearInterval(runInterval);
@@ -311,76 +296,43 @@ window.onload = function () {
       inputs.circleDiv.removeChild(inputs.circleDiv.firstChild);
     }
 
-    var addbtn;
+    inputs.circleDiv.appendChild(
+      <button
+        onclick={addCircle.bind(null, 0)}
+        style={{width: '100%'}}>+</button>
+    );
 
     for (var i=0; i < circles.length; i++) {
       var cir = circles[i];
 
-      addbtn = document.createElement('button');
-      addbtn.innerHTML = '+';
-      addbtn.addEventListener('click', addCircle.bind(null, i));
-      addbtn.style.width = '100%';
-
       if (!cir.div) {
-        var newdiv = document.createElement('div');
+        var rad   = <input type="number" step="0.05" style={{float: 'right'}}/>;
+        var speed = <input type="number" step="0.01" style={{float: 'right'}}/>;
 
-        var titlediv = document.createElement('div');
-        titlediv.innerHTML = 'Circle ' + i + ':';
-        titlediv.style.textAlign = 'center';
+        linkInputToNumber(rad, cir, 'radius', draw);
+        linkInputToNumber(speed, cir, 'speed', draw);
 
-        var radiusdiv = document.createElement('div');
-        var radiusp = document.createElement('input');
-        radiusp.setAttribute('type', 'number');
-        radiusp.setAttribute('step', '0.05');
-        radiusp.style.float = 'right';
-
-        linkInputToNumber(radiusp, cir, 'radius', draw);
-        var br = document.createElement('br');
-        br.style.clear = 'right';
-        radiusdiv.innerHTML = 'Radius: ';
-        radiusdiv.appendChild(radiusp);
-        radiusdiv.appendChild(br);
-
-        var speeddiv = document.createElement('div');
-        var speedp = document.createElement('input');
-        speedp.setAttribute('type', 'number');
-        speedp.setAttribute('step', '0.01');
-        speedp.style.float = 'right';
-
-        linkInputToNumber(speedp, cir, 'speed', draw);
-        br = document.createElement('br');
-        br.style.clear = 'right';
-        speeddiv.innerHTML = 'Speed: ';
-        speeddiv.appendChild(speedp);
-        speeddiv.appendChild(br);
-
-        var rembtn = document.createElement('button');
-        rembtn.innerHTML = 'delete';
-        rembtn.addEventListener('click', remCircle.bind(null, cir));
-        rembtn.style.width = '100%';
-
-        newdiv.appendChild(titlediv);
-        newdiv.appendChild(radiusdiv);
-        newdiv.appendChild(speeddiv);
-        newdiv.appendChild(rembtn);
-        newdiv.style.border = '2px solid black';
-        newdiv.style.padding = '4px';
-        newdiv.style.margin = '10px';
-
-        cir.div = newdiv;
+        cir.div = <div style={{
+          border: '2px solid black',
+          padding: '4px',
+          margin: '10px'}}>
+          <div style={{textAlign: 'center'}}>Circle {i}:</div>
+          <div>Radius: {rad} <br style={{clear: 'right'}} /></div>
+          <div>Speed: {speed} <br style={{clear: 'right'}} /></div>
+          <button onclick={remCircle.bind(null, cir)} style={{width: '100%'}}>
+            delete
+          </button>
+        </div>;
       } else {
         cir.div.getElementsByTagName('div')[0].innerHTML = 'Circle ' + i + ':';
       }
 
-      inputs.circleDiv.appendChild(addbtn);
       inputs.circleDiv.appendChild(cir.div);
+      inputs.circleDiv.appendChild(
+        <button
+          onclick={addCircle.bind(null, i + 1)}
+          style={{width: '100%'}}>+</button>
+      );
     }
-
-    addbtn = document.createElement('button');
-    addbtn.innerHTML = '+';
-    addbtn.addEventListener('click', addCircle.bind(null, circles.length));
-    addbtn.style.width = '100%';
-
-    inputs.circleDiv.appendChild(addbtn);
   }
 };

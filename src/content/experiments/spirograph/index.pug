@@ -7,7 +7,7 @@ block vars
   - description = "An online emulator similar to the classic toy. Configure it beyond physical limits to see what's possible!"
 
 append scripts
-  script(type="text/javascript" src="spiro.js")
+  script(type="text/javascript" src="spiro.jsx")
 
 block content
   .contentbox
@@ -26,8 +26,6 @@ block content
         +control-point-button()(id='save-btn') Save
       +control('Speed')
         +control-point('rad / sec', true)(id='speed-input', type='number', min='0.0', step='any')
-      +control('Iterations')
-        +control-point()(id='iter-input', type='number', min='0', step='1')
       +control('Pen Distance')
         +control-point()(id='pendist-input', type='number', min='-2', max='2', step='0.1')
       +control('Show / Hide')
@@ -35,12 +33,11 @@ block content
         +control-point('Radii', true)(id='show-radii', type='checkbox')
         +control-point('Pen', true)(id='show-pen', type='checkbox')
         +control-point('Color', true)(id='use-color', type='checkbox')
-    #circles(style='padding: 0 10px; float: left; width: auto;')
+    #circles(style='padding: 10px 10px 0; float: left; width: auto;')
   #info
     .contentbox
       p space to play / pause
       p enter to reset
-      p + / - change the number of iterations
       p left / right arrows change the speed
       p NOTE: things get more interesting at high speeds ;)
     .contentbox
@@ -54,13 +51,6 @@ block content
             p At high speeds, interesting things start to happen.
             p The precision of the spirograph begins to degrade, and the lines drawn between sample points start to become more visible.
             p Increasing the speed even further can create interesting visual effects, so I encourage you to give it a try.
-          li
-            h3 Iterations
-            p The number of sample points calculated along the Spirograph every frame.
-            p Spirograph calculates a new frame roughly every 15 milliseconds.
-            p If only a single point along the spirograph was calculated each frame, the precision would degrade quickly, even at low speeds.
-            p So we take multiple samples (iterations) per frame.
-            p Increasing this value means that you can get a more accurate Spirograph even at high speeds, at the cost of extra computing power.
           li
             h3 Pen Distance
             p How far along the innermost circle's radius the pen lies.
