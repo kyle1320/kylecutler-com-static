@@ -1,6 +1,5 @@
 type Callback<T> = T extends void ? () => any : (arg: T) => any;
 
-// eslint-disable-next-line no-unused-vars
 type VoidKeys<T, K extends keyof T = keyof T> =
   K extends (T[K] extends void ? K : never) ? K : never;
 type Listeners<T> =

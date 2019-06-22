@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-
 declare var __DEBUG__: boolean;
 
 interface Math {

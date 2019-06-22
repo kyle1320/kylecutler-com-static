@@ -1,7 +1,5 @@
 
-/* eslint-disable no-unused-vars */
 import { Tree, BasicTree } from '../model/types';
-/* eslint-enable no-unused-vars */
 
 export function flatten<T>(tree: BasicTree<T>): T[] {
   if (!tree) return null;
