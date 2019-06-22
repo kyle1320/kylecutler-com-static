@@ -96,6 +96,7 @@ function doStyles(auto, done) {
   stylesUpdated = false;
 
   return gulp.src([...styles], { base: `${dirs.source}/${dirs.content}` })
+    .pipe(handleErrors())
     .pipe(dev($.sourcemaps.init()))
     .pipe($.sass({
       includePaths: [`${dirs.source}/${dirs.content}`]
@@ -111,6 +112,7 @@ function doScripts(auto, done) {
   scriptsUpdated = false;
 
   return gulp.src([...scripts], { base: `${dirs.source}/${dirs.content}` })
+    .pipe(handleErrors())
     .pipe(dev($.sourcemaps.init()))
     .pipe($.betterRollup({
       cache: true,
