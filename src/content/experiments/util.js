@@ -1,4 +1,6 @@
-export const $ = function (e) { return document.getElementById(e); };
+import QuadTree from '../js/utils/QuadTree';
+
+export const $ = document.getElementById.bind(document);
 
 /****************
  *    CANVAS    *
@@ -85,37 +87,6 @@ export const fitElement = function (
 };
 
 /****************
- *    COLORS    *
- ****************/
-
-export const randomColor = function () {
-  return '#' + (
-    '00000' + (Math.floor(Math.random()*16777216)).toString(16)
-  ).slice(-6);
-};
-
-export const getSaturatedColor = function (v) {
-  var i = Math.floor(v * 6);
-  var f = ((v * 6 - i) + 1) % 1;
-  var q = ('0' + Math.round(255 * (1 - f)).toString(16)).slice(-2);
-  var t = ('0' + Math.round(255 * f).toString(16)).slice(-2);
-  switch ((i + 6) % 6) {
-  case 0: return '#FF' + t + '00';
-  case 1: return '#' + q + 'FF00';
-  case 2: return '#00FF' + t;
-  case 3: return '#00' + q + 'FF';
-  case 4: return '#' + t + '00FF';
-  case 5: return '#FF00' + q;
-  }
-};
-
-export const toRGBString = function (r, g, b) {
-  return '#' + ('0' + Math.floor(r).toString(16)).slice(-2) +
-                 ('0' + Math.floor(g).toString(16)).slice(-2) +
-                 ('0' + Math.floor(b).toString(16)).slice(-2);
-};
-
-/****************
  *    EVENTS    *
  ****************/
 
@@ -148,117 +119,88 @@ export const takeTouchFocus = function (evt) {
   }
 };
 
-export const linkCheckboxToBoolean = function (checkbox, object, attr, func) {
-  func = func || function () {};
-
-  checkbox.checked = object[attr];
-  checkbox.addEventListener('click', function () {
-    object[attr] = checkbox.checked;
-    func();
-  });
-};
-
-export const linkInputToNumber = function (input, object, attr, func, instant) {
-  func = func || function () {};
-  if (instant === undefined) instant = true;
-
-  input.value = String(object[attr]);
-  input.addEventListener(instant ? 'input' : 'change', function () {
-    var value = +input.value;
-    if (!isNaN(value)) {
-      object[attr] = value;
-    }
-    func();
-  });
-
-  input.addEventListener('blur', function () {
-    input.value = String(object[attr]);
-  });
-};
-
-export const linkColorChooserToValues = function (color, object, attr, func) {
-  func = func || function () {};
-
-  color.jscolor.fromRGB(object[attr][0], object[attr][1], object[attr][2]);
-  color.addEventListener('change', function () {
-    object[attr][0] = Math.floor(color.jscolor.rgb[0]);
-    object[attr][1] = Math.floor(color.jscolor.rgb[1]);
-    object[attr][2] = Math.floor(color.jscolor.rgb[2]);
-    func();
-  });
-};
-
-export const linkColorChooserToHexString = function (
-  color, object, attr, func
+export function link(
+  el, obj, attr, cb = function () {}, options = { instant: true }
 ) {
-  func = func || function () {};
+  var setter = null;
 
-  color.jscolor.fromString(object[attr] ? object[attr].slice(1) : '');
-  color.addEventListener('change', function () {
-    object[attr] = color.value ? '#' + color.jscolor.toString() : null;
-    func();
-  });
-};
+  if (el.tagName === 'INPUT') {
+    if ('jscolor' in el) {
 
-export const linkSelectToString = function (select, object, attr, func) {
-  func = func || function () {};
+      // Hex color
+      if (typeof obj[attr] === 'string') {
+        setter = x => x && el.jscolor.fromString(x.replace(/^#/, ''));
 
-  select.value = object[attr];
-  select.addEventListener('change', function () {
-    object[attr] = select.value;
-    func();
-  });
-};
+        el.addEventListener('change', function () {
+          cb(obj[attr] = el.value ? '#' + el.jscolor.toString() : null);
+        });
 
-/****************
- *    FILES     *
- ****************/
+      // RGB color
+      } else {
+        setter = ([r, g, b]) => el.jscolor.fromRGB(r, g, b);
 
-export const loadFile = function (url, data, callback, errorCallback) {
-  errorCallback = errorCallback || function () {};
-
-  // Set up an asynchronous request
-  var request = new XMLHttpRequest();
-  request.open('GET', url, true);
-
-  // Hook the event that gets called as the request progresses
-  request.onreadystatechange = function () {
-
-    // If the request is "DONE" (completed or failed)
-    if (request.readyState == 4) {
-
-      // If we got HTTP status 200 (OK)
-      if (request.status == 200) {
-        callback(request.responseText, data);
-      } else { // Failed
-        errorCallback(url);
+        el.addEventListener('change', function () {
+          cb(obj[attr] = el.jscolor.rgb.map(Math.floor));
+        });
       }
+
+    // checkbox
+    } else if (el.type === 'checkbox') {
+      setter = x => el.checked = x;
+      el.addEventListener('click', () => cb(obj[attr] = el.checked));
+
+    // number input
+    } else if (typeof obj[attr] === 'number') {
+      setter = x => el.valueAsNumber = x;
+
+      el.addEventListener(options.instant ? 'input' : 'change', function () {
+        var value = +el.value;
+        if (!isNaN(value)) {
+          cb(obj[attr] = value);
+        }
+      });
+
+      el.addEventListener('blur', () => el.value = String(obj[attr]));
+
+    // string input
+    } else {
+      setter = x => el.value = x;
+
+      el.addEventListener(options.instant ? 'input' : 'change', function () {
+        cb(obj[attr] = el.value);
+      });
     }
+
+  // select
+  } else if (el.tagName === 'SELECT') {
+    setter = x => el.value = x;
+
+    el.addEventListener('change', () => cb(obj[attr] = el.value));
+  }
+
+  setter(obj[attr]);
+
+  return x => {
+    obj[attr] = x;
+    setter(x);
   };
+}
 
-  request.send(null);
-};
+export function linkAll(obj, map) {
+  var res = {};
 
-export const loadFiles = function (urls, callback, errorCallback) {
-  var numUrls = urls.length;
-  var numComplete = 0;
-  var result = [];
+  for (var key in map) {
+    var val = map[key];
 
-  // Callback for a single file
-  function partialCallback(text, urlIndex) {
-    result[urlIndex] = text;
-    numComplete++;
-
-    // When all files have downloaded
-    if (numComplete == numUrls) {
-      callback(result);
+    if (!(val instanceof Array)) {
+      val = [val];
     }
+
+    res[key] = link(val[0], obj, key, val[1], val[2]);
   }
 
-  for (var i = 0; i < numUrls; i++) {
-    loadFile(urls[i], i, partialCallback, errorCallback);
-  }
-};
+  return res;
+}
 
 /****************
  *     MISC     *
@@ -266,140 +208,6 @@ export const loadFiles = function (urls, callback, errorCallback) {
 
 Math.clamp = function (num, min, max) {
   return Math.max(min, Math.min(num, max));
-};
-
-// pushes every element in the given list into this list
-Array.prototype.pushAll = function (list) {
-  for (var i = 0; i < list.length; i++) {
-    this.push(list[i]);
-  }
-};
-
-// definition for a point quadtree. Useful every now and again.. especially when working with 2D grids ;)
-export const QuadTree = function (minx, miny, maxx, maxy) {
-  this.minx = minx;
-  this.miny = miny;
-  this.maxx = maxx;
-  this.maxy = maxy;
-  this.midx = (this.minx + this.maxx) / 2;
-  this.midy = (this.miny + this.maxy) / 2;
-
-  this.bucket = [];
-  this.nw = null;
-  this.ne = null;
-  this.sw = null;
-  this.se = null;
-};
-
-QuadTree.prototype.insert = function (obj) {
-
-  // first make sure that the object goes inside our region.
-  if (
-    obj.x < this.minx ||
-    obj.x >= this.maxx ||
-    obj.y < this.miny ||
-    obj.y >= this.maxy
-  ) {
-    return false;
-  }
-
-  // if we have no children,
-  if (!this.nw) {
-
-    // if we have not filled our own bucket, add to it.
-    if (this.bucket.length < 5) {
-      this.bucket.push(obj);
-      return true;
-    }
-
-    // if we fill our own bucket, split up.
-    this.subdivide();
-  }
-
-  // try storing the object in one of our children.
-  return this.nw.insert(obj) || this.ne.insert(obj) ||
-           this.sw.insert(obj) || this.se.insert(obj);
-};
-
-QuadTree.prototype.subdivide = function (obj) {
-
-  // split up into four quadrants (child nodes)
-  this.nw = new QuadTree(this.minx, this.miny, this.midx, this.midy);
-  this.ne = new QuadTree(this.midx, this.miny, this.maxx, this.midy);
-  this.sw = new QuadTree(this.minx, this.midy, this.midx, this.maxy);
-  this.se = new QuadTree(this.midx, this.midy, this.maxx, this.maxy);
-
-  // dump the contents of our bucket into our children
-  for (var i = 0; i < this.bucket.length; i++) {
-    this.insert(this.bucket[i]);
-  }
-  this.bucket = null;
-};
-
-QuadTree.prototype.inRegion = function (minx, miny, maxx, maxy) {
-
-  // check that we overlap with the region
-  if (
-    maxx < this.minx ||
-    minx >= this.maxx ||
-    maxy < this.miny ||
-    miny >= this.maxy
-  ) {
-    return [];
-  }
-
-  // if we have no children, return our bucket.
-  // I decided not to copy the bucket, for speed reasons.
-  if (!this.nw) return this.bucket;
-
-  var found = [];
-
-  // push the contents of our children into the array and return it
-  found.pushAll(this.nw.inRegion(minx, miny, maxx, maxy));
-  found.pushAll(this.ne.inRegion(minx, miny, maxx, maxy));
-  found.pushAll(this.sw.inRegion(minx, miny, maxx, maxy));
-  found.pushAll(this.se.inRegion(minx, miny, maxx, maxy));
-
-  return found;
-};
-
-QuadTree.prototype.draw = function (canvas, ctx, minx, miny, maxx, maxy) {
-  var midx = (minx + maxx) / 2;
-  var midy = (miny + maxy) / 2;
-
-  // if (this.nw || this.bucket.length > 0) {
-  // ctx.strokeStyle = "#FF0000";
-  // ctx.strokeRect(minx * canvas.drawWidth, miny * canvas.drawHeight, (maxx - minx) * canvas.drawWidth, (maxy - miny) * canvas.drawHeight);
-  // }
-
-  if (this.nw) {
-    ctx.beginPath();
-    ctx.moveTo(minx * canvas.drawWidth, midy * canvas.drawHeight);
-    ctx.lineTo(maxx * canvas.drawWidth, midy * canvas.drawHeight);
-    ctx.moveTo(midx * canvas.drawWidth, miny * canvas.drawHeight);
-    ctx.lineTo(midx * canvas.drawWidth, maxy * canvas.drawHeight);
-    ctx.closePath();
-    ctx.strokeStyle = '#FF0000';
-    ctx.stroke();
-
-    this.nw.draw(canvas, ctx, minx, miny, midx, midy);
-    this.ne.draw(canvas, ctx, midx, miny, maxx, midy);
-    this.sw.draw(canvas, ctx, minx, midy, midx, maxy);
-    this.se.draw(canvas, ctx, midx, midy, maxx, maxy);
-  } else {
-    for (var i = 0; i < this.bucket.length; i++) {
-      var p = this.bucket[i];
-      var x = minx +
-        ((p.x - this.minx) / (this.maxx - this.minx)) * (maxx - minx);
-      var y = miny +
-        ((p.y - this.miny) / (this.maxy - this.miny)) * (maxy - miny);
-
-      // console.log(x, y);
-
-      ctx.fillStyle = '#0000FF';
-      ctx.fillRect(x * canvas.drawWidth, y * canvas.drawHeight, 1, 1);
-    }
-  }
 };
 
 export const poissonDisk = function (minx, miny, width, height, r) {

@@ -2,9 +2,8 @@ import {
   $,
   scaleCanvas,
   fitElement,
-  getSaturatedColor,
-  linkInputToNumber,
-  linkCheckboxToBoolean } from '../util';
+  link } from '../util';
+import { getSaturatedColor } from '../../js/utils/color';
 import { makeElement } from '../../js/utils';
 
 window.onload = function () {
@@ -74,13 +73,12 @@ window.onload = function () {
         = canvases.style.height;
     });
 
-    linkInputToNumber(inputs.speedInput, options, 'speed');
-    linkInputToNumber(inputs.penDistInput, options, 'penDist', draw);
-
-    linkCheckboxToBoolean(inputs.sccheck, options, 'showCircles', draw);
-    linkCheckboxToBoolean(inputs.srcheck, options, 'showRadii', draw);
-    linkCheckboxToBoolean(inputs.spcheck, options, 'showPen', draw);
-    linkCheckboxToBoolean(inputs.uccheck, options, 'useColor');
+    link(inputs.speedInput, options, 'speed');
+    link(inputs.penDistInput, options, 'penDist', draw);
+    link(inputs.sccheck, options, 'showCircles', draw);
+    link(inputs.srcheck, options, 'showRadii', draw);
+    link(inputs.spcheck, options, 'showPen', draw);
+    link(inputs.uccheck, options, 'useColor');
 
     inputs.pauseBtn.addEventListener('click', function () {
       setPaused(!paused);
@@ -309,8 +307,8 @@ window.onload = function () {
         var rad   = <input type="number" step="0.05" style={{float: 'right'}}/>;
         var speed = <input type="number" step="0.01" style={{float: 'right'}}/>;
 
-        linkInputToNumber(rad, cir, 'radius', draw);
-        linkInputToNumber(speed, cir, 'speed', draw);
+        link(rad, cir, 'radius', draw);
+        link(speed, cir, 'speed', draw);
 
         cir.div = <div style={{
           border: '2px solid black',

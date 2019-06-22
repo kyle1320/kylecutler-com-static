@@ -3,13 +3,10 @@ import {
   $,
   scaleCanvas,
   fitElement,
-  linkInputToNumber,
-  linkColorChooserToHexString,
-  linkSelectToString,
-  resizeCanvas,
-  QuadTree,
-  randomColor,
-  getSaturatedColor } from '../util';
+  link,
+  resizeCanvas } from '../util';
+import QuadTree from '../../js/utils/QuadTree';
+import { getSaturatedColor, randomColor } from '../../js/utils/color';
 
 window.onload = function () {
   var drawCanvas = $('draw-canvas');
@@ -97,17 +94,15 @@ window.onload = function () {
     );
 
     // link numerical options to their html inputs
-    linkInputToNumber(inputs.width, options, 'width', null, false);
-    linkInputToNumber(inputs.height, options, 'height', null, false);
-    linkInputToNumber(inputs.samples, options, 'samples', reset, false);
-    linkInputToNumber(inputs.padding, options, 'padding', reset, false);
-    linkInputToNumber(inputs.min_rad, options, 'min_rad', reset, false);
-    linkInputToNumber(inputs.max_rad, options, 'max_rad', reset, false);
-    linkInputToNumber(inputs.maxlevel, options, 'maxlevel', reset, false);
-
-    linkColorChooserToHexString(inputs.bgcolor, options, 'bgcolor', reset);
-
-    linkSelectToString(inputs.pattern, options, 'pattern', reset);
+    link(inputs.width, options, 'width', undefined, { instant: false });
+    link(inputs.height, options, 'height', undefined, { instant: false });
+    link(inputs.samples, options, 'samples', reset, { instant: false });
+    link(inputs.padding, options, 'padding', reset, { instant: false });
+    link(inputs.min_rad, options, 'min_rad', reset, { instant: false });
+    link(inputs.max_rad, options, 'max_rad', reset, { instant: false });
+    link(inputs.maxlevel, options, 'maxlevel', reset, { instant: false });
+    link(inputs.bgcolor, options, 'bgcolor', reset);
+    link(inputs.pattern, options, 'pattern', reset);
 
     // run it
     reset();
@@ -171,9 +166,6 @@ window.onload = function () {
       drawContext.fillStyle = getSaturatedColor((currlevel-1) / 6);
     }
   }
-
-  // var mintime = Math.floor(Date.now() / 500);
-  // var currtime = mintime;
 
   // update what's running
   function update() {
@@ -300,16 +292,6 @@ window.onload = function () {
 
       // progress should only increase, and not go above 99%...
       progress = Math.clamp(Math.floor(130*p), progress, 99);
-
-      // if (currtime != (currtime = Math.floor(Date.now() / 500))) {
-      //     drawContext.beginPath();
-      //     drawContext.rect(((currtime - mintime) * 10)%(drawCanvas.drawWidth-10), 0, 10, density*3);
-      //     drawContext.closePath();
-      //     drawContext.fillStyle="#FFFFFF";
-      //     drawContext.fill();
-      //     drawContext.strokeStyle="#000000";
-      //     drawContext.stroke();
-      // }
 
       // show the progress
       outputs.progress.innerHTML = progress + '%';

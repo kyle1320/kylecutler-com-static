@@ -2,11 +2,10 @@ import {
   $,
   scaleCanvas,
   fitElement,
-  linkInputToNumber,
-  linkCheckboxToBoolean,
+  link,
   takeTouchFocus,
-  getRelativeCoord,
-  randomColor } from '../util';
+  getRelativeCoord } from '../util';
+import { randomColor } from '../../js/utils/color';
 
 window.onload = function () {
   var drawCanvas = $('draw-canvas');
@@ -77,18 +76,17 @@ window.onload = function () {
     width = drawCanvas.drawWidth;
     height = drawCanvas.drawHeight;
 
-    linkInputToNumber(inputs.gravInput, options, 'gravity');
-    linkInputToNumber(inputs.decayInput, options, 'decay');
-    linkInputToNumber(inputs.groupSizeInput, options, 'groupSize');
-    linkInputToNumber(inputs.groupRadiusInput, options, 'groupRadius');
-    linkInputToNumber(inputs.mouseDensityInput, options, 'mouseDensity');
-    linkInputToNumber(inputs.particleRadiusInput, options, 'particleRadius');
-    linkInputToNumber(inputs.particleDensityInput, options, 'particleDensity');
-
-    linkCheckboxToBoolean(inputs.fpcheck, options, 'fixedParticles');
-    linkCheckboxToBoolean(inputs.tpcheck, options, 'traceNew');
-    linkCheckboxToBoolean(inputs.bocheck, options, 'bounce');
-    linkCheckboxToBoolean(inputs.trcheck, options, 'trace');
+    link(inputs.gravInput, options, 'gravity');
+    link(inputs.decayInput, options, 'decay');
+    link(inputs.groupSizeInput, options, 'groupSize');
+    link(inputs.groupRadiusInput, options, 'groupRadius');
+    link(inputs.mouseDensityInput, options, 'mouseDensity');
+    link(inputs.particleRadiusInput, options, 'particleRadius');
+    link(inputs.particleDensityInput, options, 'particleDensity');
+    link(inputs.fpcheck, options, 'fixedParticles');
+    link(inputs.tpcheck, options, 'traceNew');
+    link(inputs.bocheck, options, 'bounce');
+    link(inputs.trcheck, options, 'trace');
 
     inputs.pauseBtn.addEventListener('click', function () {
       setPaused(!paused);

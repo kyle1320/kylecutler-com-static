@@ -3,10 +3,8 @@ import {
   $,
   scaleCanvas,
   fitElement,
-  linkInputToNumber,
   takeTouchFocus,
-  linkSelectToString,
-  linkColorChooserToValues,
+  link,
   poissonDisk,
   resizeCanvas,
   getRelativeCoord } from '../util';
@@ -43,22 +41,13 @@ window.onload = function () {
     pattern: 'center',
     neighbors: [],
     baseRGB: [255, 165, 0],
-    // goalRGB: [255, 100, 100],
-    // drawRGB: [255, 255, 255],
     deviation: 5,
     reliance: 1.0,
-    // tendency: 0.002,
     delay: 0,
     initialDeviation: 50,
     numPoints: 10,
     size: 100,
-    hexAngle: 60,
-
-    // apparently these have been removed. I add them in init() instead.
-    // get width() {return drawCanvas.width;},
-    // get height() {return drawCanvas.height;},
-    // set width(w) {setSize(w, height);},
-    // set height(h) {setSize(width, h);},
+    hexAngle: 60
   };
 
   // contains references to HTML elements
@@ -67,9 +56,6 @@ window.onload = function () {
     relianceInput: $('reliance'),
     deviationInput: $('deviation'),
     colorInput: $('color'),
-    // goalColorInput: $('goal-color'),
-    // drawColorInput: $('draw-color'),
-    // tendencyInput: $('tendency'),
     delayInput: $('delay'),
     widthInput: $('width'),
     heightInput: $('height'),
@@ -110,22 +96,17 @@ window.onload = function () {
     });
 
     // link HTML inputs to their respective options
-    linkInputToNumber(inputs.relianceInput, options, 'reliance');
-    linkInputToNumber(inputs.deviationInput, options, 'deviation');
-    // linkInputToNumber(inputs.tendencyInput, options, 'tendency');
-    linkInputToNumber(inputs.delayInput, options, 'delay');
-    linkInputToNumber(inputs.widthInput, options, 'width', null, false);
-    linkInputToNumber(inputs.heightInput, options, 'height', null, false);
-    linkInputToNumber(inputs.initDeviationInput, options, 'initialDeviation');
-    linkInputToNumber(inputs.numPointsInput, options, 'numPoints');
-    linkInputToNumber(inputs.sizeInput, options, 'size');
-    linkInputToNumber(inputs.hexAngleInput, options, 'hexAngle');
-
-    linkSelectToString(inputs.patternSelect, options, 'pattern', hideOptionals);
-
-    linkColorChooserToValues(inputs.colorInput, options, 'baseRGB');
-    // linkColorChooserToValues(inputs.goalColorInput, options, 'goalRGB');
-    // linkColorChooserToValues(inputs.drawColorInput, options, 'drawRGB');
+    link(inputs.relianceInput, options, 'reliance');
+    link(inputs.deviationInput, options, 'deviation');
+    link(inputs.delayInput, options, 'delay');
+    link(inputs.widthInput, options, 'width', undefined, { instant: false });
+    link(inputs.heightInput, options, 'height', undefined, { instant: false });
+    link(inputs.initDeviationInput, options, 'initialDeviation');
+    link(inputs.numPointsInput, options, 'numPoints');
+    link(inputs.sizeInput, options, 'size');
+    link(inputs.hexAngleInput, options, 'hexAngle');
+    link(inputs.patternSelect, options, 'pattern', hideOptionals);
+    link(inputs.colorInput, options, 'baseRGB', reset);
 
     // setup button events
     inputs.pauseBtn.addEventListener('click', function () {
@@ -307,9 +288,6 @@ window.onload = function () {
 
   // deviates the given cell's color according to the options
   function deviate(c, dev) {
-    // c.r = Math.clamp(((c.r + options.goalRGB[0]*options.tendency) / (1 + options.tendency)) + Math.random()*dev*2 - dev, 0, 255);
-    // c.g = Math.clamp(((c.g + options.goalRGB[1]*options.tendency) / (1 + options.tendency)) + Math.random()*dev*2 - dev, 0, 255);
-    // c.b = Math.clamp(((c.b + options.goalRGB[2]*options.tendency) / (1 + options.tendency)) + Math.random()*dev*2 - dev, 0, 255);
     c.r = Math.clamp(c.r + Math.random()*dev*2 - dev, 0, 255);
     c.g = Math.clamp(c.g + Math.random()*dev*2 - dev, 0, 255);
     c.b = Math.clamp(c.b + Math.random()*dev*2 - dev, 0, 255);

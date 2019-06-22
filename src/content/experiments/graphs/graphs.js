@@ -2,11 +2,10 @@ import {
   $,
   scaleCanvas,
   fitElement,
-  linkInputToNumber,
-  linkCheckboxToBoolean,
+  link,
   takeTouchFocus,
-  getRelativeCoord,
-  randomColor } from '../util';
+  getRelativeCoord } from '../util';
+import { randomColor } from '../../js/utils/color';
 import { getGL, getGLProgram } from '../webgl';
 import vertShader from './shader.vert';
 import fragShader from './shader.frag';
@@ -18,9 +17,6 @@ window.onload = function () {
   var gl = getGL(glCanvas, {preserveDrawingBuffer: true});
 
   var nodes, edges;
-
-  /* var zip = new JSZip();
-  var image = 0; */
 
   // used in redrawing to determine what has changed and needs to be updated.
   var updates = {
@@ -102,33 +98,6 @@ window.onload = function () {
       drawCanvas.style.height = glCanvas.style.height = canvases.style.height;
     });
 
-    // var width = drawCanvas.drawWidth;
-    // var height = drawCanvas.drawHeight;
-
-    /* nodes = [];
-    edges = [];
-
-    for (var i=0; i < 3; i++) {
-      nodes[i] = new Node(
-        width / 2 + Math.sin(2*Math.PI*i / 3)*(width / 3),
-        height / 2 + Math.cos(2*Math.PI*i / 3)*(height / 3)
-      );
-      edges[edges.length] = new Edge(nodes[i], nodes[i]);
-    }
-
-    for (var i=0; i < 3; i++) {
-      nodes[i+3] = new Node(
-        width / 2 + Math.sin(2*Math.PI*i / 3)*(width / 3),
-        height / 2 + Math.cos(2*Math.PI*i / 3)*(height / 3)
-      );
-      for (var j=3; j < i+3; j++) {
-        edges[edges.length] = new Edge(nodes[i+3], nodes[j], randomColor());
-      }
-
-    options.order = 4;
-    options.range = 2500;
-    } */
-
     var graph = connectedGraph(drawCanvas.drawWidth, drawCanvas.drawHeight, 4);
     nodes = graph.nodes;
     edges = graph.edges;
@@ -182,20 +151,15 @@ window.onload = function () {
     createdEdge = null;
     mouse = {x: 0, y: 0, inside: false};
 
-    /* eslint-disable max-len */
-
-    linkInputToNumber(inputs.orderinput, options, 'order', redrawBackground);
-    linkInputToNumber(inputs.rangeinput, options, 'range', redrawBackground);
-
-    linkCheckboxToBoolean(inputs.sncheck, options, 'showNodes', redrawGraph);
-    linkCheckboxToBoolean(inputs.secheck, options, 'showEdges', redrawGraph);
-    linkCheckboxToBoolean(inputs.bgcheck, options, 'background', redrawBackground);
-    linkCheckboxToBoolean(inputs.edcheck, options, 'edgeDists');
-    linkCheckboxToBoolean(inputs.hlcheck, options, 'highlight', redrawBackground);
-    linkCheckboxToBoolean(inputs.mocheck, options, 'modulo', redrawBackground);
-    linkCheckboxToBoolean(inputs.upcheck, options, 'constantUpdates');
-
-    /* eslint-enable max-len */
+    link(inputs.orderinput, options, 'order', redrawBackground);
+    link(inputs.rangeinput, options, 'range', redrawBackground);
+    link(inputs.sncheck, options, 'showNodes', redrawGraph);
+    link(inputs.secheck, options, 'showEdges', redrawGraph);
+    link(inputs.bgcheck, options, 'background', redrawBackground);
+    link(inputs.edcheck, options, 'edgeDists');
+    link(inputs.hlcheck, options, 'highlight', redrawBackground);
+    link(inputs.mocheck, options, 'modulo', redrawBackground);
+    link(inputs.upcheck, options, 'constantUpdates');
 
     drawCanvas.addEventListener('mousedown',  mousedown);
     drawCanvas.addEventListener('mouseup',    mouseup);
@@ -341,33 +305,7 @@ window.onload = function () {
     gl.drawArrays(gl.TRIANGLES, 0, 6);
 
     glFrameQueued = false;
-
-    /* if (image < drawCanvas.height) {
-      gl.finish();
-      zip.file('slice'+("0000"+(image++)).slice(-4)+'.png', glCanvas.toDataURL('image/png').split("base64,")[1], {base64: true, compression : "DEFLATE"});
-      //node.y += (drawCanvas.drawHeight / drawCanvas.height);
-
-      for (var i=0; i < 3; i++) {
-        nodes[i].x += (nodes[((i+1)%3)+3].x - nodes[i+3].x) / drawCanvas.width;
-        nodes[i].y += (nodes[((i+1)%3)+3].y - nodes[i+3].y) / drawCanvas.height;
-      }
-
-      updates.edgesChanged = true;
-      draw();
-    } else if (image == drawCanvas.height) {
-      saveAs(zip.generate({type:"blob"}), "model.zip");
-      console.log("saving");
-      image++;
-    } */
   }
-
-  // function changeOrder(order) {
-  //   if (options.order != order) {
-  //     options.order = order;
-  //     inputs.orderinput.valueAsNumber = order;
-  //     redrawBackground();
-  //   }
-  // }
 
   function redrawGraph() {
     updates.graph = true;
@@ -581,15 +519,7 @@ window.onload = function () {
           }
         }
       }
-    } /* else if (evt.keyCode == 39) { // right arrow
-      changeOrder(options.order + 1);
-      updates.orderChanged = true;
-    } else if (evt.keyCode == 37) { // left arrow
-      if (options.order > 0) {
-        changeOrder(options.order - 1);
-        updates.orderChanged = true;
-      }
-    } */
+    }
 
     draw();
   }

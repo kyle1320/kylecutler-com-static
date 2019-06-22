@@ -1,9 +1,18 @@
-const THREE = require('three');
-import { $, linkInputToNumber } from '../../../experiments/util';
+import {
+  Scene,
+  WebGLRenderer,
+  MeshPhongMaterial,
+  PointLight,
+  PerspectiveCamera,
+  SphereGeometry,
+  PlaneGeometry,
+  Mesh,
+  AmbientLight } from 'three';
+import { $, linkAll } from '../../../experiments/util';
 
 window.onload = function () {
-  var scene = new THREE.Scene();
-  var renderer = new THREE.WebGLRenderer({
+  var scene = new Scene();
+  var renderer = new WebGLRenderer({
     antialias: true,
     preserveDrawingBuffer: true
   });
@@ -32,87 +41,64 @@ window.onload = function () {
     targetOpacity: 0
   };
 
-  var inputs = {
-    cameraPosX: $('camera-pos-x'),
-    cameraPosY: $('camera-pos-y'),
-    cameraPosZ: $('camera-pos-z'),
-    cameraFOV: $('camera-fov'),
-    cameraLookX: $('camera-look-x'),
-    cameraLookY: $('camera-look-y'),
-    cameraLookZ: $('camera-look-z'),
-    sphere1PosX: $('sphere-1-x'),
-    sphere1PosY: $('sphere-1-y'),
-    sphere1PosZ: $('sphere-1-z'),
-    sphere2PosX: $('sphere-2-x'),
-    sphere2PosY: $('sphere-2-y'),
-    sphere2PosZ: $('sphere-2-z'),
-    lightPosX: $('light-x'),
-    lightPosY: $('light-y'),
-    lightPosZ: $('light-z'),
-    sphere1Radius: $('sphere-1-radius'),
-    sphere2Radius: $('sphere-2-radius'),
-    floorWidth: $('floor-width'),
-    floorLength: $('floor-length'),
-    targetOpacity: $('target-opacity')
-  };
-
-  var sphere1Mat = new THREE.MeshPhongMaterial({
+  var sphere1Mat = new MeshPhongMaterial({
     color: 'red',
     shininess: 60
   });
-  var sphere2Mat = new THREE.MeshPhongMaterial({
+  var sphere2Mat = new MeshPhongMaterial({
     color: 'green',
     shininess: 60
   });
-  var floorMat = new THREE.MeshPhongMaterial({
+  var floorMat = new MeshPhongMaterial({
     color: 'blue',
     shininess: 60
   });
 
-  var light = new THREE.PointLight(0xffffff);
+  var light = new PointLight(0xffffff);
 
   renderer.setSize(375, 225);
-  // renderer.setClearColor(0xffffff, 1);
   document
     .getElementsByClassName('canvas-container')[0]
     .appendChild(renderer.domElement);
 
-  linkInputToNumber(inputs.cameraPosX, options, 'cameraPosX', render);
-  linkInputToNumber(inputs.cameraPosY, options, 'cameraPosY', render);
-  linkInputToNumber(inputs.cameraPosZ, options, 'cameraPosZ', render);
-  linkInputToNumber(inputs.cameraFOV, options, 'cameraFOV', render);
-  linkInputToNumber(inputs.cameraLookX, options, 'cameraLookX', render);
-  linkInputToNumber(inputs.cameraLookY, options, 'cameraLookY', render);
-  linkInputToNumber(inputs.cameraLookZ, options, 'cameraLookZ', render);
-  linkInputToNumber(inputs.sphere1PosX, options, 'sphere1PosX', render);
-  linkInputToNumber(inputs.sphere1PosY, options, 'sphere1PosY', render);
-  linkInputToNumber(inputs.sphere1PosZ, options, 'sphere1PosZ', render);
-  linkInputToNumber(inputs.sphere2PosX, options, 'sphere2PosX', render);
-  linkInputToNumber(inputs.sphere2PosY, options, 'sphere2PosY', render);
-  linkInputToNumber(inputs.sphere2PosZ, options, 'sphere2PosZ', render);
-  linkInputToNumber(inputs.lightPosX, options, 'lightPosX', render);
-  linkInputToNumber(inputs.lightPosY, options, 'lightPosY', render);
-  linkInputToNumber(inputs.lightPosZ, options, 'lightPosZ', render);
-  linkInputToNumber(inputs.sphere1Radius, options, 'sphere1Radius', render);
-  linkInputToNumber(inputs.sphere2Radius, options, 'sphere2Radius', render);
-  linkInputToNumber(inputs.floorWidth, options, 'floorWidth', render);
-  linkInputToNumber(inputs.floorLength, options, 'floorLength', render);
-  linkInputToNumber(inputs.targetOpacity, options, 'targetOpacity', render);
+  linkAll(options, {
+    cameraPosX:    [ $('camera-pos-x'), render ],
+    cameraPosY:    [ $('camera-pos-y'), render ],
+    cameraPosZ:    [ $('camera-pos-z'), render ],
+    cameraFOV:     [ $('camera-fov'), render ],
+    cameraLookX:   [ $('camera-look-x'), render ],
+    cameraLookY:   [ $('camera-look-y'), render ],
+    cameraLookZ:   [ $('camera-look-z'), render ],
+    sphere1PosX:   [ $('sphere-1-x'), render ],
+    sphere1PosY:   [ $('sphere-1-y'), render ],
+    sphere1PosZ:   [ $('sphere-1-z'), render ],
+    sphere2PosX:   [ $('sphere-2-x'), render ],
+    sphere2PosY:   [ $('sphere-2-y'), render ],
+    sphere2PosZ:   [ $('sphere-2-z'), render ],
+    lightPosX:     [ $('light-x'), render ],
+    lightPosY:     [ $('light-y'), render ],
+    lightPosZ:     [ $('light-z'), render ],
+    sphere1Radius: [ $('sphere-1-radius'), render ],
+    sphere2Radius: [ $('sphere-2-radius'), render ],
+    floorWidth:    [ $('floor-width'), render ],
+    floorLength:   [ $('floor-length'), render ],
+    targetOpacity: [ $('target-opacity'), render ]
+  });
 
   function render() {
-    var camera = new THREE.PerspectiveCamera(
+    var camera = new PerspectiveCamera(
       options.cameraFOV, 15 / 9, 0.1, 100
     );
 
-    var sphere1Geo = new THREE.SphereGeometry(options.sphere1Radius, 32, 32);
-    var sphere2Geo = new THREE.SphereGeometry(options.sphere2Radius, 32, 32);
-    var floorGeo = new THREE.PlaneGeometry(
+    var sphere1Geo = new SphereGeometry(options.sphere1Radius, 32, 32);
+    var sphere2Geo = new SphereGeometry(options.sphere2Radius, 32, 32);
+    var floorGeo = new PlaneGeometry(
       options.floorWidth, options.floorLength, 1, 1
     );
 
-    var sphere1Mesh = new THREE.Mesh(sphere1Geo, sphere1Mat);
-    var sphere2Mesh = new THREE.Mesh(sphere2Geo, sphere2Mat);
-    var floorMesh = new THREE.Mesh(floorGeo, floorMat);
+    var sphere1Mesh = new Mesh(sphere1Geo, sphere1Mat);
+    var sphere2Mesh = new Mesh(sphere2Geo, sphere2Mat);
+    var floorMesh = new Mesh(floorGeo, floorMat);
 
     camera.position.set(
       options.cameraPosX, options.cameraPosY, options.cameraPosZ
@@ -139,7 +125,7 @@ window.onload = function () {
     scene.add(sphere2Mesh);
     scene.add(floorMesh);
     scene.add(light);
-    scene.add(new THREE.AmbientLight(0x404040));
+    scene.add(new AmbientLight(0x404040));
 
     renderer.render(scene, camera);
     renderer.domElement.style.opacity = (1 - options.targetOpacity);
