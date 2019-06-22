@@ -151,7 +151,7 @@ export function link(
 
     // number input
     } else if (typeof obj[attr] === 'number') {
-      setter = x => el.valueAsNumber = x;
+      setter = x => el.value = String(x);
 
       el.addEventListener(options.instant ? 'input' : 'change', function () {
         var value = +el.value;
