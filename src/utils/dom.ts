@@ -20,20 +20,6 @@ export function importStylesheet(href: string): Promise<any> {
   });
 }
 
-export function delay(ms: number): Promise<void> {
-  return new Promise(resolve => {
-    setTimeout(resolve, ms);
-  });
-}
-
-export function count<T>(max: number, callback: (n: number) => T): T[] {
-  var arr = [];
-  for (var i = 0; i < max; i++) {
-    arr[i] = callback(i);
-  }
-  return arr;
-}
-
 type JSXChild = HTMLElement | string | number | boolean | null | undefined;
 export type ElementContent = JSXChild | JSXChild[];
 

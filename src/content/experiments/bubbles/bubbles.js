@@ -5,8 +5,7 @@ import {
   fitElement,
   link,
   resizeCanvas } from '../util';
-import QuadTree from '../../js/utils/QuadTree';
-import { getSaturatedColor, randomColor } from '../../js/utils/color';
+import { QuadTree, getSaturatedColor, randomColor } from 'utils';
 
 window.onload = function () {
   var drawCanvas = $('draw-canvas');

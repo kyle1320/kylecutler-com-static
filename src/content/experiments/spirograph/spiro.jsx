@@ -3,8 +3,8 @@ import {
   scaleCanvas,
   fitElement,
   link } from '../util';
-import { getSaturatedColor } from '../../js/utils/color';
-import { makeElement } from '../../js/utils';
+import { getSaturatedColor } from 'utils';
+import { makeElement } from 'utils';
 
 window.onload = function () {
   var spiroCanvas = $('spiro-canvas');

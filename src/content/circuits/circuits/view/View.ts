@@ -1,7 +1,7 @@
 import { defaultStyle } from './styles';
 import { Dimensions, Position, PositionalTree } from '../model/types';
 
-import EventEmitter from '../../../js/utils/EventEmitter';
+import { EventEmitter } from 'utils';
 
 const viewKey = Symbol('View');
 

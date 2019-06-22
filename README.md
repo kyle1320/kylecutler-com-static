@@ -60,6 +60,10 @@ Styles are compiled using [Sass](https://sass-lang.com) and [autoprefixer](https
 
 Pug templates. These templates will not be compiled to the output. Instead, they are used for importing by the Pug templates within the `content/` directory.
 
+### `utils/`:
+
+Contains reusable scripts used throughout the site. This folder is installed as a package in the root package.json so that compiled scripts can simply import from `utils` without worrying about relative paths.
+
 ## Polyfills
 
 The majority of polyfills are included via [polyfill.io](https://cdn.polyfill.io). This way, modern browsers need not load as many polyfills, and browsers can leverage caching to reduce overall load times across pages. There are a few ES6+ polyfills injected by the TypeScript compiler, and any additional polyfills needed can be included by requiring their NPM packages in the appropriate source file.

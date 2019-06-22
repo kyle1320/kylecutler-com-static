@@ -116,7 +116,7 @@
             }
         },
         {
-            "files": ["src/content/**/*"],
+            "files": ["src/**/*"],
             "env": {
                 "browser": true,
                 "commonjs": true,

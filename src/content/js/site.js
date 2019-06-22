@@ -1,1 +1,1 @@
-import './utils/obfuscate';
+import 'utils/obfuscate';

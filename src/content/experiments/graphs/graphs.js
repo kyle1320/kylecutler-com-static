@@ -5,7 +5,7 @@ import {
   link,
   takeTouchFocus,
   getRelativeCoord } from '../util';
-import { randomColor } from '../../js/utils/color';
+import { randomColor } from 'utils';
 import { getGL, getGLProgram } from '../webgl';
 import vertShader from './shader.vert';
 import fragShader from './shader.frag';

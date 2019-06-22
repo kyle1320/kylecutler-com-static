@@ -5,7 +5,7 @@ import {
   link,
   takeTouchFocus,
   getRelativeCoord } from '../util';
-import { randomColor } from '../../js/utils/color';
+import { randomColor } from 'utils';
 
 window.onload = function () {
   var drawCanvas = $('draw-canvas');
