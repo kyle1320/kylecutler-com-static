@@ -11,26 +11,82 @@
 @include fa-wrench;
 @include fa-graduation-cap;
 @include fa-project-diagram;
+@include fa-print;
+
+@keyframes slide-in {
+  from { transform: translateY(-100%); }
+  to   { transform: translateY(0); }
+}
+
+@media print {
+  @page { size: auto; margin: 0; }
+}
 
 html {
-  background-color: #fcfcfc;
+  background-color: #5c3013;
+  background-image: url('/img/wood.jpg');
+  background-size: 2048px 2048px;
   margin: 0;
   padding: 0;
+
+  @include hi-res {
+    background-image: url('/img/wood@2x.jpg');
+  }
+
+  @media print {
+    background: none;
+  }
 }
 
 body {
-  padding: rem(20px) rem(24px);
-  max-width: rem(900px);
-  box-sizing: content-box;
-  margin: 0 auto;
   color: $dark-gray;
 
   font-family: Georgia, 'Times New Roman', Times, serif;
   font-size: rem(13px);
   line-height: 1.4em;
+  margin: 0;
+  padding: 0;
+  padding: rem(10px);
+}
+
+#print-btn {
+  display: block;
+  padding: rem(10px);
+  font-size: rem(28px);
+  cursor: pointer;
+  width: rem(44px);
+  margin: rem(10px) auto 0;
+  color: white;
+  text-shadow: 0 rem(4px) rem(8px) rgba(0, 0, 0, 0.5);
 
   @media print {
-    padding: 0 rem(27px);
+    display: none;
+  }
+
+  @include mobile-only {
+    display: none;
+  }
+}
+
+.resume {
+  padding: rem(30px) rem(44px);
+  max-width: rem(960px);
+  box-sizing: border-box;
+  margin: 0 auto;
+  background-color: #f0f0f0;
+  background-image: url('/img/paper.jpg');
+  background-size: 273px 160px;
+  box-shadow: 0 rem(4px) rem(8px) rgba(0, 0, 0, 0.5);
+  animation: .6s ease-out .3s slide-in both;
+
+  @include hi-res {
+    background-image: url('/img/paper@2x.jpg');
+  }
+
+  @media print {
+    background: white;
+    max-width: auto;
+    box-shadow: none;
   }
 }
 
@@ -72,13 +128,13 @@ sup {
 }
 
 .show-more-btn {
-  align-self: stretch;
+  align-self: center;
   font-size: rem(10px);
   line-height: rem(16px);
   text-transform: uppercase;
   opacity: 0.5;
   letter-spacing: 0.1em;
-  vertical-align: middle;
+  // vertical-align: middle;
   cursor: pointer;
   margin-left: auto;
 
@@ -206,7 +262,6 @@ sup {
 
       @include mobile-only {
         font-size: rem(12px);
-        padding-right: rem(3px);
         width: rem(16px);
         text-align: center;
       }

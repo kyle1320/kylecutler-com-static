@@ -3,7 +3,10 @@ import 'utils/obfuscate';
 import { toggleClass } from 'utils';
 
 window.addEventListener('load', function () {
+  var printBtn = document.getElementById('print-btn');
   var showMoreButtons = document.querySelectorAll('.show-more-btn');
+
+  printBtn.addEventListener('click', () => window.print());
 
   for (var i = 0; i < showMoreButtons.length; i++) {
     showMoreButtons[i].addEventListener('click', function (event) {

@@ -14,135 +14,138 @@ html
 
   body
     +gtmNoscript
-    .header
-      .header__name Kyle Cutler
-      .info
-        .info__item
-          .info__item__label
-            span.fa.fa-envelope
-          a(href="#")&attributes(obfuscate({href: "mailto:kyle1320@gmail.com", content: "kyle1320@gmail.com"}))
-        .info__item
-          .info__item__label
-            span.fab.fa-github-alt
-          a(href="#")&attributes(obfuscate({href: "https://github.com/kyle1320", content: "github.com/kyle1320"}))
-        .info__item
-          .info__item__label
-            span.fab.fa-linkedin
-          a(href="#")&attributes(obfuscate({href: "https://www.linkedin.com/in/kyle-cutler-30aa40112/", content: "View Me on LinkedIn"}))
-      .header__statement
-        | Computer Science B.S. / M.S. student with experience in web and mobile development seeking new opportunities within the field of computer science.
+    .resume
+      .header
+        .header__name Kyle Cutler
+        .info
+          .info__item
+            .info__item__label
+              span.fa.fa-envelope
+            a(href="#")&attributes(obfuscate({href: "mailto:kyle1320@gmail.com", content: "kyle1320@gmail.com"}))
+          .info__item
+            .info__item__label
+              span.fab.fa-github-alt
+            a(href="#")&attributes(obfuscate({href: "https://github.com/kyle1320", content: "github.com/kyle1320"}))
+          .info__item
+            .info__item__label
+              span.fab.fa-linkedin
+            a(href="#")&attributes(obfuscate({href: "https://www.linkedin.com/in/kyle-cutler-30aa40112/", content: "View Me on LinkedIn"}))
+        .header__statement
+          | Computer Science B.S. / M.S. student with experience in web and mobile development seeking new opportunities within the field of computer science.
 
-    .section
-      .section__header
-        i.fa.fa-graduation-cap
-        span Education
-      .item
-        .item__title Rochester Institute of Technology
-        .info
-          .info__item Rochester, NY
-          .info__item December 2019
-        .item__subtitle B.S. / M.S. in Computer Science, 5#[sup th] year
-        ul
-          li GPA: 3.97 <i>/</i> 4
-          li Academic Honors: Outstanding Undergraduate Scholar Award, Dean’s List (7 semesters)
-          li Minoring in mathematics
+      .section
+        .section__header
+          i.fa.fa-graduation-cap
+          span Education
+        .item
+          .item__title Rochester Institute of Technology
+          .info
+            .info__item Rochester, NY
+            .info__item May 2020
+          .item__subtitle B.S. / M.S. in Computer Science, Graduate level
+          ul
+            li Undergraduate GPA: 3.97 #[i /] 4
+            li Academic Honors: Outstanding Undergraduate Scholar Award, Dean’s List (8 semesters)
+            li Minor in mathematics
 
-    .section
-      .section__header
-        i.fa.fa-wrench
-        span Technical Skills
-      table
-        tbody
-          tr
-            th Programming Languages
-            td Java, Javascript, C, Python, C++, C#
-          tr
-            th Database Languages
-            td SQL, MongoDB
-          tr
-            th Design Languages
-            td HTML, CSS, SASS, LESS
-          tr
-            th Runtimes & APIs
-            td Node.js, Android SDK, ReactJS, OpenGL, ASP.NET
-          tr
-            th Version Control
-            td Git, Subversion, Microsoft Team Foundation Server
+      .section
+        .section__header
+          i.fa.fa-wrench
+          span Technical Skills
+        table
+          tbody
+            tr
+              th Programming Languages
+              td Javascript, Java, C, Python, C++, C#
+            tr
+              th Database Languages
+              td SQL, MongoDB
+            tr
+              th Design Languages
+              td HTML, CSS, SASS, Pug / Jade
+            tr
+              th Runtimes & APIs
+              td Node.js, ASP.NET, React, Android SDK, OpenGL
+            tr
+              th Version Control
+              td Git, Subversion, Microsoft Team Foundation Server
 
-    .section
-      .section__header
-        i.fa.fa-briefcase
-        span Work Experience
-        .show-more-btn
-      .item
-        .item__title GeekHive
-        .info
-          .info__item Warwick, NY
-          .into__item May - Dec 2018
-        .item__subtitle Associate Developer
-        ul
-          li Develop comprehensive marketing solutions using modern web technologies
-          li Work together with designers and end clients to develop solutions that are reliable, maintainable, and fit the specific needs of each client
-      .item
-        .item__title On Track Themes
-        .info
-          .info__item Burbank, CA
-          .into__item July – Aug 2017
-        .item__subtitle Software Development Intern
-        ul
-          li Research emerging technologies for use in the themed entertainment industry
-          li Develop mobile and server-side applications showcasing the capabilities of emerging technologies
-      .item
-        .item__title Fujifilm Holdings America Corporation
-        .info
-          .info__item Rochester, NY
-          .into__item May – Dec 2016
-        .item__subtitle Co-op Software Developer
-        ul
-          li Design and implement enterprise software applications for use in the consumer photo industry
-          li Research and develop software using new technologies, and integrate with existing software
-          li Cooperate and work effectively as part of a team
-      .item.hidden
-        .item__title Rochester Institute of Technology
-        .info
-          .info__item Rochester, NY
-          .into__item Aug 2015 – Dec 2017
-        .item__subtitle Student Lab Instructor, Computer Science I & II
-        ul
-          li Provide guidance and assistance to a class of students during bi-weekly problem solving and lab sessions
-          li Evaluate and grade student assignments and provide relevant and thoughtful feedback
-          li Hold tutoring sessions twice per week to aid students who seek help outside of class
+      .section
+        .section__header
+          i.fa.fa-briefcase
+          span Work Experience
+          .show-more-btn
+        .item
+          .item__title GeekHive
+          .info
+            .info__item Warwick, NY
+            .into__item May 2019 - Present
+          .item__subtitle Associate Developer
+          ul
+            li Develop comprehensive marketing solutions using modern web technologies
+            li Work together with designers and end clients to develop solutions that are reliable, maintainable, and fit the specific needs of each client
+        .item
+          .item__title On Track Themes
+          .info
+            .info__item Burbank, CA
+            .into__item July – Aug 2017
+          .item__subtitle Software Development Intern
+          ul
+            li Research emerging technologies for use in the themed entertainment industry
+            li Develop mobile and server-side applications showcasing the capabilities of emerging technologies
+        .item
+          .item__title Fujifilm Holdings America Corporation
+          .info
+            .info__item Rochester, NY
+            .into__item May – Dec 2016
+          .item__subtitle Co-op Software Developer
+          ul
+            li Design and implement enterprise software applications for use in the consumer photo industry
+            li Research and develop software using new technologies, and integrate with existing software
+            li Cooperate and work effectively as part of a team
+        .item.hidden
+          .item__title Rochester Institute of Technology
+          .info
+            .info__item Rochester, NY
+            .into__item Aug 2015 – Dec 2017
+          .item__subtitle Student Lab Instructor, Computer Science I & II
+          ul
+            li Provide guidance and assistance to a class of students during bi-weekly problem solving and lab sessions
+            li Evaluate and grade student assignments and provide relevant and thoughtful feedback
+            li Hold tutoring sessions twice per week to aid students who seek help outside of class
 
-    .section
-      .section__header
-        i.fa.fa-project-diagram
-        span Selected Projects
-        .show-more-btn
-      .item
-        .item__title Time Tracker
-        .info
-          .info__item Personal Project
-          .info__item June – Aug 2018
-        .item__subtitle Javascript, ReactJS, CSS
-        ul
-          li A web application designed to solve the issue of inaccurately logged time at work by allowing the user to easily track time spent between various tasks
-          li Any task can be selected with a single click; time spent working on the selected task will be logged automatically
-          li Tasks can be edited, reordered, organized into projects, and more. A daily summary allows the user to easily see what they worked on each day in order to make time entry as painless as possible
-      .item
-        .item__title Voxel Engine
-        .info
-          .info__item Personal Project
-          .info__item March 2015
-        .item__subtitle C, OpenGL
-        ul
-          li A voxel game engine created from scratch
-          li Supports advanced lighting and shadows, saving and loading of custom-built worlds, rendering optimizations, and a logic / wiring system that allows for the simulation of advanced electrical circuits
-      .item.hidden
-        .item__title Pantry Packer
-        .info
-          .info__item Team Class Project
-          .info__item Jan – May 2017
-        .item__subtitle Java, SQL, HTML, CSS, Javascript
-        ul
-          li A web application that tracks items in a user’s pantry and displays relevant recipes to the user
-          li Supports creation and deletion of user accounts, recipes, and reviews, as well as an extensive search system that allows the user to find recipes based on ingredients, rating, tags, and more
+      .section
+        .section__header
+          i.fa.fa-project-diagram
+          span Selected Projects
+          .show-more-btn
+        .item
+          .item__title Time Tracker
+          .info
+            .info__item Personal Project
+            //- .info__item June – Aug 2018
+          .item__subtitle Javascript, ReactJS, CSS
+          ul
+            li A web application designed to solve the issue of inaccurately logged time at work by allowing the user to easily track time spent between various tasks
+            li Any task can be selected with a single click; time spent working on the selected task will be logged automatically
+            li Tasks can be edited, reordered, organized into projects, and more. A daily summary allows the user to easily see what they worked on each day in order to make time entry as painless as possible
+        .item
+          .item__title Voxel Engine
+          .info
+            .info__item Personal Project
+            //- .info__item March 2015
+          .item__subtitle C, OpenGL
+          ul
+            li A voxel game engine created from scratch
+            li Supports advanced lighting and shadows, saving and loading of custom-built worlds, rendering optimizations, and a logic / wiring system that allows for the simulation of advanced electrical circuits
+        .item.hidden
+          .item__title Pantry Packer
+          .info
+            .info__item Team Class Project
+            //- .info__item Jan – May 2017
+          .item__subtitle Java, SQL, HTML, CSS, Javascript
+          ul
+            li A web application that tracks items in a user’s pantry and displays relevant recipes to the user
+            li Supports creation and deletion of user accounts, recipes, and reviews, as well as an extensive search system that allows the user to find recipes based on ingredients, rating, tags, and more
+
+    i.fa.fa-print#print-btn(title="Print this page")
