@@ -128,13 +128,12 @@ sup {
 }
 
 .show-more-btn {
-  align-self: center;
+  text-align: right;
   font-size: rem(10px);
   line-height: rem(16px);
   text-transform: uppercase;
   opacity: 0.5;
   letter-spacing: 0.1em;
-  // vertical-align: middle;
   cursor: pointer;
   margin-left: auto;
 
