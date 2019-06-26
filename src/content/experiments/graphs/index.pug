@@ -19,24 +19,16 @@ block content
         +control-point('Nodes', true)(id="shownodes", type="checkbox")
         +control-point('Edges', true)(id="showedges", type="checkbox")
         +control-point('Edge Distances', true)(id="edgedists", type="checkbox")
-      +control('Draw background')
-        +control-point()(id='background', type='checkbox')
-      +control('Highlight white background areas')
-        +control-point()(id='highlight', type='checkbox')
-      +control('Use modulo on background values')
-        +control-point()(id='modulo', type='checkbox')
-      +control('Constant updates')
+      +control('Continuous updates')
         +control-point()(id='updates', type='checkbox')
-      +control('Order')
-        +control-point()(id='orderinput', type='number', min='0', step='1')
-      +control('Range')
-        +control-point()(id='rangeinput', type='number', step='10')
+      +control('Sensitivity')
+        +control-point()(id='sensitivityinput', type='number', step='1')
   .contentbox
-    | drag a node to move it
+    | Click & drag a node to move it
     br
-    | press 'q' over a node / edge to delete it
+    | Press 'q' / delete / backspace over a node or edge to delete it
     br
-    | ctrl + click adds a new node
+    | Ctrl + click adds a new node
     br
-    | ctrl + drag adds a new edge
+    | Ctrl + drag adds a new edge
 

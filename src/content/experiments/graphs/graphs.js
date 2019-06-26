@@ -8,7 +8,7 @@ import {
 import { randomColor } from 'utils';
 import { getGL, getGLProgram } from '../webgl';
 import vertShader from './shader.vert';
-import fragShader from './shader.frag';
+import fragShader from './shader.frag.js';
 
 window.onload = function () {
   var drawCanvas = $('draw-canvas');
@@ -27,7 +27,6 @@ window.onload = function () {
     mouseLeave   : false,
     nodesChanged : false,
     edgesChanged : false,
-    orderChanged : false,
     selection    : false,
     deselection  : false,
     graph        : false,
@@ -36,20 +35,17 @@ window.onload = function () {
     setAll : function (b) {
       this.mouseMotion = this.mousePress = this.mouseRelease =
       this.mouseEnter = this.mouseLeave = this.nodesChanged =
-      this.edgesChanged = this.orderChanged = this.selection =
-      this.deselection = this.graph = this.background = b;
+      this.edgesChanged = this.selection = this.deselection =
+      this.graph = this.background = b;
     }
   };
 
   var positionAttrib;
   var bgbuffer;
   var uniforms = {
-    edges: [],
+    edges: null,
     nEdges: null,
-    order: null,
-    range: null,
-    highlight: null,
-    modulo: null,
+    sensitivity: null,
     scale: null
   };
   var glReady = false;
@@ -63,26 +59,18 @@ window.onload = function () {
   var options = {
     nodeSize: 10,
     edgeWidth: 1,
-    order: 4,
-    range: 250,
+    sensitivity: 8,
     showNodes: true,
     showEdges: true,
-    background: true,
     edgeDists: false,
-    highlight: true,
-    modulo: false,
     constantUpdates: true
   };
 
   var inputs = {
-    orderinput: $('orderinput'),
-    rangeinput: $('rangeinput'),
+    sensitivityinput: $('sensitivityinput'),
     sncheck: $('shownodes'),
     secheck: $('showedges'),
-    bgcheck: $('background'),
     edcheck: $('edgedists'),
-    hlcheck: $('highlight'),
-    mocheck: $('modulo'),
     upcheck: $('updates')
   };
 
@@ -109,17 +97,11 @@ window.onload = function () {
 
     positionAttrib = gl.getAttribLocation(program, 'position');
 
-    for (var i=0; i < 16; i++) { // MAX_EDGES is 16 in shader.frag
-      uniforms.edges[i] = gl.getUniformLocation(program, 'edges['+i+']');
-    }
-
+    uniforms.edges = gl.getUniformLocation(program, 'edges[0]');
     uniforms.nEdges = gl.getUniformLocation(program, 'num_edges');
-    uniforms.order = gl.getUniformLocation(program, 'order');
-    uniforms.range = gl.getUniformLocation(program, 'range');
-    uniforms.highlight = gl.getUniformLocation(program, 'highlight');
-    uniforms.modulo = gl.getUniformLocation(program, 'modulo');
-
+    uniforms.sensitivity = gl.getUniformLocation(program, 'sensitivity');
     uniforms.scale = gl.getUniformLocation(program, 'scale');
+
     gl.uniform1f(uniforms.scale, scale);
 
     glReady = true;
@@ -140,7 +122,7 @@ window.onload = function () {
       gl.STATIC_DRAW
     );
 
-    gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
 
     // we want to update te first time we draw, so just... update everything
@@ -151,14 +133,10 @@ window.onload = function () {
     createdEdge = null;
     mouse = {x: 0, y: 0, inside: false};
 
-    link(inputs.orderinput, options, 'order', redrawBackground);
-    link(inputs.rangeinput, options, 'range', redrawBackground);
+    link(inputs.sensitivityinput, options, 'sensitivity', redrawBackground);
     link(inputs.sncheck, options, 'showNodes', redrawGraph);
     link(inputs.secheck, options, 'showEdges', redrawGraph);
-    link(inputs.bgcheck, options, 'background', redrawBackground);
     link(inputs.edcheck, options, 'edgeDists');
-    link(inputs.hlcheck, options, 'highlight', redrawBackground);
-    link(inputs.mocheck, options, 'modulo', redrawBackground);
     link(inputs.upcheck, options, 'constantUpdates');
 
     drawCanvas.addEventListener('mousedown',  mousedown);
@@ -184,17 +162,13 @@ window.onload = function () {
     //  - constant updates are turned on, or the update is not due to
     //  mouse motion or pressing. So we update on mouse release, and
     //  on any other updates (key press, checkbox, etc.)
-    //  - or, if the order changed
-    var bgchanged = options.background
-            && (
+    var bgchanged = 
               updates.background
               || ((updates.edgesChanged || updates.deselection)
                 && (options.constantUpdates
                   || (!updates.mouseMotion && !updates.mousePress)
                 )
-              )
-              || updates.orderChanged
-            );
+              );
 
     // we need to redraw any time the graph itself changes
     var graphchanged =  updates.graph
@@ -224,8 +198,6 @@ window.onload = function () {
         glFrameQueued = true;
         requestAnimationFrame(drawBackground);
       }
-    } else if (!options.background) {
-      gl.clear(gl.COLOR_BUFFER_BIT);
     }
 
     // if the graph or edges changed, we need to redraw the 2d canvas
@@ -283,20 +255,19 @@ window.onload = function () {
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     gl.uniform1i(uniforms.nEdges, edges.length);
-    gl.uniform1i(uniforms.order, options.order);
-    gl.uniform1f(uniforms.range, options.range);
-    gl.uniform1f(uniforms.highlight, options.highlight ? 1.0 : 0.0);
-    gl.uniform1f(uniforms.modulo, options.modulo ? 1.0 : 0.0);
+    gl.uniform1f(uniforms.sensitivity, options.sensitivity);
 
+    var uEdges = [];
     for (var i=0; i < edges.length; i++) {
       var edge = edges[i];
-      gl.uniform4fv(uniforms.edges[i], new Float32Array([
+      uEdges.push(
         edge.a.x,
         drawCanvas.drawHeight - edge.a.y,
         edge.b.x,
         drawCanvas.drawHeight - edge.b.y
-      ]));
+      );
     }
+    gl.uniform4fv(uniforms.edges, uEdges);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, bgbuffer);
     gl.enableVertexAttribArray(positionAttrib);
@@ -388,6 +359,8 @@ window.onload = function () {
     var mousepos = getRelativeCoord(drawCanvas, evt);
     mouse.x = mousepos.x;
     mouse.y = mousepos.y;
+
+    findNearestNode();
 
     // select a node if we are over it
     if (nearestNode.nearby(mouse, options.nodeSize)) {
@@ -484,10 +457,10 @@ window.onload = function () {
   }
 
   function keydown(evt) {
-    if (evt.keyCode == 81) { // 'q'
-      var i;
 
-      // delete a node if we are over it
+    // 'q', backspace, delete
+    if (evt.keyCode == 81 || evt.keyCode == 8 || evt.keyCode == 46) {
+      var i;     // delete a node if we are over it
       if (nearestNode.nearby(mouse, options.nodeSize)) {
         var index = nodes.indexOf(nearestNode);
         nodes.splice(index, 1);
