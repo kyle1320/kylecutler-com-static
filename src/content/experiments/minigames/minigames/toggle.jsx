@@ -1,4 +1,4 @@
-import { delay, makeElement, count } from 'utils';
+import { delay, makeElement, range } from 'utils';
 
 window.addEventListener('load', function () {
   const el = document.getElementById('minigame-toggle');
@@ -37,8 +37,8 @@ class ToggleGame {
     /* eslint-disable max-len */
     [
       <div className='game-container'>{[
-        <table>{count(this.size, y =>
-          <tr>{this.elements.cells[y] = count(this.size, x =>
+        <table>{range(this.size).map(y =>
+          <tr>{this.elements.cells[y] = range(this.size).map(x =>
             <td onclick={this.toggleAround.bind(this, x, y)} />
           )}</tr>
         )}</table>,

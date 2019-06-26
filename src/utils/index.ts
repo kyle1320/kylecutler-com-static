@@ -4,12 +4,28 @@ export function delay(ms: number): Promise<void> {
   });
 }
 
-export function count<T>(max: number, callback: (n: number) => T): T[] {
-  var arr = [];
-  for (var i = 0; i < max; i++) {
-    arr[i] = callback(i);
+export function range(to: number): number[];
+export function range(from: number, to: number): number[];
+export function range(from: number, to: number, step: number): number[];
+export function range(from: number, to?: number, step?: number): number[] {
+  if (typeof to === 'undefined') {
+    to = from;
+    from = 0;
   }
-  return arr;
+
+  if (typeof step === 'undefined') {
+    step = Math.sign(to - from);
+  }
+
+  if (step === 0) return [];
+
+  var res = [];
+  while (step > 0 ? to > from : to < from) {
+    res.push(from);
+    from += step;
+  }
+
+  return res;
 }
 
 export * from './color';
