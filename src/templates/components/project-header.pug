@@ -1,6 +1,8 @@
+include images.pug
+
 mixin project-header(href, img, name)
   .contentbox
     a.project-header(href=href)
-      img(src=img alt=name)
+      +img-hi-res(img)(alt=name)
       div= name
     block
