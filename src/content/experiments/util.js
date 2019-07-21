@@ -127,20 +127,20 @@ export function link(
   if (el.tagName === 'INPUT') {
     if ('jscolor' in el) {
 
-      // Hex color
-      if (typeof obj[attr] === 'string') {
-        setter = x => x && el.jscolor.fromString(x.replace(/^#/, ''));
-
-        el.addEventListener('change', function () {
-          cb(obj[attr] = el.value ? '#' + el.jscolor.toString() : null);
-        });
-
       // RGB color
-      } else {
+      if (obj[attr] instanceof Array) {
         setter = ([r, g, b]) => el.jscolor.fromRGB(r, g, b);
 
         el.addEventListener('change', function () {
           cb(obj[attr] = el.jscolor.rgb.map(Math.floor));
+        });
+
+      // Hex color
+      } else {
+        setter = x => x && el.jscolor.fromString(x.replace(/^#/, ''));
+
+        el.addEventListener('change', function () {
+          cb(obj[attr] = el.value ? '#' + el.jscolor.toString() : null);
         });
       }
 

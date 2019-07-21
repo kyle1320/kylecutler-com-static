@@ -1,3 +1,4 @@
+import 'jscolor-picker';
 import {
   $,
   scaleCanvas,
@@ -31,6 +32,7 @@ window.onload = function () {
     decay: 0,
     groupSize: 40,
     groupRadius: 8,
+    groupColor: null,
     mouseDensity: 50,
     particleRadius: 1,
     particleDensity: 1,
@@ -43,6 +45,7 @@ window.onload = function () {
     decayInput: $('decay'),
     groupSizeInput: $('group-size'),
     groupRadiusInput: $('group-radius'),
+    groupColorInput: $('group-color'),
     mouseDensityInput: $('mouse-density'),
     particleRadiusInput: $('particle-radius'),
     particleDensityInput: $('particle-density'),
@@ -80,6 +83,7 @@ window.onload = function () {
     link(inputs.decayInput, options, 'decay');
     link(inputs.groupSizeInput, options, 'groupSize');
     link(inputs.groupRadiusInput, options, 'groupRadius');
+    link(inputs.groupColorInput, options, 'groupColor');
     link(inputs.mouseDensityInput, options, 'mouseDensity');
     link(inputs.particleRadiusInput, options, 'particleRadius');
     link(inputs.particleDensityInput, options, 'particleDensity');
@@ -220,7 +224,7 @@ window.onload = function () {
     if (x === undefined) x = Math.random() * width;
     if (y === undefined) y = Math.random() * height;
 
-    var color = randomColor();
+    var color = options.groupColor || randomColor();
     var group = [];
 
     for (var i=0; i < options.groupSize; i++) {
