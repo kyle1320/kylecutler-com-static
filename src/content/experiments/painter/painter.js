@@ -7,7 +7,8 @@ import {
   link,
   poissonDisk,
   resizeCanvas,
-  getRelativeCoord } from '../util';
+  getRelativeCoord,
+  clamp } from '../util';
 
 window.onload = function () {
   var drawCanvas = $('draw-canvas');
@@ -288,9 +289,9 @@ window.onload = function () {
 
   // deviates the given cell's color according to the options
   function deviate(c, dev) {
-    c.r = Math.clamp(c.r + Math.random()*dev*2 - dev, 0, 255);
-    c.g = Math.clamp(c.g + Math.random()*dev*2 - dev, 0, 255);
-    c.b = Math.clamp(c.b + Math.random()*dev*2 - dev, 0, 255);
+    c.r = clamp(c.r + Math.random()*dev*2 - dev, 0, 255);
+    c.g = clamp(c.g + Math.random()*dev*2 - dev, 0, 255);
+    c.b = clamp(c.b + Math.random()*dev*2 - dev, 0, 255);
   }
 
   // determines if a given cell should spawn

@@ -4,7 +4,8 @@ import {
   scaleCanvas,
   fitElement,
   link,
-  resizeCanvas } from '../util';
+  resizeCanvas,
+  clamp } from '../util';
 import { QuadTree, getSaturatedColor, randomColor } from 'utils';
 
 window.onload = function () {
@@ -290,7 +291,7 @@ window.onload = function () {
       var p = Math.sqrt(x)/Math.sqrt(26-25*x);
 
       // progress should only increase, and not go above 99%...
-      progress = Math.clamp(Math.floor(130*p), progress, 99);
+      progress = clamp(Math.floor(130*p), progress, 99);
 
       // show the progress
       outputs.progress.innerHTML = progress + '%';

@@ -206,9 +206,9 @@ export function linkAll(obj, map) {
  *     MISC     *
  ****************/
 
-Math.clamp = function (num, min, max) {
+export function clamp(num, min, max) {
   return Math.max(min, Math.min(num, max));
-};
+}
 
 export const poissonDisk = function (minx, miny, width, height, r) {
   var r2 = r * r;
