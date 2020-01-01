@@ -20,4 +20,5 @@ window.addEventListener('load', function () {
   }
 
   update();
+  setTimeout(() => document.body.className = 'loaded', 0);
 });
