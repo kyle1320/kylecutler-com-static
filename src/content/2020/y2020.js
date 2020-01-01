@@ -12,13 +12,10 @@ window.addEventListener('load', function () {
     yearEl.textContent = year;
     timeEl.textContent = time;
 
-    if (year === 2020) {
-      yearEl.className = 'y2020';
-    }
+    yearEl.className = 'y y' + year;
 
     setTimeout(update, 1001 - now.getMilliseconds % 1000);
   }
 
   update();
-  setTimeout(() => document.body.className = 'loaded', 0);
 });

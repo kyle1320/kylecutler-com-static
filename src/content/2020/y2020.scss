@@ -20,12 +20,12 @@ body {
   font-weight: bold;
   filter: blur(.08em);
 
-  &.y2020 {
-    filter: blur(0);
+  &.y {
+    transition: filter 3s;
   }
 
-  .loaded & {
-    transition: filter 3s;
+  &.y2020 {
+    filter: blur(0);
   }
 }
 
