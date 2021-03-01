@@ -5,7 +5,7 @@
     "jscolor-picker": "^2.0.4",
     "moment": "^2.24.0",
     "path2d-polyfill": "^0.4.1",
-    "three": "^0.105.2",
+    "three": "^0.125.0",
     "utils": "file:src/utils"
   },
   "devDependencies": {
