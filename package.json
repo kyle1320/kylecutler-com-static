@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "dependencies": {
     "jscolor-picker": "^2.0.4",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "path2d-polyfill": "^0.4.1",
     "three": "^0.105.2",
     "utils": "file:src/utils"
