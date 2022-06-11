@@ -3,7 +3,8 @@
 @include fa-envelope;
 
 .footer {
-  padding: rem(10px) rem(10px) rem(30px);
+  margin-top: rem(20px);
+  padding: 0 rem(10px) rem(30px);
   text-align: center;
 
   &__links {

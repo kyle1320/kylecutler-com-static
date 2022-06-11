@@ -17,52 +17,52 @@ block vars
 block content
   .contentbox
     h2 Welcome!
-    p This website is a place for me to showcase some of my programming projects. Currently, it mostly consists of JavaScript applets. In the future I may add other types of projects or blog posts.
-    p This site is very much a work in progress, so check back often!
-  .tiles
-    +tile("Time Tracker",
-          "/timetracker/",
-          "/img/tiles/timetracker_xl.png",
-          "Track time spent on various tasks at work")(class="tile--a-lg")
-    +tile("Painter",
-          "/experiments/painter/",
-          "/img/tiles/painter_lg.png")(class="tile--b")
-    +tile("Spirograph",
-          "/experiments/spirograph/",
-          "/img/tiles/spirograph_lg.png")(class="tile--c")
-    +tile("Minigames",
-          "/experiments/minigames/",
-          "/img/tiles/minigames_lg.png")(class="tile--d")
-    +tile("Résumé",
-          "/resume/",
-          "/img/tiles/resume_lg.png")(class="tile--e")
-    +tile("Circuits",
-          "/circuits/",
-          "/img/tiles/circuits_xl.png",
-          "Design and test boolean logic circuits")(class="tile--f-lg")
-    +tile("Bubbles",
-          "/experiments/bubbles/",
-          "/img/tiles/bubbles_lg.png")(class="tile--g")
-    +tile("Particles",
-          "/experiments/particles/",
-          "/img/tiles/particles_lg.png")(class="tile--h")
-    +tile("Graphs",
-          "/experiments/graphs/",
-          "/img/tiles/graphs_lg.png")(class="tile--i")
-  .contentbox
-    h2 A little about me...
-    +img-hi-res("/img/kyle-sm.jpg")(height="160px" style="float: left; padding: 5px 15px 5px 0;" alt="A photo of me")
-    p My name is Kyle Cutler; I'm a graduate Computer Science student at Rochester Institute of Technology.
-    p I have been programming for about seven years, and I always love to learn more. At the moment, I consider myself most fluent in Javascript, Java, Python, and C, but I have experience with many other languages as well.
-    p I love to create visual programs, such as fractal generators, simulations, games, and anything else I come up with. (check out some of <a href="/experiments">my JavaScript experiments!</a>)
+    p My name is Kyle Cutler; I'm a software engineer at Microsoft.
+    p I love to create visual programs such as fractal generators, simulations, games, and anything else I come up with.
     p
-      | My other hobbies include playing
-      a(href="https://en.wikipedia.org/wiki/Go_(game)" target="_blank" rel="noopener")  Go
-      | , attending hackathons, practicing guitar, and cooking.
+      | My other hobbies include hiking, cooking, and playing
+      a(href="https://en.wikipedia.org/wiki/Go_(game)" target="_blank" rel="noopener")  Go.
     p
       | If you want to contact me, the best way is by
       a(href="#")&attributes(obfuscate({href: "mailto:me@kylecutler.com"}))  Email
       | . You can also find links to my GitHub and LinkedIn at the bottom of the page. Or, if you're interested, you can check out my
-      a(href="/resume")  Résumé
-      | !
-    p Enjoy your visit!
+      a(href="/resume")  Résumé.
+  
+  .contentbox 
+    h2 Web Projects 
+    p Below you can find links to some of my personal web projects. Some of these are very old, so I have tried to order them with the more recent projects first.
+
+  .tiles
+    +tile("Kyle's Uno",
+          "https://uno.kyles.games/",
+          "/img/tiles/uno_xl.png",
+          "A recreation of the classic card game that you can play online with friends!")(class="tile--lg" target="_blank")
+    +tile("Time Tracker",
+          "/timetracker/",
+          "/img/tiles/timetracker_xl.png",
+          "Track time spent on various tasks at work")(class="tile--lg")
+    +tile("Circuits",
+          "/circuits/",
+          "/img/tiles/circuits_xl.png",
+          "Design and test boolean logic circuits")(class="tile--lg")
+    +tile("Résumé",
+          "/resume/",
+          "/img/tiles/resume_lg.png")(class="tile")
+    +tile("Minigames",
+          "/experiments/minigames/",
+          "/img/tiles/minigames_lg.png")(class="tile")
+    +tile("Painter",
+          "/experiments/painter/",
+          "/img/tiles/painter_lg.png")(class="tile")
+    +tile("Spirograph",
+          "/experiments/spirograph/",
+          "/img/tiles/spirograph_lg.png")(class="tile")
+    +tile("Bubbles",
+          "/experiments/bubbles/",
+          "/img/tiles/bubbles_lg.png")(class="tile")
+    +tile("Particles",
+          "/experiments/particles/",
+          "/img/tiles/particles_lg.png")(class="tile")
+    +tile("Graphs",
+          "/experiments/graphs/",
+          "/img/tiles/graphs_lg.png")(class="tile")
