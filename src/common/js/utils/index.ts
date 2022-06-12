@@ -1,5 +1,5 @@
 export function delay(ms: number): Promise<void> {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
 }
@@ -19,7 +19,7 @@ export function range(from: number, to?: number, step?: number): number[] {
 
   if (step === 0) return [];
 
-  var res = [];
+  const res = [];
   while (step > 0 ? to > from : to < from) {
     res.push(from);
     from += step;

@@ -16,7 +16,7 @@ const TYPE_SNAKE = 1;
 
 interface Obstacle {
   type: 0 | 1;
-  dist: number
+  dist: number;
 }
 
 export default class SnakeAI {
@@ -24,20 +24,21 @@ export default class SnakeAI {
   private snake: Snake;
   private food: Food;
 
-  public constructor (field: Field) {
+  public constructor(field: Field) {
     this.field = field;
     this.snake = accessUnsafe(field, 'snake');
     this.food = accessUnsafe(field, 'food');
   }
 
   public consult() {
-    var head = this.snake.getHead();
-    var direction = accessUnsafe<Direction>(this.snake, 'direction');
+    const head = this.snake.getHead();
+    const direction = accessUnsafe<Direction>(this.snake, 'direction');
 
-    var dir: Direction, needToTurn = true;
-    var dx = this.food.position.x - head.x;
-    var dy = this.food.position.y - head.y;
-    var f = dx * direction.x + dy * direction.y;
+    let dir: Direction,
+      needToTurn = true;
+    const dx = this.food.position.x - head.x;
+    const dy = this.food.position.y - head.y;
+    const f = dx * direction.x + dy * direction.y;
 
     // first try going for food
     if (
@@ -76,28 +77,37 @@ export default class SnakeAI {
   }
 
   private findNearestObstacle(dir: Direction): Obstacle {
-    var head = this.snake.getHead();
-    var segments = accessUnsafe<Vec2<number>[]>(this.snake, 'segments');
+    const head = this.snake.getHead();
+    const segments = accessUnsafe<Vec2<number>[]>(this.snake, 'segments');
 
-    var searchBB = getForwardBoundingBox(
-      head, dir, SNAKE_RADIUS, SNAKE_RADIUS * 1.01, 10000
+    const searchBB = getForwardBoundingBox(
+      head,
+      dir,
+      SNAKE_RADIUS,
+      SNAKE_RADIUS * 1.01,
+      10000
     );
 
-    var minObstacle: Obstacle = null;
-    for (var i = segments.length - 2; i >= 0; i--) {
-      var targetBB = getBoundingBox(segments[i+1], segments[i], SNAKE_RADIUS);
+    let minObstacle: Obstacle = null;
+    for (let i = segments.length - 2; i >= 0; i--) {
+      const targetBB = getBoundingBox(
+        segments[i + 1],
+        segments[i],
+        SNAKE_RADIUS
+      );
 
       if (boundingBoxesIntersect(targetBB, searchBB)) {
-        const dist = Math.max(
-          Math.min(
-            dir.x * (targetBB.minX - head.x),
-            dir.x * (targetBB.maxX - head.x)
-          ),
-          Math.min(
-            dir.y * (targetBB.minY - head.y),
-            dir.y * (targetBB.maxY - head.y)
-          )
-        ) - SNAKE_RADIUS;
+        const dist =
+          Math.max(
+            Math.min(
+              dir.x * (targetBB.minX - head.x),
+              dir.x * (targetBB.maxX - head.x)
+            ),
+            Math.min(
+              dir.y * (targetBB.minY - head.y),
+              dir.y * (targetBB.maxY - head.y)
+            )
+          ) - SNAKE_RADIUS;
 
         if (!minObstacle || minObstacle.dist > dist) {
           minObstacle = { type: TYPE_SNAKE, dist: dist };
@@ -109,7 +119,7 @@ export default class SnakeAI {
       return minObstacle;
     }
 
-    var size = accessUnsafe<number>(this.field, 'size');
+    const size = accessUnsafe<number>(this.field, 'size');
 
     return {
       type: TYPE_WALL,
@@ -122,18 +132,14 @@ export default class SnakeAI {
     };
   }
 
-  private avoid(
-    dir: Direction,
-    goingForFood: boolean = false,
-    turning: boolean = true
-  ): boolean {
-    var obstacle = this.findNearestObstacle(dir);
-    var eaten = accessUnsafe<number>(this.snake, 'foodEaten');
+  private avoid(dir: Direction, goingForFood = false, turning = true): boolean {
+    const obstacle = this.findNearestObstacle(dir);
+    const eaten = accessUnsafe<number>(this.snake, 'foodEaten');
 
-    return (obstacle.type === TYPE_SNAKE && goingForFood)
-      ? obstacle.dist < (SNAKE_WIDTH * 2 * Math.sqrt(eaten + 1))
+    return obstacle.type === TYPE_SNAKE && goingForFood
+      ? obstacle.dist < SNAKE_WIDTH * 2 * Math.sqrt(eaten + 1)
       : turning
-        ? obstacle.dist < SNAKE_WIDTH + 0.2
-        : obstacle.dist < 0.2;
+      ? obstacle.dist < SNAKE_WIDTH + 0.2
+      : obstacle.dist < 0.2;
   }
 }

@@ -8,7 +8,7 @@ export default class ConnectionView extends View {
   private start: Position;
   private end: Position;
 
-  public constructor (nodeA: NodeView, nodeB: NodeView, parent?: View) {
+  public constructor(nodeA: NodeView, nodeB: NodeView, parent?: View) {
     super([], getDimensions(nodeA, nodeB, parent), {});
 
     this.parent = parent;
@@ -28,9 +28,7 @@ export default class ConnectionView extends View {
     this.data[index] = node;
   }
 
-  public move(x: number, y: number) {
-
-  }
+  public move(x: number, y: number) {}
 
   public remove() {
     super.remove();
@@ -46,18 +44,17 @@ export default class ConnectionView extends View {
 
   public update() {
     this.start = View.getRelativePosition(this.data[0], this.parent);
-    this.end   = View.getRelativePosition(this.data[1], this.parent);
+    this.end = View.getRelativePosition(this.data[1], this.parent);
 
-    this.attributes.zIndex = Math.min(
-      this.data[0].getRenderOrder(),
-      this.data[1].getRenderOrder()
-    ) - 0.001;
+    this.attributes.zIndex =
+      Math.min(this.data[0].getRenderOrder(), this.data[1].getRenderOrder()) -
+      0.001;
 
     this.dimensions = {
       x: Math.min(this.start.x, this.end.x),
       y: Math.min(this.start.y, this.end.y),
       width: Math.abs(this.start.x - this.end.x),
-      height: Math.abs(this.start.y - this.end.y),
+      height: Math.abs(this.start.y - this.end.y)
     };
 
     // TODO: update path here
@@ -66,35 +63,39 @@ export default class ConnectionView extends View {
     this.emit('move', this);
   }
 
-  public intersects(x: number, y: number, grow: number = 0) {
-    var { x: ax, y: ay } = this.start;
-    var { x: bx, y: by } = this.end;
+  public intersects(x: number, y: number, grow = 0) {
+    const { x: ax, y: ay } = this.start;
+    const { x: bx, y: by } = this.end;
 
-    var dx =  x - ax, dy =  y - ay;
-    var lx = bx - ax, ly = by - ay;
+    const dx = x - ax,
+      dy = y - ay;
+    const lx = bx - ax,
+      ly = by - ay;
 
-    var lineSq = lx * lx + ly * ly;
-    var diagSq = dx * dx + dy * dy;
+    const lineSq = lx * lx + ly * ly;
+    const diagSq = dx * dx + dy * dy;
 
-    var tmp = lx * dx + ly * dy;
+    const tmp = lx * dx + ly * dy;
     if (tmp < 0) return diagSq <= grow * grow;
-    var parallelSq = (tmp * tmp) / lineSq;
+    const parallelSq = (tmp * tmp) / lineSq;
     if (parallelSq > lineSq) {
-      var tx = x - bx, ty = y - by;
+      const tx = x - bx,
+        ty = y - by;
       return tx * tx + ty * ty <= grow * grow;
     }
 
-    var perpSq = diagSq - parallelSq;
+    const perpSq = diagSq - parallelSq;
 
     return perpSq <= grow * grow;
   }
 
   public draw(context: CanvasRenderingContext2D) {
-    var style = this.style.connection;
+    const style = this.style.connection;
 
-    var color = (this.data[0].data.get() || this.data[1].data.get())
-      ? style.colorOn
-      : style.colorOff;
+    const color =
+      this.data[0].data.get() || this.data[1].data.get()
+        ? style.colorOn
+        : style.colorOff;
 
     context.beginPath();
     context.moveTo(this.start.x, this.start.y);
@@ -119,13 +120,13 @@ export default class ConnectionView extends View {
 }
 
 function getDimensions(nodeA: NodeView, nodeB: NodeView, parent: View) {
-  var start = View.getRelativePosition(nodeA, parent);
-  var end = View.getRelativePosition(nodeB, parent);
+  const start = View.getRelativePosition(nodeA, parent);
+  const end = View.getRelativePosition(nodeB, parent);
 
   return {
     x: Math.min(start.x, end.x),
     y: Math.min(start.y, end.y),
     width: Math.abs(start.x - end.x),
-    height: Math.abs(start.y - end.y),
+    height: Math.abs(start.y - end.y)
   };
 }

@@ -6,14 +6,14 @@ import { CircuitDefinition, CircuitRule } from './types';
 import { EventEmitter } from '~/src/common/js/utils';
 
 export default class Circuit extends EventEmitter<{
-  update: void
-  }> {
+  update: void;
+}> {
   public definition: CircuitDefinition;
   public pins: Node[];
   private internalPins: Node[];
   private doUpdate: (this: Circuit) => void;
 
-  public constructor (def: CircuitDefinition) {
+  public constructor(def: CircuitDefinition) {
     super();
 
     this.definition = def;
@@ -22,7 +22,7 @@ export default class Circuit extends EventEmitter<{
 
     this.pins = def.pins.map(() => new Node());
     this.internalPins = def.pins.map((options, i) => {
-      var node = new Node();
+      const node = new Node();
 
       if (!options.ignoreInput) {
         node.on('update', () => bufferEvent('circuit-update', this.update));
@@ -46,26 +46,27 @@ export default class Circuit extends EventEmitter<{
   }
 
   public disconnect() {
-    this.pins.forEach(pin => pin.disconnect());
+    this.pins.forEach((pin) => pin.disconnect());
     this.emit('update');
   }
 
   private static getUpdateFunc(rules: CircuitRule[]) {
-    var funcs = rules.map(rule => {
+    const funcs = rules.map((rule) => {
       switch (rule.type) {
-      case 'output':
-        var expr = parse(rule.value);
-        return function (this: Circuit, scope: {}) {
-          this._set(rule.target, expr(scope));
-        };
+        case 'output': {
+          const expr = parse(rule.value);
+          return function (this: Circuit, scope: object) {
+            this._set(rule.target, expr(scope));
+          };
+        }
       }
       return null;
     });
 
     return function (this: Circuit) {
-      var scope = this.pins.map(pin => pin.get());
+      const scope = this.pins.map((pin) => pin.get());
 
-      funcs.forEach(f => f && f.call(this, scope));
+      funcs.forEach((f) => f && f.call(this, scope));
     };
   }
 }

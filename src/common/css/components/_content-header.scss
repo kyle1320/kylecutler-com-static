@@ -1,5 +1,5 @@
 .content-header {
-  padding: .3em;
+  padding: 0.3em;
   border-left: rem(10px) solid $primary-dark;
   background-color: $off-white;
   border-radius: rem(5px);
@@ -12,7 +12,11 @@
   }
 }
 
-h1, h2, h3, h4, h5 {
+h1,
+h2,
+h3,
+h4,
+h5 {
   .content > & {
     @extend .content-header;
   }

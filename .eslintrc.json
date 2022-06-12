@@ -1,133 +1,24 @@
 {
+    "root": true,
     "env": {
         "node": true,
-        "es6": true
+        "es6": true,
+        "browser": true
     },
-    "extends": "eslint:recommended",
     "parserOptions": {
-        "ecmaVersion": 2017
+        "ecmaVersion": "latest"
     },
     "parser": "@typescript-eslint/parser",
-    "plugins": ["@typescript-eslint"],
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "prettier"
+    ],
     "rules": {
-        "no-console": "off",
-        "indent": [
-            "error",
-            2
-        ],
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
-        "quotes": [
-            "error",
-            "single"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ],
-        "no-unused-vars": "off",
-        "max-len": [
-            "error",
-            {
-                "code": 80,
-                "ignoreComments": true
-            }
-        ],
-        "no-debugger": "error",
-        "no-implied-eval": "error",
-        "no-with": "error",
-        "wrap-iife": "error",
-        "comma-spacing": "error",
-        "new-parens": "error",
-        "new-cap": [
-            "error",
-            {
-                "newIsCap": true,
-                "capIsNew": false
-            }
-        ],
-        "no-lonely-if": "error",
-        "no-multiple-empty-lines": "error",
-        "no-tabs": "error",
-        "nonblock-statement-body-position": "error",
-        "spaced-comment": [
-            "error",
-            "always",
-            {
-                "block": {
-                    "exceptions": ["*"],
-                    "balanced": true
-                }
-            }
-        ],
-        "keyword-spacing": "error",
-        "space-before-function-paren": [
-            "error",
-            {
-                "anonymous": "always",
-                "named": "ignore",
-                "asyncArrow": "always"
-            }
-        ],
-        "space-before-blocks": "error",
-        "block-spacing": "error",
-        "@typescript-eslint/no-unused-vars": [
-            "error",
-            {
-                "vars": "local",
-                "args": "none"
-            }
-        ],
-        "@typescript-eslint/class-name-casing": "error",
-        "@typescript-eslint/explicit-member-accessibility": "error",
-        "@typescript-eslint/no-inferrable-types": [
-            "error",
-            {
-                "ignoreParameters": true
-            }
-        ],
-        "@typescript-eslint/type-annotation-spacing": "error"
-    },
-    "overrides": [
-        {
-            "files": ["**/*.ts", "**/*.tsx"],
-            "rules": {
-                "no-dupe-class-members": "off"
-            }
-        },
-        {
-            "files": ["**/*.jsx", "**/*.tsx"],
-            "parserOptions": {
-                "ecmaFeatures": {
-                    "jsx": true
-                }
-            },
-            "rules": {
-                "@typescript-eslint/no-unused-vars": [
-                    "error",
-                    {
-                        "vars": "local",
-                        "args": "none",
-                        "varsIgnorePattern": "^makeElement$"
-                    }
-                ]
-            }
-        },
-        {
-            "files": ["src/**/*"],
-            "env": {
-                "browser": true,
-                "commonjs": true,
-                "node": true
-            },
-            "parserOptions": {
-                "sourceType": "module"
-            },
-            "globals": {
-                "__DEBUG__": false
-            }
-        }
-    ]
+        "@typescript-eslint/no-empty-function": "warn",
+        "@typescript-eslint/no-explicit-any": "warn"
+    }
 }

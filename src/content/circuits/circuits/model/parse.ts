@@ -1,10 +1,10 @@
 export type Expression = (scope: Scope) => any;
-export type Scope = {[key: string]: any};
+export type Scope = { [key: string]: any };
 
 // Parses a simple stack-based language.
 export function parse(expr: string): Expression {
-  var tokens = consume(expr, parseToken);
-  var expressions = consume(tokens, parseExpr);
+  const tokens = consume(expr, parseToken);
+  const expressions = consume(tokens, parseExpr);
 
   return expressions.pop();
 }
@@ -13,37 +13,33 @@ function consume<T>(
   arr: string | string[],
   consumer: (stream: ConsumableStream, stack: T[]) => T
 ): T[] {
-  var stream = new ConsumableStream(arr);
-  var res = [];
+  const stream = new ConsumableStream(arr);
+  const res = [];
   while (stream.peek()) {
-    var elem = consumer(stream, res);
+    const elem = consumer(stream, res);
     elem && res.push(elem);
   }
   return res;
 }
 
 function parseToken(stream: ConsumableStream): string {
-
   // skip past spaces
-  stream.forward(x => x === ' ');
+  stream.forward((x) => x === ' ');
 
-  var next = stream.next();
+  const next = stream.next();
 
   if (!next) return null;
 
   // capture entire text between single quotes, otherwise only split by spaces
-  if (next === '\'') {
-    return [next].concat(stream.forward(x => x !== '\'', true)).join('');
+  if (next === "'") {
+    return [next].concat(stream.forward((x) => x !== "'", true)).join('');
   } else {
-    return [next].concat(stream.forward(x => x && x !== ' ')).join('');
+    return [next].concat(stream.forward((x) => x && x !== ' ')).join('');
   }
 }
 
-function parseExpr(
-  tokens: ConsumableStream,
-  stack: Expression[]
-): Expression {
-  var next = tokens.next();
+function parseExpr(tokens: ConsumableStream, stack: Expression[]): Expression {
+  const next = tokens.next();
 
   // variables
   if (next[0] === '$') {
@@ -82,20 +78,21 @@ function evalBinaryOp(
   scope: Scope
 ): any {
   switch (op) {
-  case '&': return lhs(scope) && rhs(scope);
-  case '|': return lhs(scope) || rhs(scope);
-  case '^': return lhs(scope) ^  rhs(scope);
-  case '+': return lhs(scope) +  rhs(scope);
+    case '&':
+      return lhs(scope) && rhs(scope);
+    case '|':
+      return lhs(scope) || rhs(scope);
+    case '^':
+      return lhs(scope) ^ rhs(scope);
+    case '+':
+      return lhs(scope) + rhs(scope);
   }
 }
 
-function evalUnaryOp(
-  op: string,
-  val: Expression,
-  scope: Scope
-): any {
+function evalUnaryOp(op: string, val: Expression, scope: Scope): any {
   switch (op) {
-  case '!': return !val(scope);
+    case '!':
+      return !val(scope);
   }
 }
 
@@ -120,7 +117,7 @@ class ConsumableStream {
   private arr: string | string[];
   private index: number;
 
-  public constructor (arr: string | string[]) {
+  public constructor(arr: string | string[]) {
     this.arr = arr;
     this.index = 0;
   }
@@ -137,8 +134,8 @@ class ConsumableStream {
     return this.arr.length - this.index;
   }
 
-  public forward(cond: (val: string) => boolean, takeLast: boolean = false) {
-    var res = [];
+  public forward(cond: (val: string) => boolean, takeLast = false) {
+    const res = [];
     while (cond(this.peek())) {
       if (this.index >= this.arr.length) {
         throw new Error('Reached end of input unexpectedly');

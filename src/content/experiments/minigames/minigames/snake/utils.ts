@@ -16,11 +16,7 @@ export function drawDot(
   context.fill();
 }
 
-export function getBoundingBox(
-  a: Vec2<number>,
-  b: Vec2<number>,
-  grow: number
-) {
+export function getBoundingBox(a: Vec2<number>, b: Vec2<number>, grow: number) {
   return {
     minX: Math.min(a.x, b.x) - grow,
     minY: Math.min(a.y, b.y) - grow,
@@ -36,11 +32,11 @@ export function getForwardBoundingBox(
   min: number,
   len: number
 ): BoundingBox {
-  var a = {
+  const a = {
     x: start.x + direction.x * min,
     y: start.y + direction.y * min
   };
-  var b = {
+  const b = {
     x: start.x + direction.x * (min + len),
     y: start.y + direction.y * (min + len)
   };
@@ -54,20 +50,21 @@ export function getForwardBoundingBox(
 }
 
 export function boundingBoxesIntersect(a: BoundingBox, b: BoundingBox) {
-  return a.maxX > b.minX && a.minX < b.maxX
-      && a.maxY > b.minY && a.minY < b.maxY;
+  return (
+    a.maxX > b.minX && a.minX < b.maxX && a.maxY > b.minY && a.minY < b.maxY
+  );
 }
 
 export function dirTowards(dx: number, dy: number): Direction {
   if (Math.abs(dx) > Math.abs(dy)) return { x: Math.sign(dx) || 1, y: 0 };
-  else                             return { x: 0, y: Math.sign(dy) || 1 };
+  else return { x: 0, y: Math.sign(dy) || 1 };
 }
 
 export function scaleCanvas(
   canvas: HTMLCanvasElement,
   context: CanvasRenderingContext2D
 ) {
-  var res = window.devicePixelRatio || 1;
+  const res = window.devicePixelRatio || 1;
 
   canvas.style.width = canvas.width + 'px';
   canvas.style.height = canvas.height + 'px';

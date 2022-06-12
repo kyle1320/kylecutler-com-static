@@ -13,9 +13,9 @@ import CircuitView from './CircuitView';
 import Circuit from '../model/Circuit';
 
 export default class Actionbar extends EventEmitter<{
-  action: ActionEvent
-  }> {
-  private itemMap: {[id: string]: ActionItem};
+  action: ActionEvent;
+}> {
+  private itemMap: { [id: string]: ActionItem };
   private element: DynamicContent;
 
   public selectedItem: string;
@@ -24,13 +24,13 @@ export default class Actionbar extends EventEmitter<{
   public constructor(element: HTMLElement) {
     super();
 
-    var sections = getDefaultSections();
+    const sections = getDefaultSections();
     this.itemMap = {};
 
     this.element = new DynamicContent(element, sections);
 
-    sections.forEach(section => {
-      section.items.forEach(item => {
+    sections.forEach((section) => {
+      section.items.forEach((item) => {
         item.on('click', () => this.handleClick(section.id, item));
         this.itemMap[section.id + ':' + item.name] = item;
       });
@@ -45,7 +45,7 @@ export default class Actionbar extends EventEmitter<{
   }
 
   public setEnabled(itemId: string, isEnabled: boolean) {
-    var item = this.itemMap[itemId];
+    const item = this.itemMap[itemId];
 
     if (item) {
       item.setEnabled(isEnabled);
@@ -53,7 +53,7 @@ export default class Actionbar extends EventEmitter<{
   }
 
   public setVisible(itemId: string, isVisible: boolean) {
-    var item = this.itemMap[itemId];
+    const item = this.itemMap[itemId];
 
     if (item) {
       item.setVisible(isVisible);
@@ -65,23 +65,23 @@ export default class Actionbar extends EventEmitter<{
   }
 
   private handleClick(section: string, item: ActionItem) {
-    var id = section + ':' + item.name;
+    const id = section + ':' + item.name;
 
     switch (item.type) {
-    case 'button':
-      this.emit('action', createActionEventFromId('click', id));
-      break;
-    case 'toggle':
-      this.toggleItem(id);
-      break;
-    case 'unique':
-      this.selectItem(id);
-      break;
+      case 'button':
+        this.emit('action', createActionEventFromId('click', id));
+        break;
+      case 'toggle':
+        this.toggleItem(id);
+        break;
+      case 'unique':
+        this.selectItem(id);
+        break;
     }
   }
 
   private toggleItem(id: string) {
-    var item = this.itemMap[id];
+    const item = this.itemMap[id];
 
     if (item) {
       item.setSelected(!item.isSelected);
@@ -104,7 +104,8 @@ export default class Actionbar extends EventEmitter<{
     }
 
     if (this.selectedItem) {
-      this.emit('action',
+      this.emit(
+        'action',
         createActionEventFromId('deselect', this.selectedItem)
       );
 
@@ -122,9 +123,9 @@ export default class Actionbar extends EventEmitter<{
 }
 
 class DynamicContent extends EventEmitter<{
-  'visibility-change': void,
-  click: void
-  }> {
+  'visibility-change': void;
+  click: void;
+}> {
   private isVisible: boolean;
   private children: DynamicContent[];
 
@@ -143,13 +144,11 @@ class DynamicContent extends EventEmitter<{
     this.element = element;
     this.content = content;
 
-    children.forEach(
-      x => x.on('visibility-change', () => this.render())
-    );
+    children.forEach((x) => x.on('visibility-change', () => this.render()));
   }
 
   public init() {
-    this.children.forEach(child => child.init());
+    this.children.forEach((child) => child.init());
     this.render();
   }
 
@@ -160,12 +159,12 @@ class DynamicContent extends EventEmitter<{
       this.content.removeChild(this.content.firstChild);
     }
 
-    var items = this.children
-      .filter(item => item.isVisible)
-      .map(item => item.element);
+    const items = this.children
+      .filter((item) => item.isVisible)
+      .map((item) => item.element);
 
     if (items.length > 0) {
-      this.formatContents(items).forEach(el => this.content.appendChild(el));
+      this.formatContents(items).forEach((el) => this.content.appendChild(el));
     }
 
     this.setVisible(items.length > 0);
@@ -188,24 +187,24 @@ class Section extends DynamicContent {
 
   public items: ActionItem[];
 
-  public constructor (
-    label: string,
-    id: string,
-    groups: SectionGroup[]
-  ) {
+  public constructor(label: string, id: string, groups: SectionGroup[]) {
     super(null!, groups);
-    
-    var header = <div className='actionbar__section__header'>{label}</div>;
-    var content = <div className='actionbar__section__content'>
-      {groups.map(group => group.element)}
-    </div>;
-    var wrapper = <div className='actionbar__section'>{[header, content]}</div>;
+
+    const header = <div className="actionbar__section__header">{label}</div>;
+    const content = (
+      <div className="actionbar__section__content">
+        {groups.map((group) => group.element)}
+      </div>
+    );
+    const wrapper = (
+      <div className="actionbar__section">{[header, content]}</div>
+    );
 
     this.element = wrapper;
     this.content = content;
 
     this.id = id;
-    this.items = [].concat.apply([], groups.map(group => group.items));
+    this.items = groups.flatMap((group) => group.items);
   }
 }
 
@@ -218,8 +217,13 @@ class SectionGroup extends DynamicContent {
   public constructor(style: SectionGroupStyle, items: ActionItem[]) {
     super(null!, items);
 
-    this.element = this.content = <div className={'actionbar__section__group '
-    + 'actionbar__section__group--' + style} />;
+    this.element = this.content = (
+      <div
+        className={
+          'actionbar__section__group ' + 'actionbar__section__group--' + style
+        }
+      />
+    );
 
     this.style = style;
     this.items = items;
@@ -228,15 +232,15 @@ class SectionGroup extends DynamicContent {
   protected formatContents(elements: HTMLElement[]): HTMLElement[] {
     if (this.style === 'normal') return super.formatContents(elements);
 
-    var columns: HTMLElement[] = [];
-    var curColumn: HTMLElement = null;
+    const columns: HTMLElement[] = [];
+    let curColumn: HTMLElement = null;
 
-    elements.forEach(el => {
+    elements.forEach((el) => {
       if (curColumn) {
         curColumn.appendChild(el);
         curColumn = null;
       } else {
-        curColumn = <div className='column'/>;
+        curColumn = <div className="column" />;
         curColumn.appendChild(el);
         columns.push(curColumn);
       }
@@ -259,21 +263,27 @@ class ActionItem extends DynamicContent {
   private constructor(
     name: string,
     type: ActionItemType,
-    props: {[name: string]: string},
+    props: { [name: string]: string },
     style: ActionItemStyle,
     ...content: (string | HTMLElement)[]
   ) {
     super(null!);
-    
+
     props = props || {};
-    props.className = 'action-item '
-      + (style ? 'action-item--' + style + ' ' : '')
-      + (props.className ? props.className : '');
-      
-    this.element = this.content = <div
-      onclick={() => this.isEnabled && this.emit('click')}
-      onmousedown={(e: MouseEvent) => e.preventDefault()}
-      {...props}>{content}</div>
+    props.className =
+      'action-item ' +
+      (style ? 'action-item--' + style + ' ' : '') +
+      (props.className ? props.className : '');
+
+    this.element = this.content = (
+      <div
+        onclick={() => this.isEnabled && this.emit('click')}
+        onmousedown={(e: MouseEvent) => e.preventDefault()}
+        {...props}
+      >
+        {content}
+      </div>
+    );
 
     this.name = name;
     this.type = type;
@@ -308,7 +318,7 @@ class ActionItem extends DynamicContent {
     title: string,
     view: View
   ) {
-    var canvas = <canvas width={30} height={30} />;
+    const canvas = <canvas width={30} height={30} />;
 
     drawViewOnPreviewCanvas(canvas, view);
 
@@ -317,24 +327,25 @@ class ActionItem extends DynamicContent {
 }
 
 function drawViewOnPreviewCanvas(canvas: HTMLCanvasElement, view: View) {
-  var size = 30 * (window.devicePixelRatio || 1);
+  const size = 30 * (window.devicePixelRatio || 1);
 
   canvas.width = size;
   canvas.height = size;
 
-  var dim = view.getDimensions();
-  var context = canvas.getContext('2d');
-  var scale = Math.min(size*.5, size*.8 / Math.max(dim.width, dim.height));
-  var drawWidth = scale * dim.width;
-  var drawHeight = scale * dim.height;
-  var drawX = (size - drawWidth) / 2;
-  var drawY = (size - drawHeight) / 2;
+  const dim = view.getDimensions();
+  const context = canvas.getContext('2d');
+  const scale = Math.min(
+    size * 0.5,
+    (size * 0.8) / Math.max(dim.width, dim.height)
+  );
+  const drawWidth = scale * dim.width;
+  const drawHeight = scale * dim.height;
+  const drawX = (size - drawWidth) / 2;
+  const drawY = (size - drawHeight) / 2;
 
   context.lineWidth = 0.1;
 
-  context.transform(
-    scale, 0, 0, scale, drawX, drawY
-  );
+  context.transform(scale, 0, 0, scale, drawX, drawY);
 
   view.draw(context);
 }
@@ -343,98 +354,163 @@ function createActionEventFromId(
   type: ActionEventType,
   id: string
 ): ActionEvent {
-  var [section, name] = id.split(':');
+  const [section, name] = id.split(':');
   return { type, section, name, id };
 }
 
 function getDefaultSections(): Section[] {
-  var circuitList: CircuitDefinition[] = [];
-  for (var name in circuits) {
+  const circuitList: CircuitDefinition[] = [];
+  for (const name in circuits) {
     circuitList.push(circuits[name]);
   }
 
-  var defaultSections = [
+  const defaultSections = [
     new Section('Select', 'select', [
       new SectionGroup('normal', [
         ActionItem.withIcon(
-          'tool', 'unique', 'fa fa-mouse-pointer', 'Select Items', 'large'
+          'tool',
+          'unique',
+          'fa fa-mouse-pointer',
+          'Select Items',
+          'large'
         )
       ]),
       new SectionGroup('columns', [
         ActionItem.withIcon(
-          'all', 'button', 'fa fa-check-double', 'Select All', 'small'
+          'all',
+          'button',
+          'fa fa-check-double',
+          'Select All',
+          'small'
         ),
         ActionItem.withIcon(
-          'rotate', 'button',
-          'fa fa-undo fa-flip-horizontal', 'Rotate 90°', 'small'
+          'rotate',
+          'button',
+          'fa fa-undo fa-flip-horizontal',
+          'Rotate 90°',
+          'small'
         ),
         ActionItem.withIcon(
-          'delete', 'button', 'fa fa-trash', 'Delete', 'small'
+          'delete',
+          'button',
+          'fa fa-trash',
+          'Delete',
+          'small'
         ),
         ActionItem.withIcon(
-          'cancel', 'button', 'fa fa-times', 'Cancel', 'small'
+          'cancel',
+          'button',
+          'fa fa-times',
+          'Cancel',
+          'small'
         )
       ])
     ]),
     new Section('Drag', 'drag', [
       new SectionGroup('normal', [
         ActionItem.withIcon(
-          'tool', 'unique',
-          'fa fa-hand-rock', 'Drag Elements or the Grid', 'large'
+          'tool',
+          'unique',
+          'fa fa-hand-rock',
+          'Drag Elements or the Grid',
+          'large'
         )
       ]),
       new SectionGroup('columns', [
         ActionItem.withIcon(
-          'snap', 'toggle', 'fa fa-expand', 'Snap to Grid', 'small'
+          'snap',
+          'toggle',
+          'fa fa-expand',
+          'Snap to Grid',
+          'small'
         )
       ])
     ]),
     new Section('Create', 'create', [
-      new SectionGroup('normal', [
-        ActionItem.withViewCanvas(
-          'Node', 'unique', 'Node', new NodeView(new Node(), 0, 0)
+      new SectionGroup(
+        'normal',
+        [
+          ActionItem.withViewCanvas(
+            'Node',
+            'unique',
+            'Node',
+            new NodeView(new Node(), 0, 0)
+          )
+        ].concat(
+          circuitList.map((def) =>
+            ActionItem.withViewCanvas(
+              def.key,
+              'unique',
+              def.key,
+              new CircuitView(new Circuit(def), 0, 0)
+            )
+          )
         )
-      ].concat(circuitList.map(def => ActionItem.withViewCanvas(
-        def.key, 'unique', def.key, new CircuitView(new Circuit(def), 0, 0)
-      ))))
+      )
     ]),
     new Section('Zoom', 'zoom', [
       new SectionGroup('columns', [
         ActionItem.withIcon(
-          'in', 'button', 'fa fa-search-plus', 'Zoom In', 'small'
+          'in',
+          'button',
+          'fa fa-search-plus',
+          'Zoom In',
+          'small'
         ),
         ActionItem.withIcon(
-          'out', 'button', 'fa fa-search-minus', 'Zoom Out', 'small'
+          'out',
+          'button',
+          'fa fa-search-minus',
+          'Zoom Out',
+          'small'
         )
       ])
     ]),
     new Section('Data', 'data', [
       new SectionGroup('columns', [
         ActionItem.withIcon(
-          'export', 'button', 'fa fa-save', 'Export Data', 'small'
+          'export',
+          'button',
+          'fa fa-save',
+          'Export Data',
+          'small'
         ),
         ActionItem.withIcon(
-          'import', 'button', 'fa fa-folder-open', 'Import Data', 'small'
+          'import',
+          'button',
+          'fa fa-folder-open',
+          'Import Data',
+          'small'
         )
       ])
     ]),
     new Section('Help', 'help', [
       new SectionGroup('columns', [
         ActionItem.withIcon(
-          'show', 'button', 'fa fa-question-circle', 'Show Help Dialog', 'small'
+          'show',
+          'button',
+          'fa fa-question-circle',
+          'Show Help Dialog',
+          'small'
         )
       ])
     ])
   ];
 
-  if (process.env.NODE_ENV === "development") {
-    defaultSections.push(new Section('Debug', 'debug', [
-      new SectionGroup('columns', [
-        ActionItem.withIcon(
-          'debug', 'toggle', 'fa fa-bug', 'Toggle Debugging', 'small'
-        )
+  if (process.env.NODE_ENV === 'development') {
+    defaultSections.push(
+      new Section('Debug', 'debug', [
+        new SectionGroup('columns', [
+          ActionItem.withIcon(
+            'debug',
+            'toggle',
+            'fa fa-bug',
+            'Toggle Debugging',
+            'small'
+          )
+        ])
       ])
-    ]));
+    );
   }
 
   return defaultSections;

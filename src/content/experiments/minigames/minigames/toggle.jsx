@@ -36,45 +36,99 @@ class ToggleGame {
   init() {
     /* eslint-disable max-len */
     [
-      <div className='game-container'>{[
-        <table>{range(this.size).map(y =>
-          <tr>{this.elements.cells[y] = range(this.size).map(x =>
-            <td onclick={this.toggleAround.bind(this, x, y)} />
-          )}</tr>
-        )}</table>,
-        <div className='win-screen'>
-          <div className='win-text'>You Win!</div>
-          <div className='reset-text'>Play Again</div>
-        </div>
-      ]}</div>,
-      <div className='text-container'>
-        <div>Turn off all the cells!</div>
-        <div className='hint'>(It is possible, I promise)</div>
-        <div
-          className='fa fa-undo reset-btn'
-          onclick={this.reset.bind(this)} />
+      <div className="game-container">
+        {[
+          <table>
+            {range(this.size).map((y) => (
+              <tr>
+                {
+                  (this.elements.cells[y] = range(this.size).map((x) => (
+                    <td onclick={this.toggleAround.bind(this, x, y)} />
+                  )))
+                }
+              </tr>
+            ))}
+          </table>,
+          <div className="win-screen">
+            <div className="win-text">You Win!</div>
+            <div className="reset-text">Play Again</div>
+          </div>
+        ]}
       </div>,
-      <div className='options-container'>{[
-        <div className='options-row'>{[
-          this.elements.options.difficultyEasy =
-            <div className='option' onclick={() => this.setDifficulty('easy')}>Easy</div>,
-          this.elements.options.difficultyMedium =
-            <div className='option' onclick={() => this.setDifficulty('medium')}>Medium</div>,
-          this.elements.options.difficultyHard =
-            <div className='option' onclick={() => this.setDifficulty('hard')}>Hard</div>
-        ]}</div>,
-        <div className='options-row'>{[
-          this.elements.options.shapePlus =
-            <div className='option shape-plus' onclick={() => this.setShape('plus')}><span></span></div>,
-          this.elements.options.shapeDiamond =
-            <div className='option shape-diamond' onclick={() => this.setShape('diamond')}><span></span></div>,
-          this.elements.options.shapeX =
-            <div className='option shape-x' onclick={() => this.setShape('x')}><span></span></div>,
-          this.elements.options.shapeO =
-            <div className='option shape-o' onclick={() => this.setShape('o')}><span></span></div>
-        ]}</div>
-      ]}</div>
-    ].forEach(el => this.elements.root.appendChild(el));
+      <div className="text-container">
+        <div>Turn off all the cells!</div>
+        <div className="hint">(It is possible, I promise)</div>
+        <div className="fa fa-undo reset-btn" onclick={this.reset.bind(this)} />
+      </div>,
+      <div className="options-container">
+        {[
+          <div className="options-row">
+            {[
+              (this.elements.options.difficultyEasy = (
+                <div
+                  className="option"
+                  onclick={() => this.setDifficulty('easy')}
+                >
+                  Easy
+                </div>
+              )),
+              (this.elements.options.difficultyMedium = (
+                <div
+                  className="option"
+                  onclick={() => this.setDifficulty('medium')}
+                >
+                  Medium
+                </div>
+              )),
+              (this.elements.options.difficultyHard = (
+                <div
+                  className="option"
+                  onclick={() => this.setDifficulty('hard')}
+                >
+                  Hard
+                </div>
+              ))
+            ]}
+          </div>,
+          <div className="options-row">
+            {[
+              (this.elements.options.shapePlus = (
+                <div
+                  className="option shape-plus"
+                  onclick={() => this.setShape('plus')}
+                >
+                  <span></span>
+                </div>
+              )),
+              (this.elements.options.shapeDiamond = (
+                <div
+                  className="option shape-diamond"
+                  onclick={() => this.setShape('diamond')}
+                >
+                  <span></span>
+                </div>
+              )),
+              (this.elements.options.shapeX = (
+                <div
+                  className="option shape-x"
+                  onclick={() => this.setShape('x')}
+                >
+                  <span></span>
+                </div>
+              )),
+              (this.elements.options.shapeO = (
+                <div
+                  className="option shape-o"
+                  onclick={() => this.setShape('o')}
+                >
+                  <span></span>
+                </div>
+              ))
+            ]}
+          </div>
+        ]}
+      </div>
+    ].forEach((el) => this.elements.root.appendChild(el));
     /* eslint-enable max-len */
 
     this.setDifficulty(this.difficulty, false);
@@ -87,9 +141,7 @@ class ToggleGame {
       return;
     }
 
-    var isLit = typeof value === 'undefined'
-      ? !this.board[y][x]
-      : !!value;
+    var isLit = typeof value === 'undefined' ? !this.board[y][x] : !!value;
 
     this.board[y][x] = isLit;
 
@@ -100,37 +152,37 @@ class ToggleGame {
 
   toggleAround(x, y, showUpdate) {
     switch (this.shape) {
-    default:
-    case 'plus':
-      this.toggle(x, y, undefined, showUpdate);
-      this.toggle(x + 1, y, undefined, showUpdate);
-      this.toggle(x - 1, y, undefined, showUpdate);
-      this.toggle(x, y + 1, undefined, showUpdate);
-      this.toggle(x, y - 1, undefined, showUpdate);
-      break;
-    case 'diamond':
-      this.toggle(x + 1, y, undefined, showUpdate);
-      this.toggle(x - 1, y, undefined, showUpdate);
-      this.toggle(x, y + 1, undefined, showUpdate);
-      this.toggle(x, y - 1, undefined, showUpdate);
-      break;
-    case 'x':
-      this.toggle(x, y, undefined, showUpdate);
-      this.toggle(x + 1, y + 1, undefined, showUpdate);
-      this.toggle(x - 1, y + 1, undefined, showUpdate);
-      this.toggle(x + 1, y - 1, undefined, showUpdate);
-      this.toggle(x - 1, y - 1, undefined, showUpdate);
-      break;
-    case 'o':
-      this.toggle(x, y + 1, undefined, showUpdate);
-      this.toggle(x + 1, y + 1, undefined, showUpdate);
-      this.toggle(x + 1, y, undefined, showUpdate);
-      this.toggle(x + 1, y - 1, undefined, showUpdate);
-      this.toggle(x, y - 1, undefined, showUpdate);
-      this.toggle(x - 1, y - 1, undefined, showUpdate);
-      this.toggle(x - 1, y, undefined, showUpdate);
-      this.toggle(x - 1, y + 1, undefined, showUpdate);
-      break;
+      default:
+      case 'plus':
+        this.toggle(x, y, undefined, showUpdate);
+        this.toggle(x + 1, y, undefined, showUpdate);
+        this.toggle(x - 1, y, undefined, showUpdate);
+        this.toggle(x, y + 1, undefined, showUpdate);
+        this.toggle(x, y - 1, undefined, showUpdate);
+        break;
+      case 'diamond':
+        this.toggle(x + 1, y, undefined, showUpdate);
+        this.toggle(x - 1, y, undefined, showUpdate);
+        this.toggle(x, y + 1, undefined, showUpdate);
+        this.toggle(x, y - 1, undefined, showUpdate);
+        break;
+      case 'x':
+        this.toggle(x, y, undefined, showUpdate);
+        this.toggle(x + 1, y + 1, undefined, showUpdate);
+        this.toggle(x - 1, y + 1, undefined, showUpdate);
+        this.toggle(x + 1, y - 1, undefined, showUpdate);
+        this.toggle(x - 1, y - 1, undefined, showUpdate);
+        break;
+      case 'o':
+        this.toggle(x, y + 1, undefined, showUpdate);
+        this.toggle(x + 1, y + 1, undefined, showUpdate);
+        this.toggle(x + 1, y, undefined, showUpdate);
+        this.toggle(x + 1, y - 1, undefined, showUpdate);
+        this.toggle(x, y - 1, undefined, showUpdate);
+        this.toggle(x - 1, y - 1, undefined, showUpdate);
+        this.toggle(x - 1, y, undefined, showUpdate);
+        this.toggle(x - 1, y + 1, undefined, showUpdate);
+        break;
     }
 
     if (!this.isGameOver && !this.isResetting) {
@@ -183,14 +235,16 @@ class ToggleGame {
   setShape(shape, reset = true) {
     this.shape = shape;
 
-    this.elements.options.shapePlus.className = shape === 'plus'
-      ? 'option shape-plus active' : 'option shape-plus';
-    this.elements.options.shapeDiamond.className = shape === 'diamond'
-      ? 'option shape-diamond active' : 'option shape-diamond';
-    this.elements.options.shapeX.className = shape === 'x'
-      ? 'option shape-x active' : 'option shape-x';
-    this.elements.options.shapeO.className = shape === 'o'
-      ? 'option shape-o active' : 'option shape-o';
+    this.elements.options.shapePlus.className =
+      shape === 'plus' ? 'option shape-plus active' : 'option shape-plus';
+    this.elements.options.shapeDiamond.className =
+      shape === 'diamond'
+        ? 'option shape-diamond active'
+        : 'option shape-diamond';
+    this.elements.options.shapeX.className =
+      shape === 'x' ? 'option shape-x active' : 'option shape-x';
+    this.elements.options.shapeO.className =
+      shape === 'o' ? 'option shape-o active' : 'option shape-o';
 
     if (reset) {
       this.reset();
@@ -200,12 +254,12 @@ class ToggleGame {
   setDifficulty(difficulty, reset = true) {
     this.difficulty = difficulty;
 
-    this.elements.options.difficultyEasy.className = difficulty === 'easy'
-      ? 'option active' : 'option';
-    this.elements.options.difficultyMedium.className = difficulty === 'medium'
-      ? 'option active' : 'option';
-    this.elements.options.difficultyHard.className = difficulty === 'hard'
-      ? 'option active' : 'option';
+    this.elements.options.difficultyEasy.className =
+      difficulty === 'easy' ? 'option active' : 'option';
+    this.elements.options.difficultyMedium.className =
+      difficulty === 'medium' ? 'option active' : 'option';
+    this.elements.options.difficultyHard.className =
+      difficulty === 'hard' ? 'option active' : 'option';
 
     if (reset) {
       this.reset();
@@ -239,16 +293,16 @@ class ToggleGame {
     var numToggles;
 
     switch (this.difficulty) {
-    default:
-    case 'easy':
-      numToggles = this.size * this.size * 0.1;
-      break;
-    case 'medium':
-      numToggles = this.size * this.size * 0.25;
-      break;
-    case 'hard':
-      numToggles = this.size * this.size * 0.5;
-      break;
+      default:
+      case 'easy':
+        numToggles = this.size * this.size * 0.1;
+        break;
+      case 'medium':
+        numToggles = this.size * this.size * 0.25;
+        break;
+      case 'hard':
+        numToggles = this.size * this.size * 0.5;
+        break;
     }
 
     for (var i = 0; i < numToggles; i++) {

@@ -21,7 +21,7 @@ window.addEventListener('load', function () {
         }
       }
 
-    /* eslint-disable no-empty */
+      /* eslint-disable no-empty */
     } catch (e) {
       // just ignore this element.
     }

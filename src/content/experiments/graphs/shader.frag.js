@@ -45,8 +45,11 @@ void main() {
   float dists[MAX_EDGES];
   bool brokeearly;
 
-  ${// unroll loop to support "dynamic" indexing
-  range(MAX_EDGES).map(i => `
+  ${
+    // unroll loop to support "dynamic" indexing
+    range(MAX_EDGES)
+      .map(
+        (i) => `
   if (${i} < num_edges) {
     val = lineDist(edges[${i}],  gl_FragCoord.xy / scale);
 
@@ -64,7 +67,10 @@ void main() {
       dists[0] = val;
     }
   }
-  `).join('\n')}
+  `
+      )
+      .join('\n')
+  }
 
   int len = num_edges;
   vec3 color = vec3(1.0, 1.0, 1.0);

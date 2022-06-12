@@ -9,11 +9,11 @@ export default class Food {
   }
 
   public move(x: number, y: number) {
-    this.position = {x, y};
+    this.position = { x, y };
   }
 
   public draw(context: CanvasRenderingContext2D) {
-    var pos = this.position;
+    const pos = this.position;
 
     context.fillStyle = '#f44336';
     drawDot(context, pos.x, pos.y, FOOD_RADIUS);
@@ -22,13 +22,17 @@ export default class Food {
     context.beginPath();
     context.moveTo(pos.x, pos.y - 0.3);
     context.arcTo(
-      pos.x,                    pos.y - FOOD_WIDTH * 0.8,
-      pos.x + FOOD_WIDTH * 0.5, pos.y - FOOD_WIDTH * 0.7,
+      pos.x,
+      pos.y - FOOD_WIDTH * 0.8,
+      pos.x + FOOD_WIDTH * 0.5,
+      pos.y - FOOD_WIDTH * 0.7,
       FOOD_WIDTH * 0.5
     );
     context.arcTo(
-      pos.x + FOOD_WIDTH * 0.5, pos.y - FOOD_WIDTH * 0.3,
-      pos.x,                    pos.y - FOOD_WIDTH * 0.3,
+      pos.x + FOOD_WIDTH * 0.5,
+      pos.y - FOOD_WIDTH * 0.3,
+      pos.x,
+      pos.y - FOOD_WIDTH * 0.3,
       FOOD_WIDTH * 0.5
     );
     context.fill();

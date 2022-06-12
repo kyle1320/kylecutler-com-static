@@ -15,7 +15,7 @@ export const defaultStyle = {
     strokeColorOn: '#00FF00',
     strokeColorOff: '#A08080',
     fillColorOn: '#00FF00',
-    fillColorOff: '#FFFFFF',
+    fillColorOff: '#FFFFFF'
   },
   connection: {
     colorOn: '#00FF00',

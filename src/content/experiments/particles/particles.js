@@ -5,7 +5,8 @@ import {
   fitElement,
   link,
   takeTouchFocus,
-  getRelativeCoord } from '../util';
+  getRelativeCoord
+} from '../util';
 import { randomColor } from '~/src/common/js/utils';
 
 window.onload = function () {
@@ -68,12 +69,9 @@ window.onload = function () {
 
     var canvases = $('canvases');
     fitElement(canvases, 500, 500, function (el) {
-      drawCanvas.style.width
-        = traceCanvas.style.width
-        = canvases.style.width;
-      drawCanvas.style.height
-        = traceCanvas.style.height
-        = canvases.style.height;
+      drawCanvas.style.width = traceCanvas.style.width = canvases.style.width;
+      drawCanvas.style.height = traceCanvas.style.height =
+        canvases.style.height;
     });
 
     width = drawCanvas.drawWidth;
@@ -165,8 +163,8 @@ window.onload = function () {
     }
 
     if (!this.fixed) {
-      this.x += this.vx*time;
-      this.y += this.vy*time;
+      this.x += this.vx * time;
+      this.y += this.vy * time;
     }
 
     // if (this.mass === 0) console.log(Math.sqrt(this.mx*this.mx + this.my*this.my));
@@ -178,11 +176,11 @@ window.onload = function () {
   Particle.prototype.attract = function (p, time) {
     var dx = this.x - p.x;
     var dy = this.y - p.y;
-    var dsq = dx*dx + dy*dy;
+    var dsq = dx * dx + dy * dy;
     if (dsq === 0) return;
 
     var dr = this.radius + p.radius;
-    var drsq = dr*dr;
+    var drsq = dr * dr;
     if (dsq <= drsq) dsq = drsq;
 
     // packing density ~= b / a
@@ -205,7 +203,7 @@ window.onload = function () {
     // this.mx -= rx / this.mass;
     // this.my -= ry / this.mass;
 
-    var e = options.gravity * time / dsq;
+    var e = (options.gravity * time) / dsq;
     var rx = dx * e;
     var ry = dy * e;
 
@@ -227,11 +225,11 @@ window.onload = function () {
     var color = options.groupColor || randomColor();
     var group = [];
 
-    for (var i=0; i < options.groupSize; i++) {
+    for (var i = 0; i < options.groupSize; i++) {
       // var min = (options.particleRadius + 2) / Math.sin(Math.PI / options.groupSize)
-      var d = options.groupRadius*i/options.groupSize;// + min;
-      var px = x + d*Math.cos(i);
-      var py = y + d*Math.sin(i);
+      var d = (options.groupRadius * i) / options.groupSize; // + min;
+      var px = x + d * Math.cos(i);
+      var py = y + d * Math.sin(i);
       group[group.length] = new Particle(
         px,
         py,
@@ -255,13 +253,13 @@ window.onload = function () {
 
     function drawParticle(ctx, p) {
       ctx.beginPath();
-      ctx.arc(p.x, p.y, p.radius, 0, 2*Math.PI);
+      ctx.arc(p.x, p.y, p.radius, 0, 2 * Math.PI);
       ctx.closePath();
       ctx.fillStyle = p.color;
       ctx.fill();
     }
 
-    for (i=0; i < particles.length; i++) {
+    for (i = 0; i < particles.length; i++) {
       drawParticle(drawContext, particles[i]);
       drawContext.strokeStyle = '#000000';
       drawContext.lineWidth = 0.5;
@@ -277,7 +275,7 @@ window.onload = function () {
     }
 
     if (newgroup) {
-      for (i=0; i < newgroup.length; i++) {
+      for (i = 0; i < newgroup.length; i++) {
         drawParticle(drawContext, newgroup[i]);
       }
     }
@@ -293,8 +291,8 @@ window.onload = function () {
   }
 
   function update(time) {
-    for (var i=0; i < particles.length; i++) {
-      for (var j=i+1; j < particles.length; j++) {
+    for (var i = 0; i < particles.length; i++) {
+      for (var j = i + 1; j < particles.length; j++) {
         particles[i].attract(particles[j], time);
       }
 
@@ -335,10 +333,16 @@ window.onload = function () {
 
     if (evt.ctrlKey || evt.metaKey) {
       newgroup = newGroup(mousepos.x, mousepos.y);
-      groupvel = {ox: mousepos.x, oy: mousepos.y, x: 0, y: 0};
+      groupvel = { ox: mousepos.x, oy: mousepos.y, x: 0, y: 0 };
     } else {
       mouseparticle = new Particle(
-        mousepos.x, mousepos.y, 1, options.mouseDensity, '#FFFF00', false, false
+        mousepos.x,
+        mousepos.y,
+        1,
+        options.mouseDensity,
+        '#FFFF00',
+        false,
+        false
       );
     }
 
@@ -347,7 +351,10 @@ window.onload = function () {
 
   function mouseUp(evt) {
     if (newgroup) {
-      newgroup.forEach(function (p) { p.vx = groupvel.x; p.vy = groupvel.y; });
+      newgroup.forEach(function (p) {
+        p.vx = groupvel.x;
+        p.vy = groupvel.y;
+      });
       groupvel = null;
       particles = particles.concat(newgroup);
       newgroup = null;
@@ -380,15 +387,23 @@ window.onload = function () {
 
     if (doubletap) {
       newgroup = newGroup(mousepos.x, mousepos.y);
-      groupvel = {ox: mousepos.x, oy: mousepos.y, x: 0, y: 0};
+      groupvel = { ox: mousepos.x, oy: mousepos.y, x: 0, y: 0 };
 
       draw();
     } else {
       mouseparticle = new Particle(
-        mousepos.x, mousepos.y, 1, options.mouseDensity, '#FFFF00', false, false
+        mousepos.x,
+        mousepos.y,
+        1,
+        options.mouseDensity,
+        '#FFFF00',
+        false,
+        false
       );
       doubletap = true;
-      setTimeout(function () { doubletap = false; }, 400);
+      setTimeout(function () {
+        doubletap = false;
+      }, 400);
     }
   }
 
@@ -406,9 +421,9 @@ window.onload = function () {
 
   function keyFunc(evt) {
     switch (evt.keyCode) {
-    case 13:
-      clear();
-      break;
+      case 13:
+        clear();
+        break;
     }
   }
 };

@@ -20,8 +20,8 @@ function getCanvasView(canvasEl: HTMLCanvasElement): CanvasView {
   function resizeCanvas() {
     const scale = window.devicePixelRatio || 1;
 
-    var rawWidth = canvasEl.parentElement.clientWidth;
-    var rawHeight = canvasEl.parentElement.clientHeight;
+    const rawWidth = canvasEl.parentElement.clientWidth;
+    const rawHeight = canvasEl.parentElement.clientHeight;
 
     canvasEl.style.width = rawWidth + 'px';
     canvasEl.style.height = rawHeight + 'px';

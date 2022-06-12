@@ -1,6 +1,6 @@
 // definition for a point quadtree. Useful every now and again.. especially when working with 2D grids ;)
 export default class QuadTree {
-  constructor (minx, miny, maxx, maxy) {
+  constructor(minx, miny, maxx, maxy) {
     this.minx = minx;
     this.miny = miny;
     this.maxx = maxx;
@@ -16,7 +16,6 @@ export default class QuadTree {
   }
 
   insert(obj) {
-
     // first make sure that the object goes inside our region.
     if (
       obj.x < this.minx ||
@@ -29,7 +28,6 @@ export default class QuadTree {
 
     // if we have no children,
     if (!this.nw) {
-
       // if we have not filled our own bucket, add to it.
       if (this.bucket.length < 5) {
         this.bucket.push(obj);
@@ -41,12 +39,15 @@ export default class QuadTree {
     }
 
     // try storing the object in one of our children.
-    return this.nw.insert(obj) || this.ne.insert(obj) ||
-            this.sw.insert(obj) || this.se.insert(obj);
+    return (
+      this.nw.insert(obj) ||
+      this.ne.insert(obj) ||
+      this.sw.insert(obj) ||
+      this.se.insert(obj)
+    );
   }
 
   subdivide() {
-
     // split up into four quadrants (child nodes)
     this.nw = new QuadTree(this.minx, this.miny, this.midx, this.midy);
     this.ne = new QuadTree(this.midx, this.miny, this.maxx, this.midy);
@@ -61,7 +62,6 @@ export default class QuadTree {
   }
 
   inRegion(minx, miny, maxx, maxy) {
-
     // check that we overlap with the region
     if (
       maxx < this.minx ||
@@ -110,10 +110,10 @@ export default class QuadTree {
     } else {
       for (var i = 0; i < this.bucket.length; i++) {
         var p = this.bucket[i];
-        var x = minx +
-          ((p.x - this.minx) / (this.maxx - this.minx)) * (maxx - minx);
-        var y = miny +
-          ((p.y - this.miny) / (this.maxy - this.miny)) * (maxy - miny);
+        var x =
+          minx + ((p.x - this.minx) / (this.maxx - this.minx)) * (maxx - minx);
+        var y =
+          miny + ((p.y - this.miny) / (this.maxy - this.miny)) * (maxy - miny);
 
         ctx.fillStyle = '#0000FF';
         ctx.fillRect(x * canvas.drawWidth, y * canvas.drawHeight, 1, 1);

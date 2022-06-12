@@ -1,13 +1,13 @@
 import { EventEmitter } from '~/src/common/js/utils';
 
 export default class Node extends EventEmitter<{
-  update: void
-  }> {
+  update: void;
+}> {
   public connections: Set<Node>;
   public sources: Set<Node>;
   public isSource: boolean;
 
-  public constructor (isSource = false) {
+  public constructor(isSource = false) {
     super();
     this.connections = new Set();
 
@@ -55,7 +55,7 @@ export default class Node extends EventEmitter<{
 
     // update connected nodes
     this.connections.forEach(
-      node => node !== caller && node.update(source, this)
+      (node) => node !== caller && node.update(source, this)
     );
   }
 
@@ -65,7 +65,7 @@ export default class Node extends EventEmitter<{
     if (!this.connections.has(node)) {
       this.connections.add(node);
 
-      for (var source of this.sources) {
+      for (const source of this.sources) {
         node.update(source, this);
       }
 
@@ -94,7 +94,7 @@ export default class Node extends EventEmitter<{
       // Due to this, connections must be bi-directional.
       updateSourcesAfterDisconnect(this, node);
     } else {
-      for (var connectedNode of this.connections) {
+      for (const connectedNode of this.connections) {
         this.disconnect(connectedNode);
       }
     }
@@ -102,38 +102,36 @@ export default class Node extends EventEmitter<{
 }
 
 function updateSourcesAfterDisconnect(nodeA: Node, nodeB: Node) {
-  var foundA = findAllDFS(nodeA);
+  const foundA = findAllDFS(nodeA);
 
   if (foundA.has(nodeB)) {
-
     // nodes are still connected, no need to update
     return;
   }
 
-  var foundB = findAllDFS(nodeB);
+  const foundB = findAllDFS(nodeB);
 
   updateSources(foundA);
   updateSources(foundB);
 }
 
 function updateSources(nodes: Set<Node>) {
-  var sources = Array.from(nodes.values()).filter(x => x.isSource);
-  for (var node of nodes) {
+  const sources = Array.from(nodes.values()).filter((x) => x.isSource);
+  for (const node of nodes) {
     node.sources = new Set(sources);
     node.emit('update');
   }
 }
 
 function findAllDFS(start: Node): Set<Node> {
-  var found = new Set<Node>();
-  var front = [start];
+  const found = new Set<Node>();
+  let front = [start];
 
   while (front.length > 0) {
-    var node = front.pop();
+    const node = front.pop();
     found.add(node);
     front = front.concat(
-      Array.from(node.connections.values())
-        .filter(nb => !found.has(nb))
+      Array.from(node.connections.values()).filter((nb) => !found.has(nb))
     );
   }
 

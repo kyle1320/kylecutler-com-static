@@ -7,15 +7,9 @@ import Circuit from '../model/Circuit';
 
 import circuits from '../model/Circuits';
 
-type SerializedObject
-  = NodeSerializedObject
-  | CircuitSerializedObject;
-type NodeSerializedObject = [
-  string, number, number, number
-];
-type CircuitSerializedObject = [
-  string, number, number, number, string
-];
+type SerializedObject = NodeSerializedObject | CircuitSerializedObject;
+type NodeSerializedObject = [string, number, number, number];
+type CircuitSerializedObject = [string, number, number, number, string];
 
 type NodeIndex = [number, number] | [number];
 type SerializedConnection = [NodeIndex, NodeIndex];
@@ -27,15 +21,15 @@ interface SerializedData {
 
 export default class Serialize {
   public static serialize(views: View[]): string {
-    var data = {
+    const data = {
       objects: [] as SerializedObject[],
       connections: [] as SerializedConnection[]
     };
-    var nodesMap = new Map<Node, NodeIndex>();
-    var allConnections: ConnectionView[] = [];
+    const nodesMap = new Map<Node, NodeIndex>();
+    const allConnections: ConnectionView[] = [];
 
-    views.forEach(view => {
-      var index = data.objects.length;
+    views.forEach((view) => {
+      const index = data.objects.length;
       if (view instanceof NodeView) {
         nodesMap.set(view.data, [index]);
         data.objects.push([
@@ -45,7 +39,7 @@ export default class Serialize {
           view.data.isSource ? 1 : 0
         ] as NodeSerializedObject);
       } else if (view instanceof CircuitView) {
-        for (var i = view.data.pins.length - 1; i >= 0; i--) {
+        for (let i = view.data.pins.length - 1; i >= 0; i--) {
           nodesMap.set(view.data.pins[i], [index, i]);
         }
         data.objects.push([
@@ -62,9 +56,9 @@ export default class Serialize {
       }
     });
 
-    allConnections.forEach(conn => {
-      var a = nodesMap.get(conn.data[0].data);
-      var b = nodesMap.get(conn.data[1].data);
+    allConnections.forEach((conn) => {
+      const a = nodesMap.get(conn.data[0].data);
+      const b = nodesMap.get(conn.data[1].data);
 
       if (!a || !b) {
         console.warn('Unable to find node while serializing connection');
@@ -81,32 +75,42 @@ export default class Serialize {
   }
 
   public static deserialize(str: string): View[] {
-    var data = JSON.parse(str) as SerializedData;
+    const data = JSON.parse(str) as SerializedData;
 
-    var objects: View[] = data.o.map((obj: SerializedObject) => {
+    const objects: View[] = data.o.map((obj: SerializedObject) => {
       switch (obj[0]) {
-      case 'n': // Node ['n', x, y, isSource]
-        return new NodeView(new Node(!!obj[3]), obj[1], obj[2]);
-      case 'c': // Circuit ['c', x, y, rotation, definition]
+        case 'n': // Node ['n', x, y, isSource]
+          return new NodeView(new Node(!!obj[3]), obj[1], obj[2]);
+        case 'c': {
+          // Circuit ['c', x, y, rotation, definition]
 
-        // TODO: allow for user-defined circuits
-        var circuit = new CircuitView(
-          new Circuit(circuits[obj[4]]), obj[1], obj[2]
-        );
-        circuit.rotate(obj[3]);
-        return circuit;
-      default:
-        throw new Error('Unexpected object while deserializing data');
+          // TODO: allow for user-defined circuits
+          const circuit = new CircuitView(
+            new Circuit(circuits[obj[4]]),
+            obj[1],
+            obj[2]
+          );
+          circuit.rotate(obj[3]);
+          return circuit;
+        }
+        default:
+          throw new Error('Unexpected object while deserializing data');
       }
     });
 
-    var connections = data.c.map((conn: SerializedConnection) => {
-      var nodeA = conn[0].length === 1
-        ? objects[conn[0][0]]
-        : View.getViewFromDatasource(objects[conn[0][0]].data.pins[conn[0][1]]);
-      var nodeB = conn[1].length === 1
-        ? objects[conn[1][0]]
-        : View.getViewFromDatasource(objects[conn[1][0]].data.pins[conn[1][1]]);
+    const connections = data.c.map((conn: SerializedConnection) => {
+      const nodeA =
+        conn[0].length === 1
+          ? objects[conn[0][0]]
+          : View.getViewFromDatasource(
+              objects[conn[0][0]].data.pins[conn[0][1]]
+            );
+      const nodeB =
+        conn[1].length === 1
+          ? objects[conn[1][0]]
+          : View.getViewFromDatasource(
+              objects[conn[1][0]].data.pins[conn[1][1]]
+            );
 
       nodeA.data.connect(nodeB.data);
 

@@ -1,12 +1,10 @@
 import 'jscolor-picker';
+import { $, scaleCanvas, fitElement, link, resizeCanvas, clamp } from '../util';
 import {
-  $,
-  scaleCanvas,
-  fitElement,
-  link,
-  resizeCanvas,
-  clamp } from '../util';
-import { QuadTree, getSaturatedColor, randomColor } from '~/src/common/js/utils';
+  QuadTree,
+  getSaturatedColor,
+  randomColor
+} from '~/src/common/js/utils';
 
 window.onload = function () {
   var drawCanvas = $('draw-canvas');
@@ -37,7 +35,7 @@ window.onload = function () {
     inactivity: 100, // not user-changeable at the moment, but it could be.
     pattern: 'alternate',
     bgcolor: '',
-    maincolor: '',
+    maincolor: ''
   };
 
   // contains references to HTML elements
@@ -55,7 +53,7 @@ window.onload = function () {
     max_rad: $('max-rad'),
     maxlevel: $('max-level'),
     bgcolor: $('bg-color'),
-    pattern: $('pattern'),
+    pattern: $('pattern')
   };
 
   // contains references to HTML elements
@@ -64,7 +62,7 @@ window.onload = function () {
     status: $('status'),
     level: $('level'),
     points: $('points'),
-    progress: $('progress'),
+    progress: $('progress')
   };
 
   // set everything up
@@ -75,13 +73,21 @@ window.onload = function () {
     fitElement(drawCanvas, 500, 500);
 
     Object.defineProperty(options, 'width', {
-      get: function () { return drawCanvas.width; },
-      set: function (w) { setSize(w, drawCanvas.height); },
+      get: function () {
+        return drawCanvas.width;
+      },
+      set: function (w) {
+        setSize(w, drawCanvas.height);
+      }
     });
 
     Object.defineProperty(options, 'height', {
-      get: function () { return drawCanvas.height; },
-      set: function (h) { setSize(drawCanvas.width, h); },
+      get: function () {
+        return drawCanvas.height;
+      },
+      set: function (h) {
+        setSize(drawCanvas.width, h);
+      }
     });
 
     // setup button events
@@ -89,9 +95,9 @@ window.onload = function () {
       setPaused(!paused);
     });
     inputs.resetBtn.addEventListener('click', reset);
-    inputs.saveBtn.addEventListener('click',
-      function () { inputs.saveImg.src = drawCanvas.toDataURL(); }
-    );
+    inputs.saveBtn.addEventListener('click', function () {
+      inputs.saveImg.src = drawCanvas.toDataURL();
+    });
 
     // link numerical options to their html inputs
     link(inputs.width, options, 'width', undefined, { instant: false });
@@ -118,7 +124,6 @@ window.onload = function () {
 
   // reset everything
   function reset() {
-
     // erase the canvas
     if (options.bgcolor) {
       drawContext.fillStyle = options.bgcolor;
@@ -158,18 +163,16 @@ window.onload = function () {
       } else if (options.bgcolor) {
         drawContext.fillStyle = options.bgcolor;
       } else {
-
         // eraser
         drawContext.globalCompositeOperation = 'destination-out';
       }
     } else if (options.pattern == 'rainbow') {
-      drawContext.fillStyle = getSaturatedColor((currlevel-1) / 6);
+      drawContext.fillStyle = getSaturatedColor((currlevel - 1) / 6);
     }
   }
 
   // update what's running
   function update() {
-
     /*
      * Run the best candidate search.
      *
@@ -186,18 +189,23 @@ window.onload = function () {
      */
 
     if (inactive < options.inactivity) {
-      var bestdist = -Infinity, bestx, besty, bestlevel;
+      var bestdist = -Infinity,
+        bestx,
+        besty,
+        bestlevel;
 
       // select some number of random points
       for (var k = 0; k < options.samples; k++) {
-
         var px = Math.random() * drawCanvas.drawWidth;
         var py = Math.random() * drawCanvas.drawHeight;
         var level = 0;
 
         // get points close to the newly created one
         var nearby = tree.inRegion(
-          px-prevmax, py-prevmax, px+prevmax, py+prevmax
+          px - prevmax,
+          py - prevmax,
+          px + prevmax,
+          py + prevmax
         );
 
         var closest = Infinity;
@@ -207,7 +215,7 @@ window.onload = function () {
         for (var j = 0; j < nearby.length; j++) {
           var dx = px - nearby[j].x;
           var dy = py - nearby[j].y;
-          var dist = Math.sqrt(dx*dx + dy*dy) - nearby[j].r;
+          var dist = Math.sqrt(dx * dx + dy * dy) - nearby[j].r;
           var absdist = Math.abs(dist);
 
           // if we are inside a cell, they may be our parent.
@@ -225,7 +233,7 @@ window.onload = function () {
 
         // if this point is on the current level,
         // update the best point data.
-        if (level == currlevel-1 && closest > bestdist) {
+        if (level == currlevel - 1 && closest > bestdist) {
           bestdist = closest;
           bestx = px;
           besty = py;
@@ -235,19 +243,18 @@ window.onload = function () {
 
       // if there are no neighbors that are too close
       if (bestdist > options.min_rad + options.padding) {
-
         // create the point
         var newpt = {
           x: bestx,
           y: besty,
-          r: Math.min(options.max_rad, bestdist-options.padding),
+          r: Math.min(options.max_rad, bestdist - options.padding),
           p: bestlevel,
           color: randomColor()
         };
 
         // draw the point
         drawContext.beginPath();
-        drawContext.arc(newpt.x, newpt.y, newpt.r, 0, 2*Math.PI);
+        drawContext.arc(newpt.x, newpt.y, newpt.r, 0, 2 * Math.PI);
         drawContext.closePath();
         setColor();
         drawContext.fill();
@@ -263,9 +270,8 @@ window.onload = function () {
         inactive = 0;
 
         // update the counter and display
-        outputs.points.innerHTML = (++points);
+        outputs.points.innerHTML = ++points;
       } else {
-
         // we didn't place a point
         inactive++;
       }
@@ -275,7 +281,7 @@ window.onload = function () {
 
       // we keep track of whether or not previous iterations have resulted in a point placed.
       var oldsample = densitysamples[currsample];
-      densitysamples[currsample] = (inactive ? 1 : 0);
+      densitysamples[currsample] = inactive ? 1 : 0;
       if (oldsample) density -= oldsample;
 
       // we calculate a "density": the number of iterations that resulted in a point placed.
@@ -288,15 +294,15 @@ window.onload = function () {
       // lots of effort went into coming up with this function,
       // but what is important is that 0 -> 0, 1 -> 1, and it seems to work ok..
       var x = density / densitysamples.length;
-      var p = Math.sqrt(x)/Math.sqrt(26-25*x);
+      var p = Math.sqrt(x) / Math.sqrt(26 - 25 * x);
 
       // progress should only increase, and not go above 99%...
-      progress = clamp(Math.floor(130*p), progress, 99);
+      progress = clamp(Math.floor(130 * p), progress, 99);
 
       // show the progress
       outputs.progress.innerHTML = progress + '%';
 
-    // we need to move up a level. Reset anything related to this level.
+      // we need to move up a level. Reset anything related to this level.
     } else if (currlevel != options.maxlevel && currmax > 0) {
       currlevel++;
 
@@ -310,7 +316,6 @@ window.onload = function () {
       progress = 0;
 
       outputs.level.innerHTML = currlevel;
-
     } else {
       outputs.status.innerHTML = 'Done';
 

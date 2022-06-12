@@ -4,7 +4,7 @@ import Node from '../model/Node';
 export default class NodeView extends View {
   public data: Node;
 
-  public constructor (data: Node, x: number, y: number) {
+  public constructor(data: Node, x: number, y: number) {
     super(data, { x, y, width: 0, height: 0 }, {});
   }
 
@@ -14,20 +14,20 @@ export default class NodeView extends View {
     this.data.disconnect();
   }
 
-  public intersects(x: number, y: number, grow: number = 0) {
-    var dx = x - this.dimensions.x;
-    var dy = y - this.dimensions.y;
+  public intersects(x: number, y: number, grow = 0) {
+    const dx = x - this.dimensions.x;
+    const dy = y - this.dimensions.y;
 
-    return (dx * dx + dy * dy) <= (grow * grow);
+    return dx * dx + dy * dy <= grow * grow;
   }
 
   public draw(context: CanvasRenderingContext2D) {
-    var style = this.style.node;
+    const style = this.style.node;
 
-    var strokeColor = this.data.get()
+    const strokeColor = this.data.get()
       ? style.strokeColorOn
       : style.strokeColorOff;
-    var {x, y} = this.getDimensions();
+    const { x, y } = this.getDimensions();
 
     context.fillStyle = style.fillColorOff;
     context.strokeStyle = strokeColor;
@@ -35,7 +35,11 @@ export default class NodeView extends View {
     if (this.data.isSource) {
       context.beginPath();
       context.arc(
-        x, y, 0.15 + this.style.general.lineWidth * 2, 0, 2 * Math.PI
+        x,
+        y,
+        0.15 + this.style.general.lineWidth * 2,
+        0,
+        2 * Math.PI
       );
       context.closePath();
       context.fill();
@@ -58,7 +62,7 @@ export default class NodeView extends View {
         ? this.style.general.selectedColor
         : this.style.general.highlightColor;
       context.beginPath();
-      context.arc(x, y, .5, 0, 2 * Math.PI);
+      context.arc(x, y, 0.5, 0, 2 * Math.PI);
       context.closePath();
       context.fill();
     }

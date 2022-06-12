@@ -14,7 +14,7 @@ export default class ExportImportFeature extends Feature {
       this.controller.modal.showTextboxInputDialog(
         'Import Data',
         'Paste your previously exported data snippet here ' +
-          'and click \'Import\' to add it to the current grid.',
+          "and click 'Import' to add it to the current grid.",
         'Import',
         (text: string): boolean | void => {
           try {

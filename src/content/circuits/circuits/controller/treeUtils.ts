@@ -1,4 +1,3 @@
-
 import { Tree, BasicTree } from '../model/types';
 
 export function flatten<T>(tree: BasicTree<T>): T[] {
@@ -6,15 +5,18 @@ export function flatten<T>(tree: BasicTree<T>): T[] {
 
   if (!tree.children) return [tree.data];
 
-  return tree.children.reduce((arr, node) => {
-    return arr.concat(flatten(node));
-  }, [tree.data]);
+  return tree.children.reduce(
+    (arr, node) => {
+      return arr.concat(flatten(node));
+    },
+    [tree.data]
+  );
 }
 
 export function findFirst<T, X extends Tree<T, X>>(
   tree: X,
   predicate: (tree: X, level: number) => boolean,
-  level: number = 0
+  level = 0
 ): X {
   if (!tree) return null;
 
@@ -22,8 +24,8 @@ export function findFirst<T, X extends Tree<T, X>>(
 
   if (!tree.children) return null;
 
-  for (var i = 0; i < tree.children.length; i++) {
-    var found = findFirst(tree.children[i], predicate, level + 1);
+  for (let i = 0; i < tree.children.length; i++) {
+    const found = findFirst(tree.children[i], predicate, level + 1);
 
     if (found) return found;
   }

@@ -3,11 +3,12 @@
 }
 
 .control {
-  input, select {
+  input,
+  select {
     width: 10em;
   }
 
-  input[type="checkbox"] {
+  input[type='checkbox'] {
     width: auto;
   }
 

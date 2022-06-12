@@ -5,18 +5,18 @@ import { EventEmitter } from '~/src/common/js/utils';
 
 const viewKey = Symbol('View');
 
-var uniqueViewId = 0;
+let uniqueViewId = 0;
 
 export default abstract class View extends EventEmitter<{
-  update: void,
-  move: View,
-  remove: View
-  }> {
+  update: void;
+  move: View;
+  remove: View;
+}> {
   public attributes: {
-    hidden?: boolean,
-    hover?: boolean,
-    active?: boolean,
-    [key: string]: any
+    hidden?: boolean;
+    hover?: boolean;
+    active?: boolean;
+    [key: string]: any;
   };
   public data: any;
 
@@ -28,7 +28,7 @@ export default abstract class View extends EventEmitter<{
 
   public abstract draw(context: CanvasRenderingContext2D): void;
 
-  public constructor (
+  public constructor(
     data: any,
     dimensions: Dimensions,
     attributes = {},
@@ -54,7 +54,7 @@ export default abstract class View extends EventEmitter<{
     this.remove = this.remove.bind(this);
 
     if (data instanceof Array) {
-      data.forEach(data => data.on('update', this.update));
+      data.forEach((data) => data.on('update', this.update));
     } else if (data) {
       this.data.on('update', this.update);
     }
@@ -94,22 +94,25 @@ export default abstract class View extends EventEmitter<{
     return this.dimensions;
   }
 
-  public intersects(x: number, y: number, grow: number = 0): boolean {
-    var dim = this.getDimensions();
+  public intersects(x: number, y: number, grow = 0): boolean {
+    const dim = this.getDimensions();
 
-    return (dim.x <= x + grow) &&
-           (dim.y <= y + grow) &&
-           (dim.x + dim.width >= x - grow) &&
-           (dim.y + dim.height >= y - grow);
+    return (
+      dim.x <= x + grow &&
+      dim.y <= y + grow &&
+      dim.x + dim.width >= x - grow &&
+      dim.y + dim.height >= y - grow
+    );
   }
 
   public findAll(x: number, y: number): PositionalTree {
-    var relX = x - this.dimensions.x;
-    var relY = y - this.dimensions.y;
+    const relX = x - this.dimensions.x;
+    const relY = y - this.dimensions.y;
 
     return {
       data: this,
-      x: relX, y: relY,
+      x: relX,
+      y: relY,
       children: []
     };
   }
@@ -130,8 +133,8 @@ export default abstract class View extends EventEmitter<{
   }
 
   public static getRelativePosition(view: View, ancestor?: View): Position {
-    var { x, y } = view.getDimensions();
-    var pos = { x, y } as Position;
+    const { x, y } = view.getDimensions();
+    let pos = { x, y } as Position;
 
     view = view.parent;
     while (view != ancestor) {

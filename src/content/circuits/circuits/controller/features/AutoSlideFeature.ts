@@ -2,11 +2,11 @@ import Feature from '../Feature';
 import { PositionalEvent, Position } from '../../model/types';
 
 type SavedEvent = {
-  screenX: number,
-  screenY: number,
-  clientX: number,
-  clientY: number,
-  buttons: 1
+  screenX: number;
+  screenY: number;
+  clientX: number;
+  clientY: number;
+  buttons: 1;
 };
 
 export default class AutoSlideFeature extends Feature {
@@ -31,24 +31,29 @@ export default class AutoSlideFeature extends Feature {
   }
 
   public handleMouseEvent(e: PositionalEvent) {
-    var ev = e.event;
-    var target, bounds, offsetX, offsetY;
+    const ev = e.event;
+    let target, bounds, offsetX, offsetY;
 
     if (isTouchEvent(ev)) {
-      var touch = ev.changedTouches[0];
+      const touch = ev.changedTouches[0];
       target = touch.target;
-      bounds = (target as HTMLElement)
-        .parentElement.getBoundingClientRect() as DOMRect;
+      bounds = (
+        target as HTMLElement
+      ).parentElement.getBoundingClientRect() as DOMRect;
       offsetX = touch.clientX - bounds.x;
       offsetY = touch.clientY - bounds.y;
 
       this.setLastEvent(
-        touch.screenX, touch.screenY, touch.clientX, touch.clientY
+        touch.screenX,
+        touch.screenY,
+        touch.clientX,
+        touch.clientY
       );
     } else {
       target = ev.target;
-      bounds = (target as HTMLElement)
-        .parentElement.getBoundingClientRect() as DOMRect;
+      bounds = (
+        target as HTMLElement
+      ).parentElement.getBoundingClientRect() as DOMRect;
       offsetX = ev.offsetX;
       offsetY = ev.offsetY;
 
@@ -70,21 +75,19 @@ export default class AutoSlideFeature extends Feature {
 
     if (e.type !== 'move' || !this.mousePressed) return;
 
-    var distXMin = Math.max(
-      offsetX - this.dragOrigin.x, offsetX - 50
+    const distXMin = Math.max(offsetX - this.dragOrigin.x, offsetX - 50);
+    const distXMax = Math.max(
+      this.dragOrigin.x - offsetX,
+      bounds.width - offsetX - 50
     );
-    var distXMax = Math.max(
-      this.dragOrigin.x - offsetX, bounds.width - offsetX - 50
-    );
-    var distYMin = Math.max(
-      offsetY - this.dragOrigin.y, offsetY - 50
-    );
-    var distYMax = Math.max(
-      this.dragOrigin.y - offsetY, bounds.height - offsetY - 50
+    const distYMin = Math.max(offsetY - this.dragOrigin.y, offsetY - 50);
+    const distYMax = Math.max(
+      this.dragOrigin.y - offsetY,
+      bounds.height - offsetY - 50
     );
 
-    var distX = distXMin < 0 ? -distXMin : distXMax < 0 ? distXMax : 0;
-    var distY = distYMin < 0 ? -distYMin : distYMax < 0 ? distYMax : 0;
+    const distX = distXMin < 0 ? -distXMin : distXMax < 0 ? distXMax : 0;
+    const distY = distYMin < 0 ? -distYMin : distYMax < 0 ? distYMax : 0;
 
     if (distX === 0 && distY === 0) {
       this.stop();
@@ -100,11 +103,8 @@ export default class AutoSlideFeature extends Feature {
 
     if (!this.interval) {
       this.interval = setInterval(() => {
-        var { x, y } = this.controller.canvas.getDimensions();
-        this.controller.canvas.move(
-          x + this.dx,
-          y + this.dy
-        );
+        const { x, y } = this.controller.canvas.getDimensions();
+        this.controller.canvas.move(x + this.dx, y + this.dy);
 
         // I don't know exactly why, but this has the bonus effect
         // of preventing the canvas from sliding if it is being dragged.
@@ -135,14 +135,27 @@ export default class AutoSlideFeature extends Feature {
   private refireMouseEvent() {
     if (!this.lastEvent) return;
 
-    var event;
+    let event;
 
     if ('initMouseEvent' in MouseEvent.prototype) {
       event = document.createEvent('MouseEvents');
-      event.initMouseEvent('mousemove', false, true, window, 0,
-        this.lastEvent.screenX, this.lastEvent.screenY,
-        this.lastEvent.clientX, this.lastEvent.clientY,
-        false, false, false, false, 1, null);
+      event.initMouseEvent(
+        'mousemove',
+        false,
+        true,
+        window,
+        0,
+        this.lastEvent.screenX,
+        this.lastEvent.screenY,
+        this.lastEvent.clientX,
+        this.lastEvent.clientY,
+        false,
+        false,
+        false,
+        false,
+        1,
+        null
+      );
     } else {
       event = new MouseEvent('mousemove', this.lastEvent);
     }

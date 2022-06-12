@@ -1,4 +1,4 @@
-const bufferMap: {[name: string]: (() => any)[]} = {};
+const bufferMap: { [name: string]: (() => any)[] } = {};
 
 export default function bufferEvent(
   name: string,
@@ -9,11 +9,11 @@ export default function bufferEvent(
     bufferMap[name] = [];
   }
 
-  var events = bufferMap[name];
+  const events = bufferMap[name];
 
   if (events.length === 0) {
     const cb = function () {
-      events.splice(0, events.length).forEach(cb => cb());
+      events.splice(0, events.length).forEach((cb) => cb());
     };
 
     if (animation) {

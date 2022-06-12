@@ -3,17 +3,18 @@ import EventEmitter from './EventEmitter';
 export type Transform<T, U> = (data: T) => U;
 export type AsyncTransform<T, U> = (data: T, cb: Transform<U, any>) => void;
 
-export interface Consumer<T> extends EventEmitter<{'can-write': void}> {
+export interface Consumer<T> extends EventEmitter<{ 'can-write': void }> {
   write(data: T): void;
   canWrite(): boolean;
 
   clear(): void;
 }
 
-export interface Producer<T> extends EventEmitter<{
-  'can-read': void,
-  'clear': void
-}> {
+export interface Producer<T>
+  extends EventEmitter<{
+    'can-read': void;
+    clear: void;
+  }> {
   read(data: T): void;
   canRead(): boolean;
 
@@ -21,12 +22,16 @@ export interface Producer<T> extends EventEmitter<{
 
   map<U>(transform: Transform<T, U>, capacity?: number): Producer<U>;
   mapAsync<U>(
-    transform: AsyncTransform<T, U>, abort: (item: T) => any, capacity?: number
+    transform: AsyncTransform<T, U>,
+    abort: (item: T) => any,
+    capacity?: number
   ): Producer<U>;
 
   filter(pred: Transform<T, boolean>, capacity?: number): Producer<T>;
   filterAsync(
-    pred: AsyncTransform<T, boolean>, abort: (item: T) => any, capacity?: number
+    pred: AsyncTransform<T, boolean>,
+    abort: (item: T) => any,
+    capacity?: number
   ): Producer<T>;
 
   forEach(callback: Transform<T, any>): void;
@@ -34,16 +39,18 @@ export interface Producer<T> extends EventEmitter<{
   pipe<U extends Consumer<T>>(dest: U): U;
 }
 
-export class Stream<In, Out = In> extends EventEmitter<{
-  'can-read': void,
-  'can-write': void,
-  'clear': void
-  }> implements Consumer<In>, Producer<Out> {
-
+export class Stream<In, Out = In>
+  extends EventEmitter<{
+    'can-read': void;
+    'can-write': void;
+    clear: void;
+  }>
+  implements Consumer<In>, Producer<Out>
+{
   protected data: (In | Out)[];
   protected capacity: number;
 
-  public constructor (capacity: number) {
+  public constructor(capacity: number) {
     super();
 
     this.data = [];
@@ -52,7 +59,7 @@ export class Stream<In, Out = In> extends EventEmitter<{
 
   public map<U>(
     transform: Transform<Out, U>,
-    capacity: number = Infinity
+    capacity = Infinity
   ): Producer<U> {
     return this.mapAsync((x, cb) => cb(transform(x)), null, capacity);
   }
@@ -60,14 +67,14 @@ export class Stream<In, Out = In> extends EventEmitter<{
   public mapAsync<U>(
     transform: AsyncTransform<Out, U>,
     abort?: Transform<Out, any>,
-    capacity: number = Infinity
+    capacity = Infinity
   ): Producer<U> {
     return this.pipe(new Transformer<Out, U>(transform, abort, capacity));
   }
 
   public filter(
     predicate: Transform<Out, boolean>,
-    capacity: number = Infinity
+    capacity = Infinity
   ): Producer<Out> {
     return this.filterAsync((x, cb) => cb(predicate(x)), null, capacity);
   }
@@ -75,18 +82,17 @@ export class Stream<In, Out = In> extends EventEmitter<{
   public filterAsync(
     predicate: AsyncTransform<Out, boolean>,
     abort?: Transform<Out, any>,
-    capacity: number = Infinity
+    capacity = Infinity
   ): Producer<Out> {
     return this.pipe(new Filter<Out>(predicate, abort, capacity));
   }
 
   public forEach(callback: Transform<Out, any>): void {
-    var self = this;
-    function fill() {
-      while (self.canRead()) {
-        callback(self.read());
+    const fill = () => {
+      while (this.canRead()) {
+        callback(this.read());
       }
-    }
+    };
 
     this.on('can-read', fill);
 
@@ -94,14 +100,12 @@ export class Stream<In, Out = In> extends EventEmitter<{
   }
 
   public pipe<T extends Consumer<Out>>(dest: T): T {
-    var source = this;
-    function fill() {
-
+    const fill = () => {
       // TODO: Break this up if the streams have unlimited bandwidth
-      while (source.canRead() && dest.canWrite()) {
-        dest.write(source.read());
+      while (this.canRead() && dest.canWrite()) {
+        dest.write(this.read());
       }
-    }
+    };
 
     this.on('can-read', fill);
     dest.on('can-write', fill);
@@ -123,10 +127,9 @@ export class Stream<In, Out = In> extends EventEmitter<{
   }
 
   public read(): Out {
-    var res = this.data.shift();
+    const res = this.data.shift();
 
     if (this.data.length === this.capacity - 1) {
-
       // This prevents infinite recursion when piping A=>B=>C
       //   where A and C have unlimited bandwidth and B has a capacity of 1:
       //   [can-write B]>(pipe A=>B)>[can-read B]>(pipe B=>C)>[can-write B]>...
@@ -197,7 +200,7 @@ class Transformer<In, Out> extends Stream<In, Out> {
     super.write(chunk);
 
     this.transform(chunk, (data) => {
-      var index = this.data.indexOf(chunk);
+      const index = this.data.indexOf(chunk);
       this.data.splice(index, 1);
       this.data.splice(this.numReady, 0, data);
       this.numReady++;
@@ -210,7 +213,7 @@ class Transformer<In, Out> extends Stream<In, Out> {
 
   public clear() {
     if (this.abort) {
-      for (var i = this.numReady; i < this.data.length; i++) {
+      for (let i = this.numReady; i < this.data.length; i++) {
         this.abort(this.data[i] as In);
       }
     }
@@ -235,12 +238,12 @@ class Filter<T> extends Stream<T> {
   }
 
   public write(chunk: T) {
-    this.predicate(chunk, x => x && super.write(chunk));
+    this.predicate(chunk, (x) => x && super.write(chunk));
   }
 
   public clear() {
     if (this.abort) {
-      this.data.forEach(data => this.abort(data));
+      this.data.forEach((data) => this.abort(data));
     }
 
     super.clear();

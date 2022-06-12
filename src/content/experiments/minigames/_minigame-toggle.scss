@@ -48,7 +48,7 @@
     color: $primary;
     background-color: white;
     transform: translateY(-50%) rotate(-360deg);
-    transition: transform .4s ease-in-out;
+    transition: transform 0.4s ease-in-out;
   }
 
   .options-row {
@@ -80,7 +80,10 @@
     }
   }
 
-  .shape-plus, .shape-diamond, .shape-x, .shape-o {
+  .shape-plus,
+  .shape-diamond,
+  .shape-x,
+  .shape-o {
     height: rem(18px);
 
     span {
@@ -94,28 +97,20 @@
   }
 
   .shape-diamond span {
-    box-shadow:
-      0 rem(6px) 0 0 currentColor,
-      0 rem(-6px) 0 0 currentColor,
-      rem(6px) 0 0 0 currentColor,
-      rem(-6px) 0 0 0 currentColor;
+    box-shadow: 0 rem(6px) 0 0 currentColor, 0 rem(-6px) 0 0 currentColor,
+      rem(6px) 0 0 0 currentColor, rem(-6px) 0 0 0 currentColor;
   }
 
   .shape-plus span {
     background-color: currentColor;
-    box-shadow:
-      0 rem(6px) 0 0 currentColor,
-      0 rem(-6px) 0 0 currentColor,
-      rem(6px) 0 0 0 currentColor,
-      rem(-6px) 0 0 0 currentColor;
+    box-shadow: 0 rem(6px) 0 0 currentColor, 0 rem(-6px) 0 0 currentColor,
+      rem(6px) 0 0 0 currentColor, rem(-6px) 0 0 0 currentColor;
   }
 
   .shape-x span {
     background-color: currentColor;
-    box-shadow:
-      rem(6px)  rem(6px)  0 0 currentColor,
-      rem(6px)  rem(-6px) 0 0 currentColor,
-      rem(-6px) rem(6px)  0 0 currentColor,
+    box-shadow: rem(6px) rem(6px) 0 0 currentColor,
+      rem(6px) rem(-6px) 0 0 currentColor, rem(-6px) rem(6px) 0 0 currentColor,
       rem(-6px) rem(-6px) 0 0 currentColor;
   }
 
@@ -168,7 +163,7 @@
 
       &::after {
         position: absolute;
-        content: "";
+        content: '';
         right: 0;
         top: rem(12px);
         width: 0;
@@ -204,7 +199,7 @@
 
     &::after {
       position: absolute;
-      content: "";
+      content: '';
       top: rem(2px);
       right: rem(2px);
       bottom: rem(2px);

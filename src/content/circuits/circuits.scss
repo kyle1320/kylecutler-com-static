@@ -20,7 +20,8 @@
 @include fa-expand;
 @include fa-bug;
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   height: 100%;
@@ -155,7 +156,7 @@ body {
   line-height: 1;
   text-align: center;
   padding: rem(2px);
-  border: 1px solid #CCCCCC;
+  border: 1px solid #cccccc;
   border-radius: rem(3px);
   margin: 0 rem(3px) rem(3px) 0;
   cursor: pointer;
@@ -171,9 +172,9 @@ body {
   }
 
   &.selected {
-    background-color: #F0F8FF;
-    color: #4080FF;
-    border-color: #4080FF;
+    background-color: #f0f8ff;
+    color: #4080ff;
+    border-color: #4080ff;
     padding: rem(1px);
     border-width: 2px;
   }
@@ -266,7 +267,7 @@ body {
     &__close-btn {
       cursor: pointer;
       font-size: rem(20px);
-      color: #F04020;
+      color: #f04020;
       padding: rem(2px) rem(5px) 0;
     }
   }
@@ -294,7 +295,7 @@ body {
       min-height: rem(100px);
       resize: none;
       background-color: #fafafa;
-      border: 1px solid #CCCCCC;
+      border: 1px solid #cccccc;
     }
   }
 
@@ -312,22 +313,22 @@ body {
       margin-right: rem(30px);
       background-color: white;
       border-radius: rem(5px);
-      border: 1px solid #CCC;
+      border: 1px solid #ccc;
       min-width: rem(60px);
       text-align: center;
 
       &--confirm {
-        background-color: #40B060;
+        background-color: #40b060;
         color: white;
       }
 
       &--error {
-        background-color: #D04020;
+        background-color: #d04020;
         color: white;
       }
 
       &--info {
-        background-color: #2040C0;
+        background-color: #2040c0;
         color: white;
       }
 

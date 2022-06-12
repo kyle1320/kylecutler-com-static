@@ -29,23 +29,24 @@ import AutoSlideFeature from './features/AutoSlideFeature';
 import NoHoverFeature from './features/NoHoverFeature';
 import HelpFeature from './features/HelpFeature';
 
-const infoText: {[name: string]: string} = {
+const infoText: { [name: string]: string } = {
   'select:tool': 'Select an element to edit',
   'drag:tool': 'Drag an object or the grid to move it',
-  'create': 'Click the grid to create an object'
+  create: 'Click the grid to create an object'
 };
 
-const eventTypeMap:
-{[name: string]: PositionalEventType | PositionalEventType[]} = {
-  'mouseup': 'up',
-  'mousedown': 'down',
-  'mousemove': 'move',
-  'mouseenter': 'enter',
-  'mouseleave': 'leave',
-  'wheel': 'scroll',
-  'touchstart': ['enter', 'down'],
-  'touchend': ['up', 'leave'],
-  'touchmove': 'move'
+const eventTypeMap: {
+  [name: string]: PositionalEventType | PositionalEventType[];
+} = {
+  mouseup: 'up',
+  mousedown: 'down',
+  mousemove: 'move',
+  mouseenter: 'enter',
+  mouseleave: 'leave',
+  wheel: 'scroll',
+  touchstart: ['enter', 'down'],
+  touchend: ['up', 'leave'],
+  touchmove: 'move'
 };
 
 export default class Controller {
@@ -60,7 +61,7 @@ export default class Controller {
   private topZIndex: number;
   private features: Feature[];
 
-  public constructor (
+  public constructor(
     canvas: CanvasView,
     actionbar: Actionbar,
     infobar: Infobar,
@@ -90,27 +91,27 @@ export default class Controller {
       new NoHoverFeature(this)
     ];
 
-    if (process.env.NODE_ENV === "development") {
+    if (process.env.NODE_ENV === 'development') {
       this.features.push(new DebugFeature(this));
     }
 
     this.handleActionEvent = this.handleActionEvent.bind(this);
-    this.handleMouseEvent  = this.handleMouseEvent.bind(this);
-    this.handleTouchEvent  = this.handleTouchEvent.bind(this);
-    this.handleKeyEvent    = this.handleKeyEvent.bind(this);
+    this.handleMouseEvent = this.handleMouseEvent.bind(this);
+    this.handleTouchEvent = this.handleTouchEvent.bind(this);
+    this.handleKeyEvent = this.handleKeyEvent.bind(this);
 
     actionbar.on('action', this.handleActionEvent);
 
-    canvas.canvas.addEventListener('mousedown',  this.handleMouseEvent);
-    canvas.canvas.addEventListener('mouseup',    this.handleMouseEvent);
-    canvas.canvas.addEventListener('mousemove',  this.handleMouseEvent);
+    canvas.canvas.addEventListener('mousedown', this.handleMouseEvent);
+    canvas.canvas.addEventListener('mouseup', this.handleMouseEvent);
+    canvas.canvas.addEventListener('mousemove', this.handleMouseEvent);
     canvas.canvas.addEventListener('mouseenter', this.handleMouseEvent);
     canvas.canvas.addEventListener('mouseleave', this.handleMouseEvent);
-    canvas.canvas.addEventListener('wheel',      this.handleMouseEvent);
+    canvas.canvas.addEventListener('wheel', this.handleMouseEvent);
 
     canvas.canvas.addEventListener('touchstart', this.handleTouchEvent);
-    canvas.canvas.addEventListener('touchend',   this.handleTouchEvent);
-    canvas.canvas.addEventListener('touchmove',  this.handleTouchEvent);
+    canvas.canvas.addEventListener('touchend', this.handleTouchEvent);
+    canvas.canvas.addEventListener('touchmove', this.handleTouchEvent);
 
     window.addEventListener('keydown', this.handleKeyEvent);
 
@@ -119,7 +120,7 @@ export default class Controller {
     this.addDefaultItems();
     actionbar.init();
 
-    this.notifyFeatures(x => x.handleSelectViews(null));
+    this.notifyFeatures((x) => x.handleSelectViews(null));
 
     canvas.drawBuffered();
   }
@@ -128,8 +129,8 @@ export default class Controller {
     tree: BasicTree<View>,
     onChange?: (data: View, added: boolean) => void
   ) {
-    var views = flatten(tree);
-    views = views && views.filter(x => x !== this.canvas);
+    let views = flatten(tree);
+    views = views && views.filter((x) => x !== this.canvas);
     this.hover(views, onChange);
   }
 
@@ -139,13 +140,9 @@ export default class Controller {
 
     if (this.hovering === views) return;
 
-    setDiff(
-      this.hovering,
-      views,
-      (x, adding) => {
-        onChange && onChange(x, adding), x.setAttribute('hover', adding);
-      }
-    );
+    setDiff(this.hovering, views, (x, adding) => {
+      onChange && onChange(x, adding), x.setAttribute('hover', adding);
+    });
 
     this.hovering = views;
   }
@@ -158,23 +155,20 @@ export default class Controller {
 
     if (this.selected === views) return;
 
-    setDiff(
-      this.selected,
-      views,
-      (x, adding) => {
-        onChange && onChange(x, adding), x.setAttribute('active', adding);
-      }
-    );
+    setDiff(this.selected, views, (x, adding) => {
+      onChange && onChange(x, adding), x.setAttribute('active', adding);
+    });
 
     this.selected = views;
 
-    this.notifyFeatures(x => x.handleSelectViews(views));
+    this.notifyFeatures((x) => x.handleSelectViews(views));
     this.infobar.set(
-      views ? (
-        views.length
-        + ' element'+ (views.length === 1 ? '' : 's')
-        + ' selected'
-      ) : '',
+      views
+        ? views.length +
+            ' element' +
+            (views.length === 1 ? '' : 's') +
+            ' selected'
+        : '',
       1
     );
   }
@@ -207,17 +201,17 @@ export default class Controller {
     }
 
     if (shouldSnap) el.move(Math.round(dx), Math.round(dy));
-    else            el.move(dx, dy);
+    else el.move(dx, dy);
   }
 
   public export() {
-    var data = this.selected || this.canvas.getAll();
+    const data = this.selected || this.canvas.getAll();
     return Serialize.serialize(data);
   }
 
-  public import(text: string, select: boolean = true) {
-    var data = Serialize.deserialize(text);
-    data.forEach(view => this.canvas.addChild(view));
+  public import(text: string, select = true) {
+    const data = Serialize.deserialize(text);
+    data.forEach((view) => this.canvas.addChild(view));
 
     if (select) this.select(data);
   }
@@ -225,20 +219,21 @@ export default class Controller {
   private handleMouseEvent(event: MouseEvent) {
     event.preventDefault();
 
-    this.dispatchPositionalEvent(
-      event, event.offsetX, event.offsetY
-    );
+    this.dispatchPositionalEvent(event, event.offsetX, event.offsetY);
   }
 
   private handleTouchEvent(event: TouchEvent) {
     event.preventDefault();
 
-    var touch = event.changedTouches[0];
-    var bounds = (touch.target as HTMLElement)
-      .getBoundingClientRect() as DOMRect;
+    const touch = event.changedTouches[0];
+    const bounds = (
+      touch.target as HTMLElement
+    ).getBoundingClientRect() as DOMRect;
 
     this.dispatchPositionalEvent(
-      event, touch.clientX - bounds.x, touch.clientY - bounds.y
+      event,
+      touch.clientX - bounds.x,
+      touch.clientY - bounds.y
     );
   }
 
@@ -253,12 +248,12 @@ export default class Controller {
     if (!root) root = this.canvas.findAll(x, y);
 
     if (type instanceof Array) {
-      type.forEach(t => this.dispatchPositionalEvent(event, x, y, t, root));
+      type.forEach((t) => this.dispatchPositionalEvent(event, x, y, t, root));
       return;
     }
 
-    var e: PositionalEvent = { event, x, y, type, root };
-    this.notifyFeatures(x => x.handleMouseEvent(e));
+    const e: PositionalEvent = { event, x, y, type, root };
+    this.notifyFeatures((x) => x.handleMouseEvent(e));
   }
 
   private handleActionEvent(e: ActionEvent) {
@@ -266,16 +261,16 @@ export default class Controller {
       this.infobar.set(infoText[e.id] || infoText[e.section], 0);
     }
 
-    this.notifyFeatures(x => x.handleActionEvent(e));
+    this.notifyFeatures((x) => x.handleActionEvent(e));
   }
 
   private handleKeyEvent(e: KeyboardEvent) {
-    this.notifyFeatures(x => x.handleKeyEvent(e));
+    this.notifyFeatures((x) => x.handleKeyEvent(e));
   }
 
   private notifyFeatures(handler: (x: Feature) => boolean | void) {
-    for (var i = 0; i < this.features.length; i++) {
-      var feature = this.features[i];
+    for (let i = 0; i < this.features.length; i++) {
+      const feature = this.features[i];
 
       if (handler(feature) === false) break;
     }
@@ -283,7 +278,10 @@ export default class Controller {
 
   private addDefaultItems() {
     // eslint-disable-next-line max-len
-    this.import('{"o":[["n",1,1],["n",1,7],["c",3,3,0,"Not"],["c",3,5,0,"Not"],["c",6,1,0,"And"],["c",6,5,0,"And"],["c",10,3,0,"Or"],["n",14,4]],"c":[[[0],[4,0]],[[1],[2,0]],[[0],[3,0]],[[1],[5,1]],[[2,1],[4,1]],[[3,1],[5,0]],[[4,2],[6,0]],[[5,2],[6,1]],[[6,2],[7]]]}', false);
+    this.import(
+      '{"o":[["n",1,1],["n",1,7],["c",3,3,0,"Not"],["c",3,5,0,"Not"],["c",6,1,0,"And"],["c",6,5,0,"And"],["c",10,3,0,"Or"],["n",14,4]],"c":[[[0],[4,0]],[[1],[2,0]],[[0],[3,0]],[[1],[5,1]],[[2,1],[4,1]],[[3,1],[5,0]],[[4,2],[6,0]],[[5,2],[6,1]],[[6,2],[7]]]}',
+      false
+    );
   }
 }
 
@@ -296,13 +294,13 @@ function setDiff<T>(
   after: T[],
   onChange: (data: T, added: boolean) => void
 ) {
-  var beforeSet = new Set(before);
-  var afterSet = new Set(after);
-  var all = new Set(([] as T[]).concat(before || [], after || []));
+  const beforeSet = new Set(before);
+  const afterSet = new Set(after);
+  const all = new Set(([] as T[]).concat(before || [], after || []));
 
-  for (var item of all) {
-    var isOld = beforeSet.has(item);
-    var isNew = afterSet.has(item);
+  for (const item of all) {
+    const isOld = beforeSet.has(item);
+    const isNew = afterSet.has(item);
 
     if (isOld !== isNew) {
       onChange(item, isNew);

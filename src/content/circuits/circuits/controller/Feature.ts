@@ -6,29 +6,19 @@ import Controller from '../controller';
 export default abstract class Feature {
   protected controller: Controller;
 
-  public constructor (controller: Controller) {
+  public constructor(controller: Controller) {
     this.controller = controller;
 
     this.reset();
   }
 
-  public handleActionEvent(id: ActionEvent): boolean | void {
+  public handleActionEvent(id: ActionEvent): boolean | void {}
 
-  }
+  public handleMouseEvent(e: PositionalEvent): boolean | void {}
 
-  public handleMouseEvent(e: PositionalEvent): boolean | void {
+  public handleKeyEvent(e: KeyboardEvent): boolean | void {}
 
-  }
+  public handleSelectViews(views: View[]): boolean | void {}
 
-  public handleKeyEvent(e: KeyboardEvent): boolean | void {
-
-  }
-
-  public handleSelectViews(views: View[]): boolean | void {
-
-  }
-
-  protected reset() {
-
-  }
+  protected reset() {}
 }

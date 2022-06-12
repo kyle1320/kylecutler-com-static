@@ -27,26 +27,27 @@ class SnakeGame {
     this.isPaused = false;
     this.userPlaying = false;
 
-    this.pause    = this.pause.bind(this);
-    this.resume   = this.resume.bind(this);
-    this.update   = this.update.bind(this);
+    this.pause = this.pause.bind(this);
+    this.resume = this.resume.bind(this);
+    this.update = this.update.bind(this);
     this.setScore = this.setScore.bind(this);
     this.gameOver = this.gameOver.bind(this);
 
     [
-      <div className='game-container'>{[
-        this.canvas = this.field.canvas,
-        <div className='score'>{[
-          <span>Score: </span>,
-          this.scoreEl = <span>0</span>
-        ]}</div>,
-        this.overlay = <div className='overlay'>Click to Play</div>
-      ]}</div>,
-      <div className='info'>Use W,A,S,D / arrow keys / swipe to turn</div>
-    ].forEach(el => root.appendChild(el));
+      <div className="game-container">
+        {[
+          (this.canvas = this.field.canvas),
+          <div className="score">
+            {[<span>Score: </span>, (this.scoreEl = <span>0</span>)]}
+          </div>,
+          (this.overlay = <div className="overlay">Click to Play</div>)
+        ]}
+      </div>,
+      <div className="info">Use W,A,S,D / arrow keys / swipe to turn</div>
+    ].forEach((el) => root.appendChild(el));
 
-    this.canvas.addEventListener('focus',      this.resume);
-    this.canvas.addEventListener('blur',       this.pause);
+    this.canvas.addEventListener('focus', this.resume);
+    this.canvas.addEventListener('blur', this.pause);
     this.canvas.addEventListener('touchstart', this.resume);
 
     this.field.on('eat', this.setScore);
@@ -66,8 +67,8 @@ class SnakeGame {
   }
 
   private update() {
-    var time = +new Date();
-    var dt = (time - this.lastUpdateTime) / 1000;
+    const time = +new Date();
+    const dt = (time - this.lastUpdateTime) / 1000;
     this.lastUpdateTime = time;
 
     if (!this.userPlaying) {
@@ -86,8 +87,10 @@ class SnakeGame {
       this.pause();
 
       this.showOverlay(
-        '<span>You scored ' + score + ' points</span>' +
-        '<span>Click to play again</span>'
+        '<span>You scored ' +
+          score +
+          ' points</span>' +
+          '<span>Click to play again</span>'
       );
       this.userPlaying = false;
 

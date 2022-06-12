@@ -1,15 +1,15 @@
 export default class Infobar {
   private element: HTMLElement;
-  private data: {text: string, priority: number}[];
+  private data: { text: string; priority: number }[];
 
-  public constructor (element: HTMLElement) {
+  public constructor(element: HTMLElement) {
     this.element = element;
     this.data = [];
   }
 
   public set(text: string, priority: number) {
-    var i;
-    var replace = false;
+    let i;
+    let replace = false;
 
     for (i = 0; i < this.data.length; i++) {
       if (this.data[i].priority === priority) {

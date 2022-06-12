@@ -1,9 +1,6 @@
-import {
-  $,
-  scaleCanvas,
-  fitElement,
-  link } from '../util';
-import { getSaturatedColor } from '~/src/common/js/utils';
+import { $, scaleCanvas, fitElement, link } from '../util';
+import { getSaturatedColor } from 'utils';
+import { makeElement } from 'utils';
 
 window.onload = function () {
   var spiroCanvas = $('spiro-canvas');
@@ -64,12 +61,9 @@ window.onload = function () {
 
     var canvases = $('canvases');
     fitElement(canvases, 500, 500, function (el) {
-      spiroCanvas.style.width
-        = infoCanvas.style.width
-        = canvases.style.width;
-      spiroCanvas.style.height
-        = infoCanvas.style.height
-        = canvases.style.height;
+      spiroCanvas.style.width = infoCanvas.style.width = canvases.style.width;
+      spiroCanvas.style.height = infoCanvas.style.height =
+        canvases.style.height;
     });
 
     link(inputs.speedInput, options, 'speed');
@@ -92,22 +86,22 @@ window.onload = function () {
     window.addEventListener('keydown', function (evt) {
       // console.log(evt.keyCode);
       switch (evt.keyCode) {
-      case 32:
-        setPaused(!paused);
-        evt.preventDefault();
-        break;
-      case 39:
-        setSpeed(options.speed * 1.1);
-        evt.preventDefault();
-        break;
-      case 37:
-        setSpeed(options.speed / 1.1);
-        evt.preventDefault();
-        break;
-      case 13:
-        reset();
-        evt.preventDefault();
-        break;
+        case 32:
+          setPaused(!paused);
+          evt.preventDefault();
+          break;
+        case 39:
+          setSpeed(options.speed * 1.1);
+          evt.preventDefault();
+          break;
+        case 37:
+          setSpeed(options.speed / 1.1);
+          evt.preventDefault();
+          break;
+        case 13:
+          reset();
+          evt.preventDefault();
+          break;
       }
     });
 
@@ -127,11 +121,11 @@ window.onload = function () {
     var lastRadius = 0.0;
     var cir;
 
-    for (var i=0; i < circles.length; i++) {
+    for (var i = 0; i < circles.length; i++) {
       cir = circles[i];
 
       relangle = realangle - cir.angle;
-      realangle += ((lastRadius / cir.radius) - 1) * cir.angle;
+      realangle += (lastRadius / cir.radius - 1) * cir.angle;
 
       // center the first circle
       if (i > 0) {
@@ -157,42 +151,45 @@ window.onload = function () {
       lastRadius = cir.radius;
     }
 
-    doneCallback(circles[i-1]);
+    doneCallback(circles[i - 1]);
   }
 
   function draw() {
     infoCtx.clearRect(0, 0, infoCanvas.drawWidth, infoCanvas.drawHeight);
 
     if (options.showCircles || options.showRadii || options.showPen) {
-      eachCircle(function (c) {
-        if (options.showCircles) {
-          infoCtx.strokeStyle = '#000000';
-          infoCtx.beginPath();
-          infoCtx.arc(c.x, c.y, Math.abs(c.realradius), 0, 2 * Math.PI);
-          infoCtx.closePath();
-          infoCtx.stroke();
-        }
+      eachCircle(
+        function (c) {
+          if (options.showCircles) {
+            infoCtx.strokeStyle = '#000000';
+            infoCtx.beginPath();
+            infoCtx.arc(c.x, c.y, Math.abs(c.realradius), 0, 2 * Math.PI);
+            infoCtx.closePath();
+            infoCtx.stroke();
+          }
 
-        if (options.showRadii) {
-          infoCtx.strokeStyle = '#00FF00';
-          infoCtx.beginPath();
-          infoCtx.moveTo(c.x, c.y);
-          infoCtx.lineTo(
-            c.x + Math.cos(c.realangle)*c.realradius,
-            c.y + Math.sin(c.realangle)*c.realradius
-          );
-          infoCtx.closePath();
-          infoCtx.stroke();
+          if (options.showRadii) {
+            infoCtx.strokeStyle = '#00FF00';
+            infoCtx.beginPath();
+            infoCtx.moveTo(c.x, c.y);
+            infoCtx.lineTo(
+              c.x + Math.cos(c.realangle) * c.realradius,
+              c.y + Math.sin(c.realangle) * c.realradius
+            );
+            infoCtx.closePath();
+            infoCtx.stroke();
+          }
+        },
+        function (c) {
+          if (options.showPen) {
+            infoCtx.fillStyle = '#FF0000';
+            infoCtx.beginPath();
+            infoCtx.arc(c.penx, c.peny, 2, 0, 360);
+            infoCtx.closePath();
+            infoCtx.fill();
+          }
         }
-      }, function (c) {
-        if (options.showPen) {
-          infoCtx.fillStyle='#FF0000';
-          infoCtx.beginPath();
-          infoCtx.arc(c.penx, c.peny, 2, 0, 360);
-          infoCtx.closePath();
-          infoCtx.fill();
-        }
-      });
+      );
     }
   }
 
@@ -219,7 +216,7 @@ window.onload = function () {
       idt = dt / options.iterations;
       eachCircle(null, position);
 
-      for (var i=0; i < options.iterations; i++) {
+      for (var i = 0; i < options.iterations; i++) {
         circles.forEach(update);
         eachCircle(null, calculate); // calculate the new center point
 
@@ -238,8 +235,7 @@ window.onload = function () {
 
       draw();
     };
-
-  }());
+  })();
 
   function setSpeed(speed) {
     if (speed <= 0) return;
@@ -262,7 +258,9 @@ window.onload = function () {
   }
 
   function reset() {
-    circles.forEach(function (c) { c.angle = 0; });
+    circles.forEach(function (c) {
+      c.angle = 0;
+    });
     spiroCtx.clearRect(0, 0, spiroCanvas.drawWidth, spiroCanvas.drawHeight);
     draw();
   }
@@ -276,7 +274,7 @@ window.onload = function () {
 
   function addCircle(index) {
     var newradius = index > 0 ? circles[index - 1].radius / 2 : 1;
-    var newspeed = index > 0 ? (circles[index - 1].speed / 2) || 1 : 0;
+    var newspeed = index > 0 ? circles[index - 1].speed / 2 || 1 : 0;
     var newcircle = {
       radius: newradius,
       angle: 0,
@@ -294,41 +292,57 @@ window.onload = function () {
     }
 
     inputs.circleDiv.appendChild(
-      <button
-        onclick={addCircle.bind(null, 0)}
-        style={{width: '100%'}}>+</button>
+      <button onclick={addCircle.bind(null, 0)} style={{ width: '100%' }}>
+        +
+      </button>
     );
 
-    for (var i=0; i < circles.length; i++) {
+    for (var i = 0; i < circles.length; i++) {
       var cir = circles[i];
 
       if (!cir.div) {
-        var rad   = <input type="number" step="0.05" style={{float: 'right'}}/>;
-        var speed = <input type="number" step="0.01" style={{float: 'right'}}/>;
+        var rad = (
+          <input type="number" step="0.05" style={{ float: 'right' }} />
+        );
+        var speed = (
+          <input type="number" step="0.01" style={{ float: 'right' }} />
+        );
 
         link(rad, cir, 'radius', draw);
         link(speed, cir, 'speed', draw);
 
-        cir.div = <div style={{
-          border: '2px solid black',
-          padding: '4px',
-          margin: '10px'}}>
-          <div style={{textAlign: 'center'}}>Circle {i}:</div>
-          <div>Radius: {rad} <br style={{clear: 'right'}} /></div>
-          <div>Speed: {speed} <br style={{clear: 'right'}} /></div>
-          <button onclick={remCircle.bind(null, cir)} style={{width: '100%'}}>
-            delete
-          </button>
-        </div>;
+        cir.div = (
+          <div
+            style={{
+              border: '2px solid black',
+              padding: '4px',
+              margin: '10px'
+            }}
+          >
+            <div style={{ textAlign: 'center' }}>Circle {i}:</div>
+            <div>
+              Radius: {rad} <br style={{ clear: 'right' }} />
+            </div>
+            <div>
+              Speed: {speed} <br style={{ clear: 'right' }} />
+            </div>
+            <button
+              onclick={remCircle.bind(null, cir)}
+              style={{ width: '100%' }}
+            >
+              delete
+            </button>
+          </div>
+        );
       } else {
         cir.div.getElementsByTagName('div')[0].innerHTML = 'Circle ' + i + ':';
       }
 
       inputs.circleDiv.appendChild(cir.div);
       inputs.circleDiv.appendChild(
-        <button
-          onclick={addCircle.bind(null, i + 1)}
-          style={{width: '100%'}}>+</button>
+        <button onclick={addCircle.bind(null, i + 1)} style={{ width: '100%' }}>
+          +
+        </button>
       );
     }
   }

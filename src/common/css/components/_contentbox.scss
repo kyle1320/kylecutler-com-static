@@ -40,8 +40,13 @@
       }
     }
 
-    h1, h2, h3, h4, h5, h6 {
-      margin: 0 0 .6em;
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      margin: 0 0 0.6em;
     }
   }
 
@@ -53,16 +58,23 @@
     }
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    margin: .4em 0 .8em;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 0.4em 0 0.8em;
   }
 
-  & > h1, & > h2, & > h3 {
+  & > h1,
+  & > h2,
+  & > h3 {
     &:first-child {
       background-color: $primary-dark;
       color: white;
       margin: rem(-15px) rem(-15px) rem(15px);
-      padding: rem(20px) rem(15px) .6em;
+      padding: rem(20px) rem(15px) 0.6em;
       font-weight: normal;
 
       &.error {

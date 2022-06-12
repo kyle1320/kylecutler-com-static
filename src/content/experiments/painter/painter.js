@@ -8,7 +8,8 @@ import {
   poissonDisk,
   resizeCanvas,
   getRelativeCoord,
-  clamp } from '../util';
+  clamp
+} from '../util';
 
 window.onload = function () {
   var drawCanvas = $('draw-canvas');
@@ -24,7 +25,7 @@ window.onload = function () {
   var width, height;
   var img;
 
-  var mouse = {x: 0, y: 0, pressed: false, dragged: false};
+  var mouse = { x: 0, y: 0, pressed: false, dragged: false };
   var selected = null;
 
   // used in drawing the neighbor canvas
@@ -87,13 +88,21 @@ window.onload = function () {
     fitElement(drawCanvas);
 
     Object.defineProperty(options, 'width', {
-      get: function () { return drawCanvas.width; },
-      set: function (w) { setSize(w, height); },
+      get: function () {
+        return drawCanvas.width;
+      },
+      set: function (w) {
+        setSize(w, height);
+      }
     });
 
     Object.defineProperty(options, 'height', {
-      get: function () { return drawCanvas.height; },
-      set: function (h) { setSize(width, h); },
+      get: function () {
+        return drawCanvas.height;
+      },
+      set: function (h) {
+        setSize(width, h);
+      }
     });
 
     // link HTML inputs to their respective options
@@ -157,7 +166,7 @@ window.onload = function () {
   // of neighbors that have been drawn.
   function Cell(x, y, rgb) {
     rgb = rgb || [0, 0, 0];
-    return {x: x, y: y, r: rgb[0], g: rgb[1], b: rgb[2], n: 0};
+    return { x: x, y: y, r: rgb[0], g: rgb[1], b: rgb[2], n: 0 };
   }
 
   // resets the painting based on options
@@ -181,71 +190,78 @@ window.onload = function () {
 
     // add the initial cells based on the pattern
     switch (options.pattern) {
-    // a single cell is added in the center of the painting
-    default:
-    case 'center':
-      add(Cell(Math.floor(width/2), Math.floor(height/2), options.baseRGB));
-      break;
-      // a line of cells is added in the top row of the painting
-    case 'vertical':
-      for (x = 0; x < width; x++) {
-        cell = Cell(x, 0, options.baseRGB);
-        deviate(cell, options.initialDeviation);
-        add(cell);
-      }
-      break;
-      // cells are added randomly inside the painting
-    case 'random':
-      for (i = 0; i < options.numPoints; i++) {
-        cell = Cell(
-          Math.floor(Math.random() * width),
-          Math.floor(Math.random() * height),
-          options.baseRGB
+      // a single cell is added in the center of the painting
+      default:
+      case 'center':
+        add(
+          Cell(Math.floor(width / 2), Math.floor(height / 2), options.baseRGB)
         );
-        deviate(cell, options.initialDeviation);
-        add(cell);
-      }
-      break;
+        break;
+      // a line of cells is added in the top row of the painting
+      case 'vertical':
+        for (x = 0; x < width; x++) {
+          cell = Cell(x, 0, options.baseRGB);
+          deviate(cell, options.initialDeviation);
+          add(cell);
+        }
+        break;
+      // cells are added randomly inside the painting
+      case 'random':
+        for (i = 0; i < options.numPoints; i++) {
+          cell = Cell(
+            Math.floor(Math.random() * width),
+            Math.floor(Math.random() * height),
+            options.baseRGB
+          );
+          deviate(cell, options.initialDeviation);
+          add(cell);
+        }
+        break;
       // cells are added to form a hexagonal grid
-    case 'hex':
-      var a = options.hexAngle * Math.PI / 180;
-      var cos = Math.cos(a);
-      var sin = Math.sin(a);
-      var cot = 1.0 / Math.tan(a);
+      case 'hex':
+        var a = (options.hexAngle * Math.PI) / 180;
+        var cos = Math.cos(a);
+        var sin = Math.sin(a);
+        var cot = 1.0 / Math.tan(a);
 
-      for (x = options.size/2; x < width + (width * cot); x += options.size) {
-        for (y = options.size/2; y < height / sin; y += options.size) {
-          var ry = Math.floor(y * sin);
-          var rx = Math.floor(x - y * cos);
+        for (x = options.size / 2; x < width + width * cot; x += options.size) {
+          for (y = options.size / 2; y < height / sin; y += options.size) {
+            var ry = Math.floor(y * sin);
+            var rx = Math.floor(x - y * cos);
 
-          if (rx >= 0 && rx < width && ry >= 0 && ry < height) {
-            cell = Cell(rx, ry, options.baseRGB);
-            deviate(cell, options.initialDeviation);
-            add(cell);
+            if (rx >= 0 && rx < width && ry >= 0 && ry < height) {
+              cell = Cell(rx, ry, options.baseRGB);
+              deviate(cell, options.initialDeviation);
+              add(cell);
+            }
           }
         }
-      }
-      break;
-    case 'distributed':
-      // coming up with a radius is difficult... we can approximate the distance between points
-      // by dividing the total area by the number of desired points times a "packing constant",
-      // then taking the square root of that individual area to get a radius.
-      // a packing constant of 1.5 seems to work okay...
-      // it seems to be a touch high for small numbers (< 150)
-      // and a touch low for large numbers (> 150)
-      var pts = poissonDisk(
-        0, 0, width, height,
-        Math.sqrt(width * height / (1.5 * options.numPoints))
-      );
-
-      for (i = 0; i < pts.length; i++) {
-        cell = Cell(
-          Math.floor(pts[i].x), Math.floor(pts[i].y), options.baseRGB
+        break;
+      case 'distributed':
+        // coming up with a radius is difficult... we can approximate the distance between points
+        // by dividing the total area by the number of desired points times a "packing constant",
+        // then taking the square root of that individual area to get a radius.
+        // a packing constant of 1.5 seems to work okay...
+        // it seems to be a touch high for small numbers (< 150)
+        // and a touch low for large numbers (> 150)
+        var pts = poissonDisk(
+          0,
+          0,
+          width,
+          height,
+          Math.sqrt((width * height) / (1.5 * options.numPoints))
         );
-        deviate(cell, options.initialDeviation);
-        add(cell);
-      }
-      break;
+
+        for (i = 0; i < pts.length; i++) {
+          cell = Cell(
+            Math.floor(pts[i].x),
+            Math.floor(pts[i].y),
+            options.baseRGB
+          );
+          deviate(cell, options.initialDeviation);
+          add(cell);
+        }
+        break;
     }
   }
 
@@ -289,16 +305,18 @@ window.onload = function () {
 
   // deviates the given cell's color according to the options
   function deviate(c, dev) {
-    c.r = clamp(c.r + Math.random()*dev*2 - dev, 0, 255);
-    c.g = clamp(c.g + Math.random()*dev*2 - dev, 0, 255);
-    c.b = clamp(c.b + Math.random()*dev*2 - dev, 0, 255);
+    c.r = clamp(c.r + Math.random() * dev * 2 - dev, 0, 255);
+    c.g = clamp(c.g + Math.random() * dev * 2 - dev, 0, 255);
+    c.b = clamp(c.b + Math.random() * dev * 2 - dev, 0, 255);
   }
 
   // determines if a given cell should spawn
   function randomChance(c) {
-    return Math.random()
-      < (Math.pow(c.n, options.reliance)
-      / Math.pow(options.neighbors.length, options.reliance));
+    return (
+      Math.random() <
+      Math.pow(c.n, options.reliance) /
+        Math.pow(options.neighbors.length, options.reliance)
+    );
   }
 
   // draws the painting to the canvas
@@ -322,7 +340,7 @@ window.onload = function () {
         // if there is no cell in the array, create a new one and add it to the edge list
         if (!nc) {
           nc = cells[ny][nx] = Cell(nx, ny);
-          edges = {cell: nc, next: edges, prev: null};
+          edges = { cell: nc, next: edges, prev: null };
           if (edges.next) edges.next.prev = edges;
         }
 
@@ -335,10 +353,10 @@ window.onload = function () {
 
     // add this cell to the painting image
     var index = (c.y * width + c.x) * 4;
-    img.data[index+0] = c.r;
-    img.data[index+1] = c.g;
-    img.data[index+2] = c.b;
-    img.data[index+3] = 255;
+    img.data[index + 0] = c.r;
+    img.data[index + 1] = c.g;
+    img.data[index + 2] = c.b;
+    img.data[index + 3] = 255;
   }
 
   // pause / resume painting
@@ -368,35 +386,42 @@ window.onload = function () {
     // hide every optional element
     var optionals = document.querySelectorAll('.optional');
     var i = optionals.length;
-    while (i--) optionals[i].style.display='none';
+    while (i--) optionals[i].style.display = 'none';
 
     // show optional elements that are part of the selected pattern
-    optionals = document.querySelectorAll('.optional.'+options.pattern);
+    optionals = document.querySelectorAll('.optional.' + options.pattern);
     i = optionals.length;
-    while (i--) optionals[i].style.display='table-row';
+    while (i--) optionals[i].style.display = 'table-row';
   }
 
   // the rest of this deals with neighbor controls
 
   function resetNeighbors() {
     options.neighbors = [
-      {x:0, y:1}, {x:1, y:1}, {x:1, y:0}, {x:1, y:-1},
-      {x:0, y:-1}, {x:-1, y:-1}, {x:-1, y:0}, {x:-1, y:1}
+      { x: 0, y: 1 },
+      { x: 1, y: 1 },
+      { x: 1, y: 0 },
+      { x: 1, y: -1 },
+      { x: 0, y: -1 },
+      { x: -1, y: -1 },
+      { x: -1, y: 0 },
+      { x: -1, y: 1 }
     ];
     centerNeighbors();
   }
 
   function centerNeighbors() {
-    neighborData.offsetX =
-      (neighborData.width / (2 * neighborData.scale)) - 0.5;
-    neighborData.offsetY =
-      (neighborData.height / (2 * neighborData.scale)) - 0.5;
+    neighborData.offsetX = neighborData.width / (2 * neighborData.scale) - 0.5;
+    neighborData.offsetY = neighborData.height / (2 * neighborData.scale) - 0.5;
     drawNeighbors();
   }
 
   function drawNeighbors() {
     neighborContext.clearRect(
-      0, 0, neighborCanvas.width, neighborCanvas.height
+      0,
+      0,
+      neighborCanvas.width,
+      neighborCanvas.height
     );
     var skip = neighborData.scale;
 
@@ -489,7 +514,7 @@ window.onload = function () {
     } else {
       selected = {
         x: Math.floor(mousepos.x / neighborData.scale - neighborData.offsetX),
-        y: Math.floor(mousepos.y / neighborData.scale - neighborData.offsetY),
+        y: Math.floor(mousepos.y / neighborData.scale - neighborData.offsetY)
       };
     }
 
@@ -519,7 +544,7 @@ window.onload = function () {
 
     selected = {
       x: Math.floor(mouse.x / neighborData.scale - neighborData.offsetX),
-      y: Math.floor(mouse.y / neighborData.scale - neighborData.offsetY),
+      y: Math.floor(mouse.y / neighborData.scale - neighborData.offsetY)
     };
 
     mouse.pressed = true;
@@ -530,8 +555,8 @@ window.onload = function () {
     takeTouchFocus(evt);
 
     var mousepos = getRelativeCoord(neighborCanvas, evt);
-    var moveX = (mousepos.x - mouse.x);
-    var moveY = (mousepos.y - mouse.y);
+    var moveX = mousepos.x - mouse.x;
+    var moveY = mousepos.y - mouse.y;
 
     if (mouse.pressed && moveX * moveX + moveY * moveY > 1) {
       selected = null;

@@ -13,9 +13,9 @@ import { EventEmitter } from '~/src/common/js/utils';
 const GAME_SCALE = 14;
 
 export default class Field extends EventEmitter<{
-  die: number,
-  eat: number
-  }> {
+  die: number;
+  eat: number;
+}> {
   private size: number;
   private snake: Snake;
   private food: Food;
@@ -32,10 +32,13 @@ export default class Field extends EventEmitter<{
     this.snake = new Snake(0, 0, 0, 0);
     this.food = new Food(0, 0);
 
-    this.canvas = <canvas
-      width={size * GAME_SCALE}
-      height={size * GAME_SCALE}
-      tabIndex={0} />;
+    this.canvas = (
+      <canvas
+        width={size * GAME_SCALE}
+        height={size * GAME_SCALE}
+        tabIndex={0}
+      />
+    );
     this.context = this.canvas.getContext('2d');
 
     this.centerTouch = null;
@@ -50,9 +53,9 @@ export default class Field extends EventEmitter<{
   }
 
   public reset() {
-    var x = Math.random() * (this.size - SNAKE_WIDTH) + SNAKE_RADIUS;
-    var y = Math.random() * (this.size - SNAKE_WIDTH) + SNAKE_RADIUS;
-    var dir = dirTowards(this.size / 2 - x, this.size / 2 - y);
+    const x = Math.random() * (this.size - SNAKE_WIDTH) + SNAKE_RADIUS;
+    const y = Math.random() * (this.size - SNAKE_WIDTH) + SNAKE_RADIUS;
+    const dir = dirTowards(this.size / 2 - x, this.size / 2 - y);
 
     this.snake.reset(x, y, dir.x, dir.y);
 
@@ -60,7 +63,7 @@ export default class Field extends EventEmitter<{
   }
 
   public update(dt: number) {
-    var willDie = this.checkForDeath(dt);
+    const willDie = this.checkForDeath(dt);
 
     this.snake.update(dt);
 
@@ -81,9 +84,9 @@ export default class Field extends EventEmitter<{
   }
 
   private tryEat() {
-    var head = this.snake.getHead();
-    var dx = head.x - this.food.position.x;
-    var dy = head.y - this.food.position.y;
+    const head = this.snake.getHead();
+    const dx = head.x - this.food.position.x;
+    const dy = head.y - this.food.position.y;
 
     const DIST = FOOD_RADIUS + SNAKE_RADIUS;
 
@@ -95,8 +98,8 @@ export default class Field extends EventEmitter<{
   }
 
   private checkForDeath(dt: number): boolean {
-    var head = this.snake.getHead(dt);
-    var hitWall =
+    const head = this.snake.getHead(dt);
+    const hitWall =
       head.x < SNAKE_RADIUS ||
       head.x > this.size - SNAKE_RADIUS ||
       head.y < SNAKE_RADIUS ||
@@ -106,25 +109,29 @@ export default class Field extends EventEmitter<{
   }
 
   private placeFood() {
-    var x = Math.random() * (this.size - FOOD_WIDTH) + FOOD_RADIUS;
-    var y = Math.random() * (this.size - FOOD_WIDTH) + FOOD_RADIUS;
+    const x = Math.random() * (this.size - FOOD_WIDTH) + FOOD_RADIUS;
+    const y = Math.random() * (this.size - FOOD_WIDTH) + FOOD_RADIUS;
 
     this.food.move(x, y);
   }
 
   private addListeners() {
-    this.canvas.addEventListener('keydown', event => {
+    this.canvas.addEventListener('keydown', (event) => {
       event.preventDefault();
 
       switch (event.keyCode) {
-      case 65: // A
-      case 37: return this.snake.setDirection({x: -1, y: 0}); // left
-      case 87: // W
-      case 38: return this.snake.setDirection({x: 0, y: -1}); // up
-      case 68: // D
-      case 39: return this.snake.setDirection({x: 1, y: 0}); // right
-      case 83: // S
-      case 40: return this.snake.setDirection({x: 0, y: 1}); // down
+        case 65: // A
+        case 37:
+          return this.snake.setDirection({ x: -1, y: 0 }); // left
+        case 87: // W
+        case 38:
+          return this.snake.setDirection({ x: 0, y: -1 }); // up
+        case 68: // D
+        case 39:
+          return this.snake.setDirection({ x: 1, y: 0 }); // right
+        case 83: // S
+        case 40:
+          return this.snake.setDirection({ x: 0, y: 1 }); // down
       }
     });
 
@@ -137,17 +144,17 @@ export default class Field extends EventEmitter<{
 
     this.canvas.addEventListener('touchmove', (event) => {
       if (this.centerTouch) {
-        for (var i = 0; i < event.changedTouches.length; i++) {
-          var touch = event.changedTouches[i];
+        for (let i = 0; i < event.changedTouches.length; i++) {
+          const touch = event.changedTouches[i];
 
           if (touch.identifier === this.centerTouch.identifier) {
             event.preventDefault();
 
-            var dx = touch.clientX - this.centerTouch.clientX;
-            var dy = touch.clientY - this.centerTouch.clientY;
+            const dx = touch.clientX - this.centerTouch.clientX;
+            const dy = touch.clientY - this.centerTouch.clientY;
 
             if (Math.abs(dx) > 20 || Math.abs(dy) > 20) {
-              var dir = dirTowards(dx, dy);
+              const dir = dirTowards(dx, dy);
               this.snake.setDirection(dir);
             }
             break;
@@ -158,8 +165,8 @@ export default class Field extends EventEmitter<{
 
     this.canvas.addEventListener('touchend', (event) => {
       if (this.centerTouch) {
-        for (var i = 0; i < event.changedTouches.length; i++) {
-          var touch = event.changedTouches[i];
+        for (let i = 0; i < event.changedTouches.length; i++) {
+          const touch = event.changedTouches[i];
 
           if (touch.identifier === this.centerTouch.identifier) {
             event.preventDefault();

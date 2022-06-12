@@ -26,8 +26,11 @@ export default class Snake {
   }
 
   public reset(x: number, y: number, dx: Unit, dy: Unit) {
-    this.segments = [{x, y}, {x, y}];
-    this.direction = {x: dx, y: dy};
+    this.segments = [
+      { x, y },
+      { x, y }
+    ];
+    this.direction = { x: dx, y: dy };
     this.speed = DEFAULT_SPEED;
     this.foodEaten = 0;
 
@@ -47,7 +50,7 @@ export default class Snake {
   }
 
   public getHead(dt?: number): Vec2<number> {
-    var head = this.segments[this.segments.length - 1];
+    const head = this.segments[this.segments.length - 1];
 
     if (dt) {
       return {
@@ -63,21 +66,27 @@ export default class Snake {
     if (dir.x === this.direction.x && dir.y === this.direction.y) return;
     if (dir.x === -this.direction.x && dir.y === -this.direction.y) return;
 
-    var head = this.getHead();
+    const head = this.getHead();
     this.segments.push({ x: head.x, y: head.y });
     this.direction = dir;
   }
 
   public willEatSelf(lookaheadTime: number): boolean {
-    var head = this.getHead();
-    var dist = lookaheadTime * this.speed;
-    var front = getForwardBoundingBox(
-      head, this.direction, SNAKE_RADIUS, SNAKE_RADIUS * 1.01, dist
+    const head = this.getHead();
+    const dist = lookaheadTime * this.speed;
+    const front = getForwardBoundingBox(
+      head,
+      this.direction,
+      SNAKE_RADIUS,
+      SNAKE_RADIUS * 1.01,
+      dist
     );
 
-    for (var i = this.segments.length - 3; i >= 0; i--) {
-      var bb = getBoundingBox(
-        this.segments[i+1], this.segments[i], SNAKE_RADIUS
+    for (let i = this.segments.length - 3; i >= 0; i--) {
+      const bb = getBoundingBox(
+        this.segments[i + 1],
+        this.segments[i],
+        SNAKE_RADIUS
       );
 
       if (boundingBoxesIntersect(front, bb)) {
@@ -89,7 +98,7 @@ export default class Snake {
   }
 
   public draw(context: CanvasRenderingContext2D) {
-    var head = this.getHead();
+    const head = this.getHead();
     const ax = this.direction.x;
     const ay = this.direction.y;
 
@@ -117,15 +126,15 @@ export default class Snake {
     // for head features, transform relative to the head
     context.save();
     context.translate(head.x, head.y);
-    context.rotate(ax ? Math.PI * (ax - 1) / 2 : Math.PI * ay / 2);
+    context.rotate(ax ? (Math.PI * (ax - 1)) / 2 : (Math.PI * ay) / 2);
 
     // tongue
     context.strokeStyle = '#f44336';
     context.lineWidth = 0.1;
     context.beginPath();
     context.moveTo(0.35, 0);
-    context.arcTo(0.4,  .05, 0.45, 0, 0.07);
-    context.arcTo(0.5, -.05, 0.55, 0, 0.07);
+    context.arcTo(0.4, 0.05, 0.45, 0, 0.07);
+    context.arcTo(0.5, -0.05, 0.55, 0, 0.07);
     context.stroke();
 
     context.fillStyle = '#00897B';
@@ -133,32 +142,32 @@ export default class Snake {
 
     // eyes
     context.fillStyle = 'white';
-    drawDot(context, 0, SNAKE_WIDTH *  .25, SNAKE_WIDTH * 0.2);
-    drawDot(context, 0, SNAKE_WIDTH * -.25, SNAKE_WIDTH * 0.2);
+    drawDot(context, 0, SNAKE_WIDTH * 0.25, SNAKE_WIDTH * 0.2);
+    drawDot(context, 0, SNAKE_WIDTH * -0.25, SNAKE_WIDTH * 0.2);
 
     context.fillStyle = 'black';
-    drawDot(context, SNAKE_WIDTH * 0.1, SNAKE_WIDTH *  .23, SNAKE_WIDTH * 0.1);
-    drawDot(context, SNAKE_WIDTH * 0.1, SNAKE_WIDTH * -.23, SNAKE_WIDTH * 0.1);
+    drawDot(context, SNAKE_WIDTH * 0.1, SNAKE_WIDTH * 0.23, SNAKE_WIDTH * 0.1);
+    drawDot(context, SNAKE_WIDTH * 0.1, SNAKE_WIDTH * -0.23, SNAKE_WIDTH * 0.1);
 
     context.restore();
   }
 
   private move(dist: number) {
-    var x = Math.min(this.moveStun, dist);
+    const x = Math.min(this.moveStun, dist);
     this.moveStun -= x;
     dist -= x;
 
     if (dist <= 0) return;
     if (this.moveStun > 0) return;
 
-    var head = this.getHead();
+    const head = this.getHead();
 
     head.x += this.direction.x * dist;
     head.y += this.direction.y * dist;
   }
 
   private chase(dist: number) {
-    var x = Math.min(this.chaseStun, dist);
+    const x = Math.min(this.chaseStun, dist);
     this.chaseStun -= x;
     dist -= x;
 
@@ -166,21 +175,21 @@ export default class Snake {
     if (this.chaseStun > 0) return;
     if (this.segments.length < 2) return; // TODO: game over
 
-    var from = this.segments[0];
-    var to = this.segments[1];
+    const from = this.segments[0];
+    const to = this.segments[1];
 
-    var dx = to.x - from.x;
-    var dy = to.y - from.y;
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
 
     // one of dx or dy should always be 0, so no need for Euclidean dist
-    var d = Math.abs(dx) + Math.abs(dy);
+    const d = Math.abs(dx) + Math.abs(dy);
 
     if (dist >= d) {
       this.segments.shift();
       this.chase(dist - d);
     } else {
-      from.x += dist * dx / d;
-      from.y += dist * dy / d;
+      from.x += (dist * dx) / d;
+      from.y += (dist * dy) / d;
     }
   }
 }
