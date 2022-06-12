@@ -20,7 +20,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.ts,.jsx,.tsx",
     "verify": "npm run typecheck && npm run lint",
-    "build": "parcel build src/content/**/*.pug"
+    "build": "parcel build --no-cache src/content/**/*.pug"
   },
   "alias": {
     "react/jsx-runtime": "./src/common/js/jsx.ts",
