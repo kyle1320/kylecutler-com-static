@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "dependencies": {
     "jscolor-picker": "^2.0.4",
-    "three": "^0.105.2"
+    "three": "^0.141.0"
   },
   "devDependencies": {
     "@parcel/packager-raw-url": "^2.6.0",
