@@ -1,8 +1,8 @@
-@import 'css/base/_variables';
-@import 'css/base/_mixins';
-@import 'css/vendor/fontawesome/fontawesome';
-@import 'css/vendor/fontawesome/solid';
-@import 'css/vendor/fontawesome/brands';
+@import '~/src/common/css/base/_variables';
+@import '~/src/common/css/base/_mixins';
+@import '~/src/common/css/vendor/fontawesome/fontawesome';
+@import '~/src/common/css/vendor/fontawesome/solid';
+@import '~/src/common/css/vendor/fontawesome/brands';
 
 @include fa-envelope;
 @include fa-github-alt;
@@ -24,13 +24,13 @@
 
 html {
   background-color: #5c3013;
-  background-image: url('/img/wood.jpg');
+  background-image: url('./img/wood.jpg');
   background-size: 2048px 2048px;
   margin: 0;
   padding: 0;
 
   @include hi-res {
-    background-image: url('/img/wood@2x.jpg');
+    background-image: url('./img/wood@2x.jpg');
   }
 
   @media print {
@@ -78,14 +78,14 @@ body {
   box-sizing: border-box;
   margin: 0 auto;
   background-color: #f0f0f0;
-  background-image: url('/img/paper.jpg');
+  background-image: url('./img/paper.jpg');
   background-size: 273px 160px;
   box-shadow: 0 rem(4px) rem(8px) rgba(0, 0, 0, 0.5);
   transform: translateY(-100%);
   transition: transform .3s ease-out;
 
   @include hi-res {
-    background-image: url('/img/paper@2x.jpg');
+    background-image: url('./img/paper@2x.jpg');
   }
 
   @media print {

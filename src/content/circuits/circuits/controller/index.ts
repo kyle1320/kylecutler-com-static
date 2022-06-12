@@ -90,7 +90,7 @@ export default class Controller {
       new NoHoverFeature(this)
     ];
 
-    if (__DEBUG__) {
+    if (process.env.NODE_ENV === "development") {
       this.features.push(new DebugFeature(this));
     }
 

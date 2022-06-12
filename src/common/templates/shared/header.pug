@@ -1,4 +1,4 @@
-include /components/images.pug
+include /common/templates/components/images.pug
 
 mixin menu-item(name, href)
   li.dropdown
@@ -13,7 +13,7 @@ mixin menu-item(name, href)
 header.header
   .container
     a.header__title(href="/")
-      +img-hi-res("/img/kyle_circle-sm.png")(alt="A photo of me")
+      +img-hi-res("/src/common/assets/img/kyle_circle-sm.png")(alt="A photo of me")
       | Kyle Cutler
     ul.header__menu
       +menu-item('Home', '/')

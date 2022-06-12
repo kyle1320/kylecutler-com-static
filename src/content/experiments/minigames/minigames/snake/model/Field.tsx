@@ -8,7 +8,7 @@ import {
   FOOD_WIDTH,
   SNAKE_WIDTH
 } from '../utils';
-import { EventEmitter, makeElement } from 'utils';
+import { EventEmitter } from '~/src/common/js/utils';
 
 const GAME_SCALE = 14;
 

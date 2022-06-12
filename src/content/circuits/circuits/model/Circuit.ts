@@ -3,7 +3,7 @@ import bufferEvent from '../utils/eventBuffer';
 import { parse } from './parse';
 import { CircuitDefinition, CircuitRule } from './types';
 
-import { EventEmitter } from 'utils';
+import { EventEmitter } from '~/src/common/js/utils';
 
 export default class Circuit extends EventEmitter<{
   update: void

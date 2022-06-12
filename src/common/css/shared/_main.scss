@@ -1,7 +1,7 @@
 body {
   margin: 0;
   padding: 0;
-  background: url('/img/voronoi.svg'), linear-gradient(120deg, $primary-light 0%, $primary-accent 100%);
+  background: url('~/src/common/assets/img/voronoi.svg'), linear-gradient(120deg, $primary-light 0%, $primary-accent 100%);
   background-size: 500px 500px, cover;
   background-position: 0 0, 0 0;
 }

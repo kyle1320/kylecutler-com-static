@@ -1,12 +1,12 @@
-extends /shared/main.pug
+extends /common/templates/shared/main.pug
 
-include /components/controls.pug
+include /common/templates/components/controls.pug
 
 block vars
   - title = "Experiment: Particles"
 
 append scripts
-  script(type="text/javascript" src="particles.js")
+  script(type="module" src="particles.js")
 
 block content
   .contentbox

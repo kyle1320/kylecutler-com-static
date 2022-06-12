@@ -1,8 +1,8 @@
-@import 'css/base/variables';
-@import 'css/base/mixins';
+@import '~/src/common/css/base/variables';
+@import '~/src/common/css/base/mixins';
 
-@import 'css/vendor/fontawesome/fontawesome';
-@import 'css/vendor/fontawesome/solid';
+@import '~/src/common/css/vendor/fontawesome/fontawesome';
+@import '~/src/common/css/vendor/fontawesome/solid';
 
 @import 'minigame-toggle';
 @import 'minigame-snake';

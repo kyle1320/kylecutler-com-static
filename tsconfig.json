@@ -3,16 +3,21 @@
     "allowJs": true,
     "alwaysStrict": true,
     "downlevelIteration": true,
+    "moduleResolution": "node",
     "noEmit": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "sourceMap": true,
     "strictFunctionTypes": true,
-    "target": "es5",
-    "jsx": "react",
-    "jsxFactory": "makeElement",
-    "lib": [ "dom", "esnext" ]
+    "target": "es2019",
+    "jsx": "react-jsx",
+    "lib": [ "dom", "esnext" ],
+    "paths": {
+      "~/*": ["./*"],
+      "react/jsx-runtime": ["./src/common/js/jsx.ts"],
+      "react/jsx-dev-runtime": ["./src/common/js/jsx.ts"]
+    }
   },
   "include": [
     "src/**/*.ts", "src/**/*.js, src/**/*.tsx", "src/**/*.jsx"

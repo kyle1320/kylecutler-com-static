@@ -3,9 +3,9 @@ type Callback<T> = T extends void ? () => any : (arg: T) => any;
 type VoidKeys<T, K extends keyof T = keyof T> =
   K extends (T[K] extends void ? K : never) ? K : never;
 type Listeners<T> =
-  {[name: string]: any} & {[K in keyof T]?: ((arg: T) => any)[]};
+  {[K in string | keyof T]?: K extends keyof T ? ((arg: T) => any)[] : any };
 type QueuedEvents<T> =
-  {[name: string]: any} & {[K in keyof T]?: T[K]};
+  {[K in string | keyof T]?: K extends keyof T ? T[K] : any};
 
 export default class EventEmitter<
 T extends {[name: string]: any},

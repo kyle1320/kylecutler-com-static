@@ -1,6 +1,6 @@
-extends /shared/main.pug
+extends /common/templates/shared/main.pug
 
-include /components/images.pug
+include /common/templates/components/images.pug
 
 mixin tile(title, href, img, desc)
   a.tile(href=href)&attributes(attributes)
@@ -17,7 +17,7 @@ block vars
 block content
   .contentbox
     h2 Welcome!
-    p My name is Kyle Cutler; I'm a software engineer at Microsoft.
+    p My name is Kyle Cutler; I'm a software engineer currently working at Microsoft.
     p I love to create visual programs such as fractal generators, simulations, games, and anything else I come up with.
     p
       | My other hobbies include hiking, cooking, and playing
@@ -31,38 +31,39 @@ block content
   .contentbox 
     h2 Web Projects 
     p Below you can find links to some of my personal web projects. Some of these are very old, so I have tried to order them with the more recent projects first.
-
-  .tiles
+    
+  .tiles.tiles--lg
     +tile("Kyle's Uno",
           "https://uno.kyles.games/",
-          "/img/tiles/uno_xl.png",
-          "A recreation of the classic card game that you can play online with friends!")(class="tile--lg" target="_blank")
+          "~/src/common/assets/img/tiles/uno_xl.png",
+          "A recreation of the classic card game that you can play online with friends!")(target="_blank")
     +tile("Time Tracker",
           "/timetracker/",
-          "/img/tiles/timetracker_xl.png",
-          "Track time spent on various tasks at work")(class="tile--lg")
+          "~/src/common/assets/img/tiles/timetracker_xl.png",
+          "Track time spent on various tasks at work")
     +tile("Circuits",
           "/circuits/",
-          "/img/tiles/circuits_xl.png",
-          "Design and test boolean logic circuits")(class="tile--lg")
+          "~/src/common/assets/img/tiles/circuits_xl.png",
+          "Design and test boolean logic circuits")
+  .tiles.tiles--sm
     +tile("Résumé",
           "/resume/",
-          "/img/tiles/resume_lg.png")(class="tile")
+          "~/src/common/assets/img/tiles/resume_lg.png")
     +tile("Minigames",
           "/experiments/minigames/",
-          "/img/tiles/minigames_lg.png")(class="tile")
+          "~/src/common/assets/img/tiles/minigames_lg.png")
     +tile("Painter",
           "/experiments/painter/",
-          "/img/tiles/painter_lg.png")(class="tile")
+          "~/src/common/assets/img/tiles/painter_lg.png")
     +tile("Spirograph",
           "/experiments/spirograph/",
-          "/img/tiles/spirograph_lg.png")(class="tile")
+          "~/src/common/assets/img/tiles/spirograph_lg.png")
     +tile("Bubbles",
           "/experiments/bubbles/",
-          "/img/tiles/bubbles_lg.png")(class="tile")
+          "~/src/common/assets/img/tiles/bubbles_lg.png")
     +tile("Particles",
           "/experiments/particles/",
-          "/img/tiles/particles_lg.png")(class="tile")
+          "~/src/common/assets/img/tiles/particles_lg.png")
     +tile("Graphs",
           "/experiments/graphs/",
-          "/img/tiles/graphs_lg.png")(class="tile")
+          "~/src/common/assets/img/tiles/graphs_lg.png")

@@ -1,11 +1,10 @@
-extends /shared/main.pug
+extends /common/templates/shared/main.pug
 
 block vars
   - title = "Minigames"
 
 block scripts
-  include /components/polyfill.pug
-  script(src="minigames.js" type="text/javascript" defer)
+  script(src="minigames.js" type="module" defer)
 append styles
   link(href="minigames.scss" rel="stylesheet")
 
@@ -15,4 +14,3 @@ block content
     .minigame-container
       #minigame-toggle
       #minigame-snake
-    p More to come!

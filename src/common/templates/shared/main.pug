@@ -1,4 +1,4 @@
-include /components/gtm.pug
+include /common/templates/components/gtm.pug
 
 doctype html
 
@@ -18,19 +18,18 @@ html(lang="en")
         meta(name="description" content=description)
 
         //- favicon / PWA
-        link(rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png")
-        link(rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png")
-        link(rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png")
-        link(rel="manifest" href="/site.webmanifest")
+        link(rel="apple-touch-icon" sizes="180x180" href="~/src/common/assets/apple-touch-icon.png")
+        link(rel="icon" type="image/png" sizes="32x32" href="~/src/common/assets/favicon-32x32.png")
+        link(rel="icon" type="image/png" sizes="16x16" href="~/src/common/assets/favicon-16x16.png")
+        link(rel="manifest" href="~/src/common/assets/site.webmanifest")
         meta(name="msapplication-TileColor" content="#00aba9")
         meta(name="theme-color" content="#00897B")
 
         +gtmScript
         block styles
-            link(href="/css/main.scss" rel="stylesheet")
+            link(href="~/src/common/css/main.scss" rel="stylesheet")
         block scripts
-            include /components/polyfill.pug
-            script(src="/js/site.js" type="text/javascript" defer)
+            script(src="~/src/common/js/site.js" type="module" defer)
 
     body
         +gtmNoscript

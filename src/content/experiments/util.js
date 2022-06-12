@@ -1,4 +1,4 @@
-import { QuadTree } from 'utils';
+import { QuadTree } from '~/src/common/js/utils';
 
 export const $ = document.getElementById.bind(document);
 

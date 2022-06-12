@@ -5,11 +5,11 @@
 }
 
 @function rem($value) {
-  @return ($value / 16px) * 1rem;
+  @return calc($value / 16px) * 1rem;
 }
 
 @mixin mobile-only {
-  @media only screen and (max-width: $small - 1px) {
+  @media only screen and (max-width: calc($small - 1px)) {
     @content;
   }
 }
@@ -21,7 +21,7 @@
 }
 
 @mixin tablet-and-below {
-  @media only screen and (max-width: $medium - 1px) {
+  @media only screen and (max-width: calc($medium - 1px)) {
     @content;
   }
 }

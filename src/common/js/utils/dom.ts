@@ -25,10 +25,12 @@ export type ElementContent = JSXChild | JSXChild[];
 
 export function makeElement<T extends keyof JSX.IntrinsicElements>(
   tag: T,
-  props?: JSX.IntrinsicElements[T],
-  ...children: ElementContent[]
+  rawProps?: JSX.IntrinsicElements[T] & { children?: ElementContent[] },
 ): HTMLElementTagNameMap[T] {
   var el = document.createElement(tag);
+
+  const { children, ...otherProps } = rawProps;
+  const props = otherProps as any as JSX.IntrinsicElements[T];
 
   for (var key in props) {
     if (key === 'style') {
@@ -47,15 +49,18 @@ export function makeElement<T extends keyof JSX.IntrinsicElements>(
     }
   }
 
-  children.forEach(function addChild(child) {
-    if (child instanceof Array) {
-      child.forEach(addChild);
-    } else if (child instanceof Node) {
-      el.appendChild(child);
-    } else if (child) {
-      el.appendChild(document.createTextNode(String(child)));
-    }
-  });
+  if (children) {
+    function addChild(child: any) {
+      if (child instanceof Array) {
+        child.forEach(addChild);
+      } else if (child instanceof Node) {
+        el.appendChild(child);
+      } else if (child) {
+        el.appendChild(document.createTextNode(String(child)));
+      }
+    };
+    addChild(children);
+  }
 
   return el;
 }
