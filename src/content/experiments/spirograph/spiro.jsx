@@ -1,6 +1,5 @@
 import { $, scaleCanvas, fitElement, link } from '../util';
-import { getSaturatedColor } from 'utils';
-import { makeElement } from 'utils';
+import { getSaturatedColor } from '~/src/common/js/utils';
 
 window.onload = function () {
   var spiroCanvas = $('spiro-canvas');
