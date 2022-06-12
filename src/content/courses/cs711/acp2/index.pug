@@ -1,4 +1,4 @@
-extends /shared/main.pug
+extends /common/templates/shared/main.pug
 
 block vars
   - title = "CSCI711 – Advanced Checkpoint 2"
@@ -9,9 +9,9 @@ block content
     div
       | Note that our photon mapper is wavelength-based, so each photon is spawned with a random wavelength. This causes some of the results to appear more colorful than you might expect. Also note that the color of the light source is determined by the emissive property of the material, and is thus affected very little by the photon map, if at all.
     br
-    img(src='/img/courses/cs711/acp2_1K.png', width='300')
+    img(src='./acp2_1K.png', width='300')
     .img-desc 1K photons, time to render = 1.5s
-    img(src='/img/courses/cs711/acp2_10K.png', width='300')
+    img(src='./acp2_10K.png', width='300')
     .img-desc 10K photons, time to render = 8.3s
-    img(src='/img/courses/cs711/acp2_100K.png', width='300')
+    img(src='./acp2_100K.png', width='300')
     .img-desc 100K photons, time to render = 81.9s

@@ -1,0 +1,40 @@
+include /common/templates/components/gtm.pug
+
+doctype html
+
+- title = ""
+- description = "Kyle Cutler's Personal Website – Coding Experiments, Games, Web Apps, and More"
+block vars
+
+html(lang="en")
+    head
+        title
+            if title
+                | #{title} – Kyle Cutler
+            else
+                | Kyle Cutler
+        meta(charset="utf-8")
+        meta(name="viewport" content="width=device-width")
+        meta(name="description" content=description)
+
+        //- favicon / PWA
+        link(rel="apple-touch-icon" sizes="180x180" href="~/src/common/assets/apple-touch-icon.png")
+        link(rel="icon" type="image/png" sizes="32x32" href="~/src/common/assets/favicon-32x32.png")
+        link(rel="icon" type="image/png" sizes="16x16" href="~/src/common/assets/favicon-16x16.png")
+        link(rel="manifest" href="~/src/common/assets/site.webmanifest")
+        meta(name="msapplication-TileColor" content="#00aba9")
+        meta(name="theme-color" content="#00897B")
+
+        +gtmScript
+        block styles
+            link(href="~/src/common/css/main.scss" rel="stylesheet")
+        block scripts
+            script(src="~/src/common/js/site.js" type="module" defer)
+
+    body
+        +gtmNoscript
+        include header.pug
+        .content.container
+            block content
+        include footer.pug
+        block lazy-scripts

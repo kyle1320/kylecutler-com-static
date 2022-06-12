@@ -1,4 +1,4 @@
-import { EventEmitter, makeElement, toggleClass } from 'utils';
+import { EventEmitter, toggleClass } from '~/src/common/js/utils';
 import View from './View';
 import NodeView from './NodeView';
 import Node from '../model/Node';
@@ -129,7 +129,7 @@ class DynamicContent extends EventEmitter<{
   private children: DynamicContent[];
 
   public element: HTMLElement;
-  private content: HTMLElement;
+  protected content: HTMLElement;
 
   public constructor(
     element: HTMLElement,
@@ -193,13 +193,16 @@ class Section extends DynamicContent {
     id: string,
     groups: SectionGroup[]
   ) {
+    super(null!, groups);
+    
     var header = <div className='actionbar__section__header'>{label}</div>;
     var content = <div className='actionbar__section__content'>
       {groups.map(group => group.element)}
     </div>;
     var wrapper = <div className='actionbar__section'>{[header, content]}</div>;
 
-    super(wrapper, groups, content);
+    this.element = wrapper;
+    this.content = content;
 
     this.id = id;
     this.items = [].concat.apply([], groups.map(group => group.items));
@@ -213,11 +216,10 @@ class SectionGroup extends DynamicContent {
   public items: ActionItem[];
 
   public constructor(style: SectionGroupStyle, items: ActionItem[]) {
-    super(
-      <div className={'actionbar__section__group '
-        + 'actionbar__section__group--' + style} />,
-      items
-    );
+    super(null!, items);
+
+    this.element = this.content = <div className={'actionbar__section__group '
+    + 'actionbar__section__group--' + style} />;
 
     this.style = style;
     this.items = items;
@@ -261,17 +263,17 @@ class ActionItem extends DynamicContent {
     style: ActionItemStyle,
     ...content: (string | HTMLElement)[]
   ) {
+    super(null!);
+    
     props = props || {};
     props.className = 'action-item '
       + (style ? 'action-item--' + style + ' ' : '')
       + (props.className ? props.className : '');
-
-    super(
-      <div
-        onclick={() => this.isEnabled && this.emit('click')}
-        onmousedown={(e: MouseEvent) => e.preventDefault()}
-        {...props}>{content}</div>
-    );
+      
+    this.element = this.content = <div
+      onclick={() => this.isEnabled && this.emit('click')}
+      onmousedown={(e: MouseEvent) => e.preventDefault()}
+      {...props}>{content}</div>
 
     this.name = name;
     this.type = type;
@@ -425,7 +427,7 @@ function getDefaultSections(): Section[] {
     ])
   ];
 
-  if (__DEBUG__) {
+  if (process.env.NODE_ENV === "development") {
     defaultSections.push(new Section('Debug', 'debug', [
       new SectionGroup('columns', [
         ActionItem.withIcon(

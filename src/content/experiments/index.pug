@@ -1,6 +1,6 @@
-extends /shared/main.pug
+extends /common/templates/shared/main.pug
 
-include /components/project-header.pug
+include /common/templates/components/project-header.pug
 
 block vars
   - title = "Javascript Experiments"
@@ -8,16 +8,16 @@ block vars
 block content
   .contentbox
     h1 Javascript Experiments
-    +project-header('spirograph', '/img/tiles/spirograph_lg.png', 'Spirograph')
+    +project-header('spirograph', '~/src/common/assets/img/tiles/spirograph_lg.png', 'Spirograph')
       div A simulation of the classic "Spirograph" toy.
-    +project-header('graphs', '/img/tiles/graphs_lg.png', 'Graphs')
+    +project-header('graphs', '~/src/common/assets/img/tiles/graphs_lg.png', 'Graphs')
       div A unique creation of my own.
-    +project-header('particles', '/img/tiles/particles_lg.png', 'Particles')
+    +project-header('particles', '~/src/common/assets/img/tiles/particles_lg.png', 'Particles')
       div A 2D particle interaction simulation.
-    +project-header('painter', '/img/tiles/painter_lg.png', 'Painter')
+    +project-header('painter', '~/src/common/assets/img/tiles/painter_lg.png', 'Painter')
       div An algorithmic "painting" program. Great for generating wallpapers.
-    +project-header('bubbles', '/img/tiles/bubbles_lg.png', 'Bubbles')
+    +project-header('bubbles', '~/src/common/assets/img/tiles/bubbles_lg.png', 'Bubbles')
       div A simple program that generates images filled with "bubbles". Also great for wallpapers.
-    +project-header('minigames', '/img/tiles/minigames_lg.png', 'Minigames')
+    +project-header('minigames', '~/src/common/assets/img/tiles/minigames_lg.png', 'Minigames')
       div A handful of simple games, just for fun.
 

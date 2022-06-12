@@ -1,12 +1,12 @@
-extends /shared/main.pug
+extends /common/templates/shared/main.pug
 
-include /components/controls.pug
+include /common/templates/components/controls.pug
 
 block vars
   - title = "Experiment: Graphs"
 
 append scripts
-  script(type="text/javascript" src="graphs.js")
+  script(type="module" src="graphs.js")
 
 block content
   .contentbox

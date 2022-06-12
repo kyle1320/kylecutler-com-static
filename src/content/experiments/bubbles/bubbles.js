@@ -6,7 +6,7 @@ import {
   link,
   resizeCanvas,
   clamp } from '../util';
-import { QuadTree, getSaturatedColor, randomColor } from 'utils';
+import { QuadTree, getSaturatedColor, randomColor } from '~/src/common/js/utils';
 
 window.onload = function () {
   var drawCanvas = $('draw-canvas');

@@ -1,11 +1,14 @@
 [build]
   command = "npm run build"
-  publish = "public/"
+  publish = "dist/"
+
+[build.environment]
+NODE_VERSION = "14.19.3"
 
 [dev]
-  command = "npm run gulp"
+  command = "npm run dev"
   port = 3000
-  publish = "public/"
+  publish = "dist/"
 
 [[redirects]]
   from = "/timetracker/*"

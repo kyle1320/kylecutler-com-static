@@ -1,4 +1,4 @@
-import { range } from 'utils';
+import { range } from '~/src/common/js/utils';
 
 const MAX_EDGES = 16;
 

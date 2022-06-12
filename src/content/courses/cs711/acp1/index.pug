@@ -1,4 +1,4 @@
-extends /shared/main.pug
+extends /common/templates/shared/main.pug
 
 block vars
   - title = "CSCI711 – Advanced Checkpoint 1"
@@ -8,7 +8,7 @@ block content
     h2 Advanced Checkpoint 1
     h3 Bunny (69,451 triangles) – 600x600
     div.prefer-row
-      img(src='/img/courses/cs711/acp1_bunny.png', width='300')
+      img(src='./acp1_bunny.png', width='300')
       table.aligned(style='padding: 1em')
         tbody
           tr
@@ -22,7 +22,7 @@ block content
             td 0.29 seconds
     h3 Dragon (1,132,830 triangles) – 600x600
     div.prefer-row
-      img(src='/img/courses/cs711/acp1_dragon.png', width='300')
+      img(src='./acp1_dragon.png', width='300')
       table.aligned(style='padding: 1em')
         tbody
           tr

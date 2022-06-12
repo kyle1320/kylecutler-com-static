@@ -1,4 +1,4 @@
-import { makeElement, ElementContent } from 'utils';
+import { ElementContent } from '~/src/common/js/utils';
 
 type Content = string | HTMLElement | HTMLElement[];
 

@@ -1,6 +1,6 @@
-import 'utils/obfuscate';
+import '~/src/common/js/utils/obfuscate';
 
-import { toggleClass } from 'utils';
+import { toggleClass } from '~/src/common/js/utils';
 
 window.addEventListener('load', function () {
   var printBtn = document.getElementById('print-btn');

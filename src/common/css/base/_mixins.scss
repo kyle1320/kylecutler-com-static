@@ -1,0 +1,27 @@
+@mixin hi-res {
+  @media only screen and (min-resolution: 2dppx) {
+    @content;
+  }
+}
+
+@function rem($value) {
+  @return calc($value / 16px) * 1rem;
+}
+
+@mixin mobile-only {
+  @media only screen and (max-width: calc($small - 1px)) {
+    @content;
+  }
+}
+
+@mixin desktop-only {
+  @media only screen and (min-width: $small) {
+    @content;
+  }
+}
+
+@mixin tablet-and-below {
+  @media only screen and (max-width: calc($medium - 1px)) {
+    @content;
+  }
+}

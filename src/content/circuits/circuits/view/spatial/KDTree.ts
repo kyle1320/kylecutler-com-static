@@ -59,7 +59,7 @@ export default class KDTree<T> {
   }
 }
 
-// if (__DEBUG__) {
+// if (process.env.NODE_ENV === "development") {
 //   KDTree.prototype.draw = function (context, boundingBox) {
 //     drawNode(context, this.rootNode, boundingBox);
 //   };
