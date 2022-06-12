@@ -48,7 +48,7 @@ class ToggleGame {
         </div>
       ]}</div>,
       <div className='text-container'>
-        <div>'Turn off all the cells!</div>
+        <div>Turn off all the cells!</div>
         <div className='hint'>(It is possible, I promise)</div>
         <div
           className='fa fa-undo reset-btn'
