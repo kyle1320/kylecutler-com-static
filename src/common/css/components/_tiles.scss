@@ -12,6 +12,26 @@
   &--sm {
     grid-template-columns: repeat(5, 1fr);
   }
+
+  @include tablet-and-below {
+    &--lg {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    &--sm {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @include mobile-only {
+    &--lg {
+      grid-template-columns: repeat(1, 1fr);
+    }
+
+    &--sm {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
 }
 
 .tile {
@@ -51,24 +71,6 @@
     left: 0;
     width: 100%;
     height: auto;
-  }
-
-  @include mobile-only {
-    width: calc((100% - 10px) / 2);
-
-    &--lg {
-      width: 100%;
-    }
-  }
-
-  @include tablet-and-below {
-    .info {
-      padding: rem(10px);
-
-      &__title {
-        font-size: rem(18px);
-      }
-    }
   }
 }
 
